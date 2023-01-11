@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    command: npm run start
+    env_file: .env
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 600m
+    depends_on:
+      - nginx
+  nginx:
+    image: jonasal/nginx-certbot:latest
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "80:80"
+      - "443:443"
+      - "5555:5555"
+    volumes:
+      - nginx_secrets:/etc/letsencrypt
+      - ./nginx:/etc/nginx/user_conf.d
+    deploy:
+      resources:
+        limits:
+          memory: 100m
+
+volumes:
+  nginx_secrets:

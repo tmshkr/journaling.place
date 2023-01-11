@@ -1,0 +1,14 @@
+node_modules
+*/*/node_modules
+
+*.env
+*/*/.env
+
+.DS_Store
+**/.DS_Store
+
+.elasticbeanstalk/
+.git/
+
+*/*/.next
+*/*/.turbo
