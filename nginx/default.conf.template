@@ -1,11 +1,11 @@
-
+# https://www.baeldung.com/linux/nginx-config-environment-variables
 server {
     # Listen to port 443 on both IPv4 and IPv6.
     listen 443 ssl default_server reuseport;
     listen [::]:443 ssl default_server reuseport;
 
     # Domain names this server should respond to.
-    server_name localhost;
+    server_name ${SERVER_NAME};
 
     # Load the certificate files.
     ssl_certificate         /etc/letsencrypt/live/journaling.place/fullchain.pem;
