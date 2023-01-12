@@ -1,5 +1,5 @@
 set -e
-set -a; source .env; set +a
+set -a; source ./.env; set +a
 
 for file in ./nginx/*.template
 do
