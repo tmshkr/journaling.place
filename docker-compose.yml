@@ -21,12 +21,9 @@ services:
       - "443:443"
       - "5555:5555"
     volumes:
-      - nginx_secrets:/etc/letsencrypt
+      - ./efs:/etc/letsencrypt
       - ./nginx:/etc/nginx/user_conf.d
     deploy:
       resources:
         limits:
           memory: 100m
-
-volumes:
-  nginx_secrets:
