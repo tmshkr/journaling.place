@@ -1,5 +1,5 @@
 const { exec } = require("child_process");
-
+require("dotenv").config();
 const { APP_NAME, BLUE_ENV, GREEN_ENV, PRODUCTION_CNAME, STAGING_CNAME } =
   process.env;
 
@@ -10,46 +10,41 @@ async function getTargetEnv() {
       async (error, stdout, stderr) => {
         if (error) {
           console.error(`error: ${error.message}`);
-          reject();
-          return;
+          return reject();
         }
         if (stderr) {
           console.error(`stderr: ${stderr}`);
-          reject();
-          return;
+          return reject();
         }
 
         const { Environments } = JSON.parse(stdout);
-        const prodEnv = Environments.find(({ CNAME }) =>
-          CNAME.startsWith(PRODUCTION_CNAME)
-        );
-        const targetEnv = Environments.find(({ CNAME }) =>
-          CNAME.startsWith(STAGING_CNAME)
+        const targetEnv = Environments.find(
+          ({ CNAME, Status }) =>
+            CNAME.startsWith(STAGING_CNAME) && Status !== "Terminated"
         );
 
-        if (!targetEnv || targetEnv.Status === "Terminated") {
+        if (!targetEnv) {
           console.error("Target environment does not exist.");
-          const newEnv = await createEnvironment(
-            prodEnv.EnvironmentName === GREEN_ENV ? BLUE_ENV : GREEN_ENV
+          const prodEnv = Environments.find(
+            ({ CNAME, Status }) =>
+              CNAME.startsWith(PRODUCTION_CNAME) && Status !== "Terminated"
           );
-          resolve(newEnv);
-          return;
+          const newEnv =
+            prodEnv?.EnvironmentName === GREEN_ENV ? BLUE_ENV : GREEN_ENV;
+          await createEnvironment(newEnv);
+          return resolve(await getTargetEnv());
         }
 
         if (targetEnv.Status !== "Ready") {
-          console.error("Target environment is not ready");
-          reject();
-          return;
+          console.error("Target environment is not ready.");
+          return reject();
         }
 
-        if (targetEnv.Status === "Ready" && targetEnv.Health === "Grey") {
-          console.log("Target environment inactive.");
+        if (targetEnv.Health !== "Green") {
+          console.log("Target environment is not healthy.");
           await terminateEnvironment(targetEnv.EnvironmentId);
-          const newEnv = await createEnvironment(
-            prodEnv.EnvironmentName === GREEN_ENV ? BLUE_ENV : GREEN_ENV
-          );
-          resolve(newEnv);
-          return;
+          await createEnvironment(targetEnv.EnvironmentName);
+          return resolve(await getTargetEnv());
         }
 
         resolve(targetEnv);
@@ -66,13 +61,11 @@ async function createEnvironment(envName) {
       (error, stdout, stderr) => {
         if (error) {
           console.error(`error: ${error.message}`);
-          reject();
-          return;
+          return reject();
         }
         if (stderr) {
           console.error(`stderr: ${stderr}`);
-          reject();
-          return;
+          return reject();
         }
         const newEnv = JSON.parse(stdout);
         console.log("Creating env:", newEnv);
@@ -97,13 +90,12 @@ async function terminateEnvironment(environmentId) {
       (error, stdout, stderr) => {
         if (error) {
           console.error(`error: ${error.message}`);
-          reject();
-          return;
+          return reject();
         }
         if (stderr) {
           console.error(`stderr: ${stderr}`);
           reject();
-          return;
+          return reject();
         }
         console.log(stdout);
         exec(
@@ -124,7 +116,8 @@ async function main() {
   while (tries < 5) {
     try {
       const targetEnv = await getTargetEnv();
-      console.log(targetEnv);
+      if (!targetEnv) return;
+      console.log("targetEnv", targetEnv);
       exec(`echo TARGET_ENV=${targetEnv.EnvironmentName} >> $GITHUB_OUTPUT`);
       break;
     } catch (error) {
