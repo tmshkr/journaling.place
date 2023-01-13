@@ -10,12 +10,12 @@ services:
       resources:
         limits:
           memory: 600m
-    depends_on:
-      - nginx
   nginx:
     image: jonasal/nginx-certbot:latest
     restart: unless-stopped
     env_file: .env
+    depends_on:
+      - app
     ports:
       - "80:80"
       - "443:443"
