@@ -1,5 +1,5 @@
 const { exec } = require("child_process");
-require("dotenv").config();
+
 const { APP_NAME, BLUE_ENV, GREEN_ENV, PRODUCTION_CNAME, STAGING_CNAME } =
   process.env;
 
