@@ -94,7 +94,6 @@ async function terminateEnvironment(environmentId) {
         }
         if (stderr) {
           console.error(`stderr: ${stderr}`);
-          reject();
           return reject();
         }
         console.log(stdout);
@@ -113,7 +112,7 @@ async function terminateEnvironment(environmentId) {
 
 async function main() {
   let tries = 0;
-  while (tries < 5) {
+  while (tries < 6) {
     try {
       const targetEnv = await getTargetEnv();
       if (!targetEnv) return;
