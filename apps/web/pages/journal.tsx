@@ -6,6 +6,8 @@ import { journalStore } from "src/lib/localForage";
 import { JournalList } from "src/components/JournalList";
 import { syncJournals } from "src/utils/syncJournals";
 
+import { index } from "src/lib/flexsearch";
+
 export default function JournalPage() {
   const user = useAppSelector(selectUser);
   const [journals, setJournals] = useState({});
@@ -24,13 +26,15 @@ async function handleSync(setJournals, userId?) {
   } else {
     const journals = {};
     journalStore
-      .iterate(function (value, key, iterationNumber) {
+      .iterate(function (value: any, key, iterationNumber) {
         if (key.startsWith("null")) {
           journals[key] = value;
+          index.add(key, value.plaintext);
         }
       })
       .then(() => {
         setJournals(journals);
+        console.log(index);
       });
   }
 }

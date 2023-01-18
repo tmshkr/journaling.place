@@ -16,6 +16,7 @@ import { selectUser } from "src/store/user";
 import { getPathRoot } from "src/utils/path";
 
 import { SearchBar } from "./SearchBar";
+import { SearchResults } from "./SearchResults";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -26,6 +27,8 @@ function classNames(...classes) {
 
 export function AppShell({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+
   const router = useRouter();
   const user = useAppSelector(selectUser);
 
@@ -201,34 +204,34 @@ export function AppShell({ children }) {
         </div>
       </div>
       <div className="flex flex-1 flex-col md:pl-64">
-        <div className="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white shadow">
-          <button
-            type="button"
-            className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <span className="sr-only">Open sidebar</span>
-            <Bars3BottomLeftIcon className="h-6 w-6" aria-hidden="true" />
-          </button>
-          <div className="flex flex-1 justify-between px-4">
-            <div className="flex flex-1">
-              <SearchBar />
-            </div>
-            <div className="ml-4 flex items-center md:ml-6">
-              <button
-                type="button"
-                className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                <span className="sr-only">View notifications</span>
-                <ArrowPathIcon className="h-6 w-6" aria-hidden="true" />
-              </button>
+        <div className="sticky top-0 left-0 right-0 bg-white shadow">
+          <div className="flex h-16 flex-shrink-0">
+            <button
+              type="button"
+              className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <span className="sr-only">Open sidebar</span>
+              <Bars3BottomLeftIcon className="h-6 w-6" aria-hidden="true" />
+            </button>
+            <div className="flex flex-1 justify-between px-4">
+              <SearchBar {...{ setSearchResults }} />
+              <div className="ml-4 flex items-center md:ml-6">
+                <button
+                  type="button"
+                  className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  <span className="sr-only">View notifications</span>
+                  <ArrowPathIcon className="h-6 w-6" aria-hidden="true" />
+                </button>
+              </div>
             </div>
           </div>
+
+          <SearchResults {...{ searchResults }} />
         </div>
 
-        <main className="flex-1">
-          <div className="container">{children}</div>
-        </main>
+        <main className="container">{children}</main>
       </div>
     </div>
   );

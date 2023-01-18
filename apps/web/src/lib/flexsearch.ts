@@ -1,3 +1,7 @@
 const { Index } = require("flexsearch");
 
-export const index = new Index();
+export let index = new Index({
+  preset: "default",
+  tokenize: "full",
+  resolution: 5,
+});
