@@ -29,9 +29,31 @@ export function SearchResults({
               setSearch("");
               setSearchResults([]);
             }}
-            className="block font-medium text-gray-900"
+            className="block font-medium text-gray-900 px-4 py-2"
           >
-            {cache[key].promptText}
+            <h3
+              className="truncate font-medium text-indigo-600"
+              dangerouslySetInnerHTML={{
+                __html: cache[key].promptText.replace(
+                  new RegExp(search, "gi"),
+                  (match) => {
+                    return `<span class="bg-yellow-300">${match}</span>`;
+                  }
+                ),
+              }}
+            />
+
+            <p
+              className="truncate font-medium text-gray-400"
+              dangerouslySetInnerHTML={{
+                __html: cache[key].plaintext.replace(
+                  new RegExp(search, "gi"),
+                  (match) => {
+                    return `<span class="bg-yellow-300">${match}</span>`;
+                  }
+                ),
+              }}
+            />
           </Link>
         );
       })}
