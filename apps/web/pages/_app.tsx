@@ -9,12 +9,22 @@ import { DefaultSeo } from "next-seo";
 
 import SEO from "../next-seo.config";
 
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "react-query";
+
 import store from "src/store";
 import { useAppDispatch, useAppSelector } from "src/store";
 import { selectUser, setUser, clearUser } from "src/store/user";
 import Head from "next/head";
 import { AppShell } from "src/components/AppShell";
 import { handleKey, clearKey } from "src/lib/crypto";
+
+const queryClient = new QueryClient();
 
 export default function App({
   Component,
@@ -51,9 +61,11 @@ export default function App({
       </Head>
       <DefaultSeo {...SEO} />
       <SessionProvider session={session}>
-        <ReduxProvider store={store}>
-          <PageAuth {...{ Component, pageProps }} />
-        </ReduxProvider>
+        <QueryClientProvider client={queryClient}>
+          <ReduxProvider store={store}>
+            <PageAuth {...{ Component, pageProps }} />
+          </ReduxProvider>
+        </QueryClientProvider>
       </SessionProvider>
     </>
   );
