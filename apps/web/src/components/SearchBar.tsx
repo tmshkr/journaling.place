@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import { index } from "src/lib/flexsearch";
+import { journalIndex } from "src/store/journal";
+import { useAppSelector } from "src/store";
+import { selectUser } from "src/store/user";
 
 export function SearchBar({ search, setSearch, setSearchResults }) {
+  const user = useAppSelector(selectUser);
+
   const searchIndex = (e) => {
     setSearch(e.target.value);
     if (e.target.value.length > 0) {
-      const results = index.search(e.target.value, {
-        suggest: true,
-      });
+      const results = journalIndex[user ? user.id : "null"].search(
+        e.target.value
+      );
       console.log(results);
       setSearchResults(results);
     } else {
