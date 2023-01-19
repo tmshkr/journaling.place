@@ -2,6 +2,8 @@ import { Fragment, useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   Bars3BottomLeftIcon,
+  CloudIcon,
+  CheckIcon,
   FolderIcon,
   HomeIcon,
   XMarkIcon,
@@ -11,10 +13,12 @@ import {
 } from "@heroicons/react/24/outline";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import { clsx } from "clsx";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 
 import { useAppSelector } from "src/store";
 import { selectUser } from "src/store/user";
 import { getPathRoot } from "src/utils/path";
+import { getJournal } from "src/store/journal";
 
 import { SearchBar } from "./SearchBar";
 import { SearchResults } from "./SearchResults";
@@ -33,6 +37,13 @@ export function AppShell({ children }) {
 
   const router = useRouter();
   const user = useAppSelector(selectUser);
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.cancelQueries("journal", { exact: true });
+    queryClient.fetchQuery("journal", () => getJournal(user?.id));
+  }, [user]);
 
   const pathRoot = getPathRoot(router.pathname);
 
@@ -228,7 +239,7 @@ export function AppShell({ children }) {
                   className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   <span className="sr-only">View notifications</span>
-                  <ArrowPathIcon className="h-6 w-6" aria-hidden="true" />
+                  {user && <CloudIcon className="h-6 w-6" aria-hidden="true" />}
                 </button>
               </div>
             </div>
