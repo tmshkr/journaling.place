@@ -28,6 +28,7 @@ function classNames(...classes) {
 export function AppShell({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const [search, setSearch] = useState("");
 
   const router = useRouter();
   const user = useAppSelector(selectUser);
@@ -215,7 +216,7 @@ export function AppShell({ children }) {
               <Bars3BottomLeftIcon className="h-6 w-6" aria-hidden="true" />
             </button>
             <div className="flex flex-1 justify-between px-4">
-              <SearchBar {...{ setSearchResults }} />
+              <SearchBar {...{ search, setSearch, setSearchResults }} />
               <div className="ml-4 flex items-center md:ml-6">
                 <button
                   type="button"
@@ -228,7 +229,9 @@ export function AppShell({ children }) {
             </div>
           </div>
 
-          <SearchResults {...{ searchResults }} />
+          <SearchResults
+            {...{ search, setSearch, searchResults, setSearchResults }}
+          />
         </div>
 
         <main className="container">{children}</main>

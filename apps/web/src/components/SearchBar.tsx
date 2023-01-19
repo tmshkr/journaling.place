@@ -2,9 +2,7 @@ import { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { index } from "src/lib/flexsearch";
 
-export function SearchBar({ setSearchResults }) {
-  const [search, setSearch] = useState("");
-
+export function SearchBar({ search, setSearch, setSearchResults }) {
   const searchIndex = (e) => {
     setSearch(e.target.value);
     if (e.target.value.length > 0) {
@@ -35,6 +33,7 @@ export function SearchBar({ setSearchResults }) {
             placeholder="Search"
             type="search"
             name="search"
+            value={search}
           />
         </div>
       </form>
