@@ -19,11 +19,11 @@ export function SearchResults({
 
   return (
     <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg">
-      {searchResults.map((key) => {
+      {searchResults.map((key, index) => {
         const promptId = key.split("_")[1];
         return (
           <Link
-            key={key}
+            key={`${key}_${index}`}
             href={`/${promptId}`}
             onClick={() => {
               setSearch("");
