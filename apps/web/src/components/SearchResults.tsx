@@ -23,7 +23,7 @@ export function SearchResults({
         const promptId = key.split("_")[1];
         return (
           <Link
-            key={`${key}_${index}`}
+            key={`${key}#${index}`}
             href={`/${promptId}`}
             onClick={() => {
               setSearch("");
