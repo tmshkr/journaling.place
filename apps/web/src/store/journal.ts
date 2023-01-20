@@ -61,8 +61,10 @@ async function combineSources(local, remote, index) {
 
   for (const key in remote) {
     const entry = remote[key];
-    const isAfter = dayjs(entry.updatedAt).isAfter(local[key].updatedAt);
-    const isSame = dayjs(entry.updatedAt).isSame(local[key].updatedAt);
+    const isAfter =
+      local[key] && dayjs(entry.updatedAt).isAfter(local[key].updatedAt);
+    const isSame =
+      local[key] && dayjs(entry.updatedAt).isSame(local[key].updatedAt);
     if (!local[key] || isAfter) {
       journal[key] = entry;
       entry.decrypted = await decrypt(entry.ciphertext, entry.iv);
@@ -79,7 +81,8 @@ async function combineSources(local, remote, index) {
 
   for (const key in local) {
     const entry = local[key];
-    const isAfter = dayjs(entry.updatedAt).isAfter(remote[key].updatedAt);
+    const isAfter =
+      remote[key] && dayjs(entry.updatedAt).isAfter(remote[key].updatedAt);
     if (!remote[key] || isAfter) {
       journal[key] = entry;
       entry.decrypted = await decrypt(entry.ciphertext, entry.iv);
