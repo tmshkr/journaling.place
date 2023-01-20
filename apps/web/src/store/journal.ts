@@ -36,17 +36,17 @@ async function syncJournals(userId, index) {
   const remote = {};
 
   await Promise.all([
-    journalStore.iterate(function (value, key, iterationNumber) {
+    journalStore.iterate(function (entry, key, iterationNumber) {
       if (key.startsWith(userId)) {
-        local[key] = value;
+        local[key] = entry;
       }
     }),
     axios.get("/api/journal").then(({ data }) => {
-      for (const journal of data) {
-        const key = `${userId}_${journal.promptId}`;
-        journal.ciphertext = toArrayBuffer(journal.ciphertext.data);
-        journal.iv = new Uint8Array(journal.iv.data);
-        remote[key] = journal;
+      for (const entry of data) {
+        const key = `${userId}_${entry.promptId}`;
+        entry.ciphertext = toArrayBuffer(entry.ciphertext.data);
+        entry.iv = new Uint8Array(entry.iv.data);
+        remote[key] = entry;
       }
     }),
   ]);
