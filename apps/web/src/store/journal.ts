@@ -60,36 +60,40 @@ async function combineSources(local, remote, index) {
   const promises: any = [];
 
   for (const key in remote) {
-    if (
-      !local[key] ||
-      dayjs(remote[key].updatedAt).isAfter(local[key].updatedAt)
-    ) {
-      const entry = remote[key];
+    const entry = remote[key];
+    const isAfter = dayjs(entry.updatedAt).isAfter(local[key].updatedAt);
+    const isSame = dayjs(entry.updatedAt).isSame(local[key].updatedAt);
+    if (!local[key] || isAfter) {
       journal[key] = entry;
       entry.decrypted = await decrypt(entry.ciphertext, entry.iv);
       index.add(key, entry.promptText);
       index.append(key, entry.decrypted);
-      promises.push(journalStore.setItem(key, remote[key]));
+      promises.push(journalStore.setItem(key, entry));
+    } else if (isSame) {
+      journal[key] = entry;
+      entry.decrypted = await decrypt(entry.ciphertext, entry.iv);
+      index.add(key, entry.promptText);
+      index.append(key, entry.decrypted);
     }
   }
 
   for (const key in local) {
-    if (!journal[key]) {
-      const entry = local[key];
+    const entry = local[key];
+    const isAfter = dayjs(entry.updatedAt).isAfter(remote[key].updatedAt);
+    if (!remote[key] || isAfter) {
       journal[key] = entry;
       entry.decrypted = await decrypt(entry.ciphertext, entry.iv);
       index.add(key, entry.promptText);
       index.append(key, entry.decrypted);
-      if (dayjs(local[key].updatedAt).isAfter(remote[key].updatedAt)) {
-        promises.push(
-          axios.put("/api/journal", {
-            promptId: key.split("_")[1],
-            ciphertext: Buffer.from(entry.ciphertext),
-            iv: Buffer.from(entry.iv),
-            updatedAt: entry.updatedAt,
-          })
-        );
-      }
+
+      promises.push(
+        axios.put("/api/journal", {
+          promptId: key.split("_")[1],
+          ciphertext: Buffer.from(entry.ciphertext),
+          iv: Buffer.from(entry.iv),
+          updatedAt: entry.updatedAt,
+        })
+      );
     }
   }
 
