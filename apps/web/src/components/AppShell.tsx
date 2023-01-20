@@ -250,7 +250,7 @@ export function AppShell({ children }) {
           />
         </div>
 
-        <main className="container">{children}</main>
+        <main>{children}</main>
       </div>
     </div>
   );
