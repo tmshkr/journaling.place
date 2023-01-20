@@ -7,10 +7,10 @@ export function SearchResults({
   searchResults,
   setSearchResults,
 }) {
+  const queryClient = useQueryClient();
   if (searchResults.length === 0) {
     return null;
   }
-  const queryClient = useQueryClient();
   const cache = queryClient.getQueryData("journal");
 
   if (!cache) {
