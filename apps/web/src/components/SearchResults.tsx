@@ -21,6 +21,7 @@ export function SearchResults({
     <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg">
       {searchResults.map((key, index) => {
         const promptId = key.split("_")[1];
+        const entry = cache[key].plaintext || cache[key].decrypted;
         return (
           <Link
             key={`${key}#${index}`}
@@ -46,12 +47,9 @@ export function SearchResults({
             <p
               className="truncate font-medium text-gray-400"
               dangerouslySetInnerHTML={{
-                __html: cache[key].plaintext.replace(
-                  new RegExp(search, "gi"),
-                  (match) => {
-                    return `<span class="bg-yellow-300">${match}</span>`;
-                  }
-                ),
+                __html: entry.replace(new RegExp(search, "gi"), (match) => {
+                  return `<span class="bg-yellow-300">${match}</span>`;
+                }),
               }}
             />
           </Link>

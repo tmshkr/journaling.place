@@ -1,12 +1,11 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { journalIndex } from "src/store/journal";
 
-export function SearchBar({ search, setSearch, setSearchResults }) {
+export function SearchBar({ search, setSearch, setSearchResults, user }) {
   const searchIndex = (e) => {
     setSearch(e.target.value);
     if (e.target.value.length > 0) {
-      const results = journalIndex.search(e.target.value);
-      console.log(results);
+      const results = journalIndex[user?.id || "null"].search(e.target.value);
       setSearchResults(results);
     } else {
       setSearchResults([]);
