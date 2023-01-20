@@ -18,9 +18,12 @@ export function JournalList({ journals }) {
                 <div className="flex items-center px-4 py-4 sm:px-6">
                   <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
                     <div className="truncate">
-                      <div className="flex text-sm">
-                        <p className="truncate font-medium text-indigo-600">
+                      <div className="text-sm">
+                        <h3 className="truncate font-medium text-indigo-600">
                           {journal.promptText}
+                        </h3>
+                        <p className="truncate font-medium text-gray-600">
+                          {journal.plaintext || journal.decrypted}
                         </p>
                       </div>
                       <div className="mt-2 flex">

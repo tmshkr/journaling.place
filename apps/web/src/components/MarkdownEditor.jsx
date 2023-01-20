@@ -23,6 +23,7 @@ export default function MarkdownEditor(props) {
       clearTimeout(self.__custom_autosave_timeout);
       self.__custom_autosave_timeout = setTimeout(async function () {
         const value = self.value();
+        const now = new Date();
         if (!createdAtRef.current) {
           createdAtRef.current = new Date();
         }
@@ -36,20 +37,21 @@ export default function MarkdownEditor(props) {
             iv,
             promptText: props.prompt.text,
             createdAt: createdAtRef.current,
-            updatedAt: new Date(),
+            updatedAt: now,
           });
           // Save to Postgres
           axios.put("/api/journal", {
             promptId: String(promptId),
             ciphertext: Buffer.from(ciphertext),
             iv: Buffer.from(iv),
+            updatedAt: now,
           });
         } else {
           journalStore.setItem(`null_${promptId}`, {
             plaintext: value,
             promptText: props.prompt.text,
             createdAt: createdAtRef.current,
-            updatedAt: new Date(),
+            updatedAt: now,
           });
         }
       }, 1000);

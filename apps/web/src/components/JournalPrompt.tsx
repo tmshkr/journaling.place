@@ -25,7 +25,10 @@ export function JournalPrompt({ prompt }) {
       </div>
       <div className="text-center">
         {user ? (
-          <p>Your journal is saved with end-to-end encryption.</p>
+          <>
+            <p>Your journal is saved with end-to-end encryption.</p>
+            <p>Only you can read your journal.</p>
+          </>
         ) : (
           <>
             <p>Your journal is saved locally.</p>

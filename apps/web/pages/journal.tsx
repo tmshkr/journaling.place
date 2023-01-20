@@ -1,36 +1,22 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "react-query";
 import { useAppSelector } from "src/store";
 import { selectUser } from "src/store/user";
-import { journalStore } from "src/lib/localForage";
 
 import { JournalList } from "src/components/JournalList";
-import { syncJournals } from "src/utils/syncJournals";
+import { getJournal } from "src/store/journal";
 
 export default function JournalPage() {
   const user = useAppSelector(selectUser);
-  const [journals, setJournals] = useState({});
+  const queryClient = useQueryClient();
+  const { isLoading, error, data } = useQuery("journal", () =>
+    getJournal(user?.id)
+  );
 
   useEffect(() => {
-    handleSync(setJournals, user?.id);
+    queryClient.cancelQueries("journal", { exact: true });
+    queryClient.fetchQuery("journal", () => getJournal(user?.id));
   }, [user]);
 
-  return <JournalList {...{ journals }} />;
-}
-
-async function handleSync(setJournals, userId?) {
-  if (userId) {
-    const journals = await syncJournals(userId);
-    setJournals(journals);
-  } else {
-    const journals = {};
-    journalStore
-      .iterate(function (value, key, iterationNumber) {
-        if (key.startsWith("null")) {
-          journals[key] = value;
-        }
-      })
-      .then(() => {
-        setJournals(journals);
-      });
-  }
+  return isLoading ? "Loading..." : <JournalList {...{ journals: data }} />;
 }

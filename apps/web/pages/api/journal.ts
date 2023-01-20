@@ -50,12 +50,14 @@ async function handleGet(req, res) {
 
 async function handlePut(req, res) {
   console.log("handlePut", req.body);
-  const { ciphertext, iv, promptId } = req.body;
+  const { ciphertext, iv, promptId, updatedAt } = req.body;
+  // TODO: validate input
   const row = {
     promptId: BigInt(promptId),
     authorId: BigInt(req.user.id),
     ciphertext: Buffer.from(ciphertext),
     iv: Buffer.from(iv),
+    updatedAt: new Date(updatedAt),
   };
 
   await prisma.journal.upsert({
