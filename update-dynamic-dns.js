@@ -1,4 +1,3 @@
-const axios = require("axios");
 const { execSync } = require("child_process");
 
 const { APP_NAME, DNS_USERNAME, DNS_PASSWORD, PRODUCTION_CNAME } = process.env;
@@ -18,11 +17,10 @@ async function updateDNS() {
     throw new Error("Target environment does not exist.");
   }
 
-  await axios
-    .post(
-      `https://${DNS_USERNAME}:${DNS_PASSWORD}@domains.google.com/nic/update?hostname=journaling.place&myip=${targetEnv.EndpointURL}`
-    )
-    .then(({ data }) => console.log(`DNS response: ${data}`));
+  const dnsResponse = execSync(`curl -X POST \
+  'https://${DNS_USERNAME}:${DNS_PASSWORD}@domains.google.com/nic/update?hostname=journaling.place&myip=${targetEnv.EndpointURL}'`);
+
+  console.log(dnsResponse.toString());
 }
 
 async function main() {
