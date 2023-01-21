@@ -10,6 +10,8 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
   BLUE_ENV: ${{ vars.BLUE_ENV }}
+  DNS_USERNAME: ${{ secrets.DNS_USERNAME }}
+  DNS_PASSWORD: ${{ secrets.DNS_PASSWORD }}
   GREEN_ENV: ${{ vars.GREEN_ENV }}
   PRODUCTION_CNAME: ${{ vars.PRODUCTION_CNAME }}
   STAGING_CNAME: ${{ vars.STAGING_CNAME }}
@@ -66,3 +68,5 @@ jobs:
       - name: Swap CNAMEs
         run: |
           aws elasticbeanstalk swap-environment-cnames --source-environment-name ${{ vars.BLUE_ENV }} --destination-environment-name ${{ vars.GREEN_ENV }}
+      - name: Update DNS
+        run: node update-dynamic-dns.js
