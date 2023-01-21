@@ -14,6 +14,10 @@ async function updateDNS() {
       CNAME.startsWith(PRODUCTION_CNAME) && Status !== "Terminated"
   );
 
+  if (!targetEnv) {
+    throw new Error("Target environment does not exist.");
+  }
+
   await axios
     .post(
       `https://${DNS_USERNAME}:${DNS_PASSWORD}@domains.google.com/nic/update?hostname=journaling.place&myip=${targetEnv.EndpointURL}`
