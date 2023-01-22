@@ -1,5 +1,125 @@
 [
   {
+    "prompt": "What was the most valuable lesson you learned this week?",
+    "tags": ["reflection", "self-improvement"]
+  },
+  {
+    "prompt": "What is one thing you did this week that made you proud of yourself?",
+    "tags": ["pride", "reflection"]
+  },
+  {
+    "prompt": "What are three things you are looking forward to this week?",
+    "tags": ["anticipation", "optimism"]
+  },
+  {
+    "prompt": "What is one task you procrastinated on this week and why?",
+    "tags": ["procrastination", "reflection"]
+  },
+  {
+    "prompt": "What is one area of your life you would like to improve on?",
+    "tags": ["self-improvement", "goal-setting"]
+  },
+  {
+    "prompt": "What did you do to take care of yourself this week?",
+    "tags": ["self-care", "wellness"]
+  },
+  {
+    "prompt": "What was one thing that made you feel calm this week?",
+    "tags": ["calmness", "equanimity"]
+  },
+  {
+    "prompt": "What is something you are currently struggling with and how can you address it?",
+    "tags": ["struggles", "problem_solving"]
+  },
+  {
+    "prompt": "What is one thing you did this week that was out of your comfort zone?",
+    "tags": ["comfort_zone", "personal_growth"]
+  },
+  {
+    "prompt": "What are three things that you are grateful for this week?",
+    "tags": ["gratitude", "reflection"]
+  },
+  {
+    "prompt": "What is one thing that you did this week that you're proud of?",
+    "tags": ["reflection", "pride"]
+  },
+  {
+    "prompt": "What is a habit that you would like to change and why?",
+    "tags": ["self-improvement", "reflection"]
+  },
+  {
+    "prompt": "What did you do today to move closer to achieving your goals?",
+    "tags": ["goal_setting", "right_action"]
+  },
+  {
+    "prompt": "What is something that you've been putting off and why?",
+    "tags": ["procrastination", "reflection"]
+  },
+  {
+    "prompt": "What is one thing that you wish you had done differently this week and why?",
+    "tags": ["reflection", "regret"]
+  },
+  {
+    "prompt": "What is something that you learned this week that you find interesting?",
+    "tags": ["learning", "awareness"]
+  },
+  {
+    "prompt": "How did you practice equanimity this week?",
+    "tags": ["equanimity", "mindfulness"]
+  },
+  {
+    "prompt": "What are some ways in which you can fulfill your duty to others?",
+    "tags": ["duty", "self-improvement"]
+  },
+  {
+    "prompt": "What are some obstacles that you encountered this week and how did you solve them?",
+    "tags": ["problem_solving", "resiliency"]
+  },
+  {
+    "prompt": "What is one thing that you can do to practice amor fati into your daily life?",
+    "tags": ["amor_fati", "self-improvement"]
+  },
+  {
+    "prompt": "What are three things that you are looking forward to this week?",
+    "tags": ["gratitude", "reflection"]
+  },
+  {
+    "prompt": "What did you do today that you are proud of?",
+    "tags": ["reflection", "self-awareness"]
+  },
+  {
+    "prompt": "What are the top three things that are causing you stress this week and how can you address them?",
+    "tags": ["stress", "problem_solving"]
+  },
+  {
+    "prompt": "What did you learn from your biggest mistake this week?",
+    "tags": ["reflection", "self-improvement"]
+  },
+  {
+    "prompt": "What are three things that you can do to improve your relationships?",
+    "tags": ["relationships", "self-improvement"]
+  },
+  {
+    "prompt": "What are the top three things that you are grateful for in your life?",
+    "tags": ["gratitude", "reflection"]
+  },
+  {
+    "prompt": "What is something that you can do to improve your physical health?",
+    "tags": ["health", "self-improvement"]
+  },
+  {
+    "prompt": "What are three things that you can do to improve your mental health?",
+    "tags": ["mental_health", "self-care"]
+  },
+  {
+    "prompt": "What are three things that you can do to improve your spiritual well-being?",
+    "tags": ["spirituality", "self-improvement"]
+  },
+  {
+    "prompt": "What is something that you can do to improve your financial situation?",
+    "tags": ["finance", "self-improvement"]
+  },
+  {
     "prompt": "Write about a memorable experience from your childhood.",
     "tags": ["childhood", "experience", "personal"]
   },
@@ -960,10 +1080,6 @@
     "tags": ["reflection", "self-improvement"]
   },
   {
-    "prompt": "How did you practice equanimity this week?",
-    "tags": ["equanimity", "mindfulness"]
-  },
-  {
     "prompt": "What are three things that you could do to better manage your time?",
     "tags": ["time_management", "self-improvement"]
   },
@@ -986,10 +1102,6 @@
   {
     "prompt": "What are your long-term goals and how are you working towards them?",
     "tags": ["goal_setting", "planning"]
-  },
-  {
-    "prompt": "What are three things that you can do to improve your mental health?",
-    "tags": ["mental_health", "self-care"]
   },
   {
     "prompt": "What did you do this week that made you feel proud of yourself?",
