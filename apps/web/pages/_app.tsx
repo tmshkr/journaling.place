@@ -80,7 +80,7 @@ function PageAuth({ Component, pageProps }) {
     console.log("session", session, status);
     if (status === "authenticated") {
       const user: any = session.user;
-      await handleKey(user.id, new Uint8Array(user.salt.data));
+      await handleKey(user.id, new Uint8Array(user.salt?.data));
       dispatch(setUser(session.user));
     } else if (status === "unauthenticated") {
       dispatch(clearUser());
