@@ -7,7 +7,7 @@ import { cryptoStore, journalStore } from "src/lib/localForage";
 import { useForm } from "react-hook-form";
 import { clsx } from "clsx";
 
-import { syncJournals } from "src/utils/syncJournals";
+import { syncJournals } from "src/store/journal";
 import {
   decrypt,
   encrypt,

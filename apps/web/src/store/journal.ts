@@ -17,7 +17,7 @@ export async function getJournal(userId) {
 
   let journal = {};
   if (userId) {
-    journal = await syncJournals(userId, journalIndex);
+    journal = await syncJournals(userId);
   } else {
     await journalStore.iterate(function (value: any, key, iterationNumber) {
       if (key.startsWith("null")) {
@@ -31,9 +31,10 @@ export async function getJournal(userId) {
   return journal;
 }
 
-async function syncJournals(userId, index) {
+export async function syncJournals(userId) {
   const local = {};
   const remote = {};
+  const index = journalIndex[userId];
 
   await Promise.all([
     journalStore.iterate(function (entry, key, iterationNumber) {
@@ -51,7 +52,7 @@ async function syncJournals(userId, index) {
     }),
   ]);
 
-  const journal = await combineSources(local, remote, index[userId]);
+  const journal = await combineSources(local, remote, index);
   return journal;
 }
 
