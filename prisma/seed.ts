@@ -1,53 +1,76 @@
 import { PrismaClient } from "@prisma/client";
-import prompts from "../data/prompts.json";
+const prompts = require("../data/prompts.json");
 const prisma = new PrismaClient();
 
-//TODO: put new prompts at beginning of array and stop when you hit a duplicate
+//Note: put new prompts at beginning of the JSON array
 async function seed() {
-  const { count } = await prisma.tag.createMany({
-    data: prompts.flatMap(({ tags }) => tags).map((tag) => ({ text: tag })),
-    skipDuplicates: true,
-  });
-
-  console.log(`Created ${count} new tags`);
+  // console.log(`Created ${count} new tags`);
 
   let newPrompts = 0;
+  let newTags = 0;
+
   for (const prompt of prompts) {
-    const didCreate = await createPrompt(prompt);
-    if (didCreate) newPrompts++;
+    const count = await createPrompt(prompt);
+    if (count.newPrompt === 0) break;
+
+    newPrompts += count.newPrompt;
+    newTags += count.newTags;
   }
 
   console.log(`Created ${newPrompts} new prompts`);
+  console.log(`Created ${newTags} new tags`);
 }
 
 async function createPrompt({ prompt, tags }) {
-  try {
-    var { id: promptId } = await prisma.prompt.create({
-      data: {
-        text: prompt,
-      },
-    });
+  const count = { newTags: 0, newPrompt: 0 };
+  return prisma.$transaction(async (tx) => {
+    const { id: promptId } = await tx.prompt
+      .create({
+        data: {
+          text: prompt,
+        },
+      })
+      .catch((err) => {
+        if (err.code === "P2002") {
+          console.log("prompt already exists: ", prompt);
+          return { id: null };
+        }
+        console.error(err);
+        throw err;
+      });
+
+    if (promptId === null) return count;
+    count.newPrompt++;
 
     for (const tag of tags) {
-      const { id: tagId } = await prisma.tag.findUniqueOrThrow({
-        where: { text: tag },
-      });
-      await prisma.tagOnPrompt.create({
+      const { id: tagId } = await tx.tag
+        .findUniqueOrThrow({
+          where: { text: tag },
+        })
+        .catch(async (err) => {
+          if (err.code === "P2025") {
+            console.log("creating new tag: ", tag);
+            const newTag = await tx.tag.create({
+              data: {
+                text: tag,
+              },
+            });
+            count.newTags++;
+            return newTag;
+          }
+          console.error(err);
+          throw err;
+        });
+      await tx.tagOnPrompt.create({
         data: {
           promptId,
           tagId,
         },
       });
     }
-    return true;
-  } catch (err: any) {
-    if (err.code === "P2002" && err.meta.target.includes("text")) {
-      return false;
-    } else {
-      console.log("Failed to create: ", prompt);
-      throw err;
-    }
-  }
+
+    return count;
+  });
 }
 
 seed()
