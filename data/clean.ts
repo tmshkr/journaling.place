@@ -6,6 +6,9 @@ const originalLength = prompts.length;
 const uniquePrompts = Object.values(
   prompts.reduce((acc: any, cur: any) => {
     cur.tags = cur.tags.map((tag: string) => tag.replace(/\s/g, "_"));
+    if (acc[cur.prompt]) {
+      delete acc[cur.prompt];
+    }
     acc[cur.prompt] = cur;
     return acc;
   }, {})

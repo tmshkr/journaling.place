@@ -4,8 +4,6 @@ const prisma = new PrismaClient();
 
 //Note: put new prompts at beginning of the JSON array
 async function seed() {
-  // console.log(`Created ${count} new tags`);
-
   let newPrompts = 0;
   let newTags = 0;
 
