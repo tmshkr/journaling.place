@@ -1,6 +1,6 @@
 const { execSync } = require("child_process");
 
-const { APP_NAME, DNS_USERNAME, DNS_PASSWORD, PRODUCTION_CNAME } = process.env;
+const { APP_NAME, DNS_USERNAME, DNS_PASSWORD, TARGET_ENV } = process.env;
 
 async function updateDNS() {
   const stdout = execSync(
@@ -9,8 +9,8 @@ async function updateDNS() {
 
   const { Environments } = JSON.parse(stdout);
   const targetEnv = Environments.find(
-    ({ CNAME, Status }) =>
-      CNAME.startsWith(PRODUCTION_CNAME) && Status !== "Terminated"
+    ({ EnvironmentName, Status }) =>
+      EnvironmentName === TARGET_ENV && Status !== "Terminated"
   );
 
   if (!targetEnv) {

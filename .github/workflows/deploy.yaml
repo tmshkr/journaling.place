@@ -11,8 +11,6 @@ env:
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
   BLUE_ENV: ${{ vars.BLUE_ENV }}
   BRANCH: ${{ github.ref_name }}
-  DNS_USERNAME: ${{ secrets.DNS_USERNAME }}
-  DNS_PASSWORD: ${{ secrets.DNS_PASSWORD }}
   GREEN_ENV: ${{ vars.GREEN_ENV }}
   PRODUCTION_CNAME: ${{ vars.PRODUCTION_CNAME }}
   STAGING_CNAME: ${{ vars.STAGING_CNAME }}
@@ -46,4 +44,8 @@ jobs:
           aws elasticbeanstalk swap-environment-cnames --source-environment-name ${{ vars.BLUE_ENV }} --destination-environment-name ${{ vars.GREEN_ENV }}
       - name: Update DNS
         if: ${{ github.ref_name == 'main' }}
+        env:
+          DNS_USERNAME: ${{ secrets.DNS_USERNAME }}
+          DNS_PASSWORD: ${{ secrets.DNS_PASSWORD }}
+          TARGET_ENV: ${{ steps.target-env.outputs.TARGET_ENV }}
         run: node update-dynamic-dns.js
