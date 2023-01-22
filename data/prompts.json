@@ -1,5 +1,25 @@
 [
   {
+    "prompt": "What are three things you can do to improve your physical health?",
+    "tags": ["physical_health", "self-improvement"]
+  },
+  {
+    "prompt": "What are three things you can do to improve your professional growth?",
+    "tags": ["career", "professional_growth"]
+  },
+  {
+    "prompt": "What are the three things you can do to improve your spiritual well-being?",
+    "tags": ["spirituality", "well-being"]
+  },
+  {
+    "prompt": "What are three things you can do to improve your financial well-being?",
+    "tags": ["finance", "well-being"]
+  },
+  {
+    "prompt": "What are three things you can do to improve your environmental impact?",
+    "tags": ["environment", "sustainability"]
+  },
+  {
     "prompt": "What was the most valuable lesson you learned this week?",
     "tags": ["reflection", "self-improvement"]
   },
@@ -106,10 +126,6 @@
   {
     "prompt": "What is something that you can do to improve your physical health?",
     "tags": ["health", "self-improvement"]
-  },
-  {
-    "prompt": "What are three things that you can do to improve your mental health?",
-    "tags": ["mental_health", "self-care"]
   },
   {
     "prompt": "What are three things that you can do to improve your spiritual well-being?",
@@ -1334,5 +1350,25 @@
   {
     "prompt": "What is your personal philosophy?",
     "tags": ["philosophy", "reflection", "principles"]
+  },
+  {
+    "prompt": "What are three things that you can do to improve your mental health?",
+    "tags": ["mental_health", "self-care"]
+  },
+  {
+    "prompt": "What are your top three priorities for the year ahead?",
+    "tags": ["planning", "right_action"]
+  },
+  {
+    "prompt": "What is something you can do today to improve your relationships with others?",
+    "tags": ["relationships", "kindness"]
+  },
+  {
+    "prompt": "What is something you can do today to improve your relationship with yourself?",
+    "tags": ["self-improvement", "self-awareness"]
+  },
+  {
+    "prompt": "What was a difficult situation that you faced this week and how did you respond?",
+    "tags": ["resiliency", "equanimity"]
   }
 ]
