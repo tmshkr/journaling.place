@@ -10,6 +10,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
   BLUE_ENV: ${{ vars.BLUE_ENV }}
+  BRANCH: ${{ github.ref_name }}
   DNS_USERNAME: ${{ secrets.DNS_USERNAME }}
   DNS_PASSWORD: ${{ secrets.DNS_PASSWORD }}
   GREEN_ENV: ${{ vars.GREEN_ENV }}
@@ -17,15 +18,15 @@ env:
   STAGING_CNAME: ${{ vars.STAGING_CNAME }}
 
 jobs:
-  deploy-staging:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Get target EB environment name
         id: target-env
         run: node get-target-env.js
-      - name: Generate staging deployment package
-        run: echo "staging" > ENVIRONMENT && zip -r deploy.zip . -x '*.git*'
+      - name: Generate deployment package
+        run: node generate-deployment-package.js
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
         with:
@@ -33,40 +34,16 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: ${{ vars.APP_NAME }}
           environment_name: ${{ steps.target-env.outputs.TARGET_ENV }}
-          version_label: staging-${{ github.sha }}
-          version_description: ${{ github.event.head_commit.message }}
-          region: ${{ vars.AWS_DEFAULT_REGION }}
-          deployment_package: deploy.zip
-          wait_for_environment_recovery: 60
-          use_existing_version_if_available: true
-      # here you can run e2e tests, etc., before deploying the production version
-
-  deploy-production:
-    runs-on: ubuntu-latest
-    needs: deploy-staging
-    if: ${{ github.ref_name == 'main' }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Get target EB environment name
-        id: target-env
-        run: node get-target-env.js
-      - name: Generate production deployment package
-        run: echo "production" > ENVIRONMENT && zip -r deploy.zip . -x '*.git*'
-      - name: Deploy to EB
-        uses: einaregilsson/beanstalk-deploy@v21
-        with:
-          aws_access_key: ${{ vars.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: ${{ vars.APP_NAME }}
-          environment_name: ${{ steps.target-env.outputs.TARGET_ENV }}
-          version_label: production-${{ github.sha }}
+          version_label: ${{ github.ref_name }}-${{ github.sha }}
           version_description: ${{ github.event.head_commit.message }}
           region: ${{ vars.AWS_DEFAULT_REGION }}
           deployment_package: deploy.zip
           wait_for_environment_recovery: 60
           use_existing_version_if_available: true
       - name: Swap CNAMEs
+        if: ${{ github.ref_name == 'main' }}
         run: |
           aws elasticbeanstalk swap-environment-cnames --source-environment-name ${{ vars.BLUE_ENV }} --destination-environment-name ${{ vars.GREEN_ENV }}
       - name: Update DNS
+        if: ${{ github.ref_name == 'main' }}
         run: node update-dynamic-dns.js
