@@ -3,6 +3,7 @@ import { signIn } from "next-auth/react";
 import { useAppDispatch, useAppSelector } from "src/store";
 import { selectUser } from "src/store/user";
 import dynamic from "next/dynamic";
+import { clsx } from "clsx";
 
 const MarkdownEditor = dynamic(() => import("src/components/MarkdownEditor"), {
   ssr: false,
@@ -17,9 +18,12 @@ export function JournalPrompt({ prompt }) {
   }
 
   return (
-    <div className="container max-w-3xl py-3 px-4 sm:px-6 lg:px-8">
+    <div
+      className={clsx("container max-w-3xl py-3 px-4 sm:px-6 lg:px-8", {
+        "py-7": !user,
+      })}
+    >
       <h2 className="text-center mt-1 text-2xl text-gray-900">{prompt.text}</h2>
-
       <div className="mt-6">
         <MarkdownEditor prompt={prompt} />
       </div>
@@ -30,10 +34,11 @@ export function JournalPrompt({ prompt }) {
             <p>Only you can read your journal.</p>
           </>
         ) : (
-          <>
-            <p>Your journal is saved locally.</p>
-            <p>Sign in to save it to the cloud with end-to-end encryption.</p>
-          </>
+          <p>
+            Sign in to save your journal to the cloud with end-to-end
+            encryption, <br className="max-sm:hidden" />
+            search through your past entries, and more!
+          </p>
         )}
 
         <div>

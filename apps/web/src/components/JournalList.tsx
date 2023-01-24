@@ -13,10 +13,12 @@ export function JournalList({ journals }) {
       <ul role="list" className="divide-y divide-gray-200">
         {sortedJournals.map((key) => {
           const journal = journals[key];
-          const promptId = key.split("_")[1];
           return (
             <li key={key}>
-              <Link href={`/${promptId}`} className="block hover:bg-gray-50">
+              <Link
+                href={`/${journal.promptId}`}
+                className="block hover:bg-gray-50"
+              >
                 <div className="flex items-center px-4 py-4 sm:px-6">
                   <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
                     <div className="truncate">

@@ -34,7 +34,8 @@ async function handleGet(req, res) {
       },
     });
     response = journals.map(
-      ({ ciphertext, iv, createdAt, updatedAt, prompt, promptId }) => ({
+      ({ id, ciphertext, iv, createdAt, updatedAt, prompt, promptId }) => ({
+        id,
         ciphertext,
         iv,
         createdAt,
@@ -60,7 +61,7 @@ async function handlePut(req, res) {
     updatedAt: new Date(updatedAt),
   };
 
-  await prisma.journal.upsert({
+  const { id } = await prisma.journal.upsert({
     where: {
       authorId_promptId: {
         authorId: BigInt(req.user.id),
@@ -70,7 +71,7 @@ async function handlePut(req, res) {
     create: row,
     update: row,
   });
-  return res.send("OK");
+  return res.send({ id });
 }
 
 export default router.handler({

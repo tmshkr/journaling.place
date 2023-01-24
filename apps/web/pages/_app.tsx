@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Provider as ReduxProvider } from "react-redux";
+
 import { DefaultSeo } from "next-seo";
 
 import SEO from "../next-seo.config";
@@ -72,8 +73,8 @@ export default function App({
 }
 
 function PageAuth({ Component, pageProps }) {
-  const router = useRouter();
   const { data: session, status } = useSession();
+  const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
 
   const handleSession = async () => {
@@ -96,9 +97,11 @@ function PageAuth({ Component, pageProps }) {
 
   if (status === "loading") return <div>Loading...</div>;
 
-  return (
+  return user ? (
     <AppShell>
       <Component {...pageProps} />
     </AppShell>
+  ) : (
+    <Component {...pageProps} />
   );
 }

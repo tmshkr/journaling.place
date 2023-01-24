@@ -10,12 +10,12 @@ export default function JournalPage() {
   const user = useAppSelector(selectUser);
   const queryClient = useQueryClient();
   const { isLoading, error, data } = useQuery("journal", () =>
-    getJournal(user?.id)
+    getJournal(user.id)
   );
 
   useEffect(() => {
     queryClient.cancelQueries("journal", { exact: true });
-    queryClient.fetchQuery("journal", () => getJournal(user?.id));
+    queryClient.fetchQuery("journal", () => getJournal(user.id));
   }, [user]);
 
   return isLoading ? "Loading..." : <JournalList {...{ journals: data }} />;

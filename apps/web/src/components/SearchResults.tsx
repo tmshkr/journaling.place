@@ -20,12 +20,11 @@ export function SearchResults({
   return (
     <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg">
       {searchResults.map((key, index) => {
-        const promptId = key.split("_")[1];
-        const entry = cache[key].plaintext || cache[key].decrypted;
+        const entry = cache[key];
         return (
           <Link
             key={`${key}#${index}`}
-            href={`/${promptId}`}
+            href={`/${entry.promptId}`}
             onClick={() => {
               setSearch("");
               setSearchResults([]);
@@ -35,7 +34,7 @@ export function SearchResults({
             <h3
               className="truncate font-medium text-indigo-600"
               dangerouslySetInnerHTML={{
-                __html: cache[key].promptText.replace(
+                __html: entry.promptText.replace(
                   new RegExp(search, "gi"),
                   (match) => {
                     return `<span class="bg-yellow-300">${match}</span>`;
@@ -47,9 +46,12 @@ export function SearchResults({
             <p
               className="truncate font-medium text-gray-400"
               dangerouslySetInnerHTML={{
-                __html: entry.replace(new RegExp(search, "gi"), (match) => {
-                  return `<span class="bg-yellow-300">${match}</span>`;
-                }),
+                __html: entry.decrypted.replace(
+                  new RegExp(search, "gi"),
+                  (match) => {
+                    return `<span class="bg-yellow-300">${match}</span>`;
+                  }
+                ),
               }}
             />
           </Link>

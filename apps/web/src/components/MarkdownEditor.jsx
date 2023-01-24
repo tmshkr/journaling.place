@@ -1,10 +1,8 @@
 import axios from "axios";
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/router";
 import EasyMDE from "easymde";
 import "easymde/dist/easymde.min.css";
 
-import { journalStore } from "src/lib/localForage";
 import { useAppSelector } from "src/store";
 import { selectUser } from "src/store/user";
 import { encrypt, decrypt } from "src/lib/crypto";
@@ -16,46 +14,12 @@ export default function MarkdownEditor(props) {
   const promptId = props.prompt.id;
   const user = useAppSelector(selectUser);
 
+  const changeHandler = () =>
+    autosave(easyMDEref, createdAtRef, user, promptId);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const changeHandler = () => {
-      const self = easyMDEref.current;
-      clearTimeout(self.__custom_autosave_timeout);
-      self.__custom_autosave_timeout = setTimeout(async function () {
-        const value = self.value();
-        const now = new Date();
-        if (!createdAtRef.current) {
-          createdAtRef.current = new Date();
-        }
-
-        console.log("saving...");
-        if (user) {
-          const { ciphertext, iv } = await encrypt(value);
-          // Save to IndexedDB
-          journalStore.setItem(`${user.id}_${promptId}`, {
-            ciphertext,
-            iv,
-            promptText: props.prompt.text,
-            createdAt: createdAtRef.current,
-            updatedAt: now,
-          });
-          // Save to Postgres
-          axios.put("/api/journal", {
-            promptId: String(promptId),
-            ciphertext: Buffer.from(ciphertext),
-            iv: Buffer.from(iv),
-            updatedAt: now,
-          });
-        } else {
-          journalStore.setItem(`null_${promptId}`, {
-            plaintext: value,
-            promptText: props.prompt.text,
-            createdAt: createdAtRef.current,
-            updatedAt: now,
-          });
-        }
-      }, 1000);
-    };
+    if (!promptId) return;
 
     const mdeMounted = document.querySelector(".EasyMDEContainer");
     if (!mdeMounted) {
@@ -75,13 +39,36 @@ export default function MarkdownEditor(props) {
   return <textarea id="editor" className="hidden"></textarea>;
 }
 
+async function autosave(easyMDEref, createdAtRef, user, promptId) {
+  const self = easyMDEref.current;
+  clearTimeout(self.__custom_autosave_timeout);
+  self.__custom_autosave_timeout = setTimeout(async function () {
+    const value = self.value();
+    const now = new Date();
+    if (!createdAtRef.current) {
+      createdAtRef.current = new Date();
+    }
+
+    if (user) {
+      console.log("saving...");
+      const { ciphertext, iv } = await encrypt(value);
+      await axios
+        .put("/api/journal", {
+          promptId: String(promptId),
+          ciphertext: Buffer.from(ciphertext),
+          iv: Buffer.from(iv),
+          updatedAt: now,
+        })
+        .then(({ data: journal }) => journal.id);
+    }
+  }, 1000);
+}
+
 async function loadSavedData(easyMDEref, createdAtRef, user, promptId) {
   easyMDEref.current.value("");
-  const localCopy = await journalStore.getItem(
-    `${user ? user.id : null}_${promptId}`
-  );
+
   if (user) {
-    var dbCopy = await axios
+    const journal = await axios
       .get(`/api/journal?promptId=${promptId}`)
       .then(({ data: journal }) => {
         if (!journal) return;
@@ -93,20 +80,10 @@ async function loadSavedData(easyMDEref, createdAtRef, user, promptId) {
         console.log("/api/journal", journal);
         return journal;
       });
-  }
 
-  let savedJournal;
-  if (localCopy && dbCopy) {
-    savedJournal = localCopy.updatedAt > dbCopy.updatedAt ? localCopy : dbCopy;
-  } else {
-    savedJournal = localCopy || dbCopy;
-  }
-
-  if (!savedJournal) return;
-  if (user) {
-    const decrypted = await decrypt(savedJournal.ciphertext, savedJournal.iv);
-    easyMDEref.current.value(decrypted);
-  } else {
-    easyMDEref.current.value(savedJournal.plaintext);
+    if (journal) {
+      const decrypted = await decrypt(journal.ciphertext, journal.iv);
+      easyMDEref.current.value(decrypted);
+    }
   }
 }
