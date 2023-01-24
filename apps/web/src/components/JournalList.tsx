@@ -4,7 +4,9 @@ import { CalendarIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 export function JournalList({ journals }) {
   const sortedJournals = Object.keys(journals).sort((a, b) => {
-    return journals[b].updatedAt - journals[a].updatedAt;
+    return dayjs(journals[a].updatedAt).isBefore(journals[b].updatedAt)
+      ? 1
+      : -1;
   });
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-md">
