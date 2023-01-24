@@ -3,11 +3,11 @@ import { useState } from "react";
 import { useAppSelector } from "src/store";
 import { selectUser } from "src/store/user";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
-import { cryptoStore, journalStore } from "src/lib/localForage";
+import { cryptoStore } from "src/lib/localForage";
 import { useForm } from "react-hook-form";
 import { clsx } from "clsx";
 
-import { syncJournals } from "src/store/journal";
+import { getJournals } from "src/store/journal";
 import {
   decrypt,
   encrypt,
@@ -47,9 +47,8 @@ export default function SettingsPage() {
     setStatus("UPDATING");
 
     // sync with server
-    const journals = await syncJournals(user.id);
+    const journals = await getJournals();
     const updatedJournals: any = [];
-    const now = new Date();
 
     // create new key from new password
     const { key: newKey, salt } = await createNewKeyFromPassword(new_password);
@@ -57,18 +56,15 @@ export default function SettingsPage() {
     // decrypt then re-encrypt journals
     for (const key in journals) {
       const journal = journals[key];
-      const promptId = key.split("_")[1];
       const decrypted = await decrypt(journal.ciphertext, journal.iv);
       const { ciphertext, iv } = await encrypt(decrypted, newKey);
       journal.ciphertext = ciphertext;
       journal.iv = iv;
-      journal.promptId = promptId;
-      journal.updatedAt = now;
-      await journalStore.setItem(`${user.id}_${promptId}`, journal);
       updatedJournals.push({
-        promptId,
+        id: journal.id,
         ciphertext: Buffer.from(ciphertext),
         iv: Buffer.from(iv),
+        updatedAt: journal.updatedAt,
       });
     }
 
@@ -81,7 +77,7 @@ export default function SettingsPage() {
     // update local crypto store
     await cryptoStore.setItem(`key-${user.id}`, newKey);
     await cryptoStore.setItem(`salt-${user.id}`, salt);
-    await cryptoStore.setItem(`updatedAt-${user.id}`, now);
+    await cryptoStore.setItem(`updatedAt-${user.id}`, new Date());
     setKey(newKey);
     setStatus("PASSWORD_UPDATED");
   };

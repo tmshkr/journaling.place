@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CalendarIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 export function JournalList({ journals }) {
+  if (!journals) return null;
   const sortedJournals = Object.keys(journals).sort((a, b) => {
     return dayjs(journals[a].updatedAt).isBefore(journals[b].updatedAt)
       ? 1

@@ -18,7 +18,7 @@ import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useAppSelector } from "src/store";
 import { selectUser } from "src/store/user";
 import { getPathRoot } from "src/utils/path";
-import { getJournal } from "src/store/journal";
+import { getJournals } from "src/store/journal";
 
 import { SearchBar } from "./SearchBar";
 import { SearchResults } from "./SearchResults";
@@ -41,8 +41,9 @@ export function AppShell({ children }) {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    queryClient.cancelQueries("journal", { exact: true });
-    queryClient.fetchQuery("journal", () => getJournal(user?.id));
+    if (user && !queryClient.isFetching("journal")) {
+      queryClient.fetchQuery("journal", () => getJournals());
+    }
   }, [user]);
 
   const pathRoot = getPathRoot(router.pathname);

@@ -25,17 +25,13 @@ async function handlePut(req, res) {
       where: { id: BigInt(req.user.id) },
       data: { salt: Buffer.from(salt) },
     }),
-    ...journals.map(({ ciphertext, iv, promptId }) => {
+    ...journals.map(({ id, ciphertext, iv, updatedAt }) => {
       return prisma.journal.update({
-        where: {
-          authorId_promptId: {
-            authorId: BigInt(req.user.id),
-            promptId: BigInt(promptId),
-          },
-        },
+        where: { id: BigInt(id) },
         data: {
           ciphertext: Buffer.from(ciphertext),
           iv: Buffer.from(iv),
+          updatedAt,
         },
       });
     }),
