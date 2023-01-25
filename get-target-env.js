@@ -1,4 +1,3 @@
-require("dotenv").config();
 const { execSync } = require("child_process");
 
 const { APP_NAME, BLUE_ENV, GREEN_ENV, PRODUCTION_CNAME, STAGING_CNAME } =
