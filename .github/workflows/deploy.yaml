@@ -27,6 +27,7 @@ jobs:
           docker build -t 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${{ github.sha }} .
           docker push 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${{ github.sha }}
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
