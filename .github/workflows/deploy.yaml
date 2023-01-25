@@ -20,6 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Prepare target EB environment
+        id: target-env
+        run: node get-target-env.js
       - name: Log in to ECR
         run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 983436253905.dkr.ecr.us-west-2.amazonaws.com
       - name: Build
@@ -31,9 +34,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get target EB environment name
+      - name: Get target EB environment
         id: target-env
-        run: node get-target-env.js
+        run: node get-target-env.js --wait
       - name: Generate deployment package
         run: echo ${{ github.sha }} >> SHA && node generate-deployment-package.js
       - name: Deploy to EB

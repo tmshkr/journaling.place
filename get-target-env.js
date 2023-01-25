@@ -1,9 +1,10 @@
+require("dotenv").config();
 const { execSync } = require("child_process");
 
 const { APP_NAME, BLUE_ENV, GREEN_ENV, PRODUCTION_CNAME, STAGING_CNAME } =
   process.env;
 
-function getTargetEnv() {
+function getTargetEnv(shouldWait) {
   const stdout = execSync(
     `aws elasticbeanstalk describe-environments --application-name ${APP_NAME}`
   );
@@ -48,10 +49,14 @@ function createEnvironment(envName) {
 
   const newEnv = JSON.parse(stdout);
   console.log("Creating env:", newEnv);
-  execSync(
-    `aws elasticbeanstalk wait environment-exists --environment-ids ${newEnv.EnvironmentId}`
-  );
-  console.log("Created environment");
+  if (shouldWait) {
+    execSync(
+      `aws elasticbeanstalk wait environment-exists --environment-ids ${newEnv.EnvironmentId}`
+    );
+    console.log("Created environment");
+  } else {
+    process.exit(0);
+  }
 }
 
 function terminateEnvironment(environmentId) {
@@ -59,29 +64,35 @@ function terminateEnvironment(environmentId) {
   execSync(
     `aws elasticbeanstalk terminate-environment --environment-id ${environmentId}`
   );
-  execSync(
-    `aws elasticbeanstalk wait environment-terminated --environment-ids ${environmentId}`
-  );
-  console.log("Terminated environment");
+  if (shouldWait) {
+    execSync(
+      `aws elasticbeanstalk wait environment-terminated --environment-ids ${environmentId}`
+    );
+    console.log("Terminated environment");
+  } else {
+    process.exit(0);
+  }
 }
 
 async function main() {
+  const shouldWait = process.argv[2] === "--wait";
   let tries = 0;
   while (tries < 6) {
     try {
-      const targetEnv = getTargetEnv();
+      const targetEnv = getTargetEnv(shouldWait);
       console.log("targetEnv", targetEnv);
       execSync(
         `echo TARGET_ENV=${targetEnv.EnvironmentName} >> $GITHUB_OUTPUT`
       );
-      break;
+      return;
     } catch (error) {
-      tries++;
+      const seconds = 2 ** tries++;
       console.error(error);
-      console.log("Retrying...");
-      await new Promise((resolve) => setTimeout(resolve, 1000 * 2 ** tries));
+      console.log(`Retrying in ${seconds}s...`);
+      await new Promise((resolve) => setTimeout(resolve, 1000 * seconds));
     }
   }
+  throw new Error("Failed to get target environment.");
 }
 
 main();
