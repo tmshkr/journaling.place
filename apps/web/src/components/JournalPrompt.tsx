@@ -36,8 +36,7 @@ export function JournalPrompt({ prompt }) {
         ) : (
           <p>
             Sign in to save your journal to the cloud with end-to-end
-            encryption, <br className="max-sm:hidden" />
-            search through your past entries, and more!
+            encryption.
           </p>
         )}
 
