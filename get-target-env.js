@@ -22,7 +22,7 @@ function getTargetEnv(shouldWait) {
     );
     const newEnv =
       prodEnv?.EnvironmentName === GREEN_ENV ? BLUE_ENV : GREEN_ENV;
-    createEnvironment(newEnv);
+    createEnvironment(newEnv, shouldWait);
     return getTargetEnv();
   }
 
@@ -32,15 +32,15 @@ function getTargetEnv(shouldWait) {
 
   if (targetEnv.Health !== "Green") {
     console.log("Target environment is not healthy.");
-    terminateEnvironment(targetEnv.EnvironmentId);
-    createEnvironment(targetEnv.EnvironmentName);
+    terminateEnvironment(targetEnv.EnvironmentId, shouldWait);
+    createEnvironment(targetEnv.EnvironmentName, shouldWait);
     return getTargetEnv();
   }
 
   return targetEnv;
 }
 
-function createEnvironment(envName) {
+function createEnvironment(envName, shouldWait) {
   console.log("Creating new environment... ");
   const stdout = execSync(
     `aws elasticbeanstalk create-environment --application-name ${APP_NAME} --environment-name ${envName} --cname-prefix ${STAGING_CNAME} --template-name single-instance`
@@ -58,7 +58,7 @@ function createEnvironment(envName) {
   }
 }
 
-function terminateEnvironment(environmentId) {
+function terminateEnvironment(environmentId, shouldWait) {
   console.log("Terminating environment... ", environmentId);
   execSync(
     `aws elasticbeanstalk terminate-environment --environment-id ${environmentId}`
