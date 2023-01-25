@@ -16,6 +16,16 @@ env:
   STAGING_CNAME: ${{ vars.STAGING_CNAME }}
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Log in to ECR
+        run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 983436253905.dkr.ecr.us-west-2.amazonaws.com
+      - name: Build
+        run: |
+          docker build -t 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${{ github.sha }} .
+          docker push 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${{ github.sha }}
   deploy:
     runs-on: ubuntu-latest
     steps:
@@ -24,7 +34,7 @@ jobs:
         id: target-env
         run: node get-target-env.js
       - name: Generate deployment package
-        run: node generate-deployment-package.js
+        run: echo ${{ github.sha }} >> SHA && node generate-deployment-package.js
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
         with:

@@ -2,7 +2,7 @@ version: "3"
 
 services:
   app:
-    build: .
+    image: 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${SHA}
     command: npm run start
     env_file: .env
     restart: always
