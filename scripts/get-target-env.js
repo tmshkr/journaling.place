@@ -32,7 +32,7 @@ function getTargetEnv(shouldWait) {
 
   if (targetEnv.Health !== "Green") {
     console.log("Target environment is not healthy.");
-    terminateEnvironment(targetEnv.EnvironmentId, shouldWait);
+    terminateEnvironment(targetEnv.EnvironmentId);
     createEnvironment(targetEnv.EnvironmentName, shouldWait);
     return getTargetEnv();
   }
@@ -58,19 +58,14 @@ function createEnvironment(envName, shouldWait) {
   }
 }
 
-function terminateEnvironment(environmentId, shouldWait) {
+function terminateEnvironment(environmentId) {
   console.log("Terminating environment... ", environmentId);
-  execSync(
-    `aws elasticbeanstalk terminate-environment --environment-id ${environmentId}`
-  );
-  if (shouldWait) {
-    execSync(
-      `aws elasticbeanstalk wait environment-terminated --environment-ids ${environmentId}`
-    );
-    console.log("Terminated environment");
-  } else {
-    process.exit(0);
-  }
+  execSync(`
+    aws elasticbeanstalk terminate-environment --environment-id ${environmentId}
+    aws elasticbeanstalk wait environment-terminated --environment-ids ${environmentId}
+    `);
+
+  console.log("Terminated environment");
 }
 
 async function main() {
