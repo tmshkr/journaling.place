@@ -81,7 +81,7 @@ export function AppShell({ children }) {
   ].filter((item) => (item.requiresAuth && !user ? false : true));
 
   return (
-    <div>
+    <div data-test="app-shell">
       <Transition.Root show={sidebarOpen} as={Fragment}>
         <Dialog
           as="div"

@@ -45,6 +45,7 @@ export function JournalPrompt({ prompt }) {
             <a
               role="button"
               className="btn-primary mt-2"
+              data-test="sign-in-button"
               href={`/api/auth/signin`}
               onClick={(e) => {
                 e.preventDefault();
