@@ -1,10 +1,15 @@
 import { createTransport } from "nodemailer";
 import { Theme } from "next-auth";
+import fs from "fs";
 
 export async function sendVerificationRequest(params) {
   const { identifier, url, provider, theme } = params;
   const { host } = new URL(url);
-  // NOTE: You are not required to use `nodemailer`, use whatever you want.
+  if (identifier === "test@journaling.place") {
+    fs.writeFileSync("TEST_LOGIN_URL", url);
+    return;
+  }
+
   const transport = createTransport(provider.server);
   const result = await transport.sendMail({
     to: identifier,
