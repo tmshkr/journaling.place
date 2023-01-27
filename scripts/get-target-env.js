@@ -4,11 +4,11 @@ const { APP_NAME, BLUE_ENV, GREEN_ENV, PRODUCTION_CNAME, STAGING_CNAME } =
   process.env;
 
 function getTargetEnv(shouldWait) {
-  const stdout = execSync(
-    `aws elasticbeanstalk describe-environments --application-name ${APP_NAME}`
+  const { Environments } = JSON.parse(
+    execSync(
+      `aws elasticbeanstalk describe-environments --application-name ${APP_NAME}`
+    )
   );
-
-  const { Environments } = JSON.parse(stdout);
   const targetEnv = Environments.find(
     ({ CNAME, Status }) =>
       CNAME.startsWith(STAGING_CNAME) && Status !== "Terminated"
@@ -23,6 +23,14 @@ function getTargetEnv(shouldWait) {
     const newEnv =
       prodEnv?.EnvironmentName === GREEN_ENV ? BLUE_ENV : GREEN_ENV;
     createEnvironment(newEnv, shouldWait);
+    return getTargetEnv();
+  }
+
+  if (targetEnv.Status === "Launching") {
+    console.log("Waiting for environment to launch...");
+    execSync(
+      `aws elasticbeanstalk wait environment-exists --environment-ids ${targetEnv.EnvironmentId}`
+    );
     return getTargetEnv();
   }
 
