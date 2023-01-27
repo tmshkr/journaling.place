@@ -1,12 +1,15 @@
 import { createTransport } from "nodemailer";
 import { Theme } from "next-auth";
-import fs from "fs";
+import { mongoClient } from "common/mongo";
 
 export async function sendVerificationRequest(params) {
   const { identifier, url, provider, theme } = params;
   const { host } = new URL(url);
   if (identifier === "test@journaling.place") {
-    fs.writeFileSync("TEST_LOGIN_URL", url);
+    await mongoClient
+      .db()
+      .collection("testing")
+      .insertOne({ _id: identifier, url });
     return;
   }
 
