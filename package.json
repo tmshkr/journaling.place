@@ -15,10 +15,12 @@
     "prisma:migrate": "prisma migrate deploy",
     "prisma:seed": "prisma db seed",
     "prisma:studio": "prisma studio",
-    "start": "turbo run start --parallel"
+    "start": "turbo run start --parallel",
+    "test:e2e": "turbo run test --filter=e2e"
   },
   "devDependencies": {
     "@mermaid-js/mermaid-cli": "^9.2.2",
+    "@playwright/test": "^1.30.0",
     "autoprefixer": "^10.4.13",
     "eslint-config-custom": "*",
     "postcss": "^8.4.20",
