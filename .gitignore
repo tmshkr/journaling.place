@@ -41,3 +41,7 @@ yarn-error.log*
 
 efs
 TEST_LOGIN_URL
+
+*/*/test-results/
+*/*/playwright-report/
+*/*/playwright/.cache/
