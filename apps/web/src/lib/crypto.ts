@@ -33,7 +33,6 @@ export async function handleKey(userId: bigint, salt?: Uint8Array) {
     }
   }
   if (localKey && localSalt) {
-    console.log("Loaded saved localKey", localKey);
     setKey(localKey);
     return;
   }

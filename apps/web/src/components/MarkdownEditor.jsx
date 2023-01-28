@@ -77,7 +77,6 @@ async function loadSavedData(easyMDEref, createdAtRef, user, promptId) {
         journal.updatedAt = new Date(journal.updatedAt);
         journal.createdAt = new Date(journal.createdAt);
         createdAtRef.current = journal.createdAt;
-        console.log("/api/journal", journal);
         return journal;
       });
 
