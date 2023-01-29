@@ -46,3 +46,5 @@ TEST_LOGIN_URL
 */*/playwright-report/
 */*/playwright/.cache/
 storageState.json
+
+dist
