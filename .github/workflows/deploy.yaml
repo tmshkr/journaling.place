@@ -31,7 +31,7 @@ jobs:
       - name: Build
         if: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS == 'false' }}
         run: |
-          docker build -t 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${{ github.sha }} .
+          docker build -t 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${{ github.sha }} --build-arg=CDN_PREFIX=https://cdn.journaling.place .
           docker push 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${{ github.sha }}
   deploy:
     needs: build
