@@ -11,6 +11,7 @@ env:
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
   BLUE_ENV: ${{ vars.BLUE_ENV }}
   BRANCH: ${{ github.ref_name }}
+  CDN_PREFIX: ${{ vars.CDN_PREFIX }}
   GREEN_ENV: ${{ vars.GREEN_ENV }}
   PRODUCTION_CNAME: ${{ vars.PRODUCTION_CNAME }}
   STAGING_CNAME: ${{ vars.STAGING_CNAME }}
@@ -31,7 +32,7 @@ jobs:
       - name: Build
         if: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS == 'false' }}
         run: |
-          docker build -t 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${{ github.sha }} --build-arg CDN_PREFIX="https://cdn.journaling.place" .
+          docker build -t 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${{ github.sha }} .
           docker push 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${{ github.sha }}
   deploy:
     needs: build
