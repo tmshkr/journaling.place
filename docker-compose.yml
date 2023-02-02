@@ -21,7 +21,7 @@ services:
       - "443:443"
     volumes:
       - /efs/${ENVIRONMENT}/letsencrypt:/etc/letsencrypt
-      - ./nginx:/etc/nginx/user_conf.d
+      - ./nginx:/etc/nginx/templates
     deploy:
       resources:
         limits:
