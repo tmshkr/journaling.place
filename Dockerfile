@@ -17,4 +17,4 @@ RUN PUPPETEER_SKIP_DOWNLOAD=true npm ci
 COPY ./ ./
 
 RUN DISABLE_ERD=true npm run prisma:generate
-RUN npm run build
+RUN CDN_PREFIX="https://cdn.journaling.place" npm run build
