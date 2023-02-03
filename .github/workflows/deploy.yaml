@@ -24,17 +24,46 @@ jobs:
         id: target-env
         run: node scripts/get-target-env.js
       - name: Log in to ECR
-        run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 983436253905.dkr.ecr.us-west-2.amazonaws.com
+        run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
       - name: Check if image exists in ECR
         id: check-image-exists
         run: node scripts/check-image-exists.js ${{ github.sha }}
       - name: Build
         if: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS == 'false' }}
         run: |
-          docker build -t 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${{ github.sha }} --build-arg=CDN_PREFIX=https://cdn.journaling.place .
-          docker push 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${{ github.sha }}
-  deploy:
+          docker build -t ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }} --build-arg=CDN_PREFIX=https://cdn.journaling.place .
+          docker push ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }}
+
+  test:
     needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Log in to ECR
+        run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
+      - name: Start docker compose
+        run: docker compose -f docker-compose.test.yml up -d
+      - name: Install Dependencies
+        run: npm install && npx playwright install --with-deps chromium
+      - name: Wait for server
+        run: |
+          while ! curl --output /dev/null --silent --head --fail https://localhost -k; do
+            printf '.'
+            sleep 5
+          done
+      - name: Get env file
+        run: aws s3 cp s3://${{ vars.CONFIG_S3_BUCKET }}/test.env .env
+      - name: Run e2e tests
+        run: npm run test:e2e
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: packages/e2e/playwright-report/
+          retention-days: 30
+
+  deploy:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
