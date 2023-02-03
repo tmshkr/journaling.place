@@ -15,8 +15,8 @@
     "prisma:migrate": "prisma migrate deploy",
     "prisma:seed": "prisma db seed",
     "prisma:studio": "prisma studio",
-    "start": "turbo run start --parallel",
-    "start:e2e": "npm run prisma:migrate && npm run prisma:seed && npm run start",
+    "start": "npm run prisma:migrate && turbo run start --parallel",
+    "start:e2e": "npm run prisma:migrate && npm run prisma:seed && turbo run start --parallel",
     "test:e2e": "turbo run test --filter=e2e"
   },
   "devDependencies": {
