@@ -4,11 +4,11 @@ const { APP_NAME, BLUE_ENV, GREEN_ENV, PRODUCTION_CNAME, STAGING_CNAME } =
   process.env;
 
 function getTargetEnv(shouldWait) {
-  const stdout = execSync(
-    `aws elasticbeanstalk describe-environments --application-name ${APP_NAME}`
+  const { Environments } = JSON.parse(
+    execSync(
+      `aws elasticbeanstalk describe-environments --application-name ${APP_NAME}`
+    )
   );
-
-  const { Environments } = JSON.parse(stdout);
   const targetEnv = Environments.find(
     ({ CNAME, Status }) =>
       CNAME.startsWith(STAGING_CNAME) && Status !== "Terminated"
@@ -26,13 +26,21 @@ function getTargetEnv(shouldWait) {
     return getTargetEnv();
   }
 
+  if (targetEnv.Status === "Launching") {
+    console.log("Waiting for environment to launch...");
+    execSync(
+      `aws elasticbeanstalk wait environment-exists --environment-ids ${targetEnv.EnvironmentId}`
+    );
+    return getTargetEnv();
+  }
+
   if (targetEnv.Status !== "Ready") {
     throw new Error("Target environment is not ready.");
   }
 
   if (targetEnv.Health !== "Green") {
     console.log("Target environment is not healthy.");
-    terminateEnvironment(targetEnv.EnvironmentId, shouldWait);
+    terminateEnvironment(targetEnv.EnvironmentId);
     createEnvironment(targetEnv.EnvironmentName, shouldWait);
     return getTargetEnv();
   }
@@ -58,19 +66,14 @@ function createEnvironment(envName, shouldWait) {
   }
 }
 
-function terminateEnvironment(environmentId, shouldWait) {
+function terminateEnvironment(environmentId) {
   console.log("Terminating environment... ", environmentId);
-  execSync(
-    `aws elasticbeanstalk terminate-environment --environment-id ${environmentId}`
-  );
-  if (shouldWait) {
-    execSync(
-      `aws elasticbeanstalk wait environment-terminated --environment-ids ${environmentId}`
-    );
-    console.log("Terminated environment");
-  } else {
-    process.exit(0);
-  }
+  execSync(`
+    aws elasticbeanstalk terminate-environment --environment-id ${environmentId}
+    aws elasticbeanstalk wait environment-terminated --environment-ids ${environmentId}
+    `);
+
+  console.log("Terminated environment");
 }
 
 async function main() {

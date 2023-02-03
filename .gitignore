@@ -40,3 +40,11 @@ yarn-error.log*
 !.elasticbeanstalk/*.global.yml
 
 efs
+TEST_LOGIN_URL
+
+*/*/test-results/
+*/*/playwright-report/
+*/*/playwright/.cache/
+storageState.json
+
+dist

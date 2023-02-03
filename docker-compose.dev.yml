@@ -11,19 +11,14 @@ services:
     volumes:
       - /app/node_modules
       - ./:/app
-    depends_on:
-      - nginx
   nginx:
     image: jonasal/nginx-certbot:latest
     restart: unless-stopped
     env_file: .env
+    depends_on:
+      - app
     ports:
       - "80:80"
       - "443:443"
-      - "5555:5555"
     volumes:
-      - nginx_secrets:/etc/letsencrypt
-      - ./nginx:/etc/nginx/user_conf.d
-
-volumes:
-  nginx_secrets:
+      - ./nginx:/etc/nginx/templates

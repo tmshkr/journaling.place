@@ -15,10 +15,13 @@
     "prisma:migrate": "prisma migrate deploy",
     "prisma:seed": "prisma db seed",
     "prisma:studio": "prisma studio",
-    "start": "turbo run start --parallel"
+    "start": "npm run prisma:migrate && turbo run start --parallel",
+    "start:e2e": "npm run prisma:migrate && npm run prisma:seed && turbo run start --parallel",
+    "test:e2e": "turbo run test --filter=e2e"
   },
   "devDependencies": {
     "@mermaid-js/mermaid-cli": "^9.2.2",
+    "@playwright/test": "^1.30.0",
     "autoprefixer": "^10.4.13",
     "eslint-config-custom": "*",
     "postcss": "^8.4.20",
@@ -53,6 +56,7 @@
     "flexsearch": "^0.7.31",
     "joi": "^17.7.0",
     "localforage": "^1.10.0",
+    "mongodb": "^4.13.0",
     "nanoid": "^4.0.0",
     "next": "^13.0.6",
     "next-auth": "^4.18.8",

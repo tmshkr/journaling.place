@@ -25,6 +25,7 @@ async function handleGet(req, res) {
         authorId: BigInt(req.user.id),
       },
       take: 100,
+      orderBy: { updatedAt: "desc" },
       include: {
         prompt: {
           select: {

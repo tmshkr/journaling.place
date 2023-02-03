@@ -17,4 +17,5 @@ RUN PUPPETEER_SKIP_DOWNLOAD=true npm ci
 COPY ./ ./
 
 RUN DISABLE_ERD=true npm run prisma:generate
+ARG CDN_PREFIX
 RUN npm run build

@@ -78,7 +78,6 @@ function PageAuth({ Component, pageProps }) {
   const dispatch = useAppDispatch();
 
   const handleSession = async () => {
-    console.log("session", session, status);
     if (status === "authenticated") {
       const user: any = session.user;
       await handleKey(

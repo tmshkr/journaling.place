@@ -19,10 +19,9 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "5555:5555"
     volumes:
       - /efs/${ENVIRONMENT}/letsencrypt:/etc/letsencrypt
-      - ./nginx:/etc/nginx/user_conf.d
+      - ./nginx:/etc/nginx/templates
     deploy:
       resources:
         limits:
