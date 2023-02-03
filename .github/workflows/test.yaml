@@ -12,7 +12,7 @@ jobs:
         with:
           node-version: 16
       - name: Get env file
-        run: aws s3 cp s3://${{ vars.CONFIG_S3_BUCKET} }/test.env .env
+        run: aws s3 cp s3://${{ vars.CONFIG_S3_BUCKET }}/test.env .env
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
