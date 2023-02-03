@@ -16,6 +16,7 @@
     "prisma:seed": "prisma db seed",
     "prisma:studio": "prisma studio",
     "start": "turbo run start --parallel",
+    "start:e2e": "npm run prisma:migrate && npm run prisma:seed && npm run start",
     "test:e2e": "turbo run test --filter=e2e"
   },
   "devDependencies": {
