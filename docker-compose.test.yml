@@ -1,42 +1,37 @@
-version: "3.1"
+version: "3"
 
 services:
   app:
-    build: .
+    image: 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${SHA}
+    command: npm run start:e2e
     env_file: .env
-    command: npm run start:test
     restart: always
     depends_on:
-      - nginx
       - db
       - mongo
     environment:
-      DATABASE_URL: mysql://root:${MYSQL_ROOT_PASSWORD}@db:3306/meetbot
-      MONGO_URI: mongodb://root:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/meetbot?authSource=admin
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@db:5432/jp-test
+      MONGO_URI: mongodb://root:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/jp-test?authSource=admin
   nginx:
     env_file: .env
+    depends_on:
+      - app
     image: jonasal/nginx-certbot:latest
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
-      - "5555:5555"
     volumes:
-      - nginx_secrets:/etc/letsencrypt
-      - ./nginx:/etc/nginx/user_conf.d
+      - ./nginx:/etc/nginx/templates
   db:
+    image: postgres
     env_file: .env
-    image: mysql
-    command: --default-authentication-plugin=mysql_native_password
     restart: always
     ports:
-      - "3307:3306"
+      - "5432:5432"
   mongo:
     env_file: .env
     image: mongo
     restart: always
     ports:
       - "27017:27017"
-
-volumes:
-  nginx_secrets:
