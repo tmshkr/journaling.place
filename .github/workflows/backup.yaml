@@ -1,11 +1,8 @@
 name: Backup Database
 on:
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - ready_for_review
+  workflow_dispatch:
+  schedule:
+    - cron: "0 12 * * *"
 
 jobs:
   pg-backup:
