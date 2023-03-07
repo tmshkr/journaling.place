@@ -1,1374 +1,3325 @@
 [
   {
+    "prompt": "How have you let your desires or expectations cloud your judgment in the past, and what have you learned from these experiences?",
+    "tags": [
+      "self-reflection",
+      "personal_growth",
+      "mindfulness"
+    ]
+  },
+  {
+    "prompt": "What false impressions or biases have you held that have caused you suffering, and how can you work to correct them?",
+    "tags": [
+      "self-awareness",
+      "mental_health",
+      "positive_change"
+    ]
+  },
+  {
+    "prompt": "In what ways have you failed to live up to your ideals, and how can you better align your thoughts and actions with your values?",
+    "tags": [
+      "self-improvement",
+      "values",
+      "integrity"
+    ]
+  },
+  {
+    "prompt": "What setbacks or failures have you experienced that have ultimately helped you grow and improve?",
+    "tags": [
+      "resilience",
+      "learning_from_failure",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "How have you responded to criticism or negative feedback in the past, and how can you develop greater resilience in the face of such challenges?",
+    "tags": [
+      "self-reflection",
+      "resilience",
+      "emotional_intelligence"
+    ]
+  },
+  {
+    "prompt": "What external factors have you allowed to control your emotions or reactions in the past, and how can you work to maintain your equanimity and self-control in the face of adversity?",
+    "tags": [
+      "emotional_regulation",
+      "mindfulness",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "How have you neglected your duties to others or to your own development in the past, and what steps can you take to better fulfill these responsibilities going forward?",
+    "tags": [
+      "responsibility",
+      "personal_growth",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "In what ways have you avoided taking action on something you know you need to do, and how can you overcome this procrastination and move forward?",
+    "tags": [
+      "procrastination",
+      "self-discipline",
+      "productivity"
+    ]
+  },
+  {
+    "prompt": "How have you failed to show kindness or compassion to others, and how can you cultivate a greater sense of empathy and benevolence in your daily life?",
+    "tags": [
+      "empathy",
+      "compassion",
+      "kindness"
+    ]
+  },
+  {
+    "prompt": "How have you taken your blessings or opportunities for granted in the past, and how can you develop a greater appreciation for the present moment and all that it offers?",
+    "tags": [
+      "gratitude",
+      "mindfulness",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "What is a fear that has been holding you back, and how can you work to overcome it?",
+    "tags": [
+      "personal_growth",
+      "fear",
+      "overcoming_obstacles"
+    ]
+  },
+  {
+    "prompt": "In what ways have you been dishonest with yourself or others, and how can you develop greater honesty and integrity?",
+    "tags": [
+      "personal_development",
+      "honesty",
+      "integrity"
+    ]
+  },
+  {
+    "prompt": "What is a dream or goal that you have been putting off pursuing, and what steps can you take to start making progress?",
+    "tags": [
+      "goal-setting",
+      "personal_growth",
+      "procrastination"
+    ]
+  },
+  {
+    "prompt": "In what ways have you allowed self-doubt or insecurity to hold you back, and how can you work to build greater self-confidence?",
+    "tags": [
+      "self-improvement",
+      "confidence",
+      "self-doubt"
+    ]
+  },
+  {
+    "prompt": "What is a mistake you made in the past, and what did you learn from it?",
+    "tags": [
+      "learning",
+      "mistakes",
+      "self-reflection"
+    ]
+  },
+  {
+    "prompt": "What is a challenge you are currently facing, and what steps can you take to address it?",
+    "tags": [
+      "problem-solving",
+      "personal_development",
+      "overcoming_obstacles"
+    ]
+  },
+  {
+    "prompt": "In what ways have you been unkind or hurtful to others, and how can you work to make amends and repair those relationships?",
+    "tags": [
+      "empathy",
+      "kindness",
+      "forgiveness"
+    ]
+  },
+  {
+    "prompt": "What is a personal value that is important to you, and how can you make sure that your actions are aligned with that value?",
+    "tags": [
+      "personal_values",
+      "self-reflection",
+      "integrity"
+    ]
+  },
+  {
+    "prompt": "What is a skill or talent you would like to develop, and how can you work to improve in that area?",
+    "tags": [
+      "skill-building",
+      "personal_growth",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "In what ways have you been ungrateful for the good things in your life, and how can you cultivate greater gratitude and appreciation?",
+    "tags": [
+      "gratitude",
+      "mindfulness",
+      "self-reflection"
+    ]
+  },
+  {
+    "prompt": "What were the most significant events that happened in your life this year?",
+    "tags": [
+      "reflection",
+      "life_events"
+    ]
+  },
+  {
+    "prompt": "What are you most proud of accomplishing this year?",
+    "tags": [
+      "achievement",
+      "pride"
+    ]
+  },
+  {
+    "prompt": "What is one thing you can do in the coming year to improve your physical health?",
+    "tags": [
+      "health",
+      "goal_setting"
+    ]
+  },
+  {
+    "prompt": "What is one thing you can do in the coming year to improve your mental health?",
+    "tags": [
+      "mental_health",
+      "goal_setting"
+    ]
+  },
+  {
+    "prompt": "What new skills or knowledge did you acquire this year?",
+    "tags": [
+      "learning",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "What was your biggest disappointment this year, and how did you deal with it?",
+    "tags": [
+      "disappointment",
+      "coping"
+    ]
+  },
+  {
+    "prompt": "What was a moment of unexpected joy that you experienced this year?",
+    "tags": [
+      "happiness",
+      "gratitude"
+    ]
+  },
+  {
+    "prompt": "What books, movies, or TV shows did you enjoy the most this year?",
+    "tags": [
+      "entertainment",
+      "favorites"
+    ]
+  },
+  {
+    "prompt": "What is one thing you can do in the coming year to improve your financial situation?",
+    "tags": [
+      "financial",
+      "goal_setting"
+    ]
+  },
+  {
+    "prompt": "What is one new habit you'd like to develop in the coming year?",
+    "tags": [
+      "habit",
+      "goal_setting"
+    ]
+  },
+  {
+    "prompt": "What were your biggest accomplishments this year and how did you achieve them?",
+    "tags": [
+      "reflection",
+      "success",
+      "gratitude"
+    ]
+  },
+  {
+    "prompt": "What new skills or knowledge did you acquire this year, and how will they benefit you in the future?",
+    "tags": [
+      "personal_growth",
+      "learning",
+      "future"
+    ]
+  },
+  {
+    "prompt": "What challenges did you face this year that you were not able to overcome, and what did you learn from those experiences?",
+    "tags": [
+      "resilience",
+      "failure",
+      "learning"
+    ]
+  },
+  {
+    "prompt": "What did you do this year to take care of your physical and mental health, and what impact did it have on your overall well-being?",
+    "tags": [
+      "self-care",
+      "health",
+      "well-being"
+    ]
+  },
+  {
+    "prompt": "What are some things that brought you joy and happiness this year, and how can you incorporate more of them into your life in the future?",
+    "tags": [
+      "happiness",
+      "positivity",
+      "gratitude"
+    ]
+  },
+  {
+    "prompt": "What are some of the biggest lessons you learned about life this year, and how can you use them to live a more fulfilling life?",
+    "tags": [
+      "life_lessons",
+      "wisdom",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "What are some of your values and how did you live by them this year, and how can you continue to honor them in the future?",
+    "tags": [
+      "values",
+      "integrity",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "What are some of the things that you are most grateful for in your life right now, and how can you express that gratitude?",
+    "tags": [
+      "gratitude",
+      "happiness",
+      "positivity"
+    ]
+  },
+  {
+    "prompt": "What are some of the things you'd like to achieve in the next year, and what steps can you take to make them happen?",
+    "tags": [
+      "goal-setting",
+      "planning",
+      "motivation"
+    ]
+  },
+  {
+    "prompt": "What are some things that you would like to let go of in your life, and how can you move forward without them?",
+    "tags": [
+      "letting_go",
+      "moving_forward",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "What new skills or knowledge did you gain this year, and how do you plan to apply them going forward?",
+    "tags": [
+      "personal_growth",
+      "learning",
+      "future"
+    ]
+  },
+  {
+    "prompt": "What did you do to take care of your physical, mental, and emotional health this year?",
+    "tags": [
+      "self-care",
+      "health",
+      "wellness"
+    ]
+  },
+  {
+    "prompt": "What is something that happened this year that you never want to forget, and why?",
+    "tags": [
+      "memories",
+      "gratitude"
+    ]
+  },
+  {
+    "prompt": "What opportunities did you miss this year, and why? How can you learn from this experience?",
+    "tags": [
+      "reflection",
+      "missed_opportunities",
+      "learning"
+    ]
+  },
+  {
+    "prompt": "Who are the people that had the biggest impact on your life this year, and in what ways?",
+    "tags": [
+      "relationships",
+      "gratitude",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "What is a mistake you made this year, and what did you learn from it?",
+    "tags": [
+      "mistakes",
+      "reflection",
+      "learning"
+    ]
+  },
+  {
+    "prompt": "What is a fear or limiting belief that you overcame this year, and how did you do it?",
+    "tags": [
+      "personal_growth",
+      "overcoming_fears",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "What is something new that you discovered or tried this year, and how did it impact you?",
+    "tags": [
+      "new_experiences",
+      "discovery",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "What was the most meaningful act of kindness or generosity that someone showed you this year, and how did it make you feel?",
+    "tags": [
+      "gratitude",
+      "kindness",
+      "emotions"
+    ]
+  },
+  {
+    "prompt": "What are some things you can do to improve yourself and your life in the coming year?",
+    "tags": [
+      "personal_growth",
+      "goal-setting",
+      "future"
+    ]
+  },
+  {
+    "prompt": "What accomplishments are you most proud of this year and why?",
+    "tags": [
+      "reflection",
+      "achievement",
+      "pride"
+    ]
+  },
+  {
+    "prompt": "What creative projects did you start or complete this year that you enjoyed?",
+    "tags": [
+      "creativity",
+      "projects"
+    ]
+  },
+  {
+    "prompt": "What moments of gratitude did you experience this year, and how did they impact your mood or mindset?",
+    "tags": [
+      "gratitude",
+      "mindset"
+    ]
+  },
+  {
+    "prompt": "What were some of the biggest lessons you learned this year, and how will you apply them in the future?",
+    "tags": [
+      "learning",
+      "growth"
+    ]
+  },
+  {
+    "prompt": "What is a difficult decision you made this year, and how did it impact your life?",
+    "tags": [
+      "decision-making",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "What books, movies, music, or art had an impact on you this year, and how?",
+    "tags": [
+      "culture",
+      "art",
+      "entertainment"
+    ]
+  },
+  {
+    "prompt": "What were some memorable moments of joy or happiness you experienced this year?",
+    "tags": [
+      "happiness",
+      "positivity"
+    ]
+  },
+  {
+    "prompt": "What did you do to take care of yourself this year, and what practices or routines did you find helpful?",
+    "tags": [
+      "self-care",
+      "wellness"
+    ]
+  },
+  {
+    "prompt": "What steps did you take this year to become a better friend, family member, or community member?",
+    "tags": [
+      "relationships",
+      "service",
+      "kindness"
+    ]
+  },
+  {
+    "prompt": "What are you looking forward to in the coming year, and what steps can you take to make those things happen?",
+    "tags": [
+      "goal-setting",
+      "planning"
+    ]
+  },
+  {
+    "prompt": "What opportunities are you grateful for that came your way this year?",
+    "tags": [
+      "gratitude",
+      "opportunities",
+      "reflection",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "What activities did you engage in this year that made you feel truly alive and fulfilled?",
+    "tags": [
+      "activities",
+      "fulfillment",
+      "happiness",
+      "self-discovery"
+    ]
+  },
+  {
+    "prompt": "What habits did you develop this year that helped you improve as a person?",
+    "tags": [
+      "habits",
+      "self-improvement",
+      "personal_growth",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "In what ways did you make progress toward achieving your long-term goals this year?",
+    "tags": [
+      "goal-setting",
+      "progress",
+      "achievement",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "What challenges did you overcome this year that you're proud of?",
+    "tags": [
+      "challenges",
+      "overcoming_obstacles",
+      "personal_growth",
+      "achievement"
+    ]
+  },
+  {
+    "prompt": "What was the best piece of advice you received this year and how did you apply it?",
+    "tags": [
+      "advice",
+      "wisdom",
+      "reflection",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "What did you learn about yourself this year that surprised you?",
+    "tags": [
+      "self-discovery",
+      "reflection",
+      "personal_growth",
+      "surprises"
+    ]
+  },
+  {
+    "prompt": "What experiences this year helped you develop greater empathy and understanding for others?",
+    "tags": [
+      "empathy",
+      "understanding",
+      "reflection",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "What relationships did you nurture or develop this year that brought you joy and fulfillment?",
+    "tags": [
+      "relationships",
+      "connection",
+      "fulfillment",
+      "happiness"
+    ]
+  },
+  {
+    "prompt": "Looking back on the year, what would you do differently if you had the chance?",
+    "tags": [
+      "reflection",
+      "self-improvement",
+      "personal_growth",
+      "regret"
+    ]
+  },
+  {
+    "prompt": "Write about a time when you had to make a difficult decision. What was your thought process? How did you ultimately make your choice?",
+    "tags": [
+      "decision-making",
+      "reflection",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "What is something you've always wanted to learn but haven't yet? Why haven't you pursued it? Do you think you ever will?",
+    "tags": [
+      "learning",
+      "personal_growth",
+      "curiosity"
+    ]
+  },
+  {
+    "prompt": "Describe a place that feels like home to you. Why is this place significant? What memories do you associate with it?",
+    "tags": [
+      "home",
+      "memories",
+      "sense_of_belonging"
+    ]
+  },
+  {
+    "prompt": "What are some things that you've accomplished that you're proud of? What challenges did you have to overcome to achieve those accomplishments?",
+    "tags": [
+      "achievement",
+      "personal_growth",
+      "resilience"
+    ]
+  },
+  {
+    "prompt": "Write about a person who has had a significant impact on your life. What did this person do to make an impact? How has your life been different because of their influence?",
+    "tags": [
+      "influence",
+      "relationships",
+      "gratitude"
+    ]
+  },
+  {
+    "prompt": "What are some of your favorite things about the current season (e.g. winter, spring, summer, fall)? What memories or emotions do you associate with this time of year?",
+    "tags": [
+      "seasons",
+      "emotions",
+      "memories"
+    ]
+  },
+  {
+    "prompt": "Write about a time when you felt out of your comfort zone. What caused you to feel this way? How did you respond to the situation?",
+    "tags": [
+      "comfort_zone",
+      "growth",
+      "resilience"
+    ]
+  },
+  {
+    "prompt": "What are some of the most important values that guide your life? How have these values developed over time?",
+    "tags": [
+      "values",
+      "personal_growth",
+      "self-awareness"
+    ]
+  },
+  {
+    "prompt": "Write about a place you've always wanted to visit. Why does this place appeal to you? What do you hope to gain from the experience?",
+    "tags": [
+      "travel",
+      "curiosity",
+      "exploration"
+    ]
+  },
+  {
+    "prompt": "What are some ways that you take care of yourself when you're feeling stressed or overwhelmed? How do you know when you need to take a break or seek support?",
+    "tags": [
+      "self-care",
+      "mental_health",
+      "stress_management"
+    ]
+  },
+  {
+    "prompt": "Describe your favorite childhood memory. What made it so special?",
+    "tags": [
+      "memory",
+      "childhood",
+      "favorite"
+    ]
+  },
+  {
+    "prompt": "What is something you've been avoiding lately? Why have you been avoiding it, and what steps can you take to address it?",
+    "tags": [
+      "avoidance",
+      "procrastination",
+      "goal-setting"
+    ]
+  },
+  {
+    "prompt": "Think about a time when you overcame a challenge or obstacle. What did you learn from that experience?",
+    "tags": [
+      "resilience",
+      "overcoming_obstacles",
+      "learning"
+    ]
+  },
+  {
+    "prompt": "What are some of your greatest strengths, and how can you use them to achieve your goals?",
+    "tags": [
+      "strengths",
+      "goal-setting"
+    ]
+  },
+  {
+    "prompt": "Write about a place that is meaningful to you. Why is it significant, and what emotions does it evoke?",
+    "tags": [
+      "place",
+      "meaning",
+      "emotions"
+    ]
+  },
+  {
+    "prompt": "What are some things that make you feel grateful? How can you cultivate a sense of gratitude in your daily life?",
+    "tags": [
+      "gratitude",
+      "happiness",
+      "positive_thinking"
+    ]
+  },
+  {
+    "prompt": "Reflect on a time when you made a mistake or experienced a failure. What did you learn from the experience, and how did you grow as a result?",
+    "tags": [
+      "failure",
+      "learning",
+      "growth"
+    ]
+  },
+  {
+    "prompt": "What is a goal you have for the next year? What steps can you take to work towards that goal?",
+    "tags": [
+      "goal-setting",
+      "planning",
+      "motivation"
+    ]
+  },
+  {
+    "prompt": "What are some ways you can practice self-care and prioritize your own well-being?",
+    "tags": [
+      "self-care",
+      "well-being",
+      "stress-management"
+    ]
+  },
+  {
+    "prompt": "Write a letter to your future self, describing the person you want to be and the life you want to have. What steps can you take to work towards that vision?",
+    "tags": [
+      "future",
+      "goal-setting",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "Write about a challenge you have overcome in the past and what you learned from it.",
+    "tags": [
+      "resilience",
+      "overcoming_obstacles",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "Describe a place that brings you peace and calm, and why it has that effect on you.",
+    "tags": [
+      "meditation",
+      "mindfulness",
+      "relaxation",
+      "nature"
+    ]
+  },
+  {
+    "prompt": "Write about a skill or hobby you would like to learn, and why it interests you.",
+    "tags": [
+      "learning",
+      "personal_growth",
+      "interests",
+      "hobbies"
+    ]
+  },
+  {
+    "prompt": "Describe a time when you had to make a difficult decision, and how you came to that decision.",
+    "tags": [
+      "decision-making",
+      "personal_growth",
+      "self-reflection"
+    ]
+  },
+  {
+    "prompt": "Write about a goal you have for the next year, and what steps you plan to take to achieve it.",
+    "tags": [
+      "goal-setting",
+      "planning",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "Describe a person who has had a significant impact on your life, and how they influenced you.",
+    "tags": [
+      "relationships",
+      "influences",
+      "gratitude"
+    ]
+  },
+  {
+    "prompt": "Write about a time when you felt deeply grateful, and why you felt that way.",
+    "tags": [
+      "gratitude",
+      "positive_emotions",
+      "mindfulness"
+    ]
+  },
+  {
+    "prompt": "Describe a challenge you are currently facing, and how you plan to address it.",
+    "tags": [
+      "problem-solving",
+      "resilience",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "Write about a time when you stepped out of your comfort zone, and what you gained from the experience.",
+    "tags": [
+      "personal_growth",
+      "comfort_zone",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "Describe a memory from your childhood that brings you joy.",
+    "tags": [
+      "childhood",
+      "happiness",
+      "memories"
+    ]
+  },
+  {
+    "prompt": "Describe a time when you faced a difficult decision. What factors did you consider and how did you ultimately make your choice?",
+    "tags": [
+      "decision-making",
+      "reflection",
+      "growth"
+    ]
+  },
+  {
+    "prompt": "What are some things that you feel grateful for in your life right now? How can you show appreciation for these things?",
+    "tags": [
+      "gratitude",
+      "positive_thinking",
+      "mindfulness"
+    ]
+  },
+  {
+    "prompt": "What is something you've been putting off doing that you know you need to do? What steps can you take to make progress on this task?",
+    "tags": [
+      "procrastination",
+      "productivity",
+      "goal-setting"
+    ]
+  },
+  {
+    "prompt": "Think about a person in your life who has had a positive impact on you. What specific actions or qualities of this person have influenced you, and how?",
+    "tags": [
+      "gratitude",
+      "relationships",
+      "empathy"
+    ]
+  },
+  {
+    "prompt": "What are some activities or hobbies that you enjoy, but haven't had time for recently? How can you incorporate these activities into your life more regularly?",
+    "tags": [
+      "self-care",
+      "hobbies",
+      "balance"
+    ]
+  },
+  {
+    "prompt": "Describe a recent experience where you felt like you were pushed out of your comfort zone. What did you learn from this experience?",
+    "tags": [
+      "growth",
+      "challenge",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "Think about a goal that you've set for yourself in the past. Did you achieve this goal? If not, what obstacles did you face and how could you overcome them in the future?",
+    "tags": [
+      "goal-setting",
+      "productivity",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "What are some values that are important to you, and how do you incorporate these values into your daily life?",
+    "tags": [
+      "values",
+      "self-reflection",
+      "mindfulness"
+    ]
+  },
+  {
+    "prompt": "Think about a time when you felt proud of yourself. What did you accomplish and how did you feel after achieving this goal?",
+    "tags": [
+      "self-esteem",
+      "confidence",
+      "achievement"
+    ]
+  },
+  {
+    "prompt": "What are some fears or anxieties that you have, and how do these feelings impact your life? What steps can you take to overcome these fears?",
+    "tags": [
+      "anxiety",
+      "fears",
+      "self-improvement"
+    ]
+  },
+  {
     "prompt": "What are three things you can do to improve your physical health?",
-    "tags": ["physical_health", "self-improvement"]
+    "tags": [
+      "physical_health",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things you can do to improve your professional growth?",
-    "tags": ["career", "professional_growth"]
+    "tags": [
+      "career",
+      "professional_growth"
+    ]
   },
   {
     "prompt": "What are the three things you can do to improve your spiritual well-being?",
-    "tags": ["spirituality", "well-being"]
+    "tags": [
+      "spirituality",
+      "well-being"
+    ]
   },
   {
     "prompt": "What are three things you can do to improve your financial well-being?",
-    "tags": ["finance", "well-being"]
+    "tags": [
+      "finance",
+      "well-being"
+    ]
   },
   {
     "prompt": "What are three things you can do to improve your environmental impact?",
-    "tags": ["environment", "sustainability"]
+    "tags": [
+      "environment",
+      "sustainability"
+    ]
   },
   {
     "prompt": "What was the most valuable lesson you learned this week?",
-    "tags": ["reflection", "self-improvement"]
+    "tags": [
+      "reflection",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What is one thing you did this week that made you proud of yourself?",
-    "tags": ["pride", "reflection"]
+    "tags": [
+      "pride",
+      "reflection"
+    ]
   },
   {
     "prompt": "What are three things you are looking forward to this week?",
-    "tags": ["anticipation", "optimism"]
+    "tags": [
+      "anticipation",
+      "optimism"
+    ]
   },
   {
     "prompt": "What is one task you procrastinated on this week and why?",
-    "tags": ["procrastination", "reflection"]
+    "tags": [
+      "procrastination",
+      "reflection"
+    ]
   },
   {
     "prompt": "What is one area of your life you would like to improve on?",
-    "tags": ["self-improvement", "goal-setting"]
+    "tags": [
+      "self-improvement",
+      "goal-setting"
+    ]
   },
   {
     "prompt": "What did you do to take care of yourself this week?",
-    "tags": ["self-care", "wellness"]
+    "tags": [
+      "self-care",
+      "wellness"
+    ]
   },
   {
     "prompt": "What was one thing that made you feel calm this week?",
-    "tags": ["calmness", "equanimity"]
+    "tags": [
+      "calmness",
+      "equanimity"
+    ]
   },
   {
     "prompt": "What is something you are currently struggling with and how can you address it?",
-    "tags": ["struggles", "problem_solving"]
+    "tags": [
+      "struggles",
+      "problem_solving"
+    ]
   },
   {
     "prompt": "What is one thing you did this week that was out of your comfort zone?",
-    "tags": ["comfort_zone", "personal_growth"]
+    "tags": [
+      "comfort_zone",
+      "personal_growth"
+    ]
   },
   {
     "prompt": "What are three things that you are grateful for this week?",
-    "tags": ["gratitude", "reflection"]
+    "tags": [
+      "gratitude",
+      "reflection"
+    ]
   },
   {
     "prompt": "What is one thing that you did this week that you're proud of?",
-    "tags": ["reflection", "pride"]
+    "tags": [
+      "reflection",
+      "pride"
+    ]
   },
   {
     "prompt": "What is a habit that you would like to change and why?",
-    "tags": ["self-improvement", "reflection"]
+    "tags": [
+      "self-improvement",
+      "reflection"
+    ]
   },
   {
     "prompt": "What did you do today to move closer to achieving your goals?",
-    "tags": ["goal_setting", "right_action"]
+    "tags": [
+      "goal_setting",
+      "right_action"
+    ]
   },
   {
     "prompt": "What is something that you've been putting off and why?",
-    "tags": ["procrastination", "reflection"]
+    "tags": [
+      "procrastination",
+      "reflection"
+    ]
   },
   {
     "prompt": "What is one thing that you wish you had done differently this week and why?",
-    "tags": ["reflection", "regret"]
+    "tags": [
+      "reflection",
+      "regret"
+    ]
   },
   {
     "prompt": "What is something that you learned this week that you find interesting?",
-    "tags": ["learning", "awareness"]
+    "tags": [
+      "learning",
+      "awareness"
+    ]
   },
   {
     "prompt": "How did you practice equanimity this week?",
-    "tags": ["equanimity", "mindfulness"]
+    "tags": [
+      "equanimity",
+      "mindfulness"
+    ]
   },
   {
     "prompt": "What are some ways in which you can fulfill your duty to others?",
-    "tags": ["duty", "self-improvement"]
+    "tags": [
+      "duty",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are some obstacles that you encountered this week and how did you solve them?",
-    "tags": ["problem_solving", "resiliency"]
+    "tags": [
+      "problem_solving",
+      "resiliency"
+    ]
   },
   {
     "prompt": "What is one thing that you can do to practice amor fati into your daily life?",
-    "tags": ["amor_fati", "self-improvement"]
+    "tags": [
+      "amor_fati",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you are looking forward to this week?",
-    "tags": ["gratitude", "reflection"]
+    "tags": [
+      "gratitude",
+      "reflection"
+    ]
   },
   {
     "prompt": "What did you do today that you are proud of?",
-    "tags": ["reflection", "self-awareness"]
+    "tags": [
+      "reflection",
+      "self-awareness"
+    ]
   },
   {
     "prompt": "What are the top three things that are causing you stress this week and how can you address them?",
-    "tags": ["stress", "problem_solving"]
+    "tags": [
+      "stress",
+      "problem_solving"
+    ]
   },
   {
     "prompt": "What did you learn from your biggest mistake this week?",
-    "tags": ["reflection", "self-improvement"]
+    "tags": [
+      "reflection",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you can do to improve your relationships?",
-    "tags": ["relationships", "self-improvement"]
+    "tags": [
+      "relationships",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are the top three things that you are grateful for in your life?",
-    "tags": ["gratitude", "reflection"]
+    "tags": [
+      "gratitude",
+      "reflection"
+    ]
   },
   {
     "prompt": "What is something that you can do to improve your physical health?",
-    "tags": ["health", "self-improvement"]
+    "tags": [
+      "health",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you can do to improve your spiritual well-being?",
-    "tags": ["spirituality", "self-improvement"]
+    "tags": [
+      "spirituality",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What is something that you can do to improve your financial situation?",
-    "tags": ["finance", "self-improvement"]
+    "tags": [
+      "finance",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "Write about a memorable experience from your childhood.",
-    "tags": ["childhood", "experience", "personal"]
+    "tags": [
+      "childhood",
+      "experience",
+      "personal"
+    ]
   },
   {
     "prompt": "If you could have any superpower, what would it be and why?",
-    "tags": ["fun", "superpower"]
+    "tags": [
+      "fun",
+      "superpower"
+    ]
   },
   {
     "prompt": "Describe a place that has special meaning to you.",
-    "tags": ["location", "meaning", "personal"]
+    "tags": [
+      "location",
+      "meaning",
+      "personal"
+    ]
   },
   {
     "prompt": "If you could travel back in time, where would you go and why?",
-    "tags": ["time", "travel"]
+    "tags": [
+      "time",
+      "travel"
+    ]
   },
   {
     "prompt": "What is your greatest fear and why?",
-    "tags": ["fear", "personal"]
+    "tags": [
+      "fear",
+      "personal"
+    ]
   },
   {
     "prompt": "Describe a goal that you are working towards.",
-    "tags": ["goal", "personal"]
+    "tags": [
+      "goal",
+      "personal"
+    ]
   },
   {
     "prompt": "If you could live in any fictional world, where would you choose and why?",
-    "tags": ["fiction", "world"]
+    "tags": [
+      "fiction",
+      "world"
+    ]
   },
   {
     "prompt": "What is your favorite season and why?",
-    "tags": ["season", "personal"]
+    "tags": [
+      "season",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you overcame a challenge.",
-    "tags": ["challenge", "personal"]
+    "tags": [
+      "challenge",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you overcame a fear.",
-    "tags": ["overcoming_fear", "personal_growth"]
+    "tags": [
+      "overcoming_fear",
+      "personal_growth"
+    ]
   },
   {
     "prompt": "Describe a recent dream you had.",
-    "tags": ["dreams", "creative_writing"]
+    "tags": [
+      "dreams",
+      "creative_writing"
+    ]
   },
   {
     "prompt": "Reflect on a difficult decision you had to make and how you arrived at the final choice.",
-    "tags": ["decision_making", "reflection"]
+    "tags": [
+      "decision_making",
+      "reflection"
+    ]
   },
   {
     "prompt": "Write a letter to your younger self.",
-    "tags": ["reflection", "letter_writing"]
+    "tags": [
+      "reflection",
+      "letter_writing"
+    ]
   },
   {
     "prompt": "What are you grateful for today?",
-    "tags": ["gratitude", "positive_thinking"]
+    "tags": [
+      "gratitude",
+      "positive_thinking"
+    ]
   },
   {
     "prompt": "Describe a person who has had a significant impact on your life.",
-    "tags": ["influential_people", "relationships"]
+    "tags": [
+      "influential_people",
+      "relationships"
+    ]
   },
   {
     "prompt": "Write about a time when you failed at something and how you learned from the experience.",
-    "tags": ["failure", "learning_from_mistakes"]
+    "tags": [
+      "failure",
+      "learning_from_mistakes"
+    ]
   },
   {
     "prompt": "If you could go back in time and change one event, what would it be and why?",
-    "tags": ["time_travel", "regret"]
+    "tags": [
+      "time_travel",
+      "regret"
+    ]
   },
   {
     "prompt": "Write about a time when you felt truly happy.",
-    "tags": ["happiness", "reflection"]
+    "tags": [
+      "happiness",
+      "reflection"
+    ]
   },
   {
     "prompt": "Describe a place that holds special meaning for you and why.",
-    "tags": ["favorite_places", "memories"]
+    "tags": [
+      "favorite_places",
+      "memories"
+    ]
   },
   {
     "prompt": "What is something you would like to learn more about and why?",
-    "tags": ["learning", "interests"]
+    "tags": [
+      "learning",
+      "interests"
+    ]
   },
   {
     "prompt": "Write about a time when you had to confront someone about a difficult topic.",
-    "tags": ["difficult_conversations", "communication"]
+    "tags": [
+      "difficult_conversations",
+      "communication"
+    ]
   },
   {
     "prompt": "Reflect on a moment of personal growth or change in your life.",
-    "tags": ["personal_growth", "self-improvement"]
+    "tags": [
+      "personal_growth",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "Describe a person who inspires you and why.",
-    "tags": ["inspiration", "role_models"]
+    "tags": [
+      "inspiration",
+      "role_models"
+    ]
   },
   {
     "prompt": "Write about a time when you felt especially proud of yourself.",
-    "tags": ["pride", "achievements"]
+    "tags": [
+      "pride",
+      "achievements"
+    ]
   },
   {
     "prompt": "Reflect on a challenge you faced and how you overcame it.",
-    "tags": ["challenges", "overcoming_obstacles"]
+    "tags": [
+      "challenges",
+      "overcoming_obstacles"
+    ]
   },
   {
     "prompt": "Write about a time when you felt out of your comfort zone and how you handled it.",
-    "tags": ["comfort_zone", "coping_with_stress"]
+    "tags": [
+      "comfort_zone",
+      "coping_with_stress"
+    ]
   },
   {
     "prompt": "Describe an experience that taught you something new about yourself.",
-    "tags": ["self-discovery", "personal_growth"]
+    "tags": [
+      "self-discovery",
+      "personal_growth"
+    ]
   },
   {
     "prompt": "What is the biggest risk you've ever taken and what was the outcome?",
-    "tags": ["risk", "courage"]
+    "tags": [
+      "risk",
+      "courage"
+    ]
   },
   {
     "prompt": "Describe a time when you felt really proud of a friend or loved one.",
-    "tags": ["pride", "relationships"]
+    "tags": [
+      "pride",
+      "relationships"
+    ]
   },
   {
     "prompt": "Write about a time when you felt truly grateful for something.",
-    "tags": ["gratitude", "appreciation"]
+    "tags": [
+      "gratitude",
+      "appreciation"
+    ]
   },
   {
     "prompt": "What is your definition of success and how do you measure it?",
-    "tags": ["success", "self-improvement"]
+    "tags": [
+      "success",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "Write about a time when you were faced with a difficult decision and how you made it.",
-    "tags": ["decision_making", "difficult_situations"]
+    "tags": [
+      "decision_making",
+      "difficult_situations"
+    ]
   },
   {
     "prompt": "What is a cause that you are passionate about and why?",
-    "tags": ["causes", "passions"]
+    "tags": [
+      "causes",
+      "passions"
+    ]
   },
   {
     "prompt": "Write about a time when you had to apologize for something and why it was difficult.",
-    "tags": ["apologies", "difficult_situations"]
+    "tags": [
+      "apologies",
+      "difficult_situations"
+    ]
   },
   {
     "prompt": "Describe a time when you had to deal with a difficult person and how you handled it.",
-    "tags": ["difficult_people", "communication"]
+    "tags": [
+      "difficult_people",
+      "communication"
+    ]
   },
   {
     "prompt": "Write about a time when you were faced with a challenge and how you overcame it.",
-    "tags": ["challenges", "overcoming_obstacles"]
+    "tags": [
+      "challenges",
+      "overcoming_obstacles"
+    ]
   },
   {
     "prompt": "Describe a time when you felt truly content and happy.",
-    "tags": ["happiness", "contentment"]
+    "tags": [
+      "happiness",
+      "contentment"
+    ]
   },
   {
     "prompt": "Write about a time when you had to make a tough choice and how you arrived at the decision.",
-    "tags": ["decision_making", "tough_choices"]
+    "tags": [
+      "decision_making",
+      "tough_choices"
+    ]
   },
   {
     "prompt": "Describe a time when you learned a valuable lesson from someone else.",
-    "tags": ["learning", "lessons"]
+    "tags": [
+      "learning",
+      "lessons"
+    ]
   },
   {
     "prompt": "Write about a time when you felt really proud of yourself and why.",
-    "tags": ["pride", "achievements"]
+    "tags": [
+      "pride",
+      "achievements"
+    ]
   },
   {
     "prompt": "Describe a time when you had to step out of your comfort zone and how it affected you.",
-    "tags": ["comfort_zone", "personal_growth"]
+    "tags": [
+      "comfort_zone",
+      "personal_growth"
+    ]
   },
   {
     "prompt": "Write about a time when you made a mistake and how you learned from it.",
-    "tags": ["mistakes", "learning_from_failure"]
+    "tags": [
+      "mistakes",
+      "learning_from_failure"
+    ]
   },
   {
     "prompt": "Write about a time when you were surprised by someone's behavior.",
-    "tags": ["surprise", "personal_experience"]
+    "tags": [
+      "surprise",
+      "personal_experience"
+    ]
   },
   {
     "prompt": "Describe a time when you felt truly alive.",
-    "tags": ["alive", "excitement", "adventure"]
+    "tags": [
+      "alive",
+      "excitement",
+      "adventure"
+    ]
   },
   {
     "prompt": "Write about a time when you were grateful for someone else's kindness.",
-    "tags": ["gratitude", "kindness"]
+    "tags": [
+      "gratitude",
+      "kindness"
+    ]
   },
   {
     "prompt": "Describe a time when you learned something new about yourself.",
-    "tags": ["self-discovery", "growth"]
+    "tags": [
+      "self-discovery",
+      "growth"
+    ]
   },
   {
     "prompt": "Write about a time when you were able to forgive someone.",
-    "tags": ["forgiveness", "empathy"]
+    "tags": [
+      "forgiveness",
+      "empathy"
+    ]
   },
   {
     "prompt": "Describe a time when you felt a strong connection to nature.",
-    "tags": ["nature", "connection"]
+    "tags": [
+      "nature",
+      "connection"
+    ]
   },
   {
     "prompt": "Write about a time when you felt truly content.",
-    "tags": ["contentment", "reflection"]
+    "tags": [
+      "contentment",
+      "reflection"
+    ]
   },
   {
     "prompt": "Describe a time when you felt especially creative.",
-    "tags": ["creativity", "imagination"]
+    "tags": [
+      "creativity",
+      "imagination"
+    ]
   },
   {
     "prompt": "Write about a time when you felt like you were making a difference.",
-    "tags": ["impact", "contribution"]
+    "tags": [
+      "impact",
+      "contribution"
+    ]
   },
   {
     "prompt": "Describe a time when you felt a strong sense of community.",
-    "tags": ["community", "belonging"]
+    "tags": [
+      "community",
+      "belonging"
+    ]
   },
   {
     "prompt": "Write about a time when you felt truly inspired.",
-    "tags": ["inspiration", "motivation"]
+    "tags": [
+      "inspiration",
+      "motivation"
+    ]
   },
   {
     "prompt": "Describe a time when you felt especially thankful.",
-    "tags": ["thanksgiving", "gratitude"]
+    "tags": [
+      "thanksgiving",
+      "gratitude"
+    ]
   },
   {
     "prompt": "Write about a time when you felt a strong sense of peace.",
-    "tags": ["peace", "calm"]
+    "tags": [
+      "peace",
+      "calm"
+    ]
   },
   {
     "prompt": "Describe a time when you felt truly happy.",
-    "tags": ["happiness", "joy"]
+    "tags": [
+      "happiness",
+      "joy"
+    ]
   },
   {
     "prompt": "Write about a time when you felt a strong connection with someone.",
-    "tags": ["connection", "relationships"]
+    "tags": [
+      "connection",
+      "relationships"
+    ]
   },
   {
     "prompt": "Describe a time when you felt especially brave.",
-    "tags": ["bravery", "courage"]
+    "tags": [
+      "bravery",
+      "courage"
+    ]
   },
   {
     "prompt": "Write about a time when you felt a strong sense of accomplishment.",
-    "tags": ["accomplishment", "achievement"]
+    "tags": [
+      "accomplishment",
+      "achievement"
+    ]
   },
   {
     "prompt": "What is your most memorable trip and why?",
-    "tags": ["trip", "memorable", "personal"]
+    "tags": [
+      "trip",
+      "memorable",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you had to make a difficult choice.",
-    "tags": ["difficult_choice", "decision", "personal"]
+    "tags": [
+      "difficult_choice",
+      "decision",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a person who has inspired you.",
-    "tags": ["inspiration", "influence", "personal"]
+    "tags": [
+      "inspiration",
+      "influence",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you helped someone.",
-    "tags": ["helping_others", "kindness", "personal"]
+    "tags": [
+      "helping_others",
+      "kindness",
+      "personal"
+    ]
   },
   {
     "prompt": "What is your biggest accomplishment and why?",
-    "tags": ["accomplishment", "personal", "pride"]
+    "tags": [
+      "accomplishment",
+      "personal",
+      "pride"
+    ]
   },
   {
     "prompt": "Write about a time when you faced a challenge and succeeded.",
-    "tags": ["challenge", "success", "personal"]
+    "tags": [
+      "challenge",
+      "success",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you felt proud of yourself.",
-    "tags": ["pride", "accomplishment", "personal"]
+    "tags": [
+      "pride",
+      "accomplishment",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you learned something new.",
-    "tags": ["learning", "growth", "personal"]
+    "tags": [
+      "learning",
+      "growth",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you made a difference in someone's life.",
-    "tags": ["making_a_difference", "kindness", "personal"]
+    "tags": [
+      "making_a_difference",
+      "kindness",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you showed courage.",
-    "tags": ["courage", "bravery", "personal"]
+    "tags": [
+      "courage",
+      "bravery",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you faced a difficult situation and persevered.",
-    "tags": ["difficult_situations", "perseverence", "personal"]
+    "tags": [
+      "difficult_situations",
+      "perseverence",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you had to let go of something or someone.",
-    "tags": ["letting_go", "loss", "goodbye"]
+    "tags": [
+      "letting_go",
+      "loss",
+      "goodbye"
+    ]
   },
   {
     "prompt": "If you could have any job in the world, what would it be and why?",
-    "tags": ["career", "dream_job"]
+    "tags": [
+      "career",
+      "dream_job"
+    ]
   },
   {
     "prompt": "What is something you are passionate about and why?",
-    "tags": ["passion", "personal"]
+    "tags": [
+      "passion",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a memorable adventure you had.",
-    "tags": ["adventure", "experience"]
+    "tags": [
+      "adventure",
+      "experience"
+    ]
   },
   {
     "prompt": "If you could have a conversation with anyone, alive or deceased, who would it be and why?",
-    "tags": ["conversation", "inspiration"]
+    "tags": [
+      "conversation",
+      "inspiration"
+    ]
   },
   {
     "prompt": "Write about a time when you had to make a difficult decision.",
-    "tags": ["difficult_decision", "personal"]
+    "tags": [
+      "difficult_decision",
+      "personal"
+    ]
   },
   {
     "prompt": "What is a lesson you have learned from nature?",
-    "tags": ["nature", "lesson"]
+    "tags": [
+      "nature",
+      "lesson"
+    ]
   },
   {
     "prompt": "Describe a time when you felt truly proud of someone else.",
-    "tags": ["pride", "relationships"]
+    "tags": [
+      "pride",
+      "relationships"
+    ]
   },
   {
     "prompt": "If you could change one thing about yourself, what would it be and why?",
-    "tags": ["self-improvement", "reflection"]
+    "tags": [
+      "self-improvement",
+      "reflection"
+    ]
   },
   {
     "prompt": "Write about a time when you had to stand up for something you believed in.",
-    "tags": ["beliefs", "courage"]
+    "tags": [
+      "beliefs",
+      "courage"
+    ]
   },
   {
     "prompt": "What is your favorite memory and why?",
-    "tags": ["favorite_memory", "personal"]
+    "tags": [
+      "favorite_memory",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you experienced a failure.",
-    "tags": ["failure", "experience", "personal"]
+    "tags": [
+      "failure",
+      "experience",
+      "personal"
+    ]
   },
   {
     "prompt": "If you could have any pet, what would it be and why?",
-    "tags": ["fun", "pets"]
+    "tags": [
+      "fun",
+      "pets"
+    ]
   },
   {
     "prompt": "Describe a place that makes you feel at peace.",
-    "tags": ["location", "peace", "personal"]
+    "tags": [
+      "location",
+      "peace",
+      "personal"
+    ]
   },
   {
     "prompt": "If you could visit any planet in our solar system, which one would you choose and why?",
-    "tags": ["space", "travel"]
+    "tags": [
+      "space",
+      "travel"
+    ]
   },
   {
     "prompt": "What is your proudest accomplishment and why?",
-    "tags": ["accomplishment", "personal"]
+    "tags": [
+      "accomplishment",
+      "personal"
+    ]
   },
   {
     "prompt": "Describe a habit you want to break and how you plan to do it.",
-    "tags": ["habit", "personal_growth"]
+    "tags": [
+      "habit",
+      "personal_growth"
+    ]
   },
   {
     "prompt": "If you could have any celebrity as a friend, who would you choose and why?",
-    "tags": ["celebrities", "friendship"]
+    "tags": [
+      "celebrities",
+      "friendship"
+    ]
   },
   {
     "prompt": "What is your favorite type of weather and why?",
-    "tags": ["weather", "personal"]
+    "tags": [
+      "weather",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you had to overcome adversity.",
-    "tags": ["adversity", "personal"]
+    "tags": [
+      "adversity",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you helped someone in need.",
-    "tags": ["helping_others", "kindness"]
+    "tags": [
+      "helping_others",
+      "kindness"
+    ]
   },
   {
     "prompt": "If you could have dinner with any historical figure, who would you choose and why?",
-    "tags": ["history", "dinner"]
+    "tags": [
+      "history",
+      "dinner"
+    ]
   },
   {
     "prompt": "Describe a moment when you felt truly alive.",
-    "tags": ["alive", "personal_experience"]
+    "tags": [
+      "alive",
+      "personal_experience"
+    ]
   },
   {
     "prompt": "What is your biggest weakness and how are you working to improve it?",
-    "tags": ["weakness", "self-improvement"]
+    "tags": [
+      "weakness",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "Describe a memorable trip you took.",
-    "tags": ["travel", "memories"]
+    "tags": [
+      "travel",
+      "memories"
+    ]
   },
   {
     "prompt": "If you could learn any language fluently, what would it be and why?",
-    "tags": ["language", "learning"]
+    "tags": [
+      "language",
+      "learning"
+    ]
   },
   {
     "prompt": "Write about a time when you made a positive impact on someone's life.",
-    "tags": ["impact", "personal_experience"]
+    "tags": [
+      "impact",
+      "personal_experience"
+    ]
   },
   {
     "prompt": "Write about a time when you were grateful for something small.",
-    "tags": ["gratitude", "personal_experience"]
+    "tags": [
+      "gratitude",
+      "personal_experience"
+    ]
   },
   {
     "prompt": "Describe a time when you took a risk and it paid off.",
-    "tags": ["risk", "success"]
+    "tags": [
+      "risk",
+      "success"
+    ]
   },
   {
     "prompt": "What is something that you have always wanted to try, but haven't yet?",
-    "tags": ["new_experiences", "goals"]
+    "tags": [
+      "new_experiences",
+      "goals"
+    ]
   },
   {
     "prompt": "Write about a time when you were truly surprised.",
-    "tags": ["surprise", "emotions"]
+    "tags": [
+      "surprise",
+      "emotions"
+    ]
   },
   {
     "prompt": "Describe a book or movie that made a lasting impression on you.",
-    "tags": ["media", "impact"]
+    "tags": [
+      "media",
+      "impact"
+    ]
   },
   {
     "prompt": "Write about a time when you had to go outside of your comfort zone.",
-    "tags": ["comfort_zone", "personal_growth"]
+    "tags": [
+      "comfort_zone",
+      "personal_growth"
+    ]
   },
   {
     "prompt": "What is something that you would like to change about yourself and why?",
-    "tags": ["self-improvement", "reflection"]
+    "tags": [
+      "self-improvement",
+      "reflection"
+    ]
   },
   {
     "prompt": "Describe a time when you felt truly content.",
-    "tags": ["contentment", "happiness"]
+    "tags": [
+      "contentment",
+      "happiness"
+    ]
   },
   {
     "prompt": "Write about a time when you felt inspired by someone else.",
-    "tags": ["inspiration", "motivation"]
+    "tags": [
+      "inspiration",
+      "motivation"
+    ]
   },
   {
     "prompt": "Describe a time when you had to make a difficult decision.",
-    "tags": ["decision_making", "difficulty"]
+    "tags": [
+      "decision_making",
+      "difficulty"
+    ]
   },
   {
     "prompt": "Write about a time when you were grateful for someone else's help.",
-    "tags": ["gratitude", "relationships"]
+    "tags": [
+      "gratitude",
+      "relationships"
+    ]
   },
   {
     "prompt": "Describe a time when you learned an important lesson.",
-    "tags": ["lessons", "learning"]
+    "tags": [
+      "lessons",
+      "learning"
+    ]
   },
   {
     "prompt": "Describe a person who has influenced you in a positive way.",
-    "tags": ["influence", "personal"]
+    "tags": [
+      "influence",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you took a risk.",
-    "tags": ["risk", "personal"]
+    "tags": [
+      "risk",
+      "personal"
+    ]
   },
   {
     "prompt": "Describe your perfect day.",
-    "tags": ["perfect_day", "personal"]
+    "tags": [
+      "perfect_day",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you were surprised.",
-    "tags": ["surprise", "personal"]
+    "tags": [
+      "surprise",
+      "personal"
+    ]
   },
   {
     "prompt": "If you could have dinner with anyone, who would it be and why?",
-    "tags": ["dinner", "personal"]
+    "tags": [
+      "dinner",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you made a positive change in your life.",
-    "tags": ["change", "personal_growth"]
+    "tags": [
+      "change",
+      "personal_growth"
+    ]
   },
   {
     "prompt": "Describe your favorite hobby and why you enjoy it.",
-    "tags": ["hobby", "personal"]
+    "tags": [
+      "hobby",
+      "personal"
+    ]
   },
   {
     "prompt": "Write about a time when you felt proud of someone else.",
-    "tags": ["pride", "relationships"]
+    "tags": [
+      "pride",
+      "relationships"
+    ]
   },
   {
     "prompt": "What is your favorite memory from your teenage years?",
-    "tags": ["teenage", "favorite_memory"]
+    "tags": [
+      "teenage",
+      "favorite_memory"
+    ]
   },
   {
     "prompt": "What was your most embarrassing moment and how did you handle it?",
-    "tags": ["embarrassment", "humor"]
+    "tags": [
+      "embarrassment",
+      "humor"
+    ]
   },
   {
     "prompt": "Describe an ideal day for you.",
-    "tags": ["ideal_day", "daydreaming"]
+    "tags": [
+      "ideal_day",
+      "daydreaming"
+    ]
   },
   {
     "prompt": "What is your most cherished possession and why?",
-    "tags": ["possession", "value"]
+    "tags": [
+      "possession",
+      "value"
+    ]
   },
   {
     "prompt": "Write about a time when you made a mistake and how you fixed it.",
-    "tags": ["mistake", "problem_solving"]
+    "tags": [
+      "mistake",
+      "problem_solving"
+    ]
   },
   {
     "prompt": "If you could choose any career, what would it be and why?",
-    "tags": ["career", "aspirations"]
+    "tags": [
+      "career",
+      "aspirations"
+    ]
   },
   {
     "prompt": "Write about a time when you felt particularly proud of your work.",
-    "tags": ["pride", "achievement"]
+    "tags": [
+      "pride",
+      "achievement"
+    ]
   },
   {
     "prompt": "What is your favorite thing about yourself and why?",
-    "tags": ["favorite_thing", "self-love"]
+    "tags": [
+      "favorite_thing",
+      "self-love"
+    ]
   },
   {
     "prompt": "Describe a time when you felt particularly confident.",
-    "tags": ["confidence", "personal_strength"]
+    "tags": [
+      "confidence",
+      "personal_strength"
+    ]
   },
   {
     "prompt": "Write about a time when you experienced a major change in your life. How did you handle it, and what did you learn from the experience?",
-    "tags": ["change", "growth", "self-reflection"]
+    "tags": [
+      "change",
+      "growth",
+      "self-reflection"
+    ]
   },
   {
     "prompt": "Describe a place that holds special meaning to you. Why is it significant and what memories do you associate with it?",
-    "tags": ["memories", "meaningful_places", "nostalgia"]
+    "tags": [
+      "memories",
+      "meaningful_places",
+      "nostalgia"
+    ]
   },
   {
     "prompt": "Think about a person who has inspired you. What makes them special and how have they influenced your life?",
-    "tags": ["inspiration", "role_models", "influence"]
+    "tags": [
+      "inspiration",
+      "role_models",
+      "influence"
+    ]
   },
   {
     "prompt": "Write about a moment when you felt truly content and at peace. What were the circumstances and how did you savor the moment?",
-    "tags": ["contentment", "happiness", "gratitude"]
+    "tags": [
+      "contentment",
+      "happiness",
+      "gratitude"
+    ]
   },
   {
     "prompt": "Reflect on a challenge that you have faced and how you overcame it. What did you learn about yourself in the process?",
-    "tags": ["challenges", "overcoming", "self-discovery"]
+    "tags": [
+      "challenges",
+      "overcoming",
+      "self-discovery"
+    ]
   },
   {
     "prompt": "Write about a time when you took a risk and it paid off. What was the risk and how did it benefit you?",
-    "tags": ["risk-taking", "success", "reward"]
+    "tags": [
+      "risk-taking",
+      "success",
+      "reward"
+    ]
   },
   {
     "prompt": "Describe a person who has had a major impact on your perspective. How did they change your way of thinking and how have you incorporated their influence into your life?",
-    "tags": ["perspective", "influence", "growth"]
+    "tags": [
+      "perspective",
+      "influence",
+      "growth"
+    ]
   },
   {
     "prompt": "Think about a goal that you are currently working towards. What steps are you taking to achieve it and how do you stay motivated?",
-    "tags": ["goals", "motivation", "self-improvement"]
+    "tags": [
+      "goals",
+      "motivation",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "Write about a moment when you felt truly grateful for something or someone in your life. What were you grateful for and why?",
-    "tags": ["gratitude", "happiness", "thankfulness"]
+    "tags": [
+      "gratitude",
+      "happiness",
+      "thankfulness"
+    ]
   },
   {
     "prompt": "Describe a situation where you had to confront your fears. How did you handle it and what did you learn from the experience?",
-    "tags": ["fear", "courage", "self-improvement"]
+    "tags": [
+      "fear",
+      "courage",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "Write about a time when you felt vulnerable or exposed. What made you feel that way and how did you handle it?",
-    "tags": ["vulnerability", "exposure", "emotions"]
+    "tags": [
+      "vulnerability",
+      "exposure",
+      "emotions"
+    ]
   },
   {
     "prompt": "Describe a person who has influenced your life in a positive way. What do you admire about them and how have they impacted you?",
-    "tags": ["influence", "positive", "admiration"]
+    "tags": [
+      "influence",
+      "positive",
+      "admiration"
+    ]
   },
   {
     "prompt": "Reflect on a goal that you have set for yourself and describe the steps you have taken to achieve it. What challenges have you faced and how have you overcome them?",
-    "tags": ["goals", "achievement", "challenges"]
+    "tags": [
+      "goals",
+      "achievement",
+      "challenges"
+    ]
   },
   {
     "prompt": "Imagine that you are able to travel to any place in the world. Where would you go and what would you do there?",
-    "tags": ["travel", "imagination", "adventure"]
+    "tags": [
+      "travel",
+      "imagination",
+      "adventure"
+    ]
   },
   {
     "prompt": "Write about a time when you had to make a difficult choice. What were the options and how did you decide?",
-    "tags": ["difficulty", "decision-making", "choice"]
+    "tags": [
+      "difficulty",
+      "decision-making",
+      "choice"
+    ]
   },
   {
     "prompt": "Describe a moment when you felt truly content and at peace. What were you doing and why did it feel so good?",
-    "tags": ["contentment", "peace", "happiness"]
+    "tags": [
+      "contentment",
+      "peace",
+      "happiness"
+    ]
   },
   {
     "prompt": "Reflect on a challenge that you have faced and how you overcame it. What did you learn from the experience?",
-    "tags": ["challenges", "overcoming", "learning"]
+    "tags": [
+      "challenges",
+      "overcoming",
+      "learning"
+    ]
   },
   {
     "prompt": "Imagine that you could have any job in the world. What would it be and why?",
-    "tags": ["imagination", "career", "fulfillment"]
+    "tags": [
+      "imagination",
+      "career",
+      "fulfillment"
+    ]
   },
   {
     "prompt": "Write about a time when you felt proud of yourself. What were you proud of and why?",
-    "tags": ["pride", "accomplishment", "self-esteem"]
+    "tags": [
+      "pride",
+      "accomplishment",
+      "self-esteem"
+    ]
   },
   {
     "prompt": "Describe a situation where you had to work with someone who you didn't get along with. How did you handle it and what did you learn from the experience?",
-    "tags": ["conflict", "collaboration", "learning"]
+    "tags": [
+      "conflict",
+      "collaboration",
+      "learning"
+    ]
   },
   {
     "prompt": "Write about a time when you felt overwhelmed by your emotions.",
-    "tags": ["emotions", "overwhelmed", "stress"]
+    "tags": [
+      "emotions",
+      "overwhelmed",
+      "stress"
+    ]
   },
   {
     "prompt": "Describe a moment of success in your life.",
-    "tags": ["success", "achievement", "happiness"]
+    "tags": [
+      "success",
+      "achievement",
+      "happiness"
+    ]
   },
   {
     "prompt": "Reflect on a time when you made a difficult decision.",
-    "tags": ["decision", "difficulty", "choice"]
+    "tags": [
+      "decision",
+      "difficulty",
+      "choice"
+    ]
   },
   {
     "prompt": "Write about a place that brings you peace and tranquility.",
-    "tags": ["peace", "tranquility", "nature"]
+    "tags": [
+      "peace",
+      "tranquility",
+      "nature"
+    ]
   },
   {
     "prompt": "Think about a person who has had a significant impact on your life. Write about them.",
-    "tags": ["impact", "influence", "gratitude"]
+    "tags": [
+      "impact",
+      "influence",
+      "gratitude"
+    ]
   },
   {
     "prompt": "Write about a challenge you've faced and how you overcame it.",
-    "tags": ["challenge", "overcoming", "strength"]
+    "tags": [
+      "challenge",
+      "overcoming",
+      "strength"
+    ]
   },
   {
     "prompt": "Write about a dream you've had and what it could mean.",
-    "tags": ["dream", "interpretation", "symbolism"]
+    "tags": [
+      "dream",
+      "interpretation",
+      "symbolism"
+    ]
   },
   {
     "prompt": "Think about a time when you were proud of yourself. Write about it.",
-    "tags": ["proud", "accomplishment", "self-esteem"]
+    "tags": [
+      "proud",
+      "accomplishment",
+      "self-esteem"
+    ]
   },
   {
     "prompt": "Thinking of the week that just ended, what are you grateful for?",
-    "tags": ["gratitude", "reflection"]
+    "tags": [
+      "gratitude",
+      "reflection"
+    ]
   },
   {
     "prompt": "Who made you feel good this week?",
-    "tags": ["gratitude", "reflection"]
+    "tags": [
+      "gratitude",
+      "reflection"
+    ]
   },
   {
     "prompt": "What was the biggest mistake you made this week?",
-    "tags": ["reflection"]
+    "tags": [
+      "reflection"
+    ]
   },
   {
     "prompt": "What did you do this week that moved you closer to reaching your goals?",
-    "tags": ["reflection"]
+    "tags": [
+      "reflection"
+    ]
   },
   {
     "prompt": "Is there anything you did this week that you wish you’d done differently?",
-    "tags": ["reflection"]
+    "tags": [
+      "reflection"
+    ]
   },
   {
     "prompt": "What did you most enjoy doing this week?",
-    "tags": ["reflection"]
+    "tags": [
+      "reflection"
+    ]
   },
   {
     "prompt": "How did you procrastinate on important tasks this week?",
-    "tags": ["reflection"]
+    "tags": [
+      "reflection"
+    ]
   },
   {
     "prompt": "What did you learn today/this week?",
-    "tags": ["reflection"]
+    "tags": [
+      "reflection"
+    ]
   },
   {
     "prompt": "What’s the funniest thing that happened to you this week?",
-    "tags": ["reflection"]
+    "tags": [
+      "reflection"
+    ]
   },
   {
     "prompt": "Remember to separate the things that are in your control from those that are not in your control. What are some things that you have control over in your life?",
-    "tags": ["clarity", "stoicism"]
+    "tags": [
+      "clarity",
+      "stoicism"
+    ]
   },
   {
     "prompt": "How did you feel calm and collected this week?",
-    "tags": ["equanimity", "stoicism"]
+    "tags": [
+      "equanimity",
+      "stoicism"
+    ]
   },
   {
     "prompt": "Accurate self-assessment is essential. What are your strengths and weaknesses?",
-    "tags": ["awareness", "stoicism"]
+    "tags": [
+      "awareness",
+      "stoicism"
+    ]
   },
   {
     "prompt": "Do you let your biases and delusions drive your actions? How can you practice unbiased thought?",
-    "tags": ["unbiased_thought", "stoicism"]
+    "tags": [
+      "unbiased_thought",
+      "stoicism"
+    ]
   },
   {
     "prompt": "It’s not just about clear thoughts, but clear thoughts that lead to clear and right action. What actions can you take to align with your values?",
-    "tags": ["right_action", "stoicism"]
+    "tags": [
+      "right_action",
+      "stoicism"
+    ]
   },
   {
     "prompt": "Are you vexed by daily obstacles or do you throw yourself into solving them?",
-    "tags": ["problem_solving", "stoicism"]
+    "tags": [
+      "problem_solving",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What is your duty in life? How are you fulfilling it?",
-    "tags": ["duty", "stoicism"]
+    "tags": [
+      "duty",
+      "stoicism"
+    ]
   },
   {
     "prompt": "Be ready to be flexible and creative. How can you approach challenges with pragmatism?",
-    "tags": ["pragmatism", "stoicism"]
+    "tags": [
+      "pragmatism",
+      "stoicism"
+    ]
   },
   {
     "prompt": "How have you cultivated inner-strength and resilience?",
-    "tags": ["resiliency", "stoicism"]
+    "tags": [
+      "resiliency",
+      "stoicism"
+    ]
   },
   {
     "prompt": "See every person you meet as an opportunity for kindness and compassion. How did you show kindness to others this week?",
-    "tags": ["kindness", "stoicism"]
+    "tags": [
+      "kindness",
+      "stoicism"
+    ]
   },
   {
     "prompt": "Don’t just accept what happens, love it. How can you practice amor fati in your daily life?",
-    "tags": ["amor_fati", "stoicism"]
+    "tags": [
+      "amor_fati",
+      "stoicism"
+    ]
   },
   {
     "prompt": "We were born mortal and nothing can change that. How can you live each moment fully and put nothing off?",
-    "tags": ["memento_mori", "stoicism"]
+    "tags": [
+      "memento_mori",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some challenges that you are facing right now?",
-    "tags": ["adversity", "stoicism"]
+    "tags": [
+      "adversity",
+      "stoicism"
+    ]
   },
   {
     "prompt": "How can you approach challenges with courage and grace?",
-    "tags": ["adversity", "stoicism"]
+    "tags": [
+      "adversity",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some ways that you can practice wisdom?",
-    "tags": ["wisdom", "stoicism"]
+    "tags": [
+      "wisdom",
+      "stoicism"
+    ]
   },
   {
     "prompt": "How can you focus on what is most important in your life?",
-    "tags": ["prioritization", "stoicism"]
+    "tags": [
+      "prioritization",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice self-control?",
-    "tags": ["self-control", "stoicism"]
+    "tags": [
+      "self-control",
+      "stoicism"
+    ]
   },
   {
     "prompt": "How can you practice self-improvement in your daily life?",
-    "tags": ["self-improvement", "stoicism"]
+    "tags": [
+      "self-improvement",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice integrity?",
-    "tags": ["integrity", "stoicism"]
+    "tags": [
+      "integrity",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice justice?",
-    "tags": ["justice", "stoicism"]
+    "tags": [
+      "justice",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice courage?",
-    "tags": ["courage", "stoicism"]
+    "tags": [
+      "courage",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice moderation?",
-    "tags": ["moderation", "stoicism"]
+    "tags": [
+      "moderation",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice acceptance?",
-    "tags": ["acceptance", "stoicism"]
+    "tags": [
+      "acceptance",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice humility?",
-    "tags": ["humility", "stoicism"]
+    "tags": [
+      "humility",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice gratitude?",
-    "tags": ["gratitude", "stoicism"]
+    "tags": [
+      "gratitude",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice compassion?",
-    "tags": ["compassion", "stoicism"]
+    "tags": [
+      "compassion",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice empathy?",
-    "tags": ["empathy", "stoicism"]
+    "tags": [
+      "empathy",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice wisdom?",
-    "tags": ["wisdom", "stoicism"]
+    "tags": [
+      "wisdom",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice forgiveness?",
-    "tags": ["forgiveness", "stoicism"]
+    "tags": [
+      "forgiveness",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice patience?",
-    "tags": ["patience", "stoicism"]
+    "tags": [
+      "patience",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice non-attachment?",
-    "tags": ["non-attachment", "stoicism"]
+    "tags": [
+      "non-attachment",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice simplicity?",
-    "tags": ["simplicity", "stoicism"]
+    "tags": [
+      "simplicity",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice self-denial?",
-    "tags": ["self-denial", "stoicism"]
+    "tags": [
+      "self-denial",
+      "stoicism"
+    ]
   },
   {
     "prompt": "What are some things that you can do to practice self-reliance?",
-    "tags": ["self-reliance", "stoicism"]
+    "tags": [
+      "self-reliance",
+      "stoicism"
+    ]
   },
   {
     "prompt": "Write about a time when you felt really proud of yourself and what you accomplished. What made you feel that way?",
-    "tags": ["pride", "achievement", "self-esteem"]
+    "tags": [
+      "pride",
+      "achievement",
+      "self-esteem"
+    ]
   },
   {
     "prompt": "What are your top three values, and how do they show up in your life and decisions?",
-    "tags": ["values", "life", "decisions"]
+    "tags": [
+      "values",
+      "life",
+      "decisions"
+    ]
   },
   {
     "prompt": "Write about a difficult conversation you had recently. How did you handle it? What did you learn from the experience?",
-    "tags": ["communication", "difficulty", "learning"]
+    "tags": [
+      "communication",
+      "difficulty",
+      "learning"
+    ]
   },
   {
     "prompt": "Write about a place that holds special meaning to you and why it's important to you.",
-    "tags": ["places", "meaning", "importance"]
+    "tags": [
+      "places",
+      "meaning",
+      "importance"
+    ]
   },
   {
     "prompt": "What are some small things you can do to take care of yourself on a daily basis?",
-    "tags": ["self-care", "daily", "routine"]
+    "tags": [
+      "self-care",
+      "daily",
+      "routine"
+    ]
   },
   {
     "prompt": "Write about a time when you had to let go of something or someone that was important to you. How did you cope with the loss?",
-    "tags": ["loss", "letting_go", "coping"]
+    "tags": [
+      "loss",
+      "letting_go",
+      "coping"
+    ]
   },
   {
     "prompt": "Write about a challenge you faced and how you overcame it. What did you learn from the experience?",
-    "tags": ["challenges", "overcoming", "learning"]
+    "tags": [
+      "challenges",
+      "overcoming",
+      "learning"
+    ]
   },
   {
     "prompt": "What are some things you do to stay motivated and focused on your goals?",
-    "tags": ["motivation", "focus", "goals"]
+    "tags": [
+      "motivation",
+      "focus",
+      "goals"
+    ]
   },
   {
     "prompt": "Write about a time when you felt really grateful. What made you feel that way?",
-    "tags": ["gratitude", "appreciation"]
+    "tags": [
+      "gratitude",
+      "appreciation"
+    ]
   },
   {
     "prompt": "Write about a difficult decision you had to make and how you arrived at your final choice.",
-    "tags": ["decision-making", "difficulty", "choices"]
+    "tags": [
+      "decision-making",
+      "difficulty",
+      "choices"
+    ]
   },
   {
     "prompt": "What are three things that you are grateful for today?",
-    "tags": ["gratitude", "reflection"]
+    "tags": [
+      "gratitude",
+      "reflection"
+    ]
   },
   {
     "prompt": "Who made you feel good this week and how did they do it?",
-    "tags": ["gratitude", "reflection"]
+    "tags": [
+      "gratitude",
+      "reflection"
+    ]
   },
   {
     "prompt": "What did you learn about yourself this week?",
-    "tags": ["reflection", "self-awareness"]
+    "tags": [
+      "reflection",
+      "self-awareness"
+    ]
   },
   {
     "prompt": "What are your top priorities for the week ahead?",
-    "tags": ["planning", "right_action"]
+    "tags": [
+      "planning",
+      "right_action"
+    ]
   },
   {
     "prompt": "How did you show kindness to others this week?",
-    "tags": ["kindness", "virtue"]
+    "tags": [
+      "kindness",
+      "virtue"
+    ]
   },
   {
     "prompt": "What was a challenge that you faced this week and how did you overcome it?",
-    "tags": ["resiliency", "problem_solving"]
+    "tags": [
+      "resiliency",
+      "problem_solving"
+    ]
   },
   {
     "prompt": "What was your most memorable moment from this week and why?",
-    "tags": ["reflection", "memento_mori"]
+    "tags": [
+      "reflection",
+      "memento_mori"
+    ]
   },
   {
     "prompt": "What are three things that you could have done differently this week?",
-    "tags": ["reflection", "self-improvement"]
+    "tags": [
+      "reflection",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are your top three priorities for the month ahead?",
-    "tags": ["planning", "right_action"]
+    "tags": [
+      "planning",
+      "right_action"
+    ]
   },
   {
     "prompt": "How can you bring more mindfulness into your daily life?",
-    "tags": ["mindfulness", "self-improvement"]
+    "tags": [
+      "mindfulness",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you accomplished this week that you are proud of?",
-    "tags": ["reflection", "achievement"]
+    "tags": [
+      "reflection",
+      "achievement"
+    ]
   },
   {
     "prompt": "What are three things that you would like to improve about yourself?",
-    "tags": ["reflection", "self-improvement"]
+    "tags": [
+      "reflection",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you would like to do more of in your life?",
-    "tags": ["reflection", "goal_setting"]
+    "tags": [
+      "reflection",
+      "goal_setting"
+    ]
   },
   {
     "prompt": "Write about a time when you experienced strong emotions (e.g. anger, happiness, sadness). How did you handle the situation?",
-    "tags": ["reflection", "emotion"]
+    "tags": [
+      "reflection",
+      "emotion"
+    ]
   },
   {
     "prompt": "Write about a time when you were faced with a difficult decision. How did you decide what to do?",
-    "tags": ["reflection", "decision_making"]
+    "tags": [
+      "reflection",
+      "decision_making"
+    ]
   },
   {
     "prompt": "Write about a time when you were able to help someone. How did it make you feel?",
-    "tags": ["kindness", "reflection"]
+    "tags": [
+      "kindness",
+      "reflection"
+    ]
   },
   {
     "prompt": "Write about a time when you faced a challenge and succeeded. What did you learn from the experience?",
-    "tags": ["reflection", "success"]
+    "tags": [
+      "reflection",
+      "success"
+    ]
   },
   {
     "prompt": "Write about a time when you were able to overcome a fear. How did you do it?",
-    "tags": ["reflection", "courage"]
+    "tags": [
+      "reflection",
+      "courage"
+    ]
   },
   {
     "prompt": "Write about a person who has had a positive influence on your life. How did they impact you?",
-    "tags": ["reflection", "influence"]
+    "tags": [
+      "reflection",
+      "influence"
+    ]
   },
   {
     "prompt": "Write about a time when you were able to let go of something that was no longer serving you. How did it make you feel?",
-    "tags": ["reflection", "letting_go"]
+    "tags": [
+      "reflection",
+      "letting_go"
+    ]
   },
   {
     "prompt": "What was the most positive thing that happened to you today?",
-    "tags": ["gratitude", "reflection"]
+    "tags": [
+      "gratitude",
+      "reflection"
+    ]
   },
   {
     "prompt": "What are three things that you could do to improve your physical health?",
-    "tags": ["health", "self-improvement"]
+    "tags": [
+      "health",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you could do to improve your mental health?",
-    "tags": ["health", "self-improvement"]
+    "tags": [
+      "health",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you are looking forward to in the coming week?",
-    "tags": ["anticipation", "positivity"]
+    "tags": [
+      "anticipation",
+      "positivity"
+    ]
   },
   {
     "prompt": "What are three things that you are proud of from this week?",
-    "tags": ["reflection", "self-improvement"]
+    "tags": [
+      "reflection",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you could do to improve your relationships with others?",
-    "tags": ["relationships", "self-improvement"]
+    "tags": [
+      "relationships",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you could do to improve your personal finances?",
-    "tags": ["self-improvement", "finance"]
+    "tags": [
+      "self-improvement",
+      "finance"
+    ]
   },
   {
     "prompt": "What are three things that you could do to improve your work/career?",
-    "tags": ["self-improvement", "career"]
+    "tags": [
+      "self-improvement",
+      "career"
+    ]
   },
   {
     "prompt": "What are three things that you could do to improve your personal development?",
-    "tags": ["self-improvement", "personal_development"]
+    "tags": [
+      "self-improvement",
+      "personal_development"
+    ]
   },
   {
     "prompt": "What are three things that you could do to improve your home environment?",
-    "tags": ["self-improvement", "home"]
+    "tags": [
+      "self-improvement",
+      "home"
+    ]
   },
   {
     "prompt": "What are three things that you are looking forward to in the near future?",
-    "tags": ["gratitude", "hope"]
+    "tags": [
+      "gratitude",
+      "hope"
+    ]
   },
   {
     "prompt": "What are three things that you have accomplished so far this year?",
-    "tags": ["gratitude", "reflection"]
+    "tags": [
+      "gratitude",
+      "reflection"
+    ]
   },
   {
     "prompt": "What are three things that you need to work on to improve your life?",
-    "tags": ["reflection", "self-improvement"]
+    "tags": [
+      "reflection",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you could do to better manage your time?",
-    "tags": ["time_management", "self-improvement"]
+    "tags": [
+      "time_management",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "How did you show gratitude to others this week?",
-    "tags": ["gratitude", "kindness"]
+    "tags": [
+      "gratitude",
+      "kindness"
+    ]
   },
   {
     "prompt": "What are three things that you learned this week?",
-    "tags": ["reflection", "learning"]
+    "tags": [
+      "reflection",
+      "learning"
+    ]
   },
   {
     "prompt": "What are three things that you could do to reduce your stress levels?",
-    "tags": ["stress_management", "self-improvement"]
+    "tags": [
+      "stress_management",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you value most in life?",
-    "tags": ["reflection", "values"]
+    "tags": [
+      "reflection",
+      "values"
+    ]
   },
   {
     "prompt": "What are your long-term goals and how are you working towards them?",
-    "tags": ["goal_setting", "planning"]
+    "tags": [
+      "goal_setting",
+      "planning"
+    ]
   },
   {
     "prompt": "What did you do this week that made you feel proud of yourself?",
-    "tags": ["self-esteem", "reflection"]
+    "tags": [
+      "self-esteem",
+      "reflection"
+    ]
   },
   {
     "prompt": "What are three things that you can do to improve your relationships with others?",
-    "tags": ["relationships", "self-improvement"]
+    "tags": [
+      "relationships",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What did you do today to take care of yourself?",
-    "tags": ["self-care", "self-improvement"]
+    "tags": [
+      "self-care",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you can do to improve your physical health?",
-    "tags": ["physical_health", "self-care"]
+    "tags": [
+      "physical_health",
+      "self-care"
+    ]
   },
   {
     "prompt": "What are three things that you can do to improve your emotional intelligence?",
-    "tags": ["emotional_intelligence", "self-improvement"]
+    "tags": [
+      "emotional_intelligence",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you can do to improve your financial situation?",
-    "tags": ["financial_planning", "self-improvement"]
+    "tags": [
+      "financial_planning",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you can do to improve your work or school performance?",
-    "tags": ["performance", "self-improvement"]
+    "tags": [
+      "performance",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you can do to improve your personal growth and development?",
-    "tags": ["personal_growth", "self-improvement"]
+    "tags": [
+      "personal_growth",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What is one thing that you are looking forward to in the coming week?",
-    "tags": ["gratitude", "positivity"]
+    "tags": [
+      "gratitude",
+      "positivity"
+    ]
   },
   {
     "prompt": "What are three things that you accomplished this week?",
-    "tags": ["gratitude", "reflection"]
+    "tags": [
+      "gratitude",
+      "reflection"
+    ]
   },
   {
     "prompt": "What is one thing that you struggled with this week and how did you handle it?",
-    "tags": ["reflection", "self-improvement"]
+    "tags": [
+      "reflection",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "Who or what has inspired you this week and why?",
-    "tags": ["inspiration", "reflection"]
+    "tags": [
+      "inspiration",
+      "reflection"
+    ]
   },
   {
     "prompt": "What are three things that you could do to make your days more meaningful?",
-    "tags": ["meaning", "self-improvement"]
+    "tags": [
+      "meaning",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "How did you practice self-control this week?",
-    "tags": ["self-control", "virtue"]
+    "tags": [
+      "self-control",
+      "virtue"
+    ]
   },
   {
     "prompt": "What was a difficult conversation that you had this week and how did you handle it?",
-    "tags": ["communication", "self-improvement"]
+    "tags": [
+      "communication",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you could do to practice self-care?",
-    "tags": ["self-care", "self-improvement"]
+    "tags": [
+      "self-care",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "Write about a time when you felt truly present and in the moment.",
-    "tags": ["mindfulness", "reflection"]
+    "tags": [
+      "mindfulness",
+      "reflection"
+    ]
   },
   {
     "prompt": "What small steps can you take this week to work towards your long-term goals?",
-    "tags": ["planning", "right_action"]
+    "tags": [
+      "planning",
+      "right_action"
+    ]
   },
   {
     "prompt": "How can you show more gratitude in your daily life?",
-    "tags": ["gratitude", "self-improvement"]
+    "tags": [
+      "gratitude",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What is a personal value that you want to focus on this week?",
-    "tags": ["values", "virtue"]
+    "tags": [
+      "values",
+      "virtue"
+    ]
   },
   {
     "prompt": "Write about a time when you felt truly content and at peace.",
-    "tags": ["reflection", "equanimity"]
+    "tags": [
+      "reflection",
+      "equanimity"
+    ]
   },
   {
     "prompt": "What is a small victory that you can celebrate from this week?",
-    "tags": ["reflection", "gratitude"]
+    "tags": [
+      "reflection",
+      "gratitude"
+    ]
   },
   {
     "prompt": "What is a habit that you want to work on changing this week?",
-    "tags": ["self-improvement", "habits"]
+    "tags": [
+      "self-improvement",
+      "habits"
+    ]
   },
   {
     "prompt": "Write about a time when you had to be resilient in the face of a challenge.",
-    "tags": ["resiliency", "reflection"]
+    "tags": [
+      "resiliency",
+      "reflection"
+    ]
   },
   {
     "prompt": "What is something that you can do to bring more joy into your life?",
-    "tags": ["happiness", "self-improvement"]
+    "tags": [
+      "happiness",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "Write about a time when you were able to let go of something that was causing you stress.",
-    "tags": ["mindfulness", "stress_management"]
+    "tags": [
+      "mindfulness",
+      "stress_management"
+    ]
   },
   {
     "prompt": "What are you looking forward to in the coming week?",
-    "tags": ["anticipation", "happiness"]
+    "tags": [
+      "anticipation",
+      "happiness"
+    ]
   },
   {
     "prompt": "What are three things that you are currently struggling with and how can you address them?",
-    "tags": ["self-improvement", "problem_solving"]
+    "tags": [
+      "self-improvement",
+      "problem_solving"
+    ]
   },
   {
     "prompt": "What did you do for self-care this week?",
-    "tags": ["self-care", "well-being"]
+    "tags": [
+      "self-care",
+      "well-being"
+    ]
   },
   {
     "prompt": "What are your top three values and how do they guide your decisions?",
-    "tags": ["values", "self-reflection"]
+    "tags": [
+      "values",
+      "self-reflection"
+    ]
   },
   {
     "prompt": "What are three small things that brought you joy this week?",
-    "tags": ["happiness", "gratitude"]
+    "tags": [
+      "happiness",
+      "gratitude"
+    ]
   },
   {
     "prompt": "Write about a time when you showed kindness to someone.",
-    "tags": ["kindness", "reflection"]
+    "tags": [
+      "kindness",
+      "reflection"
+    ]
   },
   {
     "prompt": "How can you practice gratitude in your daily life?",
-    "tags": ["gratitude", "self-improvement"]
+    "tags": [
+      "gratitude",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you can do to improve your well-being?",
-    "tags": ["self-care", "well-being"]
+    "tags": [
+      "self-care",
+      "well-being"
+    ]
   },
   {
     "prompt": "What are three things that you have accomplished this month that you are proud of?",
-    "tags": ["gratitude", "reflection", "achievement"]
+    "tags": [
+      "gratitude",
+      "reflection",
+      "achievement"
+    ]
   },
   {
     "prompt": "What are three things that you learned about yourself this month?",
-    "tags": ["reflection", "self-awareness"]
+    "tags": [
+      "reflection",
+      "self-awareness"
+    ]
   },
   {
     "prompt": "What are three things that you could have done differently this month?",
-    "tags": ["reflection", "self-improvement"]
+    "tags": [
+      "reflection",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three goals that you want to achieve in the next month?",
-    "tags": ["planning", "goal_setting"]
+    "tags": [
+      "planning",
+      "goal_setting"
+    ]
   },
   {
     "prompt": "What are three things that you can do to be more present in your daily life?",
-    "tags": ["mindfulness", "self-improvement"]
+    "tags": [
+      "mindfulness",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you appreciate about your life right now?",
-    "tags": ["gratitude", "reflection"]
+    "tags": [
+      "gratitude",
+      "reflection"
+    ]
   },
   {
     "prompt": "What are three things that you can do to cultivate more gratitude in your life?",
-    "tags": ["gratitude", "self-improvement"]
+    "tags": [
+      "gratitude",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you can do to cultivate more resilience in your life?",
-    "tags": ["resiliency", "self-improvement"]
+    "tags": [
+      "resiliency",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you can do to cultivate more compassion in your life?",
-    "tags": ["kindness", "self-improvement"]
+    "tags": [
+      "kindness",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What are three things that you can do to cultivate more mindfulness in your life?",
-    "tags": ["mindfulness", "self-improvement"]
+    "tags": [
+      "mindfulness",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "How do you want to grow as a person in the next year?",
-    "tags": ["growth", "self-improvement"]
+    "tags": [
+      "growth",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "Write about a time when you felt truly fulfilled.",
-    "tags": ["fulfillment", "reflection"]
+    "tags": [
+      "fulfillment",
+      "reflection"
+    ]
   },
   {
     "prompt": "What are three things that you value most in your life?",
-    "tags": ["values", "reflection"]
+    "tags": [
+      "values",
+      "reflection"
+    ]
   },
   {
     "prompt": "What are three things that you are proud of accomplishing in the past month?",
-    "tags": ["pride", "reflection"]
+    "tags": [
+      "pride",
+      "reflection"
+    ]
   },
   {
     "prompt": "What is something that you accomplished this week that you are proud of?",
-    "tags": ["accomplishment", "reflection"]
+    "tags": [
+      "accomplishment",
+      "reflection"
+    ]
   },
   {
     "prompt": "What is something that you would like to improve about yourself in the coming week?",
-    "tags": ["self-improvement", "reflection"]
+    "tags": [
+      "self-improvement",
+      "reflection"
+    ]
   },
   {
     "prompt": "What are three things that you can do to move closer to your goals?",
-    "tags": ["goal-setting", "planning"]
+    "tags": [
+      "goal-setting",
+      "planning"
+    ]
   },
   {
     "prompt": "What is a decision that you made this week that you are proud of?",
-    "tags": ["reflection", "self-awareness"]
+    "tags": [
+      "reflection",
+      "self-awareness"
+    ]
   },
   {
     "prompt": "How can you cultivate more equanimity in your daily life?",
-    "tags": ["stoicism", "self-improvement"]
+    "tags": [
+      "stoicism",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What is something that you are struggling with at the moment and how can you work through it?",
-    "tags": ["problem-solving", "resiliency"]
+    "tags": [
+      "problem-solving",
+      "resiliency"
+    ]
   },
   {
     "prompt": "What is a virtue that you would like to cultivate more in your life?",
-    "tags": ["stoicism", "self-improvement"]
+    "tags": [
+      "stoicism",
+      "self-improvement"
+    ]
   },
   {
     "prompt": "What is a challenge that you are facing at the moment and how can you approach it with an unbiased mind?",
-    "tags": ["stoicism", "problem-solving"]
+    "tags": [
+      "stoicism",
+      "problem-solving"
+    ]
   },
   {
     "prompt": "What is something that you enjoyed doing this week and why?",
-    "tags": ["happiness", "reflection"]
+    "tags": [
+      "happiness",
+      "reflection"
+    ]
   },
   {
     "prompt": "What is your personal philosophy?",
-    "tags": ["philosophy", "reflection", "principles"]
+    "tags": [
+      "philosophy",
+      "reflection",
+      "principles"
+    ]
   },
   {
     "prompt": "What are three things that you can do to improve your mental health?",
-    "tags": ["mental_health", "self-care"]
+    "tags": [
+      "mental_health",
+      "self-care"
+    ]
   },
   {
     "prompt": "What are your top three priorities for the year ahead?",
-    "tags": ["planning", "right_action"]
+    "tags": [
+      "planning",
+      "right_action"
+    ]
   },
   {
     "prompt": "What is something you can do today to improve your relationships with others?",
-    "tags": ["relationships", "kindness"]
+    "tags": [
+      "relationships",
+      "kindness"
+    ]
   },
   {
     "prompt": "What is something you can do today to improve your relationship with yourself?",
-    "tags": ["self-improvement", "self-awareness"]
+    "tags": [
+      "self-improvement",
+      "self-awareness"
+    ]
   },
   {
     "prompt": "What was a difficult situation that you faced this week and how did you respond?",
-    "tags": ["resiliency", "equanimity"]
+    "tags": [
+      "resiliency",
+      "equanimity"
+    ]
   }
 ]

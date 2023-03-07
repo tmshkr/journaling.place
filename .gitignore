@@ -48,3 +48,4 @@ TEST_LOGIN_URL
 storageState.json
 
 dist
+dump.sql
