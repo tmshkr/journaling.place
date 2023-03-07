@@ -59,6 +59,8 @@ jobs:
           deployment_package: deploy.zip
           wait_for_environment_recovery: 60
           use_existing_version_if_available: true
+      - name: Verify Deployment
+        run: node scripts/verify-deployment.js ${{ github.ref_name }}-${{ github.sha }}
 
   promote:
     needs: deploy
