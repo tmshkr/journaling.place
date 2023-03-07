@@ -8,12 +8,12 @@ on:
       - ready_for_review
 
 jobs:
-  test:
+  pg-backup:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Backup
+      - name: Backup Postgres
         run: ./packages/pg-backup/run.sh
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
