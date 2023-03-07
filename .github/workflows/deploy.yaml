@@ -82,7 +82,7 @@ jobs:
         run: node scripts/update-dynamic-dns.js
 
   test:
-    needs: promote
+    needs: deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

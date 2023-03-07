@@ -51,6 +51,7 @@
     "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
     "easymde": "^2.18.0",
+    "email-templates": "^11.0.3",
     "eslint": "8.29.0",
     "eslint-config-next": "13.0.6",
     "flexsearch": "^0.7.31",
