@@ -15,7 +15,7 @@ function getTargetEnv(shouldWait) {
   );
 
   if (!targetEnv) {
-    console.error("Target environment does not exist.");
+    console.log("Target environment does not exist.");
     const prodEnv = Environments.find(
       ({ CNAME, Status }) =>
         CNAME.startsWith(PRODUCTION_CNAME) && Status !== "Terminated"
