@@ -1,15 +1,16 @@
 const { execSync } = require("child_process");
 const { retry } = require("./utils/retry");
 
+const { TARGET_ENV, VERSION_LABEL } = process.env;
+
 function verifyDeployment() {
-  const versionLabel = process.argv[2];
   const targetEnv = JSON.parse(
     execSync(
-      `aws elasticbeanstalk describe-environments --environment-names jp-green`
+      `aws elasticbeanstalk describe-environments --environment-names ${TARGET_ENV}`
     )
   ).Environments[0];
 
-  if (targetEnv.VersionLabel !== versionLabel) {
+  if (targetEnv.VersionLabel !== VERSION_LABEL) {
     throw new Error("Target environment is not running the specified version.");
   }
   if (targetEnv.Status !== "Ready") {

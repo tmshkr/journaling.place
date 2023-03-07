@@ -60,7 +60,10 @@ jobs:
           wait_for_environment_recovery: 60
           use_existing_version_if_available: true
       - name: Verify Deployment
-        run: node scripts/verify-deployment.js ${{ github.ref_name }}-${{ github.sha }}
+        env:
+          TARGET_ENV: ${{ steps.target-env.outputs.TARGET_ENV }}
+          VERSION_LABEL: ${{ github.ref_name }}-${{ github.sha }}
+        run: node scripts/verify-deployment.js
 
   promote:
     needs: deploy
