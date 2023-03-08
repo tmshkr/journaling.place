@@ -48,14 +48,25 @@ function getTargetEnv(shouldWait) {
   return targetEnv;
 }
 
+function getStackName() {
+  const { SolutionStacks } = JSON.parse(
+    execSync("aws elasticbeanstalk list-available-solution-stacks")
+  );
+  return SolutionStacks.find((stack) =>
+    /64bit Amazon Linux 2 .* running Docker/.test(stack)
+  );
+}
+
 function createEnvironment(envName, shouldWait) {
   console.log("Creating new environment... ");
-  const stdout = execSync(
-    `aws elasticbeanstalk create-environment --application-name ${APP_NAME} --environment-name ${envName} --cname-prefix ${STAGING_CNAME} --template-name single-instance`
+  const newEnv = JSON.parse(
+    execSync(
+      `aws elasticbeanstalk create-environment --application-name ${APP_NAME} --environment-name ${envName} --cname-prefix ${STAGING_CNAME} --template-name single-instance --solution-stack-name "${getStackName()}"`
+    )
   );
 
-  const newEnv = JSON.parse(stdout);
   console.log("Creating env:", newEnv);
+
   if (shouldWait) {
     execSync(
       `aws elasticbeanstalk wait environment-exists --environment-ids ${newEnv.EnvironmentId}`
