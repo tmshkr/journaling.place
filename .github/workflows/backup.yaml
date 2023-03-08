@@ -1,8 +1,6 @@
 name: Backup Database
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 12 * * *"
 
 jobs:
   pg-backup:
