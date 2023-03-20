@@ -5,6 +5,8 @@ import { selectUser } from "src/store/user";
 import dynamic from "next/dynamic";
 import { clsx } from "clsx";
 
+import { FloatingActionButton } from "./FloatingActionButton";
+
 const MarkdownEditor = dynamic(() => import("src/components/MarkdownEditor"), {
   ssr: false,
 });
@@ -57,6 +59,7 @@ export function JournalPrompt({ prompt }) {
           )}
         </div>
       </div>
+      <FloatingActionButton />
     </div>
   );
 }
