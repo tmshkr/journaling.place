@@ -2,10 +2,11 @@ import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 import userReducer from "./user";
+import modalReducer from "./modal";
 
 export function makeStore() {
   return configureStore({
-    reducer: { user: userReducer },
+    reducer: { user: userReducer, modal: modalReducer },
   });
 }
 

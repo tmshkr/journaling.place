@@ -1,8 +1,13 @@
+import { useAppDispatch } from "src/store";
+import { setModal } from "src/store/modal";
 import { PlusIcon } from "@heroicons/react/20/solid";
 
 export function FloatingActionButton() {
+  const dispatch = useAppDispatch();
+
   const hanldleClick = () => {
     console.log("clicked");
+    dispatch(setModal("create"));
   };
   return (
     <button
