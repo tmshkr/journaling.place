@@ -11,7 +11,7 @@ import { toArrayBuffer } from "src/utils/buffer";
 export default function MarkdownEditor(props) {
   const easyMDEref = useRef(null);
   const createdAtRef = useRef(null);
-  const promptId = props.prompt.id;
+  const promptId = props.prompt?.id;
   const user = useAppSelector(selectUser);
 
   const changeHandler = () =>
