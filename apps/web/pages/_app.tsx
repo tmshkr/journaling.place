@@ -25,6 +25,8 @@ import Head from "next/head";
 import { AppShell } from "src/components/AppShell";
 import { handleKey, clearKey } from "src/lib/crypto";
 
+import { Modal } from "src/components/Modal";
+
 const queryClient = new QueryClient();
 
 export default function App({
@@ -88,6 +90,7 @@ function PageAuth({ Component, pageProps }) {
   return user ? (
     <AppShell>
       <Component {...pageProps} />
+      <Modal />
     </AppShell>
   ) : (
     <Component {...pageProps} />
