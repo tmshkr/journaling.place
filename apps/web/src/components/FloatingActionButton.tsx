@@ -7,8 +7,9 @@ export function FloatingActionButton() {
 
   const hanldleClick = () => {
     console.log("clicked");
-    dispatch(setModal("create"));
+    dispatch(setModal("CreateNewEntryModal"));
   };
+
   return (
     <button
       type="button"
