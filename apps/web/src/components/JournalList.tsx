@@ -1,6 +1,7 @@
 import dayjs from "src/lib/dayjs";
 import Link from "next/link";
 import { CalendarIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import { FloatingActionButton } from "./FloatingActionButton";
 
 export function JournalList({ journals }) {
   if (!journals) return null;
@@ -58,6 +59,7 @@ export function JournalList({ journals }) {
           );
         })}
       </ul>
+      <FloatingActionButton />
     </div>
   );
 }
