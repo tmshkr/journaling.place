@@ -13,14 +13,11 @@ export function Modal() {
   const dispatch = useAppDispatch();
   const selectedModal = useAppSelector(selectModal);
 
-  const cancelButtonRef = useRef(null);
-
   return (
     <Transition.Root show={!!selectedModal} as={Fragment}>
       <Dialog
         as="div"
         className="relative z-10"
-        initialFocus={cancelButtonRef}
         onClose={() => dispatch(setModal(null))}
       >
         <Transition.Child
