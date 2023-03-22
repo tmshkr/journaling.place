@@ -3,10 +3,15 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 import userReducer from "./user";
 import modalReducer from "./modal";
+import promptReducer from "./prompt";
 
 export function makeStore() {
   return configureStore({
-    reducer: { user: userReducer, modal: modalReducer },
+    reducer: {
+      user: userReducer,
+      modal: modalReducer,
+      prompt: promptReducer,
+    },
   });
 }
 

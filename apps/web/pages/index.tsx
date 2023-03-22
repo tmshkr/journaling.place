@@ -1,16 +1,16 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "src/store";
+import { setPrompt, selectPrompt } from "src/store/prompt";
 import { JournalPrompt } from "src/components/JournalPrompt";
 
 export default function PromptPage() {
-  const [prompt, setPrompt] = useState(null);
-
+  const dispatch = useAppDispatch();
   useEffect(() => {
     axios.get("/api/prompt").then((res) => {
-      res.data.text = res.data.prompt;
-      setPrompt(res.data);
+      dispatch(setPrompt(res.data));
     });
   }, []);
 
-  return <JournalPrompt prompt={prompt} />;
+  return <JournalPrompt />;
 }
