@@ -25,7 +25,7 @@ import Head from "next/head";
 import { AppShell } from "src/components/AppShell";
 import { handleKey, clearKey } from "src/lib/crypto";
 
-import { Modal } from "src/components/Modal";
+import { Modal } from "src/components/modals/ModalWrapper";
 
 const queryClient = new QueryClient();
 
@@ -84,8 +84,6 @@ function PageAuth({ Component, pageProps }) {
   useEffect(() => {
     handleSession();
   }, [status]);
-
-  if (status === "loading") return <div>Loading...</div>;
 
   return user ? (
     <AppShell>

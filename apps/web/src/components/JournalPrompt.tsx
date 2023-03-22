@@ -15,9 +15,6 @@ export function JournalPrompt({ prompt }) {
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  if (!prompt) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div
@@ -25,7 +22,9 @@ export function JournalPrompt({ prompt }) {
         "py-7": !user,
       })}
     >
-      <h2 className="text-center mt-1 text-2xl text-gray-900">{prompt.text}</h2>
+      <h2 className="text-center mt-1 text-2xl text-gray-900">
+        {prompt?.text}
+      </h2>
       <div className="mt-6">
         <MarkdownEditor prompt={prompt} />
       </div>
