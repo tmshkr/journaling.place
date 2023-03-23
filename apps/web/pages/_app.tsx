@@ -21,8 +21,10 @@ import {
 import store from "src/store";
 import { useAppDispatch, useAppSelector } from "src/store";
 import { selectUser, setUser, clearUser } from "src/store/user";
+import { selectLoadingState, setLoading } from "src/store/loading";
 import Head from "next/head";
 import { AppShell } from "src/components/AppShell";
+import { LoadingScreen } from "src/components/LoadingScreen";
 import { handleKey, clearKey } from "src/lib/crypto";
 
 import { Modal } from "src/components/modals/ModalWrapper";
@@ -66,6 +68,7 @@ export default function App({
 function PageAuth({ Component, pageProps }) {
   const { data: session, status } = useSession();
   const user = useAppSelector(selectUser);
+  const loading = useAppSelector(selectLoadingState);
   const dispatch = useAppDispatch();
 
   const handleSession = async () => {
@@ -79,6 +82,12 @@ function PageAuth({ Component, pageProps }) {
     } else if (status === "unauthenticated") {
       dispatch(clearUser());
     }
+
+    if (status === "loading") {
+      dispatch(setLoading({ ...loading, user: true }));
+    } else {
+      dispatch(setLoading({ ...loading, user: false }));
+    }
   };
 
   useEffect(() => {
@@ -86,11 +95,17 @@ function PageAuth({ Component, pageProps }) {
   }, [status]);
 
   return user ? (
-    <AppShell>
-      <Component {...pageProps} />
-      <Modal />
-    </AppShell>
+    <>
+      <LoadingScreen />
+      <AppShell>
+        <Component {...pageProps} />
+        <Modal />
+      </AppShell>
+    </>
   ) : (
-    <Component {...pageProps} />
+    <>
+      <LoadingScreen />
+      <Component {...pageProps} />
+    </>
   );
 }

@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 import userReducer from "./user";
+import loadingReducer from "./loading";
 import modalReducer from "./modal";
 import promptReducer from "./prompt";
 
@@ -9,6 +10,7 @@ export function makeStore() {
   return configureStore({
     reducer: {
       user: userReducer,
+      loading: loadingReducer,
       modal: modalReducer,
       prompt: promptReducer,
     },

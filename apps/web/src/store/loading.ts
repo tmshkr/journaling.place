@@ -6,7 +6,10 @@ export interface LoadingState {
 }
 
 const initialState: LoadingState = {
-  value: null,
+  value: {
+    user: true,
+    editor: true,
+  },
 };
 
 export const loadingSlice = createSlice({
@@ -20,5 +23,5 @@ export const loadingSlice = createSlice({
 });
 
 export const { setLoading } = loadingSlice.actions;
-export const selectLoadingState = (state: AppState) => state.user.value;
+export const selectLoadingState = (state: AppState) => state.loading.value;
 export default loadingSlice.reducer;

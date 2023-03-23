@@ -3,7 +3,8 @@ import { useEffect, useRef } from "react";
 import EasyMDE from "easymde";
 import "easymde/dist/easymde.min.css";
 
-import { useAppSelector } from "src/store";
+import { selectLoadingState, setLoading } from "src/store/loading";
+import { useAppSelector, useAppDispatch } from "src/store";
 import { selectUser } from "src/store/user";
 import { encrypt, decrypt } from "src/lib/crypto";
 import { toArrayBuffer } from "src/utils/buffer";
@@ -13,6 +14,8 @@ export default function MarkdownEditor(props) {
   const createdAtRef = useRef(null);
   const promptId = props.prompt?.id;
   const user = useAppSelector(selectUser);
+  const loading = useAppSelector(selectLoadingState);
+  const dispatch = useAppDispatch();
 
   const changeHandler = () =>
     autosave(easyMDEref, createdAtRef, user, promptId);
@@ -26,6 +29,7 @@ export default function MarkdownEditor(props) {
       easyMDEref.current = new EasyMDE({
         element: document.getElementById("editor"),
       });
+      dispatch(setLoading({ ...loading, editor: false }));
     }
     loadSavedData(easyMDEref, createdAtRef, user, promptId);
     easyMDEref.current.codemirror.on("change", changeHandler);
