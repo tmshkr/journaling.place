@@ -29,7 +29,6 @@ export default function MarkdownEditor(props) {
       easyMDEref.current = new EasyMDE({
         element: document.getElementById("editor"),
       });
-      dispatch(setLoading({ ...loading, editor: false }));
     }
     loadSavedData(easyMDEref, createdAtRef, user, promptId);
     easyMDEref.current.codemirror.on("change", changeHandler);

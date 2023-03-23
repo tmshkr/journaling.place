@@ -8,7 +8,6 @@ export interface LoadingState {
 const initialState: LoadingState = {
   value: {
     user: true,
-    editor: true,
   },
 };
 
