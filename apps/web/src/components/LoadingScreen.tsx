@@ -1,9 +1,21 @@
+import { useRouter } from "next/router";
 import { useAppSelector } from "src/store";
 import { selectLoadingState } from "src/store/loading";
+import { getPathRoot } from "src/utils/path";
 
 export function LoadingScreen() {
+  const router = useRouter();
+  const pathRoot = getPathRoot(router.pathname);
   const loading = useAppSelector(selectLoadingState);
-  if (Object.keys(loading).some((item) => loading[item])) {
+  const ignoredItems = {};
+
+  if (!["/", "/[slug]"].includes(pathRoot)) {
+    ignoredItems["editor"] = true;
+  }
+
+  if (
+    Object.keys(loading).some((item) => loading[item] && !ignoredItems[item])
+  ) {
     return (
       <div className="fixed top-0 right-0 bottom-0 left-0 z-50 bg-white pt-[21vh]">
         <div className="flex flex-col items-center">
