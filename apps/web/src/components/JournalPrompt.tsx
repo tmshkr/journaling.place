@@ -12,11 +12,8 @@ const MarkdownEditor = dynamic(() => import("src/components/MarkdownEditor"), {
   ssr: false,
 });
 
-export function JournalPrompt() {
+export function JournalPrompt({ prompt }) {
   const user = useAppSelector(selectUser);
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const prompt = useAppSelector(selectPrompt);
 
   return (
     <div
@@ -25,7 +22,7 @@ export function JournalPrompt() {
       })}
     >
       <h2 className="text-center mt-1 text-2xl text-gray-900">
-        {prompt?.text}
+        {prompt?.text || ""}
       </h2>
       <div className="mt-6">
         <MarkdownEditor prompt={prompt} />

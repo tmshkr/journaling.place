@@ -1,16 +1,24 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "src/store";
-import { setPrompt, selectPrompt } from "src/store/prompt";
+import { prisma } from "src/lib/prisma";
 import { JournalPrompt } from "src/components/JournalPrompt";
 
-export default function PromptPage() {
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    axios.get("/api/prompt").then((res) => {
-      dispatch(setPrompt(res.data));
-    });
-  }, []);
+export default function PromptPage({ prompt }) {
+  return <JournalPrompt prompt={prompt} />;
+}
 
-  return <JournalPrompt />;
+export async function getServerSideProps(context) {
+  const count = await prisma.prompt.count();
+  const [randomPrompt] = await prisma.prompt.findMany({
+    take: 1,
+    select: { id: true, text: true },
+    skip: Math.floor(Math.random() * count),
+  });
+
+  return {
+    props: {
+      prompt: {
+        ...randomPrompt,
+        id: randomPrompt.id.toString(),
+      },
+    },
+  };
 }

@@ -1,12 +1,8 @@
 import { prisma } from "src/lib/prisma";
-import { useAppDispatch, useAppSelector } from "src/store";
-import { setPrompt, selectPrompt } from "src/store/prompt";
 import { JournalPrompt } from "src/components/JournalPrompt";
 
 export default function PromptPage({ prompt }) {
-  const dispatch = useAppDispatch();
-  dispatch(setPrompt(prompt));
-  return <JournalPrompt />;
+  return <JournalPrompt prompt={prompt} />;
 }
 
 export async function getServerSideProps(context) {
