@@ -56,7 +56,7 @@ export function JournalPrompt({ prompt }) {
           )}
         </div>
       </div>
-      <FloatingActionButton />
+      {user && <FloatingActionButton />}
     </div>
   );
 }
