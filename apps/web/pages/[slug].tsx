@@ -1,7 +1,15 @@
+import { useEffect } from "react";
 import { prisma } from "src/lib/prisma";
+import { currentPrompt } from "src/store/prompt";
 import { JournalPrompt } from "src/components/JournalPrompt";
 
 export default function PromptPage({ prompt }) {
+  useEffect(() => {
+    currentPrompt.value = prompt;
+    return () => {
+      currentPrompt.value = null;
+    };
+  }, [prompt]);
   return <JournalPrompt prompt={prompt} />;
 }
 
