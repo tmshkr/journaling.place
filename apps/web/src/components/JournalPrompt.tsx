@@ -40,7 +40,9 @@ export function JournalPrompt({ prompt }) {
         )}
 
         <div>
-          {!user && (
+          {user ? (
+            <FloatingActionButton />
+          ) : (
             <a
               role="button"
               className="btn-primary mt-2"
@@ -56,7 +58,6 @@ export function JournalPrompt({ prompt }) {
           )}
         </div>
       </div>
-      {user && <FloatingActionButton />}
     </div>
   );
 }
