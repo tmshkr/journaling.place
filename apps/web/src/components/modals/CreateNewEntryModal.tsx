@@ -11,6 +11,9 @@ import {
 } from "@heroicons/react/20/solid";
 import DiceIcon from "@fortawesome/fontawesome-free/svgs/solid/dice.svg";
 
+const buttonClasses =
+  "inline-flex mx-1 items-center gap-x-2 rounded-md bg-indigo-600 py-2.5 px-3.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600";
+
 export function CreateNewEntryModal() {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -28,7 +31,7 @@ export function CreateNewEntryModal() {
           </Dialog.Title>
         </div>
       </div>
-      <div className="mt-5 flex">
+      <div className="mt-5 text-center">
         {currentPrompt.value && (
           <button
             type="button"
@@ -36,7 +39,7 @@ export function CreateNewEntryModal() {
               router.push("/42");
               dispatch(setModal(null));
             }}
-            className="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 py-2.5 px-3.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className={buttonClasses}
           >
             <DocumentTextIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
             This Prompt
@@ -46,7 +49,7 @@ export function CreateNewEntryModal() {
         <button
           type="button"
           onClick={() => router.push("/random")}
-          className="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 py-2.5 px-3.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className={buttonClasses}
         >
           <DiceIcon className="fill-white -ml-0.5 h-5 w-5" aria-hidden="true" />
           Random Prompt
@@ -54,7 +57,7 @@ export function CreateNewEntryModal() {
         <button
           type="button"
           onClick={() => router.push("/blank")}
-          className="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 py-2.5 px-3.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className={buttonClasses}
         >
           <DocumentIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
           No Prompt
