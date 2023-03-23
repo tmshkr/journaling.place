@@ -16,10 +16,7 @@ export async function getServerSideProps(context) {
     if (prompt) {
       return {
         props: {
-          prompt: {
-            ...prompt,
-            id: prompt.id.toString(),
-          },
+          prompt,
         },
       };
     }

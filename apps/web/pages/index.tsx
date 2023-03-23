@@ -15,10 +15,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      prompt: {
-        ...randomPrompt,
-        id: randomPrompt.id.toString(),
-      },
+      prompt: randomPrompt,
     },
   };
 }
