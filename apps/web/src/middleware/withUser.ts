@@ -7,10 +7,8 @@ export const withUser = async (req, res, next) => {
     res.status(401).json({ message: "Unauthorized" });
     return;
   }
-  console.log(nextToken);
 
   const { sub } = nextToken;
-
   try {
     const user = await prisma.user.findUniqueOrThrow({
       where: { id: BigInt(sub) },
