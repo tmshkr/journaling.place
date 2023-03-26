@@ -1,5 +1,145 @@
 [
   {
+    "prompt": "What is a belief or mindset that you hold that may not be serving you, and how can you work to shift this perspective?",
+    "tags": [
+      "personal_growth",
+      "self-reflection"
+    ]
+  },
+  {
+    "prompt": "What is a creative pursuit or hobby that you have always wanted to try but haven't yet, and what steps can you take to make it a reality?",
+    "tags": [
+      "creativity",
+      "self-discovery"
+    ]
+  },
+  {
+    "prompt": "What are some ways you can practice self-care and prioritize your well-being in your daily life?",
+    "tags": [
+      "self-care",
+      "mental_health"
+    ]
+  },
+  {
+    "prompt": "What is a situation or challenge you are currently facing that could benefit from a fresh perspective or creative solution?",
+    "tags": [
+      "problem-solving",
+      "innovation"
+    ]
+  },
+  {
+    "prompt": "What are some ways you can show kindness and gratitude to those around you, even in small ways?",
+    "tags": [
+      "gratitude",
+      "kindness"
+    ]
+  },
+  {
+    "prompt": "What are some fears or insecurities that have been holding you back, and how can you work to overcome them?",
+    "tags": [
+      "fear",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "What are some ways you can cultivate more meaningful and authentic connections with others in your life?",
+    "tags": [
+      "relationships",
+      "connection"
+    ]
+  },
+  {
+    "prompt": "What is something you have been putting off that you know you need to do, and how can you take the first step toward getting it done?",
+    "tags": [
+      "procrastination",
+      "productivity"
+    ]
+  },
+  {
+    "prompt": "What are some ways you can practice mindfulness and be more present in your daily life?",
+    "tags": [
+      "mindfulness",
+      "meditation"
+    ]
+  },
+  {
+    "prompt": "What is a lesson you have learned recently that has had a significant impact on you, and how have you applied it to your life?",
+    "tags": [
+      "learning",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "What is something you have been avoiding or putting off, and what steps can you take to address it?",
+    "tags": [
+      "self-improvement",
+      "procrastination"
+    ]
+  },
+  {
+    "prompt": "What is a limiting belief you hold about yourself or the world, and how can you challenge or reframe it?",
+    "tags": [
+      "self-improvement",
+      "mindset"
+    ]
+  },
+  {
+    "prompt": "What is a skill or hobby you've always wanted to learn, and what steps can you take to start learning it?",
+    "tags": [
+      "self-improvement",
+      "learning"
+    ]
+  },
+  {
+    "prompt": "What is a fear that is holding you back, and how can you work to overcome it?",
+    "tags": [
+      "self-improvement",
+      "fear"
+    ]
+  },
+  {
+    "prompt": "What is a habit or behavior that is no longer serving you, and how can you work to break it?",
+    "tags": [
+      "self-improvement",
+      "habits"
+    ]
+  },
+  {
+    "prompt": "What is a problem or challenge you are currently facing, and what steps can you take to address it?",
+    "tags": [
+      "problem-solving",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "What is something you've always wanted to say to someone, but haven't had the courage to do so? Why haven't you said it, and what would happen if you did?",
+    "tags": [
+      "self-reflection",
+      "relationships"
+    ]
+  },
+  {
+    "prompt": "What is a mistake you made in the past that you are still holding onto, and how can you work to forgive yourself and move on?",
+    "tags": [
+      "self-forgiveness",
+      "healing"
+    ]
+  },
+  {
+    "prompt": "What is something you've always wanted to do, but have been too afraid to try? What would happen if you took the leap and tried it?",
+    "tags": [
+      "self-improvement",
+      "fear"
+    ]
+  },
+  {
+    "prompt": "What is a relationship in your life that you feel needs to be repaired or improved, and what steps can you take to work towards that?",
+    "tags": [
+      "relationships",
+      "self-improvement"
+    ]
+  },
+  {
     "prompt": "How have your priorities and values changed over the past year, and what led to these shifts?",
     "tags": [
       "personal_growth",
