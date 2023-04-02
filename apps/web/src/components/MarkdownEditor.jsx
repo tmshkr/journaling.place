@@ -31,12 +31,14 @@ export default function MarkdownEditor(props) {
     }
     if (user) {
       loadSavedData(easyMDEref, journalRef, promptId);
+      easyMDEref.current.codemirror.on("change", changeHandler);
     }
-    easyMDEref.current.codemirror.on("change", changeHandler);
 
     return () => {
-      clearTimeout(easyMDEref.current.__custom_autosave_timeout);
-      easyMDEref.current.codemirror.off("change", changeHandler);
+      if (user) {
+        clearTimeout(easyMDEref.current.__custom_autosave_timeout);
+        easyMDEref.current.codemirror.off("change", changeHandler);
+      }
     };
   }, [promptId, user]);
 
