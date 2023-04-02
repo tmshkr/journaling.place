@@ -2,6 +2,7 @@ import { withUser } from "src/middleware/withUser";
 import { prisma } from "src/lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { createRouter } from "next-connect";
+import { z } from "zod";
 
 (BigInt as any).prototype.toJSON = function () {
   return this.toString();
@@ -57,6 +58,23 @@ async function handleGet(req, res) {
 }
 
 async function handlePost(req, res) {
+  try {
+    z.object({
+      ciphertext: z.object({
+        type: z.string().regex(/Buffer/),
+        data: z.array(z.number()),
+      }),
+      iv: z.object({
+        type: z.string().regex(/Buffer/),
+        data: z.array(z.number()),
+      }),
+      promptId: z.string(),
+    }).parse(req.body);
+  } catch (err) {
+    console.error(err);
+    return res.status(400).json({ errorMessage: "Bad Request" });
+  }
+
   const { ciphertext, iv, promptId } = req.body;
   const { id } = await prisma.journal.create({
     data: {
