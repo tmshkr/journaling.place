@@ -75,8 +75,6 @@ async function autosave(easyMDEref, journalRef, promptId) {
 }
 
 async function loadSavedData(easyMDEref, journalRef, promptId) {
-  easyMDEref.current.value("");
-
   await axios
     .get(`/api/journal?promptId=${promptId}`)
     .then(async ({ data: journals }) => {
