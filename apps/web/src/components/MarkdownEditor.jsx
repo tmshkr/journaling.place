@@ -49,7 +49,11 @@ async function autosave(easyMDEref, journalRef, promptId) {
   clearTimeout(easyMDEref.current.__custom_autosave_timeout);
   easyMDEref.current.__custom_autosave_timeout = setTimeout(async function () {
     const { ciphertext, iv } = await encrypt(easyMDEref.current.value());
-    console.log("saving...");
+
+    if (journalRef.current.loading) {
+      journalRef.current.loading = false;
+      return;
+    }
 
     if (journalRef.current.id) {
       await axios.put(`/api/journal/${journalRef.current.id}`, {
@@ -83,6 +87,7 @@ async function loadSavedData(easyMDEref, journalRef, promptId) {
         const decrypted = await decrypt(journal.ciphertext, journal.iv);
         easyMDEref.current.value(decrypted);
         journalRef.current.id = journal.id;
+        journalRef.current.loading = true;
       }
     });
 }
