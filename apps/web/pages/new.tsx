@@ -5,13 +5,7 @@ import { setPrompt, selectPrompt } from "src/store/prompt";
 import { JournalView } from "src/components/JournalView";
 
 export default function PromptPage({ prompt }) {
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(
-      setPrompt(prompt ? { ...prompt, id: prompt.id.toString() } : null)
-    );
-  }, [prompt?.id]);
-  return <JournalView />;
+  return <JournalView prompt={prompt} />;
 }
 
 export async function getServerSideProps(context) {

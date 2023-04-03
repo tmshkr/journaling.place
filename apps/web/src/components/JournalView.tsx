@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useAppDispatch, useAppSelector } from "src/store";
+import { selectLoadingState, setLoading } from "src/store/loading";
 import { setPrompt, selectPrompt } from "src/store/prompt";
 import { selectUser } from "src/store/user";
 import dynamic from "next/dynamic";
@@ -12,9 +14,12 @@ const MarkdownEditor = dynamic(() => import("src/components/MarkdownEditor"), {
   ssr: false,
 });
 
-export function JournalView() {
+export function JournalView(props) {
+  const [prompt, setPrompt] = useState(props.prompt);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const user = useAppSelector(selectUser);
-  const prompt = useAppSelector(selectPrompt);
+  const loading = useAppSelector(selectLoadingState);
 
   return (
     <div
@@ -26,7 +31,9 @@ export function JournalView() {
         {prompt?.text || ""}
       </h2>
       <div className="mt-6">
-        <MarkdownEditor />
+        <MarkdownEditor
+          {...{ user, prompt, setPrompt, router, loading, dispatch }}
+        />
       </div>
       <div className="text-center">
         {user ? (
