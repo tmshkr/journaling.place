@@ -24,7 +24,7 @@ export function SearchResults({
         return (
           <Link
             key={`${key}#${index}`}
-            href={`/${entry.promptId}`}
+            href={`/journal/${entry.id}`}
             onClick={() => {
               setSearch("");
               setSearchResults([]);
