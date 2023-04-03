@@ -9,9 +9,9 @@ import { selectUser } from "src/store/user";
 import { encrypt, decrypt } from "src/lib/crypto";
 import { toArrayBuffer } from "src/utils/buffer";
 
-export default function MarkdownEditor({ prompt, isNewEntry }) {
+export default function MarkdownEditor({ prompt, isNewEntry, journalId }) {
   const easyMDEref = useRef(null);
-  const journalRef = useRef({});
+  const journalRef = useRef({ id: journalId });
   const promptId = prompt?.id;
   const user = useAppSelector(selectUser);
   const loading = useAppSelector(selectLoadingState);
@@ -77,7 +77,19 @@ async function autosave(easyMDEref, journalRef, promptId) {
 }
 
 async function loadSavedData(easyMDEref, journalRef, promptId) {
-  if (promptId) {
+  console.log("loading...");
+  console.log(journalRef);
+  if (journalRef.current.id) {
+    await axios
+      .get(`/api/journal/${journalRef.current.id}`)
+      .then(async ({ data: journal }) => {
+        journal.ciphertext = toArrayBuffer(journal.ciphertext.data);
+        journal.iv = new Uint8Array(journal.iv.data);
+        const decrypted = await decrypt(journal.ciphertext, journal.iv);
+        easyMDEref.current.value(decrypted);
+        journalRef.current.loading = true;
+      });
+  } else if (promptId) {
     await axios
       .get(`/api/journal?promptId=${promptId}`)
       .then(async ({ data: journals }) => {

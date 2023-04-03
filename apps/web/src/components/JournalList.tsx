@@ -18,7 +18,7 @@ export function JournalList({ journals }) {
           return (
             <li key={key}>
               <Link
-                href={`/${journal.promptId}`}
+                href={`/journal/${journal.id}`}
                 className="block hover:bg-gray-50"
               >
                 <div className="flex items-center px-4 py-4 sm:px-6">

@@ -9,7 +9,36 @@ import { z } from "zod";
 };
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
-router.use(withUser).put(handlePut);
+router.use(withUser).get(handleGet).put(handlePut);
+
+async function handleGet(req, res) {
+  const journal = await prisma.journal
+    .findUniqueOrThrow({
+      where: {
+        id_authorId: {
+          id: BigInt(req.query.id),
+          authorId: BigInt(req.user.id),
+        },
+      },
+      include: {
+        prompt: {
+          select: {
+            text: true,
+          },
+        },
+      },
+    })
+    .then(({ id, ciphertext, iv, createdAt, updatedAt, prompt, promptId }) => ({
+      id,
+      ciphertext,
+      iv,
+      createdAt,
+      updatedAt,
+      promptText: prompt?.text,
+      promptId,
+    }));
+  return res.json(journal);
+}
 
 async function handlePut(req, res) {
   try {

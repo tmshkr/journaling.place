@@ -10,7 +10,9 @@ export default function PromptPage({ prompt }) {
       currentPrompt.value = null;
     };
   }, [prompt]);
-  return <JournalPrompt prompt={prompt} />;
+  return (
+    <JournalPrompt prompt={prompt} isNewEntry={false} journalId={undefined} />
+  );
 }
 
 export async function getServerSideProps(context) {
