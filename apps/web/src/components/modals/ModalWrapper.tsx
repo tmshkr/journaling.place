@@ -18,7 +18,7 @@ export function Modal() {
       <Dialog
         as="div"
         className="relative z-10"
-        onClose={() => dispatch(setModal(null))}
+        onClose={() => dispatch(setModal({ ...modal, isVisible: false }))}
       >
         <Transition.Child
           as={Fragment}
