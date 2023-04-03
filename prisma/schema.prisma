@@ -41,8 +41,6 @@ model Prompt {
   id   BigInt @id @default(autoincrement())
   text String @unique
 
-  slug String? @unique @default(cuid())
-
   journals Journal[]
   tags     TagOnPrompt[]
 
