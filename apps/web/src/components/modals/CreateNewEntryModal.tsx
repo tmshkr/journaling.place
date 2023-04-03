@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { Dialog, Transition } from "@headlessui/react";
 import { useAppDispatch, useAppSelector } from "src/store";
 import { setModal, selectModal } from "src/store/modal";
-import { selectPrompt } from "src/store/prompt";
+import { currentPrompt } from "src/store/prompt";
 import {
   CheckCircleIcon,
   DocumentDuplicateIcon,
@@ -17,7 +17,6 @@ const buttonClasses =
 export function CreateNewEntryModal() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const prompt = useAppSelector(selectPrompt);
   const modal = useAppSelector(selectModal);
 
   return (
@@ -33,11 +32,11 @@ export function CreateNewEntryModal() {
         </div>
       </div>
       <div className="mt-5 text-center">
-        {prompt && (
+        {currentPrompt.value && (
           <button
             type="button"
             onClick={() => {
-              router.push(`/new?promptId=${prompt.id}`);
+              router.push(`/new?promptId=${currentPrompt.value?.id}`);
               dispatch(setModal({ ...modal, isVisible: false }));
             }}
             className={buttonClasses}

@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useAppDispatch, useAppSelector } from "src/store";
 import { selectLoadingState, setLoading } from "src/store/loading";
-import { setPrompt, selectPrompt } from "src/store/prompt";
 import { selectUser } from "src/store/user";
 import dynamic from "next/dynamic";
 import { clsx } from "clsx";
