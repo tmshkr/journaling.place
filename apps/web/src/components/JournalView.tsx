@@ -13,8 +13,7 @@ const MarkdownEditor = dynamic(() => import("src/components/MarkdownEditor"), {
   ssr: false,
 });
 
-export function JournalView(props) {
-  const [prompt, setPrompt] = useState(props.prompt);
+export function JournalView({ prompt, setPrompt }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const user = useAppSelector(selectUser);

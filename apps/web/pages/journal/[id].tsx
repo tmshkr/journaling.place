@@ -1,13 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { currentPrompt } from "src/store/prompt";
 import { JournalView } from "src/components/JournalView";
 
 export default function JournalPage() {
+  const [prompt, setPrompt] = useState(null);
   useEffect(() => {
-    currentPrompt.value = null;
+    currentPrompt.value = prompt;
     return () => {
       currentPrompt.value = null;
     };
-  }, []);
-  return <JournalView prompt={null} />;
+  }, [prompt]);
+  return <JournalView prompt={prompt} setPrompt={setPrompt} />;
 }

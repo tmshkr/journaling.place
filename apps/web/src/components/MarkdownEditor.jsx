@@ -22,7 +22,6 @@ export default function MarkdownEditor({
     id: router.pathname === "/journal/[id]" ? router.query.id : null,
   });
 
-  console.log("journalRef", journalRef);
   const changeHandler = () => autosave(easyMDEref, journalRef, prompt);
 
   useEffect(() => {
