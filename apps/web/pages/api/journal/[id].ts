@@ -13,7 +13,7 @@ router.use(withUser).get(handleGet).put(handlePut);
 
 async function handleGet(req, res) {
   const journal = await prisma.journal
-    .findUniqueOrThrow({
+    .findUnique({
       where: {
         id_authorId: {
           id: BigInt(req.query.id),
@@ -28,15 +28,25 @@ async function handleGet(req, res) {
         },
       },
     })
-    .then(({ id, ciphertext, iv, createdAt, updatedAt, prompt, promptId }) => ({
-      id,
-      ciphertext,
-      iv,
-      createdAt,
-      updatedAt,
-      promptText: prompt?.text,
-      promptId,
-    }));
+    .then((journal) => {
+      if (!journal) return null;
+      const { id, ciphertext, iv, createdAt, updatedAt, prompt, promptId } =
+        journal;
+      return {
+        id,
+        ciphertext,
+        iv,
+        createdAt,
+        updatedAt,
+        promptText: prompt?.text,
+        promptId,
+      };
+    });
+
+  if (!journal) {
+    return res.status(404).send();
+  }
+
   return res.json(journal);
 }
 
