@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useRef } from "react";
 import EasyMDE from "easymde";
 import "easymde/dist/easymde.min.css";
+import { useRouter } from "next/router";
 
 import { selectLoadingState, setLoading } from "src/store/loading";
 import { useAppSelector, useAppDispatch } from "src/store";
@@ -10,17 +11,22 @@ import { selectUser } from "src/store/user";
 import { encrypt, decrypt } from "src/lib/crypto";
 import { toArrayBuffer } from "src/utils/buffer";
 
-export default function MarkdownEditor({ prompt, isNewEntry, journalId }) {
+export default function MarkdownEditor() {
   const easyMDEref = useRef(null);
-  const journalRef = useRef({ id: journalId });
-  const promptId = prompt?.id;
   const user = useAppSelector(selectUser);
   const loading = useAppSelector(selectLoadingState);
+  const prompt = useAppSelector(selectPrompt);
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const isNewEntry = router.pathname === "/new";
+  const journalRef = useRef({
+    id: router.pathname === "/journal/[id]" ? router.query.id : null,
+  });
 
-  const changeHandler = () => autosave(easyMDEref, journalRef, promptId);
+  const changeHandler = () => autosave(easyMDEref, journalRef, prompt);
 
   useEffect(() => {
+    console.log("useEffect fired", prompt);
     if (typeof window === "undefined") return;
 
     const mdeMounted = document.querySelector(".EasyMDEContainer");
@@ -30,20 +36,22 @@ export default function MarkdownEditor({ prompt, isNewEntry, journalId }) {
       });
       dispatch(setLoading({ ...loading, editor: false }));
     }
+
     if (user) {
       if (!isNewEntry) {
-        loadSavedData(easyMDEref, journalRef, promptId, dispatch);
+        loadSavedData(easyMDEref, journalRef, prompt, dispatch);
       }
       easyMDEref.current.codemirror.on("change", changeHandler);
     }
 
     return () => {
+      console.log("cleanup fired");
       if (user) {
         clearTimeout(easyMDEref.current.__custom_autosave_timeout);
         easyMDEref.current.codemirror.off("change", changeHandler);
       }
     };
-  }, [promptId, user]);
+  }, [prompt?.id, user]);
 
   return <textarea id="editor" className="hidden"></textarea>;
 }
@@ -66,7 +74,7 @@ async function autosave(easyMDEref, journalRef, promptId) {
     } else {
       await axios
         .post("/api/journal", {
-          promptId: promptId ? String(promptId) : undefined,
+          promptId: prompt ? String(prompt.id) : undefined,
           ciphertext: Buffer.from(ciphertext),
           iv: Buffer.from(iv),
         })
@@ -77,9 +85,10 @@ async function autosave(easyMDEref, journalRef, promptId) {
   }, 1000);
 }
 
-async function loadSavedData(easyMDEref, journalRef, promptId, dispatch) {
+async function loadSavedData(easyMDEref, journalRef, prompt, dispatch) {
   console.log("loading...");
   console.log(journalRef);
+  easyMDEref.current.value("");
   if (journalRef.current.id) {
     await axios
       .get(`/api/journal/${journalRef.current.id}`)
@@ -98,9 +107,9 @@ async function loadSavedData(easyMDEref, journalRef, promptId, dispatch) {
           )
         );
       });
-  } else if (promptId) {
+  } else if (prompt) {
     await axios
-      .get(`/api/journal?promptId=${promptId}`)
+      .get(`/api/journal?promptId=${prompt.id}`)
       .then(async ({ data: journals }) => {
         const [journal] = journals;
         if (journal) {

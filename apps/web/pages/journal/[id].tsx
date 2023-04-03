@@ -1,8 +1,5 @@
-import { useRouter } from "next/router";
-import { JournalPrompt } from "src/components/JournalPrompt";
+import { JournalView } from "src/components/JournalView";
 
 export default function JournalPage() {
-  const router = useRouter();
-  const journalId = router.query.id;
-  return <JournalPrompt isNewEntry={false} journalId={journalId} />;
+  return <JournalView />;
 }

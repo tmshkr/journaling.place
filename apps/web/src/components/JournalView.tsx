@@ -12,7 +12,7 @@ const MarkdownEditor = dynamic(() => import("src/components/MarkdownEditor"), {
   ssr: false,
 });
 
-export function JournalPrompt({ isNewEntry, journalId }) {
+export function JournalView() {
   const user = useAppSelector(selectUser);
   const prompt = useAppSelector(selectPrompt);
 
@@ -26,11 +26,7 @@ export function JournalPrompt({ isNewEntry, journalId }) {
         {prompt?.text || ""}
       </h2>
       <div className="mt-6">
-        <MarkdownEditor
-          prompt={prompt}
-          isNewEntry={isNewEntry}
-          journalId={journalId}
-        />
+        <MarkdownEditor />
       </div>
       <div className="text-center">
         {user ? (

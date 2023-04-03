@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { prisma } from "src/lib/prisma";
 import { useAppSelector, useAppDispatch } from "src/store";
 import { setPrompt, selectPrompt } from "src/store/prompt";
-import { JournalPrompt } from "src/components/JournalPrompt";
+import { JournalView } from "src/components/JournalView";
 
 export default function PromptPage({ prompt }) {
   const dispatch = useAppDispatch();
@@ -10,7 +10,7 @@ export default function PromptPage({ prompt }) {
     dispatch(setPrompt({ ...prompt, id: prompt.id.toString() }));
   }, [prompt.id]);
 
-  return <JournalPrompt isNewEntry={false} journalId={undefined} />;
+  return <JournalView />;
 }
 
 export async function getServerSideProps(context) {
