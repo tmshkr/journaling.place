@@ -11,9 +11,7 @@ export default function PromptPage({ prompt }) {
       setPrompt(prompt ? { ...prompt, id: prompt.id.toString() } : null)
     );
   }, [prompt?.id]);
-  return (
-    <JournalPrompt prompt={prompt} isNewEntry={true} journalId={undefined} />
-  );
+  return <JournalPrompt isNewEntry={true} journalId={undefined} />;
 }
 
 export async function getServerSideProps(context) {

@@ -12,9 +12,9 @@ const MarkdownEditor = dynamic(() => import("src/components/MarkdownEditor"), {
   ssr: false,
 });
 
-export function JournalPrompt({ prompt, isNewEntry, journalId }) {
+export function JournalPrompt({ isNewEntry, journalId }) {
   const user = useAppSelector(selectUser);
-  prompt = prompt || useAppSelector(selectPrompt);
+  const prompt = useAppSelector(selectPrompt);
 
   return (
     <div
