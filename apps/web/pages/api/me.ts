@@ -27,7 +27,12 @@ async function handlePut(req, res) {
     }),
     ...journals.map(({ id, ciphertext, iv, updatedAt }) => {
       return prisma.journal.update({
-        where: { id: BigInt(id) },
+        where: {
+          id_authorId: {
+            id: BigInt(id),
+            authorId: BigInt(req.user.id),
+          },
+        },
         data: {
           ciphertext: Buffer.from(ciphertext),
           iv: Buffer.from(iv),
