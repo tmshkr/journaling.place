@@ -47,7 +47,7 @@ async function handleGet(req, res) {
             iv,
             createdAt,
             updatedAt,
-            promptText: prompt.text,
+            promptText: prompt?.text,
             promptId,
           })
         )
@@ -68,7 +68,7 @@ async function handlePost(req, res) {
         type: z.string().regex(/Buffer/),
         data: z.array(z.number()),
       }),
-      promptId: z.string(),
+      promptId: z.string().optional(),
     }).parse(req.body);
   } catch (err) {
     console.error(err);
@@ -78,7 +78,7 @@ async function handlePost(req, res) {
   const { ciphertext, iv, promptId } = req.body;
   const { id } = await prisma.journal.create({
     data: {
-      promptId: BigInt(promptId),
+      promptId: promptId ? BigInt(promptId) : undefined,
       authorId: BigInt(req.user.id),
       ciphertext: Buffer.from(ciphertext),
       iv: Buffer.from(iv),
