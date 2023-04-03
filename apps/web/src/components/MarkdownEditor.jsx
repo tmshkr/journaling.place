@@ -9,10 +9,10 @@ import { selectUser } from "src/store/user";
 import { encrypt, decrypt } from "src/lib/crypto";
 import { toArrayBuffer } from "src/utils/buffer";
 
-export default function MarkdownEditor(props) {
+export default function MarkdownEditor({ prompt, isNewEntry }) {
   const easyMDEref = useRef(null);
   const journalRef = useRef({});
-  const promptId = props.prompt.id;
+  const promptId = prompt?.id;
   const user = useAppSelector(selectUser);
   const loading = useAppSelector(selectLoadingState);
   const dispatch = useAppDispatch();
@@ -30,7 +30,9 @@ export default function MarkdownEditor(props) {
       dispatch(setLoading({ ...loading, editor: false }));
     }
     if (user) {
-      loadSavedData(easyMDEref, journalRef, promptId);
+      if (!isNewEntry) {
+        loadSavedData(easyMDEref, journalRef, promptId);
+      }
       easyMDEref.current.codemirror.on("change", changeHandler);
     }
 
@@ -63,7 +65,7 @@ async function autosave(easyMDEref, journalRef, promptId) {
     } else {
       await axios
         .post("/api/journal", {
-          promptId: String(promptId),
+          promptId: promptId ? String(promptId) : undefined,
           ciphertext: Buffer.from(ciphertext),
           iv: Buffer.from(iv),
         })
@@ -75,17 +77,19 @@ async function autosave(easyMDEref, journalRef, promptId) {
 }
 
 async function loadSavedData(easyMDEref, journalRef, promptId) {
-  await axios
-    .get(`/api/journal?promptId=${promptId}`)
-    .then(async ({ data: journals }) => {
-      const [journal] = journals;
-      if (journal) {
-        journal.ciphertext = toArrayBuffer(journal.ciphertext.data);
-        journal.iv = new Uint8Array(journal.iv.data);
-        const decrypted = await decrypt(journal.ciphertext, journal.iv);
-        easyMDEref.current.value(decrypted);
-        journalRef.current.id = journal.id;
-        journalRef.current.loading = true;
-      }
-    });
+  if (promptId) {
+    await axios
+      .get(`/api/journal?promptId=${promptId}`)
+      .then(async ({ data: journals }) => {
+        const [journal] = journals;
+        if (journal) {
+          journal.ciphertext = toArrayBuffer(journal.ciphertext.data);
+          journal.iv = new Uint8Array(journal.iv.data);
+          const decrypted = await decrypt(journal.ciphertext, journal.iv);
+          easyMDEref.current.value(decrypted);
+          journalRef.current.id = journal.id;
+          journalRef.current.loading = true;
+        }
+      });
+  }
 }

@@ -36,7 +36,9 @@ export function CreateNewEntryModal() {
           <button
             type="button"
             onClick={() => {
-              router.push("/42");
+              router.push(
+                `/new?promptId=${(currentPrompt.value as any).id.toString()}`
+              );
               dispatch(setModal(null));
             }}
             className={buttonClasses}
@@ -48,7 +50,10 @@ export function CreateNewEntryModal() {
 
         <button
           type="button"
-          onClick={() => router.push("/random")}
+          onClick={() => {
+            router.push("/new?promptId=random");
+            dispatch(setModal(null));
+          }}
           className={buttonClasses}
         >
           <DiceIcon className="fill-white -ml-0.5 h-5 w-5" aria-hidden="true" />
@@ -56,7 +61,10 @@ export function CreateNewEntryModal() {
         </button>
         <button
           type="button"
-          onClick={() => router.push("/blank")}
+          onClick={() => {
+            router.push("/new");
+            dispatch(setModal(null));
+          }}
           className={buttonClasses}
         >
           <DocumentIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
