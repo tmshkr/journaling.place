@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
 import { useAppDispatch, useAppSelector } from "src/store";
@@ -11,10 +11,10 @@ const modals = {
 
 export function Modal() {
   const dispatch = useAppDispatch();
-  const selectedModal = useAppSelector(selectModal);
+  const modal = useAppSelector(selectModal);
 
   return (
-    <Transition.Root show={!!selectedModal} as={Fragment}>
+    <Transition.Root show={modal.isVisible} as={Fragment}>
       <Dialog
         as="div"
         className="relative z-10"
@@ -44,7 +44,7 @@ export function Modal() {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 w-full sm:w-auto sm:max-w-lg sm:p-6">
-                {modals[selectedModal]}
+                {modals[modal.value]}
               </Dialog.Panel>
             </Transition.Child>
           </div>

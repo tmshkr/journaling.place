@@ -5,6 +5,7 @@ import "easymde/dist/easymde.min.css";
 
 import { selectLoadingState, setLoading } from "src/store/loading";
 import { useAppSelector, useAppDispatch } from "src/store";
+import { setPrompt, selectPrompt } from "src/store/prompt";
 import { selectUser } from "src/store/user";
 import { encrypt, decrypt } from "src/lib/crypto";
 import { toArrayBuffer } from "src/utils/buffer";
@@ -31,7 +32,7 @@ export default function MarkdownEditor({ prompt, isNewEntry, journalId }) {
     }
     if (user) {
       if (!isNewEntry) {
-        loadSavedData(easyMDEref, journalRef, promptId);
+        loadSavedData(easyMDEref, journalRef, promptId, dispatch);
       }
       easyMDEref.current.codemirror.on("change", changeHandler);
     }
@@ -76,18 +77,26 @@ async function autosave(easyMDEref, journalRef, promptId) {
   }, 1000);
 }
 
-async function loadSavedData(easyMDEref, journalRef, promptId) {
+async function loadSavedData(easyMDEref, journalRef, promptId, dispatch) {
   console.log("loading...");
   console.log(journalRef);
   if (journalRef.current.id) {
     await axios
       .get(`/api/journal/${journalRef.current.id}`)
       .then(async ({ data: journal }) => {
+        console.log(journal);
         journal.ciphertext = toArrayBuffer(journal.ciphertext.data);
         journal.iv = new Uint8Array(journal.iv.data);
         const decrypted = await decrypt(journal.ciphertext, journal.iv);
         easyMDEref.current.value(decrypted);
         journalRef.current.loading = true;
+        dispatch(
+          setPrompt(
+            journal.prompt
+              ? { ...journal.prompt, id: journal.prompt.id.toString() }
+              : null
+          )
+        );
       });
   } else if (promptId) {
     await axios

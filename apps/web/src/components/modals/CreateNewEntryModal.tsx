@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { Dialog, Transition } from "@headlessui/react";
-import { useAppDispatch } from "src/store";
-import { setModal } from "src/store/modal";
-import { currentPrompt } from "src/store/prompt";
+import { useAppDispatch, useAppSelector } from "src/store";
+import { setModal, selectModal } from "src/store/modal";
+import { selectPrompt } from "src/store/prompt";
 import {
   CheckCircleIcon,
   DocumentDuplicateIcon,
@@ -17,7 +17,8 @@ const buttonClasses =
 export function CreateNewEntryModal() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  console.log(currentPrompt);
+  const prompt = useAppSelector(selectPrompt);
+  const modal = useAppSelector(selectModal);
 
   return (
     <>
@@ -32,14 +33,12 @@ export function CreateNewEntryModal() {
         </div>
       </div>
       <div className="mt-5 text-center">
-        {currentPrompt.value && (
+        {prompt && (
           <button
             type="button"
             onClick={() => {
-              router.push(
-                `/new?promptId=${(currentPrompt.value as any).id.toString()}`
-              );
-              dispatch(setModal(null));
+              router.push(`/new?promptId=${prompt.id}`);
+              dispatch(setModal({ ...modal, isVisible: false }));
             }}
             className={buttonClasses}
           >
@@ -52,7 +51,7 @@ export function CreateNewEntryModal() {
           type="button"
           onClick={() => {
             router.push("/new?promptId=random");
-            dispatch(setModal(null));
+            dispatch(setModal({ ...modal, isVisible: false }));
           }}
           className={buttonClasses}
         >
@@ -63,7 +62,7 @@ export function CreateNewEntryModal() {
           type="button"
           onClick={() => {
             router.push("/new");
-            dispatch(setModal(null));
+            dispatch(setModal({ ...modal, isVisible: false }));
           }}
           className={buttonClasses}
         >

@@ -1,15 +1,15 @@
 import { useEffect } from "react";
 import { prisma } from "src/lib/prisma";
-import { currentPrompt } from "src/store/prompt";
+import { useAppSelector, useAppDispatch } from "src/store";
+import { setPrompt, selectPrompt } from "src/store/prompt";
 import { JournalPrompt } from "src/components/JournalPrompt";
 
 export default function PromptPage({ prompt }) {
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    currentPrompt.value = prompt;
-    return () => {
-      currentPrompt.value = null;
-    };
-  }, [prompt]);
+    dispatch(setPrompt({ ...prompt, id: prompt.id.toString() }));
+  }, [prompt.id]);
+
   return (
     <JournalPrompt prompt={prompt} isNewEntry={false} journalId={undefined} />
   );

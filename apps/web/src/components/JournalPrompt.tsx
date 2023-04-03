@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { useAppDispatch, useAppSelector } from "src/store";
+import { setPrompt, selectPrompt } from "src/store/prompt";
 import { selectUser } from "src/store/user";
 import dynamic from "next/dynamic";
 import { clsx } from "clsx";
@@ -13,6 +14,7 @@ const MarkdownEditor = dynamic(() => import("src/components/MarkdownEditor"), {
 
 export function JournalPrompt({ prompt, isNewEntry, journalId }) {
   const user = useAppSelector(selectUser);
+  prompt = prompt || useAppSelector(selectPrompt);
 
   return (
     <div

@@ -12,36 +12,22 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 router.use(withUser).get(handleGet).put(handlePut);
 
 async function handleGet(req, res) {
-  const journal = await prisma.journal
-    .findUnique({
-      where: {
-        id_authorId: {
-          id: BigInt(req.query.id),
-          authorId: BigInt(req.user.id),
+  const journal = await prisma.journal.findUnique({
+    where: {
+      id_authorId: {
+        id: BigInt(req.query.id),
+        authorId: BigInt(req.user.id),
+      },
+    },
+    include: {
+      prompt: {
+        select: {
+          id: true,
+          text: true,
         },
       },
-      include: {
-        prompt: {
-          select: {
-            text: true,
-          },
-        },
-      },
-    })
-    .then((journal) => {
-      if (!journal) return null;
-      const { id, ciphertext, iv, createdAt, updatedAt, prompt, promptId } =
-        journal;
-      return {
-        id,
-        ciphertext,
-        iv,
-        createdAt,
-        updatedAt,
-        promptText: prompt?.text,
-        promptId,
-      };
-    });
+    },
+  });
 
   if (!journal) {
     return res.status(404).send();
