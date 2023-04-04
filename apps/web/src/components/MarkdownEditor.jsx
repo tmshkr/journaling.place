@@ -6,7 +6,6 @@ import "easymde/dist/easymde.min.css";
 import { setLoading } from "src/store/loading";
 import { encrypt, decrypt } from "src/lib/crypto";
 import { toArrayBuffer } from "src/utils/buffer";
-import { currentPrompt } from "src/store/prompt";
 
 export default function MarkdownEditor({
   user,
@@ -88,7 +87,6 @@ async function loadSavedData(easyMDEref, journalRef, prompt) {
     const decrypted = await decrypt(journal.ciphertext, journal.iv);
     easyMDEref.current.value(decrypted);
     easyMDEref.current.loading = true;
-    currentPrompt.value = journal.prompt;
   } else if (prompt) {
     await axios
       .get(`/api/journal?promptId=${prompt.id}`)
