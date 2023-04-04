@@ -24,7 +24,7 @@ export function SearchResults({
         return (
           <Link
             key={`${key}#${index}`}
-            href={`/${entry.promptId}`}
+            href={`/journal/${entry.id}`}
             onClick={() => {
               setSearch("");
               setSearchResults([]);
@@ -34,7 +34,7 @@ export function SearchResults({
             <h3
               className="truncate font-medium text-indigo-600"
               dangerouslySetInnerHTML={{
-                __html: entry.promptText.replace(
+                __html: entry.promptText?.replace(
                   new RegExp(search, "gi"),
                   (match) => {
                     return `<span class="bg-yellow-300">${match}</span>`;

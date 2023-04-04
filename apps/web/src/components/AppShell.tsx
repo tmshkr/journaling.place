@@ -25,6 +25,7 @@ import { SearchResults } from "./SearchResults";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
+import journalIcon from "public/favicon-32x32.png";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -61,24 +62,15 @@ export function AppShell({ children }) {
       href: "/settings",
       icon: Cog6ToothIcon,
       current: pathRoot === "/settings",
+    },
+    {
+      name: "Log Out",
+      href: "/logout",
+      icon: LockClosedIcon,
+      current: pathRoot === "/logout",
       requiresAuth: true,
     },
-    user
-      ? {
-          name: "Log Out",
-          href: "/logout",
-          icon: LockClosedIcon,
-          current: pathRoot === "/logout",
-          requiresAuth: true,
-        }
-      : {
-          name: "Sign In",
-          href: `/api/auth/signin?callbackUrl=${encodeURIComponent(
-            window?.location.origin
-          )}`,
-          icon: LockOpenIcon,
-        },
-  ].filter((item) => (item.requiresAuth && !user ? false : true));
+  ];
 
   return (
     <div data-test="app-shell">
@@ -140,6 +132,7 @@ export function AppShell({ children }) {
                       src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                       alt="Your Company"
                     /> */}
+                  <img className="inline pr-2" src={journalIcon.src} />
                   <h1>journaling.place</h1>
                 </div>
                 <div className="mt-5 h-0 flex-1 overflow-y-auto">
@@ -184,9 +177,10 @@ export function AppShell({ children }) {
         {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex flex-grow flex-col overflow-y-auto border-r border-gray-200 bg-white pt-5">
           <div className="flex flex-shrink-0 items-center px-4">
-            <h1 className="h-8 w-auto">
-              <Link href="/">journaling.place</Link>
-            </h1>
+            <Link href="/">
+              <img className="inline pr-2" src={journalIcon.src} />
+              <h1 className="inline h-8 w-auto">journaling.place</h1>
+            </Link>
           </div>
           <div className="mt-5 flex flex-grow flex-col">
             <nav className="flex-1 space-y-1 px-2 pb-4">
@@ -240,7 +234,7 @@ export function AppShell({ children }) {
                   className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   <span className="sr-only">View notifications</span>
-                  {user && <CloudIcon className="h-6 w-6" aria-hidden="true" />}
+                  <CloudIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
               </div>
             </div>

@@ -15,11 +15,11 @@ generator erd {
 }
 
 model User {
-  id                BigInt    @id @default(autoincrement())
-  name              String?
-  email             String?   @unique
-  emailVerified     DateTime?
-  image             String?
+  id            BigInt    @id @default(autoincrement())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
 
   salt Bytes?
 
@@ -75,16 +75,18 @@ model Journal {
   id BigInt @id @default(autoincrement())
 
   authorId BigInt
-  promptId BigInt
+  promptId BigInt?
 
   ciphertext Bytes
   iv         Bytes
 
-  author User   @relation(fields: [authorId], references: [id])
-  prompt Prompt @relation(fields: [promptId], references: [id])
+  author User    @relation(fields: [authorId], references: [id])
+  prompt Prompt? @relation(fields: [promptId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  @@unique([authorId, promptId])
+  @@unique([id, authorId])
+  @@index(authorId)
+  @@index(promptId)
 }

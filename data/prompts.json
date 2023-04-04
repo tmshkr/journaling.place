@@ -1,5 +1,580 @@
 [
   {
+    "prompt": "What is a belief or mindset that you hold that may not be serving you, and how can you work to shift this perspective?",
+    "tags": [
+      "personal_growth",
+      "self-reflection"
+    ]
+  },
+  {
+    "prompt": "What is a creative pursuit or hobby that you have always wanted to try but haven't yet, and what steps can you take to make it a reality?",
+    "tags": [
+      "creativity",
+      "self-discovery"
+    ]
+  },
+  {
+    "prompt": "What are some ways you can practice self-care and prioritize your well-being in your daily life?",
+    "tags": [
+      "self-care",
+      "mental_health"
+    ]
+  },
+  {
+    "prompt": "What is a situation or challenge you are currently facing that could benefit from a fresh perspective or creative solution?",
+    "tags": [
+      "problem-solving",
+      "innovation"
+    ]
+  },
+  {
+    "prompt": "What are some ways you can show kindness and gratitude to those around you, even in small ways?",
+    "tags": [
+      "gratitude",
+      "kindness"
+    ]
+  },
+  {
+    "prompt": "What are some fears or insecurities that have been holding you back, and how can you work to overcome them?",
+    "tags": [
+      "fear",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "What are some ways you can cultivate more meaningful and authentic connections with others in your life?",
+    "tags": [
+      "relationships",
+      "connection"
+    ]
+  },
+  {
+    "prompt": "What is something you have been putting off that you know you need to do, and how can you take the first step toward getting it done?",
+    "tags": [
+      "procrastination",
+      "productivity"
+    ]
+  },
+  {
+    "prompt": "What are some ways you can practice mindfulness and be more present in your daily life?",
+    "tags": [
+      "mindfulness",
+      "meditation"
+    ]
+  },
+  {
+    "prompt": "What is a lesson you have learned recently that has had a significant impact on you, and how have you applied it to your life?",
+    "tags": [
+      "learning",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "What is something you have been avoiding or putting off, and what steps can you take to address it?",
+    "tags": [
+      "self-improvement",
+      "procrastination"
+    ]
+  },
+  {
+    "prompt": "What is a limiting belief you hold about yourself or the world, and how can you challenge or reframe it?",
+    "tags": [
+      "self-improvement",
+      "mindset"
+    ]
+  },
+  {
+    "prompt": "What is a skill or hobby you've always wanted to learn, and what steps can you take to start learning it?",
+    "tags": [
+      "self-improvement",
+      "learning"
+    ]
+  },
+  {
+    "prompt": "What is a fear that is holding you back, and how can you work to overcome it?",
+    "tags": [
+      "self-improvement",
+      "fear"
+    ]
+  },
+  {
+    "prompt": "What is a habit or behavior that is no longer serving you, and how can you work to break it?",
+    "tags": [
+      "self-improvement",
+      "habits"
+    ]
+  },
+  {
+    "prompt": "What is a problem or challenge you are currently facing, and what steps can you take to address it?",
+    "tags": [
+      "problem-solving",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "What is something you've always wanted to say to someone, but haven't had the courage to do so? Why haven't you said it, and what would happen if you did?",
+    "tags": [
+      "self-reflection",
+      "relationships"
+    ]
+  },
+  {
+    "prompt": "What is a mistake you made in the past that you are still holding onto, and how can you work to forgive yourself and move on?",
+    "tags": [
+      "self-forgiveness",
+      "healing"
+    ]
+  },
+  {
+    "prompt": "What is something you've always wanted to do, but have been too afraid to try? What would happen if you took the leap and tried it?",
+    "tags": [
+      "self-improvement",
+      "fear"
+    ]
+  },
+  {
+    "prompt": "What is a relationship in your life that you feel needs to be repaired or improved, and what steps can you take to work towards that?",
+    "tags": [
+      "relationships",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "How have your priorities and values changed over the past year, and what led to these shifts?",
+    "tags": [
+      "personal_growth",
+      "values",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "In what ways have you given back to your community or helped others in need this year, and how have these actions impacted you?",
+    "tags": [
+      "community",
+      "volunteering",
+      "impact"
+    ]
+  },
+  {
+    "prompt": "What are some of the most valuable lessons you've learned from your past relationships, and how can you apply these insights to your future connections?",
+    "tags": [
+      "relationships",
+      "personal_growth",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "How have your creative pursuits or hobbies helped you cultivate a sense of joy and fulfillment in your life, and what new activities do you want to explore in the future?",
+    "tags": [
+      "creativity",
+      "hobbies",
+      "joy"
+    ]
+  },
+  {
+    "prompt": "In what ways have you struggled to communicate effectively with others, and what steps can you take to improve your communication skills?",
+    "tags": [
+      "communication",
+      "skills",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "What self-limiting beliefs have held you back from pursuing your goals or dreams, and how can you challenge these thoughts and adopt a growth mindset?",
+    "tags": [
+      "mindset",
+      "personal_growth",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "How have you coped with stress or difficult emotions this year, and what strategies have been most effective for you?",
+    "tags": [
+      "stress",
+      "emotions",
+      "self-care"
+    ]
+  },
+  {
+    "prompt": "In what ways have you challenged yourself to step out of your comfort zone and try new things, and what benefits have you experienced from taking these risks?",
+    "tags": [
+      "personal_growth",
+      "risk-taking",
+      "comfort_zone"
+    ]
+  },
+  {
+    "prompt": "How have you grown and developed as a person over the past year, and what achievements or milestones are you most proud of?",
+    "tags": [
+      "personal_growth",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "What limiting beliefs have held you back in the past, and how can you work to overcome them?",
+    "tags": [
+      "self-improvement",
+      "mindset"
+    ]
+  },
+  {
+    "prompt": "What are some areas of your life where you need to set stronger boundaries, and how can you begin to do so?",
+    "tags": [
+      "self-care",
+      "relationships"
+    ]
+  },
+  {
+    "prompt": "In what ways have you been avoiding discomfort or challenge, and how can you push yourself to embrace growth and change?",
+    "tags": [
+      "personal_growth",
+      "resilience"
+    ]
+  },
+  {
+    "prompt": "What positive habits or routines have you developed that have had a significant impact on your life, and how can you maintain or build upon them?",
+    "tags": [
+      "habits",
+      "self-improvement"
+    ]
+  },
+  {
+    "prompt": "What are some areas of your life where you feel stuck or stagnant, and what steps can you take to move forward?",
+    "tags": [
+      "personal_growth",
+      "motivation"
+    ]
+  },
+  {
+    "prompt": "What are some things you can do to cultivate a greater sense of gratitude and appreciation in your daily life?",
+    "tags": [
+      "gratitude",
+      "mindfulness"
+    ]
+  },
+  {
+    "prompt": "What aspects of your life do you need to simplify or declutter in order to reduce stress and increase clarity?",
+    "tags": [
+      "self-care",
+      "minimalism"
+    ]
+  },
+  {
+    "prompt": "What are some small but meaningful actions you can take to show kindness and compassion to others on a daily basis?",
+    "tags": [
+      "kindness",
+      "empathy"
+    ]
+  },
+  {
+    "prompt": "What is something you've always wanted to learn or try but have been afraid to pursue, and how can you overcome your fears to make it happen?",
+    "tags": [
+      "personal_growth",
+      "fear"
+    ]
+  },
+  {
+    "prompt": "What are some ways you can incorporate more joy and playfulness into your daily routine?",
+    "tags": [
+      "self-care",
+      "happiness"
+    ]
+  },
+  {
+    "prompt": "What are some of the most valuable lessons you've learned from your closest relationships?",
+    "tags": [
+      "relationships",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "What steps can you take to reduce stress and increase well-being in your daily life?",
+    "tags": [
+      "self-care",
+      "mental_health"
+    ]
+  },
+  {
+    "prompt": "What are some of the biggest challenges facing society today, and how can you contribute to making a positive change?",
+    "tags": [
+      "social_issues",
+      "activism"
+    ]
+  },
+  {
+    "prompt": "What is a limiting belief you've held about yourself that has held you back, and how can you work to overcome it?",
+    "tags": [
+      "self-improvement",
+      "limiting_beliefs"
+    ]
+  },
+  {
+    "prompt": "What are some of the most important values you hold, and how can you work to align your life more closely with these values?",
+    "tags": [
+      "values",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "What have been some of your most significant accomplishments in life so far, and what factors have contributed to your success?",
+    "tags": [
+      "achievements",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "What are some of the most important skills you've developed over the years, and how have these skills helped you in various areas of your life?",
+    "tags": [
+      "skills",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "What are some of the most interesting books you've read recently, and how have these books impacted your perspective on life?",
+    "tags": [
+      "books",
+      "learning"
+    ]
+  },
+  {
+    "prompt": "What are some of the most important life lessons you've learned from your mentors or role models, and how have these lessons shaped your worldview?",
+    "tags": [
+      "mentors",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "How have you been able to overcome adversity in the past, and what lessons have you learned from these experiences?",
+    "tags": [
+      "adversity",
+      "resilience",
+      "growth"
+    ]
+  },
+  {
+    "prompt": "What are some limiting beliefs you hold about yourself or the world, and how can you work to overcome them?",
+    "tags": [
+      "self-improvement",
+      "mindset",
+      "limiting_beliefs"
+    ]
+  },
+  {
+    "prompt": "What are some daily habits or rituals that help you feel centered and focused, and how can you incorporate more of these practices into your life?",
+    "tags": [
+      "self-care",
+      "productivity",
+      "mindfulness"
+    ]
+  },
+  {
+    "prompt": "In what ways have you struggled to communicate effectively with others, and how can you develop better listening and speaking skills?",
+    "tags": [
+      "communication",
+      "relationships",
+      "conflict_resolution"
+    ]
+  },
+  {
+    "prompt": "What are some creative outlets or hobbies that bring you joy and fulfillment, and how can you make more time for these activities in your life?",
+    "tags": [
+      "hobbies",
+      "creativity",
+      "self-expression"
+    ]
+  },
+  {
+    "prompt": "What are some of the biggest risks you've taken in your life, and what have you learned from these experiences?",
+    "tags": [
+      "risk-taking",
+      "courage",
+      "learning"
+    ]
+  },
+  {
+    "prompt": "How have you grown or changed as a person over the past year, and what goals do you have for your personal development in the future?",
+    "tags": [
+      "self-reflection",
+      "personal_growth",
+      "goal-setting"
+    ]
+  },
+  {
+    "prompt": "What are some of the most meaningful experiences you've had with friends or family, and how have these relationships impacted your life?",
+    "tags": [
+      "relationships",
+      "gratitude",
+      "connection"
+    ]
+  },
+  {
+    "prompt": "What are some ways you can incorporate more mindfulness and presence into your daily life, and how might this benefit your overall well-being?",
+    "tags": [
+      "mindfulness",
+      "self-care",
+      "mental_health"
+    ]
+  },
+  {
+    "prompt": "In what ways have you contributed to your community or to causes that are important to you, and how can you continue to make a positive impact?",
+    "tags": [
+      "community",
+      "service",
+      "social_responsibility"
+    ]
+  },
+  {
+    "prompt": "What new skills or knowledge did you acquire this year, and how can you continue to develop them?",
+    "tags": [
+      "personal_development",
+      "learning",
+      "growth"
+    ]
+  },
+  {
+    "prompt": "What habits or practices have you adopted that have improved your physical or mental health?",
+    "tags": [
+      "health",
+      "wellness",
+      "self-care"
+    ]
+  },
+  {
+    "prompt": "What opportunities for creativity or self-expression did you take advantage of this year, and how can you incorporate more of these activities into your life?",
+    "tags": [
+      "creativity",
+      "self-expression",
+      "hobbies"
+    ]
+  },
+  {
+    "prompt": "In what ways did you step out of your comfort zone this year, and what did you learn from these experiences?",
+    "tags": [
+      "personal_growth",
+      "courage",
+      "challenge"
+    ]
+  },
+  {
+    "prompt": "What experiences this year brought you a sense of awe or wonder, and how can you cultivate more of these moments in your life?",
+    "tags": [
+      "gratitude",
+      "mindfulness",
+      "joy"
+    ]
+  },
+  {
+    "prompt": "What relationships or connections did you let go of this year, and what did you learn from these experiences?",
+    "tags": [
+      "relationships",
+      "letting_go",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "What role did self-reflection or introspection play in your life this year, and how can you continue to prioritize this practice?",
+    "tags": [
+      "self-reflection",
+      "introspection",
+      "personal_growth"
+    ]
+  },
+  {
+    "prompt": "What societal or environmental issues did you become more aware of this year, and how can you contribute to positive change in these areas?",
+    "tags": [
+      "social_justice",
+      "environment",
+      "activism"
+    ]
+  },
+  {
+    "prompt": "What new experiences or adventures did you have this year, and how can you continue to seek out new opportunities for growth and exploration?",
+    "tags": [
+      "adventure",
+      "growth",
+      "exploration"
+    ]
+  },
+  {
+    "prompt": "What kind acts or contributions did you make to others this year, and how can you continue to incorporate acts of kindness into your daily life?",
+    "tags": [
+      "kindness",
+      "compassion",
+      "service"
+    ]
+  },
+  {
+    "prompt": "Describe a time when you had to make a difficult decision and how you ultimately arrived at your choice.",
+    "tags": [
+      "decision_making",
+      "reflection"
+    ]
+  },
+  {
+    "prompt": "How do you handle failure or setbacks in your life? Describe a specific instance and what you learned from it.",
+    "tags": [
+      "resilience",
+      "growth_mindset"
+    ]
+  },
+  {
+    "prompt": "What are some limiting beliefs you hold about yourself or your abilities? How can you challenge these beliefs and overcome them?",
+    "tags": [
+      "self-improvement",
+      "mindset"
+    ]
+  },
+  {
+    "prompt": "Describe a person who has had a significant impact on your life and how they influenced you.",
+    "tags": [
+      "gratitude",
+      "reflection",
+      "relationships"
+    ]
+  },
+  {
+    "prompt": "What are some personal or professional goals you have for the next year? How do you plan to achieve them?",
+    "tags": [
+      "goal_setting",
+      "planning"
+    ]
+  },
+  {
+    "prompt": "Describe a moment when you felt truly inspired or motivated. What led to this feeling and how did you channel it?",
+    "tags": [
+      "inspiration",
+      "motivation"
+    ]
+  },
+  {
+    "prompt": "How do you typically handle stress or anxiety in your life? What strategies have been most effective for you?",
+    "tags": [
+      "mental_health",
+      "coping"
+    ]
+  },
+  {
+    "prompt": "What is a skill or hobby you have always wanted to learn but haven't pursued? What is holding you back, and how can you overcome these barriers?",
+    "tags": [
+      "self-improvement",
+      "learning"
+    ]
+  },
+  {
+    "prompt": "Describe a time when you had to step outside of your comfort zone. What did you learn from this experience?",
+    "tags": [
+      "growth_mindset",
+      "resilience"
+    ]
+  },
+  {
+    "prompt": "What are some ways you can practice self-care and prioritize your own well-being in your daily life?",
+    "tags": [
+      "self-care",
+      "mental_health"
+    ]
+  },
+  {
     "prompt": "How have you let your desires or expectations cloud your judgment in the past, and what have you learned from these experiences?",
     "tags": [
       "self-reflection",

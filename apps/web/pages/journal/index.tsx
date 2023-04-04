@@ -1,11 +1,12 @@
+import { useEffect } from "react";
 import { useQuery } from "react-query";
-import { useAppSelector } from "src/store";
 import { selectUser } from "src/store/user";
+import { useAppSelector, useAppDispatch } from "src/store";
 
 import { JournalList } from "src/components/JournalList";
 import { getJournals } from "src/store/journal";
 
-export default function JournalPage() {
+export default function JournalIndex() {
   const user = useAppSelector(selectUser);
   const { isLoading, error, data } = useQuery(
     "journal",

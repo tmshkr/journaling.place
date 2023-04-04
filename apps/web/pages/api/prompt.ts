@@ -32,10 +32,9 @@ export default async function handler(
 
   const response: any = {};
   response.id = prompt.id;
-  response.prompt = prompt.text;
+  response.text = prompt.text;
   response.tags = prompt.tags.map(({ tag: { text } }) => text);
-  response.formattedTags =
-    "\n" + response.tags.map((tag) => `#${tag}`).join(" ");
+  response.formattedTags = response.tags.map((tag) => `#${tag}`).join(" ");
   response.url = `${process.env.NEXTAUTH_URL}/${prompt.id}`;
 
   res.status(200).json(response);

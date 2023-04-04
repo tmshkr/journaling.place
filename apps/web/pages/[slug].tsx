@@ -1,8 +1,18 @@
+import { useEffect } from "react";
 import { prisma } from "src/lib/prisma";
-import { JournalPrompt } from "src/components/JournalPrompt";
+import { useAppSelector, useAppDispatch } from "src/store";
+import { currentPrompt } from "src/store/prompt";
+import { JournalView } from "src/components/JournalView";
 
 export default function PromptPage({ prompt }) {
-  return <JournalPrompt prompt={prompt} />;
+  useEffect(() => {
+    currentPrompt.value = prompt;
+    return () => {
+      currentPrompt.value = null;
+    };
+  }, []);
+
+  return <JournalView prompt={prompt} journal={null} />;
 }
 
 export async function getServerSideProps(context) {

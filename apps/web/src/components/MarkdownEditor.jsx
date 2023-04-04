@@ -3,86 +3,103 @@ import { useEffect, useRef } from "react";
 import EasyMDE from "easymde";
 import "easymde/dist/easymde.min.css";
 
-import { useAppSelector } from "src/store";
-import { selectUser } from "src/store/user";
+import { setLoading } from "src/store/loading";
 import { encrypt, decrypt } from "src/lib/crypto";
 import { toArrayBuffer } from "src/utils/buffer";
 
-export default function MarkdownEditor(props) {
+export default function MarkdownEditor({
+  user,
+  prompt,
+  router,
+  loading,
+  dispatch,
+  journal,
+}) {
+  const isNewEntry = router.pathname === "/new";
   const easyMDEref = useRef(null);
-  const createdAtRef = useRef(null);
-  const promptId = props.prompt.id;
-  const user = useAppSelector(selectUser);
+  const journalRef = useRef(journal);
 
-  const changeHandler = () =>
-    autosave(easyMDEref, createdAtRef, user, promptId);
+  const changeHandler = () => autosave(easyMDEref, journalRef, prompt);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!promptId) return;
 
     const mdeMounted = document.querySelector(".EasyMDEContainer");
     if (!mdeMounted) {
       easyMDEref.current = new EasyMDE({
         element: document.getElementById("editor"),
       });
+      dispatch(setLoading({ ...loading, editor: false }));
     }
-    loadSavedData(easyMDEref, createdAtRef, user, promptId);
-    easyMDEref.current.codemirror.on("change", changeHandler);
+
+    if (user) {
+      if (!isNewEntry) {
+        loadSavedData(easyMDEref, journalRef, prompt);
+      }
+      easyMDEref.current.codemirror.on("change", changeHandler);
+    }
 
     return () => {
-      clearTimeout(easyMDEref.current.__custom_autosave_timeout);
-      easyMDEref.current.codemirror.off("change", changeHandler);
+      if (user) {
+        clearTimeout(easyMDEref.current.__custom_autosave_timeout);
+        easyMDEref.current.codemirror.off("change", changeHandler);
+      }
+      easyMDEref.current.value("");
+      journalRef.current = null;
     };
-  }, [promptId, user]);
+  }, [user, router]);
 
   return <textarea id="editor" className="hidden"></textarea>;
 }
 
-async function autosave(easyMDEref, createdAtRef, user, promptId) {
-  const self = easyMDEref.current;
-  clearTimeout(self.__custom_autosave_timeout);
-  self.__custom_autosave_timeout = setTimeout(async function () {
-    const value = self.value();
-    const now = new Date();
-    if (!createdAtRef.current) {
-      createdAtRef.current = new Date();
+async function autosave(easyMDEref, journalRef, prompt) {
+  clearTimeout(easyMDEref.current.__custom_autosave_timeout);
+  easyMDEref.current.__custom_autosave_timeout = setTimeout(async function () {
+    if (easyMDEref.current.loading) {
+      easyMDEref.current.loading = false;
+      return;
     }
 
-    if (user) {
-      console.log("saving...");
-      const { ciphertext, iv } = await encrypt(value);
+    const { ciphertext, iv } = await encrypt(easyMDEref.current.value());
+
+    if (journalRef.current) {
+      await axios.put(`/api/journal/${journalRef.current.id}`, {
+        ciphertext: Buffer.from(ciphertext),
+        iv: Buffer.from(iv),
+      });
+    } else {
       await axios
-        .put("/api/journal", {
-          promptId: String(promptId),
+        .post("/api/journal", {
+          promptId: prompt ? String(prompt.id) : undefined,
           ciphertext: Buffer.from(ciphertext),
           iv: Buffer.from(iv),
-          updatedAt: now,
         })
-        .then(({ data: journal }) => journal.id);
+        .then(({ data }) => {
+          journalRef.current = data;
+        });
     }
   }, 1000);
 }
 
-async function loadSavedData(easyMDEref, createdAtRef, user, promptId) {
-  easyMDEref.current.value("");
-
-  if (user) {
-    const journal = await axios
-      .get(`/api/journal?promptId=${promptId}`)
-      .then(({ data: journal }) => {
-        if (!journal) return;
-        journal.ciphertext = toArrayBuffer(journal.ciphertext.data);
-        journal.iv = new Uint8Array(journal.iv.data);
-        journal.updatedAt = new Date(journal.updatedAt);
-        journal.createdAt = new Date(journal.createdAt);
-        createdAtRef.current = journal.createdAt;
-        return journal;
+async function loadSavedData(easyMDEref, journalRef, prompt) {
+  if (journalRef.current) {
+    const journal = journalRef.current;
+    const decrypted = await decrypt(journal.ciphertext, journal.iv);
+    easyMDEref.current.value(decrypted);
+    easyMDEref.current.loading = true;
+  } else if (prompt) {
+    await axios
+      .get(`/api/journal?promptId=${prompt.id}`)
+      .then(async ({ data: journals }) => {
+        const [journal] = journals;
+        if (journal) {
+          journal.ciphertext = toArrayBuffer(journal.ciphertext.data);
+          journal.iv = new Uint8Array(journal.iv.data);
+          const decrypted = await decrypt(journal.ciphertext, journal.iv);
+          easyMDEref.current.value(decrypted);
+          easyMDEref.current.loading = true;
+          journalRef.current = journal;
+        }
       });
-
-    if (journal) {
-      const decrypted = await decrypt(journal.ciphertext, journal.iv);
-      easyMDEref.current.value(decrypted);
-    }
   }
 }
