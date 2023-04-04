@@ -3,15 +3,15 @@ import { prisma } from "src/lib/prisma";
 import { currentPrompt } from "src/store/prompt";
 import { JournalView } from "src/components/JournalView";
 
-export default function PromptPage(props) {
+export default function PromptPage({ prompt }) {
   useEffect(() => {
-    currentPrompt.value = props.prompt;
+    currentPrompt.value = prompt;
     return () => {
       currentPrompt.value = null;
     };
-  }, [props.prompt]);
+  }, [prompt]);
 
-  return <JournalView prompt={props.prompt} journal={null} />;
+  return <JournalView prompt={prompt} journal={null} />;
 }
 
 export async function getServerSideProps(context) {

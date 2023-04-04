@@ -10,7 +10,7 @@ export default function PromptPage({ prompt }) {
     return () => {
       currentPrompt.value = null;
     };
-  }, []);
+  }, [prompt]);
 
   return <JournalView prompt={prompt} journal={null} />;
 }
