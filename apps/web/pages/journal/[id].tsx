@@ -27,7 +27,6 @@ export default function JournalPage({ journal }) {
 export async function getServerSideProps({ params, req, res }) {
   const nextToken: any = await getToken({ req });
   if (!nextToken) {
-    res.status(401).json({ message: "Unauthorized" });
     return {
       notFound: true,
     };
