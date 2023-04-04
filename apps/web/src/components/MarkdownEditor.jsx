@@ -11,16 +11,14 @@ import { currentPrompt } from "src/store/prompt";
 export default function MarkdownEditor({
   user,
   prompt,
-  setPrompt,
   router,
   loading,
   dispatch,
+  journal,
 }) {
   const isNewEntry = router.pathname === "/new";
   const easyMDEref = useRef(null);
-  const journalRef = useRef({
-    id: router.pathname === "/journal/[id]" ? router.query.id : null,
-  });
+  const journalRef = useRef(journal);
 
   const changeHandler = () => autosave(easyMDEref, journalRef, prompt);
 
@@ -37,7 +35,7 @@ export default function MarkdownEditor({
 
     if (user) {
       if (!isNewEntry) {
-        loadSavedData(easyMDEref, journalRef, prompt, setPrompt);
+        loadSavedData(easyMDEref, journalRef, prompt);
       }
       easyMDEref.current.codemirror.on("change", changeHandler);
     }
@@ -56,14 +54,14 @@ export default function MarkdownEditor({
 async function autosave(easyMDEref, journalRef, prompt) {
   clearTimeout(easyMDEref.current.__custom_autosave_timeout);
   easyMDEref.current.__custom_autosave_timeout = setTimeout(async function () {
-    if (journalRef.current.loading) {
-      journalRef.current.loading = false;
+    if (easyMDEref.current.loading) {
+      easyMDEref.current.loading = false;
       return;
     }
 
     const { ciphertext, iv } = await encrypt(easyMDEref.current.value());
 
-    if (journalRef.current.id) {
+    if (journalRef.current) {
       await axios.put(`/api/journal/${journalRef.current.id}`, {
         ciphertext: Buffer.from(ciphertext),
         iv: Buffer.from(iv),
@@ -75,28 +73,21 @@ async function autosave(easyMDEref, journalRef, prompt) {
           ciphertext: Buffer.from(ciphertext),
           iv: Buffer.from(iv),
         })
-        .then(({ data: journal }) => {
-          journalRef.current.id = journal.id;
+        .then(({ data }) => {
+          journalRef.current = data;
         });
     }
   }, 1000);
 }
 
-async function loadSavedData(easyMDEref, journalRef, prompt, setPrompt) {
-  if (journalRef.current.id) {
-    await axios
-      .get(`/api/journal/${journalRef.current.id}`)
-      .then(async ({ data: journal }) => {
-        journal.ciphertext = toArrayBuffer(journal.ciphertext.data);
-        journal.iv = new Uint8Array(journal.iv.data);
-        const decrypted = await decrypt(journal.ciphertext, journal.iv);
-        easyMDEref.current.value(decrypted);
-        journalRef.current.loading = true;
-        currentPrompt.value = journal.prompt;
-        if (journal.prompt) {
-          setPrompt(journal.prompt);
-        }
-      });
+async function loadSavedData(easyMDEref, journalRef, prompt) {
+  easyMDEref.current.value("");
+  if (journalRef.current) {
+    const journal = journalRef.current;
+    const decrypted = await decrypt(journal.ciphertext, journal.iv);
+    easyMDEref.current.value(decrypted);
+    easyMDEref.current.loading = true;
+    currentPrompt.value = journal.prompt;
   } else if (prompt) {
     await axios
       .get(`/api/journal?promptId=${prompt.id}`)
@@ -107,8 +98,8 @@ async function loadSavedData(easyMDEref, journalRef, prompt, setPrompt) {
           journal.iv = new Uint8Array(journal.iv.data);
           const decrypted = await decrypt(journal.ciphertext, journal.iv);
           easyMDEref.current.value(decrypted);
-          journalRef.current.id = journal.id;
-          journalRef.current.loading = true;
+          easyMDEref.current.loading = true;
+          journalRef.current = journal;
         }
       });
   }

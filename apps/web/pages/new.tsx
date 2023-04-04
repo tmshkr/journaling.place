@@ -4,16 +4,14 @@ import { currentPrompt } from "src/store/prompt";
 import { JournalView } from "src/components/JournalView";
 
 export default function PromptPage(props) {
-  const [prompt, setPrompt] = useState(props.prompt);
   useEffect(() => {
-    setPrompt(props.prompt);
     currentPrompt.value = props.prompt;
     return () => {
       currentPrompt.value = null;
     };
   }, [props.prompt]);
 
-  return <JournalView prompt={prompt} setPrompt={setPrompt} />;
+  return <JournalView prompt={props.prompt} journal={null} />;
 }
 
 export async function getServerSideProps(context) {

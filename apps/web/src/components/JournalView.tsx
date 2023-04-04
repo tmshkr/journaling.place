@@ -13,7 +13,7 @@ const MarkdownEditor = dynamic(() => import("src/components/MarkdownEditor"), {
   ssr: false,
 });
 
-export function JournalView({ prompt, setPrompt }) {
+export function JournalView({ prompt, journal }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const user = useAppSelector(selectUser);
@@ -30,7 +30,7 @@ export function JournalView({ prompt, setPrompt }) {
       </h2>
       <div className="mt-6">
         <MarkdownEditor
-          {...{ user, prompt, setPrompt, router, loading, dispatch }}
+          {...{ user, prompt, router, loading, dispatch, journal }}
         />
       </div>
       <div className="text-center">

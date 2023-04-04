@@ -12,7 +12,7 @@ export default function PromptPage({ prompt }) {
     };
   }, []);
 
-  return <JournalView prompt={prompt} setPrompt={null} />;
+  return <JournalView prompt={prompt} journal={null} />;
 }
 
 export async function getServerSideProps(context) {

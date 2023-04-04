@@ -1,14 +1,64 @@
+import { prisma } from "src/lib/prisma";
+import { getToken } from "next-auth/jwt";
 import { useEffect, useState } from "react";
 import { currentPrompt } from "src/store/prompt";
 import { JournalView } from "src/components/JournalView";
+import superjson from "superjson";
 
-export default function JournalPage() {
-  const [prompt, setPrompt] = useState(null);
+superjson.registerCustom<Buffer, number[]>(
+  {
+    isApplicable: (v): v is Buffer => v instanceof Buffer,
+    serialize: (v) => Array.from(v),
+    deserialize: (v) => Buffer.from(v),
+  },
+  "buffer"
+);
+
+export default function JournalPage({ journal }) {
   useEffect(() => {
-    currentPrompt.value = prompt;
+    currentPrompt.value = journal.prompt;
     return () => {
       currentPrompt.value = null;
     };
-  }, [prompt]);
-  return <JournalView prompt={prompt} setPrompt={setPrompt} />;
+  }, [journal.prompt]);
+  return <JournalView prompt={journal.prompt} journal={journal} />;
+}
+
+export async function getServerSideProps({ params, req, res }) {
+  const nextToken: any = await getToken({ req });
+  if (!nextToken) {
+    res.status(401).json({ message: "Unauthorized" });
+    return {
+      notFound: true,
+    };
+  }
+
+  const journal = await prisma.journal.findUnique({
+    where: {
+      id_authorId: {
+        id: BigInt(params.id),
+        authorId: BigInt(nextToken.sub),
+      },
+    },
+    include: {
+      prompt: {
+        select: {
+          id: true,
+          text: true,
+        },
+      },
+    },
+  });
+
+  if (!journal) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      journal: journal,
+    },
+  };
 }
