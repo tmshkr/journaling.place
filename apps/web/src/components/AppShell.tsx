@@ -25,6 +25,7 @@ import { SearchResults } from "./SearchResults";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
+import journalIcon from "public/favicon-32x32.png";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -131,6 +132,7 @@ export function AppShell({ children }) {
                       src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                       alt="Your Company"
                     /> */}
+                  <img className="inline pr-2" src={journalIcon.src} />
                   <h1>journaling.place</h1>
                 </div>
                 <div className="mt-5 h-0 flex-1 overflow-y-auto">
@@ -175,9 +177,10 @@ export function AppShell({ children }) {
         {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex flex-grow flex-col overflow-y-auto border-r border-gray-200 bg-white pt-5">
           <div className="flex flex-shrink-0 items-center px-4">
-            <h1 className="h-8 w-auto">
-              <Link href="/">journaling.place</Link>
-            </h1>
+            <Link href="/">
+              <img className="inline pr-2" src={journalIcon.src} />
+              <h1 className="inline h-8 w-auto">journaling.place</h1>
+            </Link>
           </div>
           <div className="mt-5 flex flex-grow flex-col">
             <nav className="flex-1 space-y-1 px-2 pb-4">
