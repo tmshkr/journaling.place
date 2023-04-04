@@ -45,8 +45,10 @@ export default function MarkdownEditor({
         clearTimeout(easyMDEref.current.__custom_autosave_timeout);
         easyMDEref.current.codemirror.off("change", changeHandler);
       }
+      easyMDEref.current.value("");
+      journalRef.current = null;
     };
-  }, [user]);
+  }, [user, router]);
 
   return <textarea id="editor" className="hidden"></textarea>;
 }
@@ -81,7 +83,6 @@ async function autosave(easyMDEref, journalRef, prompt) {
 }
 
 async function loadSavedData(easyMDEref, journalRef, prompt) {
-  easyMDEref.current.value("");
   if (journalRef.current) {
     const journal = journalRef.current;
     const decrypted = await decrypt(journal.ciphertext, journal.iv);
