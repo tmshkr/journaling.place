@@ -13,6 +13,7 @@ router.use(withUser).get(handleGet).post(handlePost);
 
 async function handleGet(req, res) {
   const { cursor, promptId } = req.query;
+  const take = 100;
 
   if (promptId) {
     return res.json(
@@ -34,8 +35,9 @@ async function handleGet(req, res) {
         where: {
           authorId: BigInt(req.user.id),
         },
-        // TODO: pagination
-        take: 100,
+        take,
+        skip: cursor ? 1 : 0,
+        cursor: cursor ? { id: BigInt(cursor) } : undefined,
         orderBy: { updatedAt: "desc" },
         include: {
           prompt: {
@@ -45,19 +47,33 @@ async function handleGet(req, res) {
           },
         },
       })
-      .then((journals) =>
-        journals.map(
-          ({ id, ciphertext, iv, createdAt, updatedAt, prompt, promptId }) => ({
-            id,
-            ciphertext,
-            iv,
-            createdAt,
-            updatedAt,
-            promptText: prompt?.text,
-            promptId,
-          })
-        )
-      )
+      .then((journals) => {
+        return {
+          journals: journals.map(
+            ({
+              id,
+              ciphertext,
+              iv,
+              createdAt,
+              updatedAt,
+              prompt,
+              promptId,
+            }) => ({
+              id,
+              ciphertext,
+              iv,
+              createdAt,
+              updatedAt,
+              promptText: prompt?.text,
+              promptId,
+            })
+          ),
+          nextCursor:
+            journals.length === take
+              ? journals[journals.length - 1].id
+              : undefined,
+        };
+      })
   );
 }
 

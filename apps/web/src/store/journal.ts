@@ -10,19 +10,21 @@ export const journalIndex = new Index({
   resolution: 5,
 });
 
-export async function getJournals() {
-  const journals = {};
+export async function getJournals(cache = {}, cursor) {
+  const nextCursor = await axios
+    .get("/api/journal", { params: { cursor } })
+    .then(async ({ data }) => {
+      const { journals, nextCursor } = data;
+      for (const entry of journals) {
+        cache[entry.id] = entry;
+        entry.ciphertext = toArrayBuffer(entry.ciphertext.data);
+        entry.iv = new Uint8Array(entry.iv.data);
+        entry.decrypted = await decrypt(entry.ciphertext, entry.iv);
+        journalIndex.add(Number(entry.id), entry.promptText);
+        journalIndex.append(Number(entry.id), entry.decrypted);
+      }
+      return nextCursor;
+    });
 
-  await axios.get("/api/journal").then(async ({ data }) => {
-    for (const entry of data) {
-      journals[entry.id] = entry;
-      entry.ciphertext = toArrayBuffer(entry.ciphertext.data);
-      entry.iv = new Uint8Array(entry.iv.data);
-      entry.decrypted = await decrypt(entry.ciphertext, entry.iv);
-      journalIndex.add(Number(entry.id), entry.promptText);
-      journalIndex.append(Number(entry.id), entry.decrypted);
-    }
-  });
-
-  return journals;
+  return nextCursor ? getJournals(cache, nextCursor) : cache;
 }
