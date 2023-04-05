@@ -10,7 +10,7 @@ export const journalIndex = new Index({
   resolution: 5,
 });
 
-export async function getJournals(cache = {}, cursor) {
+export async function getJournals(cache = {}, cursor = undefined) {
   const nextCursor = await axios
     .get("/api/journal", { params: { cursor } })
     .then(async ({ data }) => {
