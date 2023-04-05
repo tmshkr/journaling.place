@@ -12,23 +12,29 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 router.use(withUser).get(handleGet).post(handlePost);
 
 async function handleGet(req, res) {
-  let journals;
-  if (req.query.promptId) {
-    journals = await prisma.journal.findMany({
-      where: {
-        authorId: BigInt(req.user.id),
-        promptId: BigInt(req.query.promptId),
-      },
-      orderBy: {
-        updatedAt: "desc",
-      },
-    });
-  } else {
-    journals = await prisma.journal
+  const { cursor, promptId } = req.query;
+
+  if (promptId) {
+    return res.json(
+      await prisma.journal.findMany({
+        where: {
+          authorId: BigInt(req.user.id),
+          promptId: BigInt(promptId),
+        },
+        orderBy: {
+          updatedAt: "desc",
+        },
+      })
+    );
+  }
+
+  return res.json(
+    await prisma.journal
       .findMany({
         where: {
           authorId: BigInt(req.user.id),
         },
+        // TODO: pagination
         take: 100,
         orderBy: { updatedAt: "desc" },
         include: {
@@ -51,10 +57,8 @@ async function handleGet(req, res) {
             promptId,
           })
         )
-      );
-  }
-
-  return res.json(journals);
+      )
+  );
 }
 
 async function handlePost(req, res) {
