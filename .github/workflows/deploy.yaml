@@ -17,8 +17,6 @@ env:
   PRODUCTION_CNAME: ${{ vars.PRODUCTION_CNAME }}
   STAGING_CNAME: ${{ vars.STAGING_CNAME }}
   STAGING_URL: https://jp-staging.us-west-2.elasticbeanstalk.com/
-  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
 
 jobs:
   build:
@@ -33,17 +31,30 @@ jobs:
       - name: Check if image exists in ECR
         id: check-image-exists
         run: node scripts/check-image-exists.js ${{ github.sha }}
-      - name: Build
+      - name: Set up Docker Buildx
         if: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS == 'false' }}
-        run: |
-          docker build -t ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }} --build-arg=CDN_PREFIX=https://cdn.journaling.place .
-          docker push ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }}
+        uses: docker/setup-buildx-action@v2
+      - name: Build and push
+        if: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS == 'false' }}
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          build-args: |
+            CDN_PREFIX=https://cdn.journaling.place
+            TURBO_TEAM=${{ secrets.TURBO_TEAM }}
+            TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
+          tags: ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
       - name: Get target EB environment
         id: target-env
         run: node scripts/get-target-env.js --wait
