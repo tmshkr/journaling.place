@@ -85,10 +85,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-        node-version: 16
-        cache: "npm"
       - name: Get target EB environment
         id: target-env
         run: node scripts/get-target-env.js --wait
@@ -109,6 +105,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
       - name: Install Dependencies
         run: npm install && npx playwright install --with-deps chromium
       - name: Get env file
