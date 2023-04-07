@@ -106,15 +106,15 @@ async function loadSavedData(easyMDEref, journalRef, prompt) {
   }
 }
 
-const sampleText = `Want to start keeping a journal but don’t know where to start?
+const sampleText = `Want to start keeping a journal but don't know where to start?
 
-You’re in the right place.
+You're in the right place.
 
 Journaling is a healthy habit, but a blank page can be intimidating.
 
 What do you even write about?
 
-That’s why journaling.place exists.
+That's why journaling.place exists.
 
 Get some help on your journaling journey with a growing library of thoughtful and inspiring prompts, or write freestyle with no prompt.
 
