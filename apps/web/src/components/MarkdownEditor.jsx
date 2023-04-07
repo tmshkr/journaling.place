@@ -37,6 +37,8 @@ export default function MarkdownEditor({
         loadSavedData(easyMDEref, journalRef, prompt);
       }
       easyMDEref.current.codemirror.on("change", changeHandler);
+    } else {
+      easyMDEref.current.value(sampleText);
     }
 
     return () => {
@@ -103,3 +105,23 @@ async function loadSavedData(easyMDEref, journalRef, prompt) {
       });
   }
 }
+
+const sampleText = `Want to start keeping a journal but don’t know where to start?
+
+You’re in the right place.
+
+Journaling is a healthy habit, as is confirmed by [numerous studies](https://positivepsychology.com/benefits-of-journaling/), but a blank page can be intimidating.
+
+What do you even write about?
+
+That’s why journaling.place exists.
+
+Get some help on your journaling journey with a growing library of thoughtful and inspiring prompts.
+
+Or write freestyle with no prompt.
+
+It all gets encrypted on your device, and only **you** hold the key, so nobody else can read your journal.
+
+Feel free to let it all out.
+
+Sign in now to get started.`;
