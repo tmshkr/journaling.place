@@ -17,6 +17,8 @@ env:
   PRODUCTION_CNAME: ${{ vars.PRODUCTION_CNAME }}
   STAGING_CNAME: ${{ vars.STAGING_CNAME }}
   STAGING_URL: https://jp-staging.us-west-2.elasticbeanstalk.com/
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
 
 jobs:
   build:
