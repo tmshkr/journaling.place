@@ -1,8 +1,7 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useAppDispatch, useAppSelector } from "src/store";
-import { selectLoadingState, setLoading } from "src/store/loading";
+import { selectLoadingState } from "src/store/loading";
 import { selectUser } from "src/store/user";
 import dynamic from "next/dynamic";
 import { clsx } from "clsx";
@@ -10,6 +9,9 @@ import { clsx } from "clsx";
 import { FloatingActionButton } from "./FloatingActionButton";
 
 const MarkdownEditor = dynamic(() => import("src/components/MarkdownEditor"), {
+  ssr: false,
+});
+const DemoEditor = dynamic(() => import("src/components/landing/DemoEditor"), {
   ssr: false,
 });
 
@@ -29,9 +31,13 @@ export function JournalView({ prompt, journal }) {
         {prompt?.text || ""}
       </h2>
       <div className="mt-6">
-        <MarkdownEditor
-          {...{ user, prompt, router, loading, dispatch, journal }}
-        />
+        {user ? (
+          <MarkdownEditor
+            {...{ user, prompt, router, loading, dispatch, journal }}
+          />
+        ) : (
+          <DemoEditor {...{ loading, dispatch }} />
+        )}
       </div>
       <div className="text-center">
         {user ? (

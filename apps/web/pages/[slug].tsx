@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { prisma } from "src/lib/prisma";
-import { useAppSelector, useAppDispatch } from "src/store";
 import { currentPrompt } from "src/store/prompt";
 import { JournalView } from "src/components/JournalView";
 
@@ -15,8 +14,8 @@ export default function PromptPage({ prompt }) {
   return <JournalView prompt={prompt} journal={null} />;
 }
 
-export async function getServerSideProps(context) {
-  const { slug } = context.query;
+export async function getServerSideProps({ req, res, query }) {
+  const { slug } = query;
 
   if (Number(slug)) {
     const prompt = await prisma.prompt.findUnique({

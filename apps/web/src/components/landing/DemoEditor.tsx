@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { setLoading } from "src/store/loading";
 import EasyMDE from "easymde";
 import "easymde/dist/easymde.min.css";
 
-export default function DemoEditor() {
+export default function DemoEditor({ dispatch, loading }) {
   const easyMDEref: any = useRef(null);
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -13,7 +14,17 @@ export default function DemoEditor() {
         element: document.getElementById("editor") as HTMLElement,
         spellChecker: false,
       });
+      easyMDEref.current.codemirror.on(
+        "beforeChange",
+        (instance, changeObj) => {
+          const { cancel, origin } = changeObj;
+          if (origin !== "setValue") {
+            cancel();
+          }
+        }
+      );
     }
+    dispatch(setLoading({ ...loading, editor: false }));
     typeString(easyMDEref);
   }, []);
 
@@ -25,7 +36,7 @@ async function typeString(easyMDEref) {
   for (const char of copy) {
     str += char;
     easyMDEref.current.value(str);
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 42));
   }
 }
 

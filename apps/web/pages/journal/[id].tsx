@@ -1,6 +1,6 @@
 import { prisma } from "src/lib/prisma";
 import { getToken } from "next-auth/jwt";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { currentPrompt } from "src/store/prompt";
 import { JournalView } from "src/components/JournalView";
 import superjson from "superjson";
