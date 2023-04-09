@@ -8,6 +8,7 @@ import {
   XMarkIcon,
   Cog6ToothIcon,
   LockClosedIcon,
+  ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import { clsx } from "clsx";
@@ -34,7 +35,7 @@ function classNames(...classes) {
 
 export function AppShell({ children }) {
   const spinnerTimeoutRef: any = useRef(null);
-  const [showSpinner, setShowSpinner] = useState(false);
+  const [statusIcon, setStatusIcon] = useState("idle");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [search, setSearch] = useState("");
@@ -54,13 +55,25 @@ export function AppShell({ children }) {
   useEffect(() => {
     clearTimeout(spinnerTimeoutRef.current);
     if (networkStatus === "pending") {
-      setShowSpinner(true);
+      setStatusIcon(networkStatus);
     } else {
       spinnerTimeoutRef.current = setTimeout(() => {
-        setShowSpinner(false);
+        setStatusIcon(networkStatus);
       }, 500);
     }
   }, [networkStatus]);
+
+  const statusIcons = {
+    pending: (
+      <ArrowPathIcon
+        className={clsx("h-6 w-6", styles.spinning)}
+        aria-hidden="true"
+      />
+    ),
+    succeeded: <CloudIcon className="h-6 w-6" aria-hidden="true" />,
+    idle: <CloudIcon className="h-6 w-6" aria-hidden="true" />,
+    failed: <ExclamationCircleIcon className="h-6 w-6" aria-hidden="true" />,
+  };
 
   const pathRoot = getPathRoot(router.pathname);
 
@@ -249,14 +262,7 @@ export function AppShell({ children }) {
                   className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   <span className="sr-only">View notifications</span>
-                  {showSpinner ? (
-                    <ArrowPathIcon
-                      className={clsx("h-6 w-6", styles.spinning)}
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    <CloudIcon className="h-6 w-6" aria-hidden="true" />
-                  )}
+                  {statusIcons[statusIcon]}
                 </button>
               </div>
             </div>
