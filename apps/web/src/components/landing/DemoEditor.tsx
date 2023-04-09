@@ -40,7 +40,7 @@ async function typeString(easyMDEref) {
   }
 }
 
-const copy = `Want to start keeping a journal but don't know where to start?
+const copy = `Want to start journaling but don't know where to start?
 
 You're in the right place.
 
