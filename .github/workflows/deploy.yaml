@@ -41,6 +41,8 @@ jobs:
             TURBO_TEAM=${{ secrets.TURBO_TEAM }}
             TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
           tags: ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }}
+      - name: Tag image
+        run: ./scripts/tag-image.sh ${{ github.sha }}
 
   deploy:
     needs: build
