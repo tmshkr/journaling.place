@@ -122,22 +122,29 @@ function PageAuth({ Component, pageProps }) {
 }
 
 function registerInterceptors(dispatch) {
+  let openRequests = 0;
   const requestInterceptor = axios.interceptors.request.use(
     function (config) {
+      openRequests++;
       dispatch(setNetworkStatus("pending"));
       return config;
     },
     function (error) {
+      openRequests--;
       dispatch(setNetworkStatus("failed"));
       return Promise.reject(error);
     }
   );
   const responseInterceptor = axios.interceptors.response.use(
     function (response) {
-      dispatch(setNetworkStatus("succeeded"));
+      openRequests--;
+      if (openRequests === 0) {
+        dispatch(setNetworkStatus("succeeded"));
+      }
       return response;
     },
     function (error) {
+      openRequests--;
       dispatch(setNetworkStatus("failed"));
       return Promise.reject(error);
     }

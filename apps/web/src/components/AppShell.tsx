@@ -1,15 +1,13 @@
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   Bars3BottomLeftIcon,
   CloudIcon,
-  CheckIcon,
   FolderIcon,
   HomeIcon,
   XMarkIcon,
   Cog6ToothIcon,
   LockClosedIcon,
-  LockOpenIcon,
 } from "@heroicons/react/24/outline";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import { clsx } from "clsx";
@@ -19,6 +17,7 @@ import { useAppSelector } from "src/store";
 import { selectUser } from "src/store/user";
 import { getPathRoot } from "src/utils/path";
 import { getJournals } from "src/store/journal";
+import { selectNetworkStatus } from "src/store/network";
 
 import { SearchBar } from "./SearchBar";
 import { SearchResults } from "./SearchResults";
@@ -27,17 +26,22 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import journalIcon from "public/favicon-32x32.png";
 
+import styles from "./AppShell.module.scss";
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export function AppShell({ children }) {
+  const spinnerTimeoutRef: any = useRef(null);
+  const [showSpinner, setShowSpinner] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [search, setSearch] = useState("");
 
   const router = useRouter();
   const user = useAppSelector(selectUser);
+  const networkStatus = useAppSelector(selectNetworkStatus);
 
   const queryClient = useQueryClient();
 
@@ -46,6 +50,17 @@ export function AppShell({ children }) {
       queryClient.fetchQuery("journal", () => getJournals());
     }
   }, [user]);
+
+  useEffect(() => {
+    clearTimeout(spinnerTimeoutRef.current);
+    if (networkStatus === "pending") {
+      setShowSpinner(true);
+    } else {
+      spinnerTimeoutRef.current = setTimeout(() => {
+        setShowSpinner(false);
+      }, 500);
+    }
+  }, [networkStatus]);
 
   const pathRoot = getPathRoot(router.pathname);
 
@@ -234,7 +249,14 @@ export function AppShell({ children }) {
                   className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   <span className="sr-only">View notifications</span>
-                  <CloudIcon className="h-6 w-6" aria-hidden="true" />
+                  {showSpinner ? (
+                    <ArrowPathIcon
+                      className={clsx("h-6 w-6", styles.spinning)}
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <CloudIcon className="h-6 w-6" aria-hidden="true" />
+                  )}
                 </button>
               </div>
             </div>
