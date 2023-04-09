@@ -41,8 +41,6 @@ jobs:
             TURBO_TEAM=${{ secrets.TURBO_TEAM }}
             TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
           tags: ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }}
-      - name: Tag image
-        run: ./scripts/tag-image.sh ${{ github.sha }}
 
   deploy:
     needs: build
@@ -72,6 +70,8 @@ jobs:
           TARGET_ENV: ${{ steps.target-env.outputs.TARGET_ENV }}
           VERSION_LABEL: ${{ github.ref_name }}-${{ github.sha }}
         run: node scripts/verify-deployment.js
+      - name: Tag image
+        run: ./scripts/tag-image.sh ${{ github.sha }}
 
   promote:
     needs: deploy
