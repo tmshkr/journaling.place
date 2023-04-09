@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Provider as ReduxProvider } from "react-redux";
+import axios from "axios";
 
 import { DefaultSeo } from "next-seo";
 
@@ -22,6 +23,7 @@ import store from "src/store";
 import { useAppDispatch, useAppSelector } from "src/store";
 import { selectUser, setUser, clearUser } from "src/store/user";
 import { selectLoadingState, setLoading } from "src/store/loading";
+import { setNetworkStatus } from "src/store/network";
 import Head from "next/head";
 import { AppShell } from "src/components/AppShell";
 import { LoadingScreen } from "src/components/LoadingScreen";
@@ -94,6 +96,15 @@ function PageAuth({ Component, pageProps }) {
     handleSession();
   }, [status]);
 
+  useEffect(() => {
+    const { requestInterceptor, responseInterceptor } =
+      registerInterceptors(dispatch);
+    return () => {
+      axios.interceptors.request.eject(requestInterceptor);
+      axios.interceptors.response.eject(responseInterceptor);
+    };
+  }, [dispatch]);
+
   return user ? (
     <>
       <LoadingScreen />
@@ -108,4 +119,29 @@ function PageAuth({ Component, pageProps }) {
       <Component {...pageProps} />
     </>
   );
+}
+
+function registerInterceptors(dispatch) {
+  const requestInterceptor = axios.interceptors.request.use(
+    function (config) {
+      dispatch(setNetworkStatus("pending"));
+      return config;
+    },
+    function (error) {
+      dispatch(setNetworkStatus("failed"));
+      return Promise.reject(error);
+    }
+  );
+  const responseInterceptor = axios.interceptors.response.use(
+    function (response) {
+      dispatch(setNetworkStatus("succeeded"));
+      return response;
+    },
+    function (error) {
+      dispatch(setNetworkStatus("failed"));
+      return Promise.reject(error);
+    }
+  );
+
+  return { requestInterceptor, responseInterceptor };
 }

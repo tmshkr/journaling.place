@@ -4,6 +4,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import userReducer from "./user";
 import loadingReducer from "./loading";
 import modalReducer from "./modal";
+import networkReducer from "./network";
 
 export function makeStore() {
   return configureStore({
@@ -11,6 +12,7 @@ export function makeStore() {
       user: userReducer,
       loading: loadingReducer,
       modal: modalReducer,
+      network: networkReducer,
     },
   });
 }
