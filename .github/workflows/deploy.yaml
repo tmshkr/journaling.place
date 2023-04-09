@@ -31,9 +31,6 @@ jobs:
       - name: Check if image exists in ECR
         id: check-image-exists
         run: node scripts/check-image-exists.js ${{ github.sha }}
-      - name: Set up Docker Buildx
-        if: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS == 'false' }}
-        uses: docker/setup-buildx-action@v2
       - name: Build and push
         if: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS == 'false' }}
         uses: docker/build-push-action@v4
@@ -44,8 +41,6 @@ jobs:
             TURBO_TEAM=${{ secrets.TURBO_TEAM }}
             TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
           tags: ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
   deploy:
     needs: build
