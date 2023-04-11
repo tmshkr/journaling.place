@@ -6,7 +6,6 @@ import "quill/dist/quill.snow.css";
 
 import { setLoading } from "src/store/loading";
 import { encrypt, decrypt } from "src/lib/crypto";
-import { toArrayBuffer } from "src/utils/buffer";
 
 export default function QuillEditor({
   user,
@@ -16,32 +15,37 @@ export default function QuillEditor({
   dispatch,
   journal,
 }) {
-  const isNewEntry = router.pathname === "/new";
   const quillRef: any = useRef(null);
-  const journalRef = useRef(journal);
+  const journalId = useRef(null);
 
-  const changeHandler = () => autosave(quillRef, journalRef, prompt);
+  const changeHandler = () => autosave(quillRef, journalId, prompt);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    journalId.current = journal?.id;
     if (!quillRef.current) {
       quillRef.current = new Quill("#editor", {
         modules: {
           toolbar: [
             [{ header: [1, 2, false] }],
             ["bold", "italic", "underline"],
-            ["image", "code-block"],
+            ["code-block"],
           ],
         },
         placeholder: "Compose an epic...",
         theme: "snow", // or 'bubble'
       });
-      console.log(quillRef.current);
-      quillRef.current.on("text-change", changeHandler);
-      loadSavedData(quillRef, journalRef, prompt);
-
       dispatch(setLoading({ ...loading, editor: false }));
     }
+
+    loadSavedData(quillRef, journal);
+    quillRef.current.on("text-change", changeHandler);
+
+    return () => {
+      journalId.current = null;
+      clearTimeout(quillRef.current.__timeout);
+      quillRef.current.off("text-change", changeHandler);
+    };
   }, [user, router]);
 
   return (
@@ -53,7 +57,7 @@ export default function QuillEditor({
   );
 }
 
-async function autosave(quillRef, journalRef, prompt) {
+async function autosave(quillRef, journalId, prompt) {
   clearTimeout(quillRef.current.__timeout);
   quillRef.current.__timeout = setTimeout(async function () {
     if (quillRef.current.loading) {
@@ -65,8 +69,8 @@ async function autosave(quillRef, journalRef, prompt) {
       JSON.stringify(quillRef.current.getContents())
     );
 
-    if (journalRef.current) {
-      await axios.put(`/api/journal/${journalRef.current.id}`, {
+    if (journalId.current) {
+      await axios.put(`/api/journal/${journalId.current}`, {
         ciphertext: Buffer.from(ciphertext),
         iv: Buffer.from(iv),
       });
@@ -78,20 +82,17 @@ async function autosave(quillRef, journalRef, prompt) {
           iv: Buffer.from(iv),
         })
         .then(({ data }) => {
-          journalRef.current = data;
+          journalId.current = data.id;
         });
     }
   }, 1000);
 }
 
-async function loadSavedData(quillRef, journalRef, prompt) {
-  if (journalRef.current) {
-    const journal = journalRef.current;
+async function loadSavedData(quillRef, journal) {
+  if (journal) {
     const decrypted = await decrypt(journal.ciphertext, journal.iv);
-
     try {
-      var content = JSON.parse(decrypted);
-      quillRef.current.setContents(content);
+      quillRef.current.setContents(JSON.parse(decrypted));
     } catch (err) {
       quillRef.current.setText(decrypted);
     }
