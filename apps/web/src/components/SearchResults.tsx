@@ -46,7 +46,7 @@ export function SearchResults({
             <p
               className="truncate font-medium text-gray-400"
               dangerouslySetInnerHTML={{
-                __html: entry.decrypted.replace(
+                __html: entry.plaintext.replace(
                   new RegExp(search, "gi"),
                   (match) => {
                     return `<span class="bg-yellow-300">${match}</span>`;
