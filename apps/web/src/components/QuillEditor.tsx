@@ -45,6 +45,7 @@ export default function QuillEditor({
       journalId.current = null;
       clearTimeout(quillRef.current.__timeout);
       quillRef.current.off("text-change", changeHandler);
+      quillRef.current.setText("");
     };
   }, [user, router]);
 
