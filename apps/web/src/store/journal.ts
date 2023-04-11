@@ -25,14 +25,13 @@ export async function getJournals(cache = {}, cursor = undefined) {
 
         entry.ciphertext = toArrayBuffer(entry.ciphertext.data);
         entry.iv = new Uint8Array(entry.iv.data);
-        entry.decrypted = await decrypt(entry.ciphertext, entry.iv);
+        const decrypted = await decrypt(entry.ciphertext, entry.iv);
 
         try {
-          quillWorker.setContents(JSON.parse(entry.decrypted));
+          quillWorker.setContents(JSON.parse(decrypted));
           entry.plaintext = quillWorker.getText();
-          journalIndex.append(Number(entry.id), entry.plaintext);
         } catch (err) {
-          entry.plaintext = entry.decrypted;
+          entry.plaintext = decrypted;
         }
 
         journalIndex.append(Number(entry.id), entry.plaintext);
