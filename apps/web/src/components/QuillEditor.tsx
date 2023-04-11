@@ -38,6 +38,7 @@ export default function QuillEditor({
       });
       console.log(quillRef.current);
       quillRef.current.on("text-change", changeHandler);
+      loadSavedData(quillRef, journalRef, prompt);
 
       dispatch(setLoading({ ...loading, editor: false }));
     }
@@ -63,10 +64,6 @@ async function autosave(quillRef, journalRef, prompt) {
     const { ciphertext, iv } = await encrypt(
       JSON.stringify(quillRef.current.getContents())
     );
-    console.log({ ciphertext, iv });
-    const decrypted = await decrypt(ciphertext, iv);
-    console.log(JSON.parse(decrypted));
-    return;
 
     if (journalRef.current) {
       await axios.put(`/api/journal/${journalRef.current.id}`, {
@@ -91,21 +88,13 @@ async function loadSavedData(quillRef, journalRef, prompt) {
   if (journalRef.current) {
     const journal = journalRef.current;
     const decrypted = await decrypt(journal.ciphertext, journal.iv);
-    quillRef.current.value(decrypted);
+
+    try {
+      var content = JSON.parse(decrypted);
+      quillRef.current.setContents(content);
+    } catch (err) {
+      quillRef.current.setText(decrypted);
+    }
     quillRef.current.loading = true;
-  } else if (prompt) {
-    await axios
-      .get(`/api/journal?promptId=${prompt.id}`)
-      .then(async ({ data: journals }) => {
-        const [journal] = journals;
-        if (journal) {
-          journal.ciphertext = toArrayBuffer(journal.ciphertext.data);
-          journal.iv = new Uint8Array(journal.iv.data);
-          const decrypted = await decrypt(journal.ciphertext, journal.iv);
-          quillRef.current.value(decrypted);
-          quillRef.current.loading = true;
-          journalRef.current = journal;
-        }
-      });
   }
 }
