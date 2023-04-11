@@ -19,20 +19,11 @@ function isKeySet() {
   return !!key;
 }
 
-export async function handleKey(userId: bigint, salt?: Uint8Array) {
+export async function handleKey(salt?: Uint8Array) {
   if (isKeySet()) return;
-  const localKey: CryptoKey | null = await cryptoStore.getItem(`key-${userId}`);
-  const localSalt: Uint8Array | null = await cryptoStore.getItem(
-    `salt-${userId}`
-  );
+  const localKey: CryptoKey | null = await cryptoStore.getItem(`key`);
 
-  if (salt && localSalt) {
-    if (salt.toString() !== localSalt.toString()) {
-      // TODO: Handle salt mismatch
-      throw new Error("Salts do not match");
-    }
-  }
-  if (localKey && localSalt) {
+  if (localKey) {
     setKey(localKey);
     return;
   }
@@ -42,12 +33,9 @@ export async function handleKey(userId: bigint, salt?: Uint8Array) {
   salt = salt || window.crypto.getRandomValues(new Uint8Array(16));
   const key = await deriveKey(keyMaterial, salt);
   setKey(key);
-  const now = new Date();
 
-  // Persist the key and salt to IndexedDB
-  await cryptoStore.setItem(`key-${userId}`, key);
-  await cryptoStore.setItem(`salt-${userId}`, salt);
-  await cryptoStore.setItem(`updatedAt-${userId}`, now);
+  // Persist the key to IndexedDB
+  await cryptoStore.setItem(`key`, key);
 
   // Persist salt to DB
   await axios.put("/api/me", { salt: Buffer.from(salt) });

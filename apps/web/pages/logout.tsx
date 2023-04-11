@@ -10,8 +10,8 @@ export default function Logout() {
 
   useEffect(() => {
     if (user) {
-      cryptoStore.removeItem(`key-${user.id}`, () => {
-        console.log("Removed", `key-${user.id}`);
+      cryptoStore.removeItem("key", () => {
+        console.log("Removed key");
         clearKey();
         signOut();
         console.log("Signed out");

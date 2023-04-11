@@ -76,10 +76,7 @@ function PageAuth({ Component, pageProps }) {
   const handleSession = async () => {
     if (status === "authenticated") {
       const user: any = session.user;
-      await handleKey(
-        user.id,
-        user.salt ? new Uint8Array(user.salt.data) : undefined
-      );
+      await handleKey(user.salt ? new Uint8Array(user.salt.data) : undefined);
       dispatch(setUser(session.user));
     } else if (status === "unauthenticated") {
       dispatch(clearUser());
