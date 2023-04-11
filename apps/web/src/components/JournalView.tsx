@@ -8,7 +8,7 @@ import { clsx } from "clsx";
 
 import { FloatingActionButton } from "./FloatingActionButton";
 
-const MarkdownEditor = dynamic(() => import("src/components/MarkdownEditor"), {
+const QuillEditor = dynamic(() => import("src/components/QuillEditor"), {
   ssr: false,
 });
 const DemoEditor = dynamic(() => import("src/components/landing/DemoEditor"), {
@@ -22,17 +22,13 @@ export function JournalView({ prompt, journal }) {
   const loading = useAppSelector(selectLoadingState);
 
   return (
-    <div
-      className={clsx("container max-w-3xl py-3 px-4 sm:px-6 lg:px-8", {
-        "py-7": !user,
-      })}
-    >
+    <div className={"container max-w-3xl py-3"}>
       <h2 className="text-center mt-1 text-2xl text-gray-900">
         {prompt?.text || ""}
       </h2>
-      <div className="mt-6">
+      <div className="my-6">
         {user ? (
-          <MarkdownEditor
+          <QuillEditor
             {...{ user, prompt, router, loading, dispatch, journal }}
           />
         ) : (
