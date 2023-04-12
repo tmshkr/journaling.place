@@ -15,7 +15,6 @@ export default function QuillEditor(props) {
   const { user, prompt, router, loading, dispatch } = props;
   const [journal, setJournal] = useState(props.journal);
   const quillRef: any = useRef(null);
-  const changeHandler = () => autosave(quillRef, journal, prompt, setJournal);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -36,6 +35,7 @@ export default function QuillEditor(props) {
     }
 
     quillRef.current.focus();
+    const changeHandler = () => autosave(quillRef, journal, prompt, setJournal);
     quillRef.current.on("text-change", changeHandler);
 
     return () => {
@@ -45,8 +45,8 @@ export default function QuillEditor(props) {
   }, [user, router, journal, prompt]);
 
   useEffect(() => {
-    loadSavedData(quillRef, props.journal);
     setJournal(props.journal);
+    loadSavedData(quillRef, props.journal);
   }, [router]);
 
   return (
@@ -60,11 +60,6 @@ export default function QuillEditor(props) {
 async function autosave(quillRef, journal, prompt, setJournal) {
   clearTimeout(quillRef.current.__timeout);
   quillRef.current.__timeout = setTimeout(async function () {
-    if (quillRef.current.loading) {
-      quillRef.current.loading = false;
-      return;
-    }
-
     const { ciphertext, iv } = await encrypt(
       JSON.stringify(quillRef.current.getContents())
     );
@@ -96,6 +91,7 @@ async function loadSavedData(quillRef, journal) {
     } catch (err) {
       quillRef.current.setText(decrypted);
     }
-    quillRef.current.loading = true;
+
+    clearTimeout(quillRef.current.__timeout);
   }
 }
