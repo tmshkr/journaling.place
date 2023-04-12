@@ -7,40 +7,40 @@ import dayjs from "src/lib/dayjs";
 import { decrypt } from "src/lib/crypto";
 import { toArrayBuffer } from "src/utils/buffer";
 
-export function OtherEntries({ promptId, journalId }) {
+export function OtherEntries({ prompt, journal }) {
   const [journals, setJournals] = useState<any>([]);
   useEffect(() => {
-    if (!promptId) return;
+    if (!prompt?.id) return;
 
     const quillWorker = new Quill(document.createElement("div"));
-    axios.get(`/api/journal?promptId=${promptId}`).then(async ({ data }) => {
+    axios.get(`/api/journal?promptId=${prompt.id}`).then(async ({ data }) => {
       const journals: any = [];
-      for (const journal of data) {
-        if (journal.id != journalId) {
-          journal.ciphertext = toArrayBuffer(journal.ciphertext.data);
-          journal.iv = new Uint8Array(journal.iv.data);
-          const decrypted = await decrypt(journal.ciphertext, journal.iv);
+      for (const entry of data) {
+        if (entry.id != journal?.id) {
+          entry.ciphertext = toArrayBuffer(entry.ciphertext.data);
+          entry.iv = new Uint8Array(entry.iv.data);
+          const decrypted = await decrypt(entry.ciphertext, entry.iv);
 
           try {
             quillWorker.setContents(JSON.parse(decrypted));
-            journal.plaintext = quillWorker.getText();
+            entry.plaintext = quillWorker.getText();
           } catch (err) {
-            journal.plaintext = decrypted;
+            entry.plaintext = decrypted;
           }
 
-          journals.push(journal);
+          journals.push(entry);
         }
       }
 
       setJournals(journals);
     });
-  }, [promptId, journalId]);
+  }, [prompt, journal]);
 
   if (journals.length === 0) return null;
 
   return (
     <div className="my-12">
-      <h3 className="neuton text-center my-3 text-lg">Looking Back</h3>
+      <h3 className="neuton text-center my-3 text-lg">More Responses</h3>
       <ul role="list" className="divide-y divide-gray-200">
         {journals.map((journal) => {
           return (

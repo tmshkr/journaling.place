@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Quill from "quill";
 import QuillMarkdown from "quilljs-markdown";
 import "quilljs-markdown/dist/quilljs-markdown-common-style.css";
@@ -11,22 +11,14 @@ import { encrypt, decrypt } from "src/lib/crypto";
 
 import { OtherEntries } from "./OtherEntries";
 
-export default function QuillEditor({
-  user,
-  prompt,
-  router,
-  loading,
-  dispatch,
-  journal,
-}) {
+export default function QuillEditor(props) {
+  const { user, prompt, router, loading, dispatch } = props;
+  const [journal, setJournal] = useState(props.journal);
   const quillRef: any = useRef(null);
-  const journalId = useRef(journal?.id);
-
-  const changeHandler = () => autosave(quillRef, journalId, prompt);
+  const changeHandler = () => autosave(quillRef, journal, prompt, setJournal);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    journalId.current = journal?.id;
     if (!quillRef.current) {
       quillRef.current = new Quill("#editor", {
         modules: {
@@ -40,30 +32,32 @@ export default function QuillEditor({
         theme: "snow", // or 'bubble'
       });
       new QuillMarkdown(quillRef.current);
-
       dispatch(setLoading({ ...loading, editor: false }));
     }
 
-    loadSavedData(quillRef, journal);
+    quillRef.current.focus();
     quillRef.current.on("text-change", changeHandler);
 
     return () => {
-      journalId.current = null;
       clearTimeout(quillRef.current.__timeout);
       quillRef.current.off("text-change", changeHandler);
-      quillRef.current.setText("");
     };
-  }, [user, router]);
+  }, [user, router, journal, prompt]);
+
+  useEffect(() => {
+    loadSavedData(quillRef, props.journal);
+    setJournal(props.journal);
+  }, [router]);
 
   return (
     <>
       <div id="editor" style={{ fontSize: "15px" }} className="min-h-[60vh]" />
-      <OtherEntries promptId={prompt?.id} journalId={journalId.current} />
+      <OtherEntries {...{ journal, prompt }} />
     </>
   );
 }
 
-async function autosave(quillRef, journalId, prompt) {
+async function autosave(quillRef, journal, prompt, setJournal) {
   clearTimeout(quillRef.current.__timeout);
   quillRef.current.__timeout = setTimeout(async function () {
     if (quillRef.current.loading) {
@@ -75,8 +69,8 @@ async function autosave(quillRef, journalId, prompt) {
       JSON.stringify(quillRef.current.getContents())
     );
 
-    if (journalId.current) {
-      await axios.put(`/api/journal/${journalId.current}`, {
+    if (journal?.id) {
+      await axios.put(`/api/journal/${journal?.id}`, {
         ciphertext: Buffer.from(ciphertext),
         iv: Buffer.from(iv),
       });
@@ -88,14 +82,14 @@ async function autosave(quillRef, journalId, prompt) {
           iv: Buffer.from(iv),
         })
         .then(({ data }) => {
-          journalId.current = data.id;
+          setJournal({ id: data.id });
         });
     }
   }, 1000);
 }
 
 async function loadSavedData(quillRef, journal) {
-  if (journal) {
+  if (journal?.id) {
     const decrypted = await decrypt(journal.ciphertext, journal.iv);
     try {
       quillRef.current.setContents(JSON.parse(decrypted));
@@ -103,5 +97,6 @@ async function loadSavedData(quillRef, journal) {
       quillRef.current.setText(decrypted);
     }
     quillRef.current.loading = true;
+    quillRef.current.__journalId = journal?.id;
   }
 }
