@@ -10,6 +10,8 @@ import { toArrayBuffer } from "src/utils/buffer";
 export function OtherEntries({ promptId }) {
   const [journals, setJournals] = useState<any>([]);
   useEffect(() => {
+    if (!promptId) return;
+
     const quillWorker = new Quill(document.createElement("div"));
     axios
       .get(`/api/journal?promptId=${promptId}`)
@@ -34,7 +36,7 @@ export function OtherEntries({ promptId }) {
 
   return (
     <div className="my-12">
-      <h3 className="text-center my-3 text-lg">Looking Back</h3>
+      <h3 className="neuton text-center my-3 text-lg">Looking Back</h3>
       <ul role="list" className="divide-y divide-gray-200">
         {journals.map((journal) => {
           return (

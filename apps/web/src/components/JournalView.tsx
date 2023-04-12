@@ -20,7 +20,7 @@ export function JournalView({ prompt, journal }) {
 
   return (
     <div className={"container max-w-3xl py-3"}>
-      <h2 className="text-center mt-1 text-2xl text-gray-900">
+      <h2 className="neuton text-center mt-1 text-2xl text-gray-900">
         {prompt?.text || ""}
       </h2>
       <div className="my-6">
