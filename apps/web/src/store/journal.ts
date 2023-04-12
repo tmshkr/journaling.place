@@ -10,10 +10,14 @@ export const journalIndex = new Index({
   resolution: 5,
 });
 
+const quillWorker: any = { current: null };
+
 export async function getJournals(cache = {}, cursor = undefined) {
   if (typeof window === "undefined") return;
   const Quill = await import("quill").then((value) => value.default);
-  const quillWorker = new Quill(document.createElement("div"));
+  if (!quillWorker.current) {
+    quillWorker.current = new Quill(document.createElement("div"));
+  }
 
   const nextCursor = await axios
     .get("/api/journal", { params: { cursor } })
@@ -28,8 +32,8 @@ export async function getJournals(cache = {}, cursor = undefined) {
         const decrypted = await decrypt(entry.ciphertext, entry.iv);
 
         try {
-          quillWorker.setContents(JSON.parse(decrypted));
-          entry.plaintext = quillWorker.getText();
+          quillWorker.current.setContents(JSON.parse(decrypted));
+          entry.plaintext = quillWorker.current.getText();
         } catch (err) {
           entry.plaintext = decrypted;
         }
