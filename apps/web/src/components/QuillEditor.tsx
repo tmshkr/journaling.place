@@ -97,6 +97,5 @@ async function loadSavedData(quillRef, journal) {
       quillRef.current.setText(decrypted);
     }
     quillRef.current.loading = true;
-    quillRef.current.__journalId = journal?.id;
   }
 }
