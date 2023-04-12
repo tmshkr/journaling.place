@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useRef } from "react";
 import Quill from "quill";
+import QuillMarkdown from "quilljs-markdown";
+import "quilljs-markdown/dist/quilljs-markdown-common-style.css";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 
@@ -37,6 +39,8 @@ export default function QuillEditor({
         placeholder: "Compose an epic...",
         theme: "snow", // or 'bubble'
       });
+      new QuillMarkdown(quillRef.current);
+
       dispatch(setLoading({ ...loading, editor: false }));
     }
 
