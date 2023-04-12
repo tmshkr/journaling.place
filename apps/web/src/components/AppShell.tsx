@@ -241,11 +241,7 @@ export function AppShell({ children }) {
         </div>
       </div>
       <div className="flex flex-1 flex-col md:pl-64">
-        <div
-          className={clsx("sticky top-0 left-0 right-0 bg-white shadow", {
-            ["z-10"]: searchResults.length > 0,
-          })}
-        >
+        <div className={"sticky top-0 left-0 right-0 bg-white shadow z-10"}>
           <div className="flex h-16 flex-shrink-0">
             <button
               type="button"
