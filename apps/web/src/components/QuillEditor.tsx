@@ -20,7 +20,7 @@ export default function QuillEditor({
   journal,
 }) {
   const quillRef: any = useRef(null);
-  const journalId = useRef(journal.id);
+  const journalId = useRef(journal?.id);
 
   const changeHandler = () => autosave(quillRef, journalId, prompt);
 
