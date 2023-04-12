@@ -1,25 +1,33 @@
 import { cryptoStore } from "src/lib/localForage";
 import axios from "axios";
 
-let key: CryptoKey | undefined;
+const store: {
+  key: CryptoKey | undefined;
+  salt: Uint8Array | undefined;
+} = {
+  key: undefined,
+  salt: undefined,
+};
 
 function getKey() {
-  return key;
+  return store.key;
 }
 
 export function setKey(newKey: CryptoKey) {
-  key = newKey;
+  store.key = newKey;
 }
 
 export function clearKey() {
-  key = undefined;
+  store.key = undefined;
 }
 
 function isKeySet() {
-  return !!key;
+  return !!store.key;
 }
 
 export async function handleKey(salt?: Uint8Array) {
+  store.salt = salt || window.crypto.getRandomValues(new Uint8Array(16));
+
   if (isKeySet()) return;
   const localKey: CryptoKey | null = await cryptoStore.getItem(`key`);
 
@@ -30,15 +38,14 @@ export async function handleKey(salt?: Uint8Array) {
 
   // Derive a key from a password
   const keyMaterial = await getKeyMaterial();
-  salt = salt || window.crypto.getRandomValues(new Uint8Array(16));
-  const key = await deriveKey(keyMaterial, salt);
+  const key = await deriveKey(keyMaterial, store.salt);
   setKey(key);
 
   // Persist the key to IndexedDB
   await cryptoStore.setItem(`key`, key);
 
   // Persist salt to DB
-  await axios.put("/api/me", { salt: Buffer.from(salt) });
+  await axios.put("/api/me", { salt: Buffer.from(store.salt) });
 }
 
 /*
@@ -68,7 +75,7 @@ function getKeyMaterial(password?: string) {
   Given some key material and some random salt
   derive an AES-GCM key using PBKDF2.
 */
-function deriveKey(keyMaterial, salt) {
+function deriveKey(keyMaterial: CryptoKey, salt: Uint8Array) {
   return window.crypto.subtle.deriveKey(
     {
       name: "PBKDF2",
@@ -128,11 +135,10 @@ export async function decrypt(
   return dec.decode(decrypted);
 }
 
-export async function testPassword(userId: bigint, password: string) {
+export async function testPassword(password: string) {
   const testEncrypted = await encrypt("test");
   const keyMaterial = await getKeyMaterial(password);
-  const salt = await cryptoStore.getItem(`salt-${userId}`);
-  const key = await deriveKey(keyMaterial, salt);
+  const key = await deriveKey(keyMaterial, store.salt as Uint8Array);
   const testDecrypted = await decrypt(
     testEncrypted.ciphertext,
     testEncrypted.iv,

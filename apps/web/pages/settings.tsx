@@ -36,7 +36,7 @@ export default function SettingsPage() {
     }
 
     // test current password
-    const isCurrentPassword = await testPassword(user.id, current_password);
+    const isCurrentPassword = await testPassword(current_password);
     if (!isCurrentPassword) {
       setError("current_password", {
         message: "Current password is incorrect.",
@@ -75,9 +75,8 @@ export default function SettingsPage() {
     });
 
     // update local crypto store
-    await cryptoStore.setItem(`key-${user.id}`, newKey);
-    await cryptoStore.setItem(`salt-${user.id}`, salt);
-    await cryptoStore.setItem(`updatedAt-${user.id}`, new Date());
+    await cryptoStore.setItem("key", newKey);
+
     setKey(newKey);
     setStatus("PASSWORD_UPDATED");
   };
