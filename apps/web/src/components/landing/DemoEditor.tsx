@@ -1,42 +1,41 @@
 import { useEffect, useRef } from "react";
+import Quill from "quill";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+
 import { setLoading } from "src/store/loading";
-import EasyMDE from "easymde";
-import "easymde/dist/easymde.min.css";
 
 import { signIn } from "next-auth/react";
 
 export default function DemoEditor({ dispatch, loading }) {
-  const easyMDEref: any = useRef(null);
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  const quillRef: any = useRef(null);
 
-    const mdeMounted = document.querySelector(".EasyMDEContainer");
-    if (!mdeMounted) {
-      easyMDEref.current = new EasyMDE({
-        element: document.getElementById("editor") as HTMLElement,
-        spellChecker: false,
+  useEffect(() => {
+    if (!quillRef.current) {
+      quillRef.current = new Quill("#editor", {
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, false] }],
+            ["bold", "italic", "underline"],
+            ["code-block"],
+          ],
+        },
+        placeholder: "Compose an epic...",
+        theme: "snow", // or 'bubble'
       });
-      easyMDEref.current.codemirror.on(
-        "beforeChange",
-        (instance, changeObj) => {
-          const { cancel, origin } = changeObj;
-          if (origin !== "setValue") {
-            cancel();
-          }
-        }
-      );
+
+      dispatch(setLoading({ ...loading, editor: false }));
+      typeString(quillRef);
     }
-    dispatch(setLoading({ ...loading, editor: false }));
-    typeString(easyMDEref);
   }, []);
 
   return (
     <>
-      <textarea id="editor" className="hidden"></textarea>
-      <div className="text-center">
+      <div id="editor" style={{ fontSize: "15px" }} className="min-h-[60vh]" />
+      <div className="text-center my-3">
         <a
           role="button"
-          className="btn-primary mt-2"
+          className="btn-primary my-3"
           data-test="sign-in-button"
           href={`/api/auth/signin`}
           onClick={(e) => {
@@ -47,18 +46,21 @@ export default function DemoEditor({ dispatch, loading }) {
           Sign In
         </a>
         <p>
-          Sign in to save your journal to the cloud with end-to-end encryption.
+          Sign in to save your journal to the cloud <br />
+          with end-to-end encryption.
         </p>
       </div>
     </>
   );
 }
 
-async function typeString(easyMDEref) {
+async function typeString(quillRef) {
   let str = "";
-  for (const char of copy) {
-    str += char;
-    easyMDEref.current.value(str);
+  for (let i = 0; i < copy.length; i++) {
+    str += copy[i];
+    quillRef.current.setText(str);
+    quillRef.current.formatText(407, 409, "bold", true);
+    quillRef.current.formatText(410, copy.length, "bold", false);
     await new Promise((resolve) => setTimeout(resolve, 42));
   }
 }
@@ -75,6 +77,6 @@ That's why journaling.place exists.
 
 Get some help on your journaling journey with a growing library of thoughtful and inspiring prompts, or write freestyle with no prompt.
 
-It all gets encrypted on your device, and only **you** hold the key, so nobody else can read your journal.
+It all gets encrypted on your device, and only you hold the key, so nobody else can read your journal.
 
 Sign in now to get started!`;
