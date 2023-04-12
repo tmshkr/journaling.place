@@ -23,6 +23,7 @@ export default function DemoEditor({ dispatch, loading }) {
         placeholder: "Compose an epic...",
         theme: "snow", // or 'bubble'
       });
+      quillRef.current.disable();
 
       dispatch(setLoading({ ...loading, editor: false }));
       typeString(quillRef);
