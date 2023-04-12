@@ -7,6 +7,8 @@ import "quill/dist/quill.snow.css";
 import { setLoading } from "src/store/loading";
 import { encrypt, decrypt } from "src/lib/crypto";
 
+import { OtherEntries } from "./OtherEntries";
+
 export default function QuillEditor({
   user,
   prompt,
@@ -50,11 +52,10 @@ export default function QuillEditor({
   }, [user, router]);
 
   return (
-    <div
-      id="editor"
-      style={{ fontSize: "15px" }}
-      className="min-h-[60vh]"
-    ></div>
+    <>
+      <div id="editor" style={{ fontSize: "15px" }} className="min-h-[60vh]" />
+      <OtherEntries promptId={prompt?.id} />
+    </>
   );
 }
 
