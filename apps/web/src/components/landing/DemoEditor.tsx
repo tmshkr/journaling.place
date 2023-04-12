@@ -3,6 +3,8 @@ import { setLoading } from "src/store/loading";
 import EasyMDE from "easymde";
 import "easymde/dist/easymde.min.css";
 
+import { signIn } from "next-auth/react";
+
 export default function DemoEditor({ dispatch, loading }) {
   const easyMDEref: any = useRef(null);
   useEffect(() => {
@@ -28,7 +30,28 @@ export default function DemoEditor({ dispatch, loading }) {
     typeString(easyMDEref);
   }, []);
 
-  return <textarea id="editor" className="hidden"></textarea>;
+  return (
+    <>
+      <textarea id="editor" className="hidden"></textarea>
+      <div className="text-center">
+        <a
+          role="button"
+          className="btn-primary mt-2"
+          data-test="sign-in-button"
+          href={`/api/auth/signin`}
+          onClick={(e) => {
+            e.preventDefault();
+            signIn();
+          }}
+        >
+          Sign In
+        </a>
+        <p>
+          Sign in to save your journal to the cloud with end-to-end encryption.
+        </p>
+      </div>
+    </>
+  );
 }
 
 async function typeString(easyMDEref) {

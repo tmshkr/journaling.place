@@ -22,6 +22,7 @@ import { selectNetworkStatus } from "src/store/network";
 
 import { SearchBar } from "./SearchBar";
 import { SearchResults } from "./SearchResults";
+import { FloatingActionButton } from "src/components/FloatingActionButton";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -274,6 +275,7 @@ export function AppShell({ children }) {
         </div>
 
         <main>{children}</main>
+        <FloatingActionButton />
       </div>
     </div>
   );
