@@ -7,16 +7,16 @@ import dayjs from "src/lib/dayjs";
 import { decrypt } from "src/lib/crypto";
 import { toArrayBuffer } from "src/utils/buffer";
 
-export function OtherEntries({ promptId }) {
+export function OtherEntries({ promptId, journalId }) {
   const [journals, setJournals] = useState<any>([]);
   useEffect(() => {
     if (!promptId) return;
 
     const quillWorker = new Quill(document.createElement("div"));
-    axios
-      .get(`/api/journal?promptId=${promptId}`)
-      .then(async ({ data: journals }) => {
-        for (const journal of journals) {
+    axios.get(`/api/journal?promptId=${promptId}`).then(async ({ data }) => {
+      const journals: any = [];
+      for (const journal of data) {
+        if (journal.id != journalId) {
           journal.ciphertext = toArrayBuffer(journal.ciphertext.data);
           journal.iv = new Uint8Array(journal.iv.data);
           const decrypted = await decrypt(journal.ciphertext, journal.iv);
@@ -27,10 +27,14 @@ export function OtherEntries({ promptId }) {
           } catch (err) {
             journal.plaintext = decrypted;
           }
+
+          journals.push(journal);
         }
-        setJournals(journals);
-      });
-  }, [promptId]);
+      }
+
+      setJournals(journals);
+    });
+  }, [promptId, journalId]);
 
   if (journals.length === 0) return null;
 

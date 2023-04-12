@@ -20,7 +20,7 @@ export default function QuillEditor({
   journal,
 }) {
   const quillRef: any = useRef(null);
-  const journalId = useRef(null);
+  const journalId = useRef(journal.id);
 
   const changeHandler = () => autosave(quillRef, journalId, prompt);
 
@@ -58,7 +58,7 @@ export default function QuillEditor({
   return (
     <>
       <div id="editor" style={{ fontSize: "15px" }} className="min-h-[60vh]" />
-      <OtherEntries promptId={prompt?.id} />
+      <OtherEntries promptId={prompt?.id} journalId={journalId.current} />
     </>
   );
 }
