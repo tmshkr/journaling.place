@@ -14,8 +14,8 @@ const quillWorker: any = { current: null };
 
 export async function getJournals(cache = {}, cursor = undefined) {
   if (typeof window === "undefined") return;
-  const Quill = await import("quill").then((value) => value.default);
   if (!quillWorker.current) {
+    const Quill = await import("quill").then((value) => value.default);
     quillWorker.current = new Quill(document.createElement("div"));
   }
 
