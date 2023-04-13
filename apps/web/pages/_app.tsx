@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { SessionProvider } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { getJournals } from "src/store/journal";
 import { Provider as ReduxProvider } from "react-redux";
 import axios from "axios";
 
@@ -92,6 +93,12 @@ function PageAuth({ Component, pageProps }) {
   useEffect(() => {
     handleSession();
   }, [status]);
+
+  useEffect(() => {
+    if (user && !queryClient.isFetching("journal")) {
+      queryClient.fetchQuery("journal", () => getJournals());
+    }
+  }, [user]);
 
   useEffect(() => {
     const { requestInterceptor, responseInterceptor } =

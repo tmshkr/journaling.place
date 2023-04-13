@@ -12,12 +12,10 @@ import {
 } from "@heroicons/react/24/outline";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import { clsx } from "clsx";
-import { useQuery, useMutation, useQueryClient } from "react-query";
 
 import { useAppSelector } from "src/store";
 import { selectUser } from "src/store/user";
 import { getPathRoot } from "src/utils/path";
-import { getJournals } from "src/store/journal";
 import { selectNetworkStatus } from "src/store/network";
 
 import { SearchBar } from "./SearchBar";
@@ -44,14 +42,6 @@ export function AppShell({ children }) {
   const router = useRouter();
   const user = useAppSelector(selectUser);
   const networkStatus = useAppSelector(selectNetworkStatus);
-
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    if (user && !queryClient.isFetching("journal")) {
-      queryClient.fetchQuery("journal", () => getJournals());
-    }
-  }, [user]);
 
   useEffect(() => {
     clearTimeout(spinnerTimeoutRef.current);
