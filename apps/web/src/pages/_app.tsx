@@ -1,4 +1,4 @@
-import "../styles/globals.scss";
+import "src/styles/globals.scss";
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import { SessionProvider } from "next-auth/react";
@@ -10,7 +10,7 @@ import axios from "axios";
 
 import { DefaultSeo } from "next-seo";
 
-import SEO from "../next-seo.config";
+import SEO from "../../next-seo.config";
 
 import {
   useQuery,

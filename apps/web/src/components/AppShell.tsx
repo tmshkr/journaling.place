@@ -9,6 +9,7 @@ import {
   Cog6ToothIcon,
   LockClosedIcon,
   ExclamationCircleIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import { clsx } from "clsx";
@@ -75,6 +76,12 @@ export function AppShell({ children }) {
       href: "/journal",
       icon: FolderIcon,
       current: pathRoot === "/journal",
+    },
+    {
+      name: "Trash",
+      href: "/trash",
+      icon: TrashIcon,
+      current: pathRoot === "/trash",
     },
     {
       name: "Settings",
