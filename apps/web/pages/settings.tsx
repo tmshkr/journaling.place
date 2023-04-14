@@ -1,24 +1,15 @@
-import axios from "axios";
 import { useState } from "react";
 import { useAppSelector } from "src/store";
 import { selectUser } from "src/store/user";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
-import { cryptoStore } from "src/lib/localForage";
 import { useForm } from "react-hook-form";
 import { clsx } from "clsx";
 
-import { getJournals } from "src/store/journal";
-import {
-  decrypt,
-  encrypt,
-  testPassword,
-  createNewKeyFromPassword,
-  setKey,
-} from "src/lib/crypto";
+import { changePassword } from "src/lib/crypto";
 
 export default function SettingsPage() {
   const user = useAppSelector(selectUser);
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState("READY");
   const { register, handleSubmit, formState, setError, setFocus, setValue } =
     useForm();
   const { errors }: { errors: any } = formState;
@@ -35,50 +26,21 @@ export default function SettingsPage() {
       return;
     }
 
-    // test current password
-    const isCurrentPassword = await testPassword(current_password);
-    if (!isCurrentPassword) {
-      setError("current_password", {
-        message: "Current password is incorrect.",
-      });
-      setFocus("current_password");
-      return;
-    }
     setStatus("UPDATING");
 
-    // sync with server
-    const journals = await getJournals();
-    const updatedJournals: any = [];
-
-    // create new key from new password
-    const { key: newKey, salt } = await createNewKeyFromPassword(new_password);
-
-    // decrypt then re-encrypt journals
-    for (const key in journals) {
-      const journal = journals[key];
-      const decrypted = await decrypt(journal.ciphertext, journal.iv);
-      const { ciphertext, iv } = await encrypt(decrypted, newKey);
-      journal.ciphertext = ciphertext;
-      journal.iv = iv;
-      updatedJournals.push({
-        id: journal.id,
-        ciphertext: Buffer.from(ciphertext),
-        iv: Buffer.from(iv),
-        updatedAt: journal.updatedAt,
+    await changePassword(current_password, new_password)
+      .then(() => {
+        setStatus("PASSWORD_UPDATED");
+      })
+      .catch((err) => {
+        if (err.message === "Incorrect password") {
+          setError("current_password", {
+            message: "Current password is incorrect.",
+          });
+          setStatus("READY");
+          setFocus("current_password");
+        } else throw err;
       });
-    }
-
-    // sync new encrypted data and salt with server
-    await axios.put("/api/me", {
-      salt: Buffer.from(salt),
-      journals: updatedJournals,
-    });
-
-    // update local crypto store
-    await cryptoStore.setItem("key", newKey);
-
-    setKey(newKey);
-    setStatus("PASSWORD_UPDATED");
   };
 
   if (status === "PASSWORD_UPDATED") {
@@ -111,7 +73,7 @@ export default function SettingsPage() {
   return (
     <div className="m-12">
       <form onSubmit={handleSubmit(onSubmit)} className="md:w-5/12">
-        <h2 className="text-xl mb-4">Update Journal Password</h2>
+        <h2 className="neuton text-xl mb-4">Update Journal Password</h2>
         <label
           htmlFor="current_password"
           className={clsx("block text-sm font-medium text-gray-700", {

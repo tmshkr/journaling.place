@@ -1,4 +1,5 @@
 import { cryptoStore } from "src/lib/localForage";
+import { getJournals } from "src/store/journal";
 import axios from "axios";
 
 const store: {
@@ -150,9 +151,45 @@ export async function testPassword(password: string) {
   return testDecrypted === "test";
 }
 
-export async function createNewKeyFromPassword(password: string) {
-  const keyMaterial = await getKeyMaterial(password);
-  const salt = window.crypto.getRandomValues(new Uint8Array(16));
-  const key = await deriveKey(keyMaterial, salt);
-  return { key, salt };
+export async function changePassword(oldPassword: string, newPassword: string) {
+  const oldPasswordIsCorrect = await testPassword(oldPassword);
+  if (!oldPasswordIsCorrect) {
+    throw new Error("Incorrect password");
+  }
+
+  // sync with server
+  const journals = await getJournals();
+  const updatedJournals: any = [];
+
+  // create new key from new password
+  const keyMaterial = await getKeyMaterial(newPassword);
+  const newSalt = window.crypto.getRandomValues(new Uint8Array(16));
+  const newKey = await deriveKey(keyMaterial, newSalt);
+
+  // decrypt then re-encrypt journals
+  for (const id in journals) {
+    const journal = journals[id];
+    const decrypted = await decrypt(journal.ciphertext, journal.iv);
+    const { ciphertext, iv } = await encrypt(decrypted, newKey);
+    journal.ciphertext = ciphertext;
+    journal.iv = iv;
+    updatedJournals.push({
+      id: journal.id,
+      ciphertext: Buffer.from(ciphertext),
+      iv: Buffer.from(iv),
+      updatedAt: journal.updatedAt,
+    });
+  }
+
+  // sync new encrypted data and salt with server
+  await axios.put("/api/me", {
+    salt: Buffer.from(newSalt),
+    journals: updatedJournals,
+  });
+
+  // update local crypto store
+  await cryptoStore.setItem("key", newKey);
+
+  store.key = newKey;
+  store.salt = newSalt;
 }
