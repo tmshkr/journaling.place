@@ -10,7 +10,7 @@ export const journalIndex = new Index({
   resolution: 5,
 });
 
-const cache = { journalsById: {}, journalsByPromptId: {}, ts: 0 };
+const cache = { journalsById: {}, journalsByPromptId: {}, ts: undefined };
 const quillWorker: any = { current: null };
 
 export async function sync() {}
