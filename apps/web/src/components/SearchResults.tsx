@@ -11,7 +11,7 @@ export function SearchResults({
   if (searchResults.length === 0) {
     return null;
   }
-  const cache = queryClient.getQueryData("journal");
+  const cache: any = queryClient.getQueryData("journal");
 
   if (!cache) {
     return null;
@@ -20,7 +20,7 @@ export function SearchResults({
   return (
     <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg">
       {searchResults.map((key, index) => {
-        const entry = cache[key];
+        const entry = cache.journalsById[key];
         return (
           <Link
             key={`${key}#${index}`}
