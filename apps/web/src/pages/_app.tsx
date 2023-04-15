@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { SessionProvider } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { getJournals } from "src/store/journal";
+import { sync } from "src/store/journal";
 import { Provider as ReduxProvider } from "react-redux";
 import axios from "axios";
 
@@ -32,7 +32,13 @@ import { handleKey, clearKey } from "src/lib/crypto";
 
 import { Modal } from "src/components/modals/ModalWrapper";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      queryFn: (args) => sync(args),
+    },
+  },
+});
 
 export default function App({
   Component,
@@ -96,10 +102,7 @@ function PageAuth({ Component, pageProps }) {
 
   useEffect(() => {
     if (user) {
-      queryClient.prefetchQuery({
-        queryKey: "journal",
-        queryFn: () => getJournals(),
-      });
+      queryClient.prefetchQuery("journal");
     }
   }, [user]);
 

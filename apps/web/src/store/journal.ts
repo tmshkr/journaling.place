@@ -1,4 +1,5 @@
 import axios from "axios";
+import store from ".";
 const { Index } = require("flexsearch");
 
 import { decrypt } from "src/lib/crypto";
@@ -10,23 +11,33 @@ export const journalIndex = new Index({
   resolution: 5,
 });
 
-const cache = { journalsById: {}, journalsByPromptId: {}, ts: undefined };
-const quillWorker: any = { current: null };
+let cache = { journalsById: {}, journalsByPromptId: {}, ts: undefined };
+let quill;
 
-export async function sync() {}
-
-export async function getJournals(cursor = undefined) {
-  if (typeof window === "undefined") return;
-  if (!quillWorker.current) {
+export async function sync(args?) {
+  const { user } = store.getState();
+  if (!user.value) {
+    args?.signal?.cancel();
+    return;
+  }
+  if (!quill) {
     const Quill = await import("quill").then((value) => value.default);
-    quillWorker.current = new Quill(document.createElement("div"));
+    quill = new Quill(document.createElement("div"));
   }
 
-  const nextCursor = await axios
+  if (args?.fullSync) {
+    cache = { journalsById: {}, journalsByPromptId: {}, ts: undefined };
+  }
+
+  return getJournals();
+}
+
+async function getJournals(cursor = undefined) {
+  return axios
     .get("/api/journal", { params: { cursor, ts: cache.ts } })
     .then(async ({ data }) => {
       const { journals, nextCursor, ts } = data;
-      cache.ts = ts;
+
       for (const entry of journals) {
         cache.journalsById[entry.id] = entry;
         journalIndex.add(Number(entry.id), entry.promptText);
@@ -36,16 +47,20 @@ export async function getJournals(cursor = undefined) {
         const decrypted = await decrypt(entry.ciphertext, entry.iv);
 
         try {
-          quillWorker.current.setContents(JSON.parse(decrypted));
-          entry.plaintext = quillWorker.current.getText();
+          quill.setContents(JSON.parse(decrypted));
+          entry.plaintext = quill.getText();
         } catch (err) {
           entry.plaintext = decrypted;
         }
 
         journalIndex.append(Number(entry.id), entry.plaintext);
       }
-      return nextCursor;
-    });
 
-  return nextCursor ? getJournals(nextCursor) : cache;
+      if (nextCursor) {
+        return getJournals(nextCursor);
+      }
+
+      cache.ts = ts;
+      return cache;
+    });
 }

@@ -1,5 +1,5 @@
 import { cryptoStore } from "src/lib/localForage";
-import { getJournals } from "src/store/journal";
+import { sync } from "src/store/journal";
 import axios from "axios";
 
 const store: {
@@ -158,7 +158,7 @@ export async function changePassword(oldPassword: string, newPassword: string) {
   }
 
   // sync with server
-  const { journalsById } = await getJournals();
+  const { journalsById } = await sync({ fullSync: true });
   const updatedJournals: any = [];
 
   // create new key from new password

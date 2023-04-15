@@ -2,14 +2,9 @@ import Link from "next/link";
 import { useQuery } from "react-query";
 
 import dayjs from "src/lib/dayjs";
-import { getJournals } from "src/store/journal";
 
 export function OtherEntries({ prompt, journal }) {
-  const { data } = useQuery({
-    queryKey: "journal",
-    queryFn: () => getJournals(),
-    staleTime: 5000,
-  });
+  const { data }: { data: any } = useQuery("journal");
 
   if (!data) return null;
 
