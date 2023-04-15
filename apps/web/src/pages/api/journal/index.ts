@@ -12,7 +12,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 router.use(withUser).get(handleGet).post(handlePost);
 
 async function handleGet(req, res) {
-  const { cursor, promptId } = req.query;
+  const { cursor, promptId, ts } = req.query;
   const take = 100;
 
   if (promptId) {
@@ -34,6 +34,9 @@ async function handleGet(req, res) {
       .findMany({
         where: {
           authorId: BigInt(req.user.id),
+          updatedAt: {
+            gt: ts ? new Date(ts) : undefined,
+          },
         },
         take,
         skip: cursor ? 1 : 0,
@@ -68,6 +71,7 @@ async function handleGet(req, res) {
               promptId,
             })
           ),
+          ts: new Date().toISOString(),
           nextCursor:
             journals.length === take
               ? journals[journals.length - 1].id

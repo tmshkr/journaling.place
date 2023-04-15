@@ -10,14 +10,12 @@ export const journalIndex = new Index({
   resolution: 5,
 });
 
+const cache = { journalsById: {}, journalsByPromptId: {}, ts: 0 };
 const quillWorker: any = { current: null };
 
 export async function sync() {}
 
-export async function getJournals(
-  cache = { journalsById: {}, journalsByPromptId: {} },
-  cursor = undefined
-) {
+export async function getJournals(cursor = undefined) {
   if (typeof window === "undefined") return;
   if (!quillWorker.current) {
     const Quill = await import("quill").then((value) => value.default);
@@ -25,9 +23,10 @@ export async function getJournals(
   }
 
   const nextCursor = await axios
-    .get("/api/journal", { params: { cursor } })
+    .get("/api/journal", { params: { cursor, ts: cache.ts } })
     .then(async ({ data }) => {
-      const { journals, nextCursor } = data;
+      const { journals, nextCursor, ts } = data;
+      cache.ts = ts;
       for (const entry of journals) {
         cache.journalsById[entry.id] = entry;
         journalIndex.add(Number(entry.id), entry.promptText);
@@ -48,5 +47,5 @@ export async function getJournals(
       return nextCursor;
     });
 
-  return nextCursor ? getJournals(cache, nextCursor) : cache;
+  return nextCursor ? getJournals(nextCursor) : cache;
 }
