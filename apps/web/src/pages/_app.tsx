@@ -95,8 +95,11 @@ function PageAuth({ Component, pageProps }) {
   }, [status]);
 
   useEffect(() => {
-    if (user && !queryClient.isFetching("journal")) {
-      queryClient.fetchQuery("journal", () => getJournals());
+    if (user) {
+      queryClient.prefetchQuery({
+        queryKey: "journal",
+        queryFn: () => getJournals(),
+      });
     }
   }, [user]);
 

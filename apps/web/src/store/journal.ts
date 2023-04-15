@@ -1,8 +1,8 @@
 import axios from "axios";
+const { Index } = require("flexsearch");
+
 import { decrypt } from "src/lib/crypto";
 import { toArrayBuffer } from "src/utils/buffer";
-
-const { Index } = require("flexsearch");
 
 export const journalIndex = new Index({
   preset: "default",
@@ -12,7 +12,12 @@ export const journalIndex = new Index({
 
 const quillWorker: any = { current: null };
 
-export async function getJournals(cache = {}, cursor = undefined) {
+export async function sync() {}
+
+export async function getJournals(
+  cache = { journalsById: {}, journalsByPromptId: {} },
+  cursor = undefined
+) {
   if (typeof window === "undefined") return;
   if (!quillWorker.current) {
     const Quill = await import("quill").then((value) => value.default);
@@ -24,7 +29,7 @@ export async function getJournals(cache = {}, cursor = undefined) {
     .then(async ({ data }) => {
       const { journals, nextCursor } = data;
       for (const entry of journals) {
-        cache[entry.id] = entry;
+        cache.journalsById[entry.id] = entry;
         journalIndex.add(Number(entry.id), entry.promptText);
 
         entry.ciphertext = toArrayBuffer(entry.ciphertext.data);

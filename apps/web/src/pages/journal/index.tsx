@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useQuery } from "react-query";
 import { selectUser } from "src/store/user";
 import { useAppSelector, useAppDispatch } from "src/store";
@@ -8,10 +7,17 @@ import { getJournals } from "src/store/journal";
 
 export default function JournalIndex() {
   const user = useAppSelector(selectUser);
-  const { isLoading, error, data } = useQuery(
-    "journal",
-    () => user && getJournals()
-  );
+  const { data } = useQuery({
+    queryKey: "journal",
+    queryFn: ({ signal }) => {
+      if (user) {
+        return getJournals();
+      } else {
+        (signal as any).abort();
+      }
+    },
+    staleTime: 5000,
+  });
 
-  return isLoading ? "Loading..." : <JournalList {...{ journals: data }} />;
+  return data ? <JournalList journals={data.journalsById} /> : null;
 }
