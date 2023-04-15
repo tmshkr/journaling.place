@@ -3,7 +3,6 @@ import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import { SessionProvider } from "next-auth/react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import { sync } from "src/store/journal";
 import { Provider as ReduxProvider } from "react-redux";
 import axios from "axios";
@@ -12,13 +11,7 @@ import { DefaultSeo } from "next-seo";
 
 import SEO from "../../next-seo.config";
 
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from "react-query";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 import store from "src/store";
 import { useAppDispatch, useAppSelector } from "src/store";
@@ -28,7 +21,7 @@ import { setNetworkStatus } from "src/store/network";
 import Head from "next/head";
 import { AppShell } from "src/components/AppShell";
 import { LoadingScreen } from "src/components/LoadingScreen";
-import { handleKey, clearKey } from "src/lib/crypto";
+import { handleKey } from "src/lib/crypto";
 
 import { Modal } from "src/components/modals/ModalWrapper";
 

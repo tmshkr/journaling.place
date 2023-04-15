@@ -32,7 +32,7 @@ export async function sync(args?) {
   return getJournals();
 }
 
-async function getJournals(cursor = undefined) {
+async function getJournals(cursor?) {
   return axios
     .get("/api/journal", { params: { cursor, ts: cache.ts } })
     .then(async ({ data }) => {
