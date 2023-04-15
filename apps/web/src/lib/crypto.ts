@@ -158,7 +158,7 @@ export async function changePassword(oldPassword: string, newPassword: string) {
   }
 
   // sync with server
-  const journals = await getJournals();
+  const { journalsById } = await getJournals();
   const updatedJournals: any = [];
 
   // create new key from new password
@@ -167,8 +167,8 @@ export async function changePassword(oldPassword: string, newPassword: string) {
   const newKey = await deriveKey(keyMaterial, newSalt);
 
   // decrypt then re-encrypt journals
-  for (const id in journals) {
-    const journal = journals[id];
+  for (const id in journalsById) {
+    const journal = journalsById[id];
     const decrypted = await decrypt(journal.ciphertext, journal.iv);
     const { ciphertext, iv } = await encrypt(decrypted, newKey);
     journal.ciphertext = ciphertext;
