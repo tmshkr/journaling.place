@@ -21,6 +21,7 @@ export default function JournalPage({ journal }) {
       currentPrompt.value = null;
     };
   }, [journal.prompt]);
+
   return <JournalView prompt={journal.prompt} journal={journal} />;
 }
 
@@ -44,6 +45,14 @@ export async function getServerSideProps({ params, req, res }) {
         select: {
           id: true,
           text: true,
+          journals: {
+            select: {
+              id: true,
+            },
+            orderBy: {
+              updatedAt: "desc",
+            },
+          },
         },
       },
     },

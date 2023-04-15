@@ -1,40 +1,31 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import Quill from "quill";
 import Link from "next/link";
+import { useQuery } from "react-query";
 
 import dayjs from "src/lib/dayjs";
-import { decrypt } from "src/lib/crypto";
-import { toArrayBuffer } from "src/utils/buffer";
+import { getJournals } from "src/store/journal";
 
 export function OtherEntries({ prompt, journal }) {
-  const [journals, setJournals] = useState<any>([]);
-  useEffect(() => {
-    if (!prompt?.id) return;
+  const { data } = useQuery({
+    queryKey: "journal",
+    queryFn: () => getJournals(),
+    staleTime: 5000,
+  });
 
-    const quillWorker = new Quill(document.createElement("div"));
-    axios.get(`/api/journal?promptId=${prompt.id}`).then(async ({ data }) => {
-      const journals: any = [];
-      for (const entry of data) {
-        if (entry.id != journal?.id) {
-          entry.ciphertext = toArrayBuffer(entry.ciphertext.data);
-          entry.iv = new Uint8Array(entry.iv.data);
-          const decrypted = await decrypt(entry.ciphertext, entry.iv);
+  if (!data) return null;
 
-          try {
-            quillWorker.setContents(JSON.parse(decrypted));
-            entry.plaintext = quillWorker.getText();
-          } catch (err) {
-            entry.plaintext = decrypted;
-          }
+  const { journalsById } = data;
+  const journals: any = [];
 
-          journals.push(entry);
-        }
+  if (prompt.journals) {
+    for (const { id } of prompt.journals) {
+      if (id === journal.id) continue;
+      if (!journalsById[id]) {
+        console.error("Journal not found in cache", id);
+        continue;
       }
-
-      setJournals(journals);
-    });
-  }, [prompt, journal]);
+      journals.push(journalsById[id]);
+    }
+  }
 
   if (journals.length === 0) return null;
 
