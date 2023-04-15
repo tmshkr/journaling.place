@@ -3,7 +3,7 @@ version: "3"
 services:
   app:
     build: .
-    command: npm run start:e2e
+    command: npm run e2e:start
     env_file: .env
     restart: always
     depends_on:

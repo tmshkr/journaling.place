@@ -108,7 +108,7 @@ jobs:
       - name: Get env file
         run: node scripts/get-env-vars.js
       - name: Run e2e tests
-        run: npm run test:e2e
+        run: npm run e2e:test
       - uses: actions/upload-artifact@v3
         if: always()
         with:

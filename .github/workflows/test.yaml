@@ -26,7 +26,7 @@ jobs:
       - name: Wait for server
         run: ./scripts/wait-for-server.sh https://localhost
       - name: Run e2e tests
-        run: npm run test:e2e
+        run: npm run e2e:test
       - uses: actions/upload-artifact@v3
         if: always()
         with:
