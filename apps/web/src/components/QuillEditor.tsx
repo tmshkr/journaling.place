@@ -51,7 +51,12 @@ export default function QuillEditor(props) {
 
   return (
     <>
-      <div id="editor" style={{ fontSize: "15px" }} className="min-h-[60vh]" />
+      <div
+        id="editor"
+        data-test="editor"
+        style={{ fontSize: "15px" }}
+        className="min-h-[60vh]"
+      />
       <OtherEntries {...{ journal, prompt }} />
     </>
   );

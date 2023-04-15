@@ -16,6 +16,9 @@
     },
     "test": {
       "cache": false
+    },
+    "report": {
+      "cache": false
     }
   }
 }

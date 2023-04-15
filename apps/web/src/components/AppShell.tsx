@@ -10,6 +10,7 @@ import {
   LockClosedIcon,
   ExclamationCircleIcon,
   TrashIcon,
+  HandThumbUpIcon,
 } from "@heroicons/react/24/outline";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import { clsx } from "clsx";
@@ -58,13 +59,32 @@ export function AppShell({ children }) {
   const statusIcons = {
     pending: (
       <ArrowPathIcon
+        data-test="network-pending"
         className={clsx("h-6 w-6", styles.spinning)}
         aria-hidden="true"
       />
     ),
-    succeeded: <CloudIcon className="h-6 w-6" aria-hidden="true" />,
-    idle: <CloudIcon className="h-6 w-6" aria-hidden="true" />,
-    failed: <ExclamationCircleIcon className="h-6 w-6" aria-hidden="true" />,
+    succeeded: (
+      <CloudIcon
+        data-test="network-succeeded"
+        className="h-6 w-6"
+        aria-hidden="true"
+      />
+    ),
+    idle: (
+      <CloudIcon
+        data-test="network-idle"
+        className="h-6 w-6"
+        aria-hidden="true"
+      />
+    ),
+    failed: (
+      <ExclamationCircleIcon
+        data-test="network-error"
+        className="h-6 w-6"
+        aria-hidden="true"
+      />
+    ),
   };
 
   const pathRoot = getPathRoot(router.pathname);
@@ -76,6 +96,12 @@ export function AppShell({ children }) {
       href: "/journal",
       icon: FolderIcon,
       current: pathRoot === "/journal",
+    },
+    {
+      name: "Support",
+      href: "/Support",
+      icon: HandThumbUpIcon,
+      current: pathRoot === "/support",
     },
     {
       name: "Trash",
@@ -253,6 +279,7 @@ export function AppShell({ children }) {
               <div className="ml-4 flex items-center md:ml-6">
                 <button
                   type="button"
+                  data-test="network-status"
                   className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   <span className="sr-only">View notifications</span>

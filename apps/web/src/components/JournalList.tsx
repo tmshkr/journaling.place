@@ -19,6 +19,7 @@ export function JournalList({ journals }) {
             <li key={key}>
               <Link
                 href={`/journal/${journal.id}`}
+                data-test="JournalList-entry"
                 className="block hover:bg-gray-50"
               >
                 <div className="flex items-center px-4 py-4 sm:px-6">
