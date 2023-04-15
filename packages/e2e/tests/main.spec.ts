@@ -12,11 +12,6 @@ test("displays AppShell", async ({ page }) => {
   await expect(page.locator('[data-test="app-shell"]')).toBeVisible();
 });
 
-test("still displays AppShell", async ({ page }) => {
-  await page.goto("/");
-  await expect(page.locator('[data-test="app-shell"]')).toBeVisible();
-});
-
 test("persists journal entry", async ({ page }) => {
   await page.goto("/");
   await page.waitForSelector('[data-test="editor"]');
