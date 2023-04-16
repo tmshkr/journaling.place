@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 test("user can view AppShell", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator('[data-test="app-shell"]')).toBeVisible();
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await sleep(1000);
 });
 
 test("user can persist journal entry", async ({ page }) => {
@@ -27,7 +27,7 @@ test("user can persist journal entry", async ({ page }) => {
   await expect(
     page.locator('[data-test="JournalList-entry"]').getByText(new RegExp(text))
   ).toBeTruthy();
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await sleep(1000);
 });
 
 test("user can change password", async ({ page }) => {
@@ -53,5 +53,9 @@ test("user can change password", async ({ page }) => {
   await expect(
     page.locator('[data-test="JournalList-entry"]').getByText(new RegExp(text))
   ).toBeTruthy();
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await sleep(1000);
 });
+
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
