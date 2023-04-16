@@ -97,18 +97,18 @@ export function AppShell({ children }) {
       icon: FolderIcon,
       current: pathRoot === "/journal",
     },
-    {
-      name: "Support",
-      href: "/Support",
-      icon: HandThumbUpIcon,
-      current: pathRoot === "/support",
-    },
-    {
-      name: "Trash",
-      href: "/trash",
-      icon: TrashIcon,
-      current: pathRoot === "/trash",
-    },
+    // {
+    //   name: "Support",
+    //   href: "/Support",
+    //   icon: HandThumbUpIcon,
+    //   current: pathRoot === "/support",
+    // },
+    // {
+    //   name: "Trash",
+    //   href: "/trash",
+    //   icon: TrashIcon,
+    //   current: pathRoot === "/trash",
+    // },
     {
       name: "Settings",
       href: "/settings",
