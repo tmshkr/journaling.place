@@ -40,7 +40,7 @@ yarn-error.log*
 !.elasticbeanstalk/*.global.yml
 
 efs
-TEST_LOGIN_URL
+tests-examples
 
 */*/test-results/
 */*/playwright-report/
