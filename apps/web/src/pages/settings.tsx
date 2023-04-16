@@ -45,7 +45,10 @@ export default function SettingsPage() {
 
   if (status === "PASSWORD_UPDATED") {
     return (
-      <div className="m-12 rounded-md bg-green-50 p-4">
+      <div
+        className="m-12 rounded-md bg-green-50 p-4"
+        data-test="update-password-success"
+      >
         <div className="flex">
           <div className="flex-shrink-0">
             <CheckCircleIcon
@@ -88,6 +91,7 @@ export default function SettingsPage() {
           <input
             type="password"
             id="current_password"
+            data-test="current-password"
             {...register("current_password", {
               required: "You must provide your current password.",
             })}
@@ -106,6 +110,7 @@ export default function SettingsPage() {
           <input
             type="password"
             id="new_password"
+            data-test="new-password"
             {...register("new_password", {
               required: "You must provide your new password.",
             })}
@@ -125,6 +130,7 @@ export default function SettingsPage() {
         <div className="mt-1 rounded-md shadow-sm">
           <input
             type="password"
+            data-test="confirm-password"
             id="confirm_new_password"
             {...register("confirm_new_password", {
               required: "You must confirm your new password.",
@@ -132,7 +138,11 @@ export default function SettingsPage() {
             className="block mb-5 w-full min-w-0 rounded-none rounded-r-md border-gray-300 focus:border-sky-500 focus:ring-sky-500 sm:text-sm"
           />
         </div>
-        <button disabled={status === "UPDATING"} className="btn-primary mt-5">
+        <button
+          data-test="update-password"
+          disabled={status === "UPDATING"}
+          className="btn-primary mt-5"
+        >
           Update
         </button>
       </form>
