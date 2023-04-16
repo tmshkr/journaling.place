@@ -4,14 +4,17 @@ import { useQuery } from "react-query";
 import dayjs from "src/lib/dayjs";
 
 export function OtherEntries({ prompt, journal }) {
-  const { data }: { data: any } = useQuery("journal");
+  const { data }: { data: any } = useQuery({
+    queryKey: "journal",
+    staleTime: 5000,
+  });
 
   if (!data) return null;
 
   const { journalsById } = data;
   const journals: any = [];
 
-  if (prompt.journals) {
+  if (prompt?.journals) {
     for (const { id } of prompt.journals) {
       if (id === journal.id) continue;
       if (!journalsById[id]) {
