@@ -4,12 +4,14 @@ import { selectUser } from "src/store/user";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { useForm } from "react-hook-form";
 import { clsx } from "clsx";
+import { useRouter } from "next/router";
 
 import { changePassword } from "src/lib/crypto";
 
 export default function SettingsPage() {
   const user = useAppSelector(selectUser);
-  const [status, setStatus] = useState("READY");
+  const router = useRouter();
+  const [status, setStatus] = useState(router.query.status || "READY");
   const { register, handleSubmit, formState, setError, setFocus, setValue } =
     useForm();
   const { errors }: { errors: any } = formState;
@@ -31,6 +33,7 @@ export default function SettingsPage() {
     await changePassword(current_password, new_password)
       .then(() => {
         setStatus("PASSWORD_UPDATED");
+        window.location.href += "?status=PASSWORD_UPDATED";
       })
       .catch((err) => {
         if (err.message === "Incorrect password") {

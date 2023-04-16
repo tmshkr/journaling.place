@@ -14,8 +14,18 @@ export const withUser = async (req, res, next) => {
       where: { id: BigInt(sub) },
     });
 
-    (user as any).id = user.id.toString();
+    // Check that the token's salt is correct
+    if (user.salt) {
+      for (let i = 0; i < user.salt.length; i++) {
+        if (user.salt[i] !== nextToken.user.salt.data[i]) {
+          res.status(401).json({ message: "Unauthorized" });
+          return;
+        }
+      }
+    }
+
     req.user = user;
+    req.user.id = user.id.toString();
 
     return next();
   } catch (err: any) {

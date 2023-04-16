@@ -30,11 +30,16 @@ export const authOptions = {
   callbacks: {
     async session(args) {
       const { session, token } = args;
+      session.user = token.user;
+      return session;
+    },
+    async jwt(args) {
+      const { token } = args;
       const user = await prisma.user.findUnique({
         where: { id: BigInt(token.sub) },
       });
-      session.user = user;
-      return session;
+      token.user = user;
+      return token;
     },
   },
 };
