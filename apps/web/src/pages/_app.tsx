@@ -95,7 +95,7 @@ function PageAuth({ Component, pageProps }) {
 
   useEffect(() => {
     if (user) {
-      queryClient.prefetchQuery("journal");
+      queryClient.prefetchQuery({ queryKey: "journal", staleTime: 5000 });
     }
   }, [user]);
 
