@@ -40,8 +40,16 @@ async function getJournals(cursor?) {
 
       for (const entry of journals) {
         cache.journalsById[entry.id] = entry;
-        journalIndex.add(Number(entry.id), entry.promptText);
 
+        if (entry.promptId) {
+          if (cache.journalsByPromptId[entry.promptId]) {
+            cache.journalsByPromptId[entry.promptId].add(entry.id);
+          } else {
+            cache.journalsByPromptId[entry.promptId] = new Set([entry.id]);
+          }
+        }
+
+        journalIndex.add(Number(entry.id), entry.promptText);
         entry.ciphertext = toArrayBuffer(entry.ciphertext.data);
         entry.iv = new Uint8Array(entry.iv.data);
         const decrypted = await decrypt(entry.ciphertext, entry.iv);
@@ -61,6 +69,7 @@ async function getJournals(cursor?) {
       }
 
       cache.ts = ts;
+      console.log(cache);
       return cache;
     });
 }

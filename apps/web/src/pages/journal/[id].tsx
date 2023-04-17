@@ -45,14 +45,6 @@ export async function getServerSideProps({ params, req, res }) {
         select: {
           id: true,
           text: true,
-          journals: {
-            select: {
-              id: true,
-            },
-            orderBy: {
-              updatedAt: "desc",
-            },
-          },
         },
       },
     },

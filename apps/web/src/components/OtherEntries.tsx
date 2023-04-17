@@ -11,17 +11,14 @@ export function OtherEntries({ prompt, journal }) {
 
   if (!data) return null;
 
-  const { journalsById } = data;
+  const { journalsById, journalsByPromptId } = data;
   const journals: any = [];
 
-  if (prompt?.journals) {
-    for (const { id } of prompt.journals) {
-      if (id === journal.id) continue;
-      if (!journalsById[id]) {
-        console.error("Journal not found in cache", id);
-        continue;
+  if (prompt) {
+    for (const journalId of journalsByPromptId[prompt.id]) {
+      if (journalId != journal?.id) {
+        journals.push(journalsById[journalId]);
       }
-      journals.push(journalsById[id]);
     }
   }
 
