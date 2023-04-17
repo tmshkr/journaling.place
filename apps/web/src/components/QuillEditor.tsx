@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import Quill from "quill";
 import QuillMarkdown from "quilljs-markdown";
+import { useQueryClient } from "react-query";
 import { CalendarIcon } from "@heroicons/react/20/solid";
 import "quilljs-markdown/dist/quilljs-markdown-common-style.css";
 import "quill/dist/quill.core.css";
@@ -14,6 +15,7 @@ import dayjs from "src/lib/dayjs";
 import { OtherEntries } from "./OtherEntries";
 
 export default function QuillEditor(props) {
+  const queryClient = useQueryClient();
   const { user, prompt, router, loading, dispatch } = props;
   const [journal, setJournal] = useState(props.journal);
   const quillRef: any = useRef(null);
@@ -50,6 +52,10 @@ export default function QuillEditor(props) {
     setJournal(props.journal);
     loadSavedData(quillRef, props.journal);
   }, [router]);
+
+  useEffect(() => {
+    queryClient.invalidateQueries("journal");
+  }, [journal]);
 
   return (
     <>
