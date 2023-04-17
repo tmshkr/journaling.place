@@ -45,6 +45,7 @@ async function handleGet(req, res) {
         include: {
           prompt: {
             select: {
+              id: true,
               text: true,
             },
           },
@@ -52,25 +53,7 @@ async function handleGet(req, res) {
       })
       .then((journals) => {
         return {
-          journals: journals.map(
-            ({
-              id,
-              ciphertext,
-              iv,
-              createdAt,
-              updatedAt,
-              prompt,
-              promptId,
-            }) => ({
-              id,
-              ciphertext,
-              iv,
-              createdAt,
-              updatedAt,
-              promptText: prompt?.text,
-              promptId,
-            })
-          ),
+          journals,
           ts: new Date().toISOString(),
           nextCursor:
             journals.length === take
