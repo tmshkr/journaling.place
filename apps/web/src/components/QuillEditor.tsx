@@ -49,6 +49,7 @@ export default function QuillEditor(props) {
   }, [user, router, journal, prompt]);
 
   useEffect(() => {
+    quillRef.current.setText("");
     setJournal(props.journal);
     loadSavedData(quillRef, props.journal);
   }, [router]);

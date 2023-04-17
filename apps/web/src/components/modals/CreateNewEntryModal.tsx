@@ -36,7 +36,7 @@ export function CreateNewEntryModal() {
           <button
             type="button"
             onClick={() => {
-              router.push(`/new?promptId=${currentPrompt.value?.id}`);
+              router.push(`/${currentPrompt.value?.id}`);
               dispatch(setModal({ ...modal, isVisible: false }));
             }}
             className={buttonClasses}
@@ -49,7 +49,7 @@ export function CreateNewEntryModal() {
         <button
           type="button"
           onClick={() => {
-            router.push("/new?promptId=random");
+            router.push("/random");
             dispatch(setModal({ ...modal, isVisible: false }));
           }}
           className={buttonClasses}
