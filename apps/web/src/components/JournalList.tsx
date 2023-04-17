@@ -27,7 +27,7 @@ export function JournalList({ journals }) {
                     <div className="truncate">
                       <div className="text-sm">
                         <h3 className="truncate font-medium text-indigo-600">
-                          {journal.promptText}
+                          {journal.prompt?.text}
                         </h3>
                         <p className="truncate font-medium text-gray-600">
                           {journal.plaintext || journal.decrypted}

@@ -49,7 +49,7 @@ async function getJournals(cursor?) {
           }
         }
 
-        journalIndex.add(Number(entry.id), entry.promptText);
+        journalIndex.add(Number(entry.id), entry.prompt?.text);
         entry.ciphertext = toArrayBuffer(entry.ciphertext.data);
         entry.iv = new Uint8Array(entry.iv.data);
         const decrypted = await decrypt(entry.ciphertext, entry.iv);
@@ -69,7 +69,6 @@ async function getJournals(cursor?) {
       }
 
       cache.ts = ts;
-      console.log(cache);
       return cache;
     });
 }
