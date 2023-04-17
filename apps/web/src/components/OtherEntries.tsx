@@ -14,7 +14,7 @@ export function OtherEntries({ prompt, journal }) {
   const { journalsById, journalsByPromptId } = data;
   const journals: any = [];
 
-  if (prompt) {
+  if (journalsByPromptId[prompt?.id]) {
     for (const journalId of journalsByPromptId[prompt.id]) {
       if (journalId != journal?.id) {
         journals.push(journalsById[journalId]);
