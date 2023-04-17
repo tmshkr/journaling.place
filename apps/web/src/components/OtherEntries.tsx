@@ -12,7 +12,7 @@ export function OtherEntries({ prompt, journal }) {
   if (!data) return null;
 
   const { journalsById, journalsByPromptId } = data;
-  const journals: any = [];
+  let journals: any = [];
 
   if (journalsByPromptId[prompt?.id]) {
     for (const journalId of journalsByPromptId[prompt.id]) {
@@ -23,6 +23,9 @@ export function OtherEntries({ prompt, journal }) {
   }
 
   if (journals.length === 0) return null;
+  journals = journals.sort((a, b) => {
+    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+  });
 
   return (
     <div className="my-12">
