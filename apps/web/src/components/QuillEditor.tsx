@@ -2,12 +2,14 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import Quill from "quill";
 import QuillMarkdown from "quilljs-markdown";
+import { CalendarIcon } from "@heroicons/react/20/solid";
 import "quilljs-markdown/dist/quilljs-markdown-common-style.css";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 
 import { setLoading } from "src/store/loading";
 import { encrypt, decrypt } from "src/lib/crypto";
+import dayjs from "src/lib/dayjs";
 
 import { OtherEntries } from "./OtherEntries";
 
@@ -57,6 +59,18 @@ export default function QuillEditor(props) {
         style={{ fontSize: "15px" }}
         className="min-h-[60vh]"
       />
+      {journal && (
+        <div className="flex items-center mt-3">
+          <CalendarIcon
+            className="mr-1.5 w-5 flex-shrink-0 text-gray-400 inline"
+            aria-hidden="true"
+          />
+          <p className="text-sm inline text-gray-500">
+            {dayjs(journal.updatedAt).format("MMM D h:mm A")}
+          </p>
+        </div>
+      )}
+
       <OtherEntries {...{ journal, prompt }} />
     </>
   );
@@ -74,6 +88,7 @@ async function autosave(quillRef, journal, prompt, setJournal) {
         ciphertext: Buffer.from(ciphertext),
         iv: Buffer.from(iv),
       });
+      setJournal({ ...journal, updatedAt: new Date() });
     } else {
       await axios
         .post("/api/journal", {
@@ -82,7 +97,7 @@ async function autosave(quillRef, journal, prompt, setJournal) {
           iv: Buffer.from(iv),
         })
         .then(({ data }) => {
-          setJournal({ id: data.id });
+          setJournal({ id: data.id, updatedAt: new Date() });
         });
     }
   }, 1000);
