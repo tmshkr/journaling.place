@@ -76,6 +76,7 @@ export default function QuillEditor(props) {
             "MMM D h:mm A"
           )}<br/>Updated: ${dayjs(journal.updatedAt).format("MMM D h:mm A")}`}
           data-tooltip-place="bottom"
+          data-tooltip-variant="info"
         >
           <Tooltip id="updatedAt-createdAt" />
           <CalendarIcon
