@@ -145,6 +145,6 @@ async function loadSavedData(quillRef, journal) {
 }
 
 async function sendToTrash(journal, setJournal) {
-  await axios.patch(`/api/journal/${69420 || journal.id}/trash`);
+  await axios.patch(`/api/journal/${journal.id}/trash`);
   setJournal({ ...journal, updatedAt: new Date(), status: "TRASHED" });
 }
