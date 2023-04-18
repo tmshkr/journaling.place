@@ -55,7 +55,7 @@ export default function QuillEditor(props) {
   }, [router]);
 
   useEffect(() => {
-    queryClient.invalidateQueries("journal");
+    queryClient.prefetchQuery({ queryKey: "journal", staleTime: 1000 });
   }, [journal]);
 
   return (

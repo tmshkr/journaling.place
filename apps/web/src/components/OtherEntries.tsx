@@ -1,17 +1,12 @@
 import Link from "next/link";
-import { useQuery } from "react-query";
+import { useQueryClient } from "react-query";
 
 import dayjs from "src/lib/dayjs";
 
 export function OtherEntries({ prompt, journal }) {
-  const { data }: { data: any } = useQuery({
-    queryKey: "journal",
-    staleTime: 5000,
-  });
-
-  if (!data) return null;
-
-  const { journalsById, journalsByPromptId } = data;
+  const queryClient = useQueryClient();
+  const cache: any = queryClient.getQueryData("journal");
+  const { journalsById, journalsByPromptId } = cache;
   let journals: any = [];
 
   if (journalsByPromptId[prompt?.id]) {
