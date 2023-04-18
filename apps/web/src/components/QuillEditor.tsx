@@ -4,6 +4,8 @@ import Quill from "quill";
 import QuillMarkdown from "quilljs-markdown";
 import { useQueryClient } from "react-query";
 import { CalendarIcon } from "@heroicons/react/20/solid";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 import "quilljs-markdown/dist/quilljs-markdown-common-style.css";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
@@ -67,7 +69,15 @@ export default function QuillEditor(props) {
         className="min-h-[60vh]"
       />
       {journal && (
-        <div className="flex items-center mt-3">
+        <div
+          className="flex items-center mt-3 w-fit"
+          data-tooltip-id="updatedAt-createdAt"
+          data-tooltip-html={`Created: ${dayjs(journal.createdAt).format(
+            "MMM D h:mm A"
+          )}<br/>Updated: ${dayjs(journal.updatedAt).format("MMM D h:mm A")}`}
+          data-tooltip-place="bottom"
+        >
+          <Tooltip id="updatedAt-createdAt" />
           <CalendarIcon
             className="mr-1.5 w-5 flex-shrink-0 text-gray-400 inline"
             aria-hidden="true"
@@ -104,7 +114,8 @@ async function autosave(quillRef, journal, prompt, setJournal) {
           iv: Buffer.from(iv),
         })
         .then(({ data }) => {
-          setJournal({ id: data.id, updatedAt: new Date() });
+          const now = new Date();
+          setJournal({ id: data.id, createdAt: now, updatedAt: now });
         });
     }
   }, 1000);
