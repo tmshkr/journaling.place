@@ -1,5 +1,455 @@
 [
   {
+    "prompt": "Write about a time when you felt overwhelmed. What strategies did you use to cope?",
+    "tags": [
+      "stress_management",
+      "self-care",
+      "mental_health"
+    ],
+    "stub": "I felt overwhelmed when _____. To cope, I used the following strategies: _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Reflect on a recent success you had. What steps did you take to achieve that success?",
+    "tags": [
+      "goal_setting",
+      "motivation",
+      "self-improvement"
+    ],
+    "stub": "I recently achieved success when _____. To achieve this, I took the following steps: _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Describe a time when you had to step out of your comfort zone. What did you learn from that experience?",
+    "tags": [
+      "personal_growth",
+      "courage",
+      "self-awareness"
+    ],
+    "stub": "I had to step out of my comfort zone when _____. From that experience, I learned that _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "What is one thing you would like to improve about your communication skills? Why?",
+    "tags": [
+      "communication",
+      "self-improvement",
+      "self-awareness"
+    ],
+    "stub": "One thing I would like to improve about my communication skills is _____. This is important to me because _____. To improve, I will _____."
+  },
+  {
+    "prompt": "Write about a time when you experienced failure. What did you learn from that experience?",
+    "tags": [
+      "resilience",
+      "self-awareness",
+      "personal_growth"
+    ],
+    "stub": "I experienced failure when _____. From that experience, I learned that _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Describe a time when you felt particularly inspired. What inspired you?",
+    "tags": [
+      "creativity",
+      "motivation",
+      "self-improvement"
+    ],
+    "stub": "I felt particularly inspired when _____. What inspired me was _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Reflect on a recent disagreement you had with someone. How did you handle the situation?",
+    "tags": [
+      "communication",
+      "self-awareness",
+      "conflict_resolution"
+    ],
+    "stub": "I recently had a disagreement with someone when _____. To handle the situation, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "What is one habit you would like to develop? Why?",
+    "tags": [
+      "habit_building",
+      "self-improvement",
+      "goal_setting"
+    ],
+    "stub": "One habit I would like to develop is _____. This is important to me because _____. To develop this habit, I will _____."
+  },
+  {
+    "prompt": "Write about a time when you felt particularly grateful for something. What were you grateful for?",
+    "tags": [
+      "gratitude",
+      "mindfulness",
+      "positivity"
+    ],
+    "stub": "I felt particularly grateful for something when _____. What I was grateful for was _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Describe a time when you felt particularly proud of someone else. Why were you proud?",
+    "tags": [
+      "empathy",
+      "positivity",
+      "mental_health"
+    ],
+    "stub": "I felt particularly proud of someone else when _____. I was proud of them because _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "What is one thing you appreciate about your current life situation? Why?",
+    "tags": [
+      "gratitude",
+      "mindfulness",
+      "positivity"
+    ],
+    "stub": "One thing I appreciate about my current life situation is _____. I'm grateful for this because _____."
+  },
+  {
+    "prompt": "Write about a time when you had to overcome a difficult challenge. What did you learn from that experience?",
+    "tags": [
+      "resilience",
+      "personal_growth",
+      "self-awareness"
+    ],
+    "stub": "I had to overcome a difficult challenge when _____. From that experience, I learned that _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Describe a place that brings you peace. What about that place is calming to you?",
+    "tags": [
+      "relaxation",
+      "mindfulness",
+      "self-care"
+    ],
+    "stub": "A place that brings me peace is _____. What is calming to me about this place is _____."
+  },
+  {
+    "prompt": "Reflect on a time when you received feedback. How did you respond to it?",
+    "tags": [
+      "communication",
+      "personal_growth",
+      "self-awareness"
+    ],
+    "stub": "I received feedback when _____. I responded to it by _____. This experience taught me _____."
+  },
+  {
+    "prompt": "What is one thing you've been wanting to learn more about? Why?",
+    "tags": [
+      "curiosity",
+      "personal_growth",
+      "self-improvement"
+    ],
+    "stub": "One thing I've been wanting to learn more about is _____. I'm interested in this because _____."
+  },
+  {
+    "prompt": "Write about a time when you had to make a difficult decision. How did you go about making the decision?",
+    "tags": [
+      "decision_making",
+      "courage",
+      "self-awareness"
+    ],
+    "stub": "I had to make a difficult decision when _____. To make this decision, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "Describe a time when you had to adapt to a new situation. What did you learn from that experience?",
+    "tags": [
+      "adaptability",
+      "personal_growth",
+      "resilience"
+    ],
+    "stub": "I had to adapt to a new situation when _____. From that experience, I learned that _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "What is one thing you would like to change about your current life situation? Why?",
+    "tags": [
+      "self-improvement",
+      "personal_growth",
+      "goal_setting"
+    ],
+    "stub": "One thing I would like to change about my current life situation is _____. This is important to me because _____. To achieve this change, I will _____."
+  },
+  {
+    "prompt": "Write about a time when you felt proud of yourself. What did you do to achieve that feeling?",
+    "tags": [
+      "self-esteem",
+      "personal_growth",
+      "positivity"
+    ],
+    "stub": "I felt proud of myself when _____. To achieve this feeling, I _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Reflect on a time when you had to ask for help. How did you go about asking for help?",
+    "tags": [
+      "communication",
+      "personal_growth",
+      "self-awareness"
+    ],
+    "stub": "I had to ask for help when _____. To ask for help, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "What is one thing you've been meaning to apologize for but haven't yet? Why have you been hesitant to apologize?",
+    "tags": [
+      "communication",
+      "relationships",
+      "empathy"
+    ],
+    "stub": "I've been meaning to apologize for _____. I've been hesitant to apologize because _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Describe a person who has had a significant impact on your life. How have they influenced you?",
+    "tags": [
+      "role_models",
+      "personal_growth",
+      "inspiration"
+    ],
+    "stub": "A person who has had a significant impact on my life is _____. They influenced me by _____. I am grateful for _____."
+  },
+  {
+    "prompt": "Reflect on a time when you had to stand up for something you believed in. How did you go about it?",
+    "tags": [
+      "advocacy",
+      "courage",
+      "personal_growth"
+    ],
+    "stub": "I had to stand up for something I believed in when _____. To do so, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "Write about a time when you felt out of your comfort zone. What did you learn from that experience?",
+    "tags": [
+      "personal_growth",
+      "self-discovery",
+      "resilience"
+    ],
+    "stub": "I felt out of my comfort zone when _____. From that experience, I learned that _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "What is one thing you would like to achieve in the next year? Why is it important to you?",
+    "tags": [
+      "goals",
+      "motivation",
+      "personal_growth"
+    ],
+    "stub": "One thing I would like to achieve in the next year is _____. It's important to me because _____. To achieve this goal, I will _____."
+  },
+  {
+    "prompt": "Reflect on a time when you had to compromise. What did you learn from that experience?",
+    "tags": [
+      "communication",
+      "conflict_resolution",
+      "personal_growth"
+    ],
+    "stub": "I had to compromise when _____. From that experience, I learned that _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Describe a person who you admire. What qualities do they possess that you admire?",
+    "tags": [
+      "role_models",
+      "inspiration",
+      "personal_growth"
+    ],
+    "stub": "A person who I admire is _____. The qualities that they possess that I admire are _____. I hope to _____."
+  },
+  {
+    "prompt": "Write about a time when you felt supported by someone. How did their support impact you?",
+    "tags": [
+      "relationships",
+      "gratitude",
+      "personal_growth"
+    ],
+    "stub": "I felt supported by someone when _____. Their support impacted me by _____. I am grateful for _____."
+  },
+  {
+    "prompt": "What is one thing you've been meaning to do to take care of yourself? Why is it important?",
+    "tags": [
+      "self-care",
+      "mental_health",
+      "personal_growth"
+    ],
+    "stub": "One thing I've been meaning to do to take care of myself is _____. It's important because _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Reflect on a time when you felt like you learned something new about yourself. What did you learn?",
+    "tags": [
+      "self-discovery",
+      "personal_growth",
+      "self-awareness"
+    ],
+    "stub": "I felt like I learned something new about myself"
+  },
+  {
+    "prompt": "What is one thing you've been putting off that you know you need to do? Why have you been avoiding it?",
+    "tags": [
+      "procrastination",
+      "personal_growth",
+      "time_management"
+    ],
+    "stub": "I've been putting off ____ because _____. I know I need to address it because _____."
+  },
+  {
+    "prompt": "Describe a time when you felt proud of yourself. What did you do to achieve that feeling?",
+    "tags": [
+      "self-esteem",
+      "achievement",
+      "personal_growth"
+    ],
+    "stub": "I felt proud of myself when I _____. To achieve that feeling, I _____."
+  },
+  {
+    "prompt": "What is one thing that you've learned recently that has changed your perspective on something?",
+    "tags": [
+      "learning",
+      "personal_growth",
+      "self-awareness"
+    ],
+    "stub": "Recently, I learned that _____. This has changed my perspective on _____ because _____."
+  },
+  {
+    "prompt": "Describe a challenge you've faced recently. How did you overcome it?",
+    "tags": [
+      "resilience",
+      "problem-solving",
+      "personal_growth"
+    ],
+    "stub": "Recently, I faced the challenge of _____. To overcome it, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "Write about a time when you felt overwhelmed. What strategies did you use to manage your stress?",
+    "tags": [
+      "stress-management",
+      "self-care",
+      "mental_health"
+    ],
+    "stub": "I felt overwhelmed when _____. To manage my stress, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "Reflect on a mistake you've made recently. What did you learn from it?",
+    "tags": [
+      "self-improvement",
+      "learning",
+      "personal_growth"
+    ],
+    "stub": "I made a mistake when I _____. From this experience, I learned that _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "What is something that you've been wanting to learn or try? Why haven't you done it yet?",
+    "tags": [
+      "curiosity",
+      "personal_growth",
+      "self-awareness"
+    ],
+    "stub": "I've been wanting to learn or try _____ because _____. However, I haven't done it yet because _____."
+  },
+  {
+    "prompt": "Write about a time when you had to make a difficult decision. How did you go about it?",
+    "tags": [
+      "decision-making",
+      "problem-solving",
+      "personal_growth"
+    ],
+    "stub": "I had to make a difficult decision when _____. To make the decision, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "Reflect on a time when you felt inspired by someone. What qualities did they possess that you admire?",
+    "tags": [
+      "role_models",
+      "inspiration",
+      "personal_growth"
+    ],
+    "stub": "I felt inspired by someone when _____. The qualities that I admired in them were _____. I hope to _____."
+  },
+  {
+    "prompt": "What is one thing that you're grateful for today? Why is it important to you?",
+    "tags": [
+      "gratitude",
+      "mindfulness",
+      "personal_growth"
+    ],
+    "stub": "Today, I'm grateful for _____. This is important to me because _____. Practicing gratitude helps me _____."
+  },
+  {
+    "prompt": "Describe a recent experience that brought you joy.",
+    "tags": [
+      "happiness",
+      "positivity",
+      "gratitude"
+    ],
+    "stub": "One experience that brought me a lot of joy recently was..."
+  },
+  {
+    "prompt": "Write about a person who has had a significant impact on your life.",
+    "tags": [
+      "relationships",
+      "gratitude",
+      "personal_growth"
+    ],
+    "stub": "The person who has had a significant impact on my life is..."
+  },
+  {
+    "prompt": "What are some things you are grateful for in your life right now?",
+    "tags": [
+      "gratitude",
+      "positivity",
+      "mindfulness"
+    ],
+    "stub": "I am grateful for many things in my life right now, including..."
+  },
+  {
+    "prompt": "What is a mistake you made recently and what did you learn from it?",
+    "tags": [
+      "self-improvement",
+      "reflection",
+      "learning"
+    ],
+    "stub": "Recently, I made a mistake when I..."
+  },
+  {
+    "prompt": "What is something you have been putting off that you need to do?",
+    "tags": [
+      "procrastination",
+      "productivity",
+      "self-discipline"
+    ],
+    "stub": "Something that I have been putting off is..."
+  },
+  {
+    "prompt": "Write about a challenge you have overcome in your life.",
+    "tags": [
+      "resilience",
+      "personal_growth",
+      "reflection"
+    ],
+    "stub": "One challenge that I have overcome in my life is..."
+  },
+  {
+    "prompt": "What is a goal you have for yourself in the next year?",
+    "tags": [
+      "self-improvement",
+      "planning",
+      "motivation"
+    ],
+    "stub": "One goal that I have for myself in the next year is..."
+  },
+  {
+    "prompt": "What is something you did today that made you proud of yourself?",
+    "tags": [
+      "self-esteem",
+      "positivity",
+      "mindfulness"
+    ],
+    "stub": "Today, I did something that made me feel proud of myself, which was..."
+  },
+  {
+    "prompt": "What is something you would like to change about your daily routine?",
+    "tags": [
+      "habits",
+      "self-improvement",
+      "self-discipline"
+    ],
+    "stub": "One thing that I would like to change about my daily routine is..."
+  },
+  {
+    "prompt": "Write about a place you have visited that has left an impression on you.",
+    "tags": [
+      "travel",
+      "memories",
+      "reflection"
+    ],
+    "stub": "One place that I have visited that left a lasting impression on me is..."
+  },
+  {
     "prompt": "What is a belief or mindset that you hold that may not be serving you, and how can you work to shift this perspective?",
     "tags": [
       "personal_growth",
