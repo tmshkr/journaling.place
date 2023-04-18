@@ -6,6 +6,8 @@ import dayjs from "src/lib/dayjs";
 export function OtherEntries({ prompt, journal }) {
   const queryClient = useQueryClient();
   const cache: any = queryClient.getQueryData("journal");
+  if (!cache) return null;
+
   const { journalsById, journalsByPromptId } = cache;
   let journals: any = [];
 
