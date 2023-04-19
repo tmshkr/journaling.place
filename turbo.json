@@ -17,6 +17,9 @@
     "test": {
       "cache": false
     },
+    "jest": {
+      "cache": false
+    },
     "report": {
       "cache": false
     }
