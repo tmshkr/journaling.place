@@ -94,6 +94,49 @@ describe("/api/journal/[id]/trash", () => {
     expect(res._getStatusCode()).toBe(400);
   });
 
+  test("DELETE method marks journal as DELETED", async () => {
+    const { req, res } = createMocks({
+      method: "DELETE",
+      query: {
+        id: journal.id,
+      },
+      cookies: {
+        "next-auth.session-token": jwt,
+      },
+    });
+
+    await router(req, res);
+    expect(res._getStatusCode()).toBe(200);
+
+    const updatedJournal = await prisma.journal.findUniqueOrThrow({
+      where: {
+        id_authorId: {
+          id: BigInt(journal.id),
+          authorId: BigInt(journal.authorId),
+        },
+      },
+    });
+    expect(updatedJournal.status).toBe("DELETED");
+  });
+
+  test("DELETED record cannot be updated", async () => {
+    const { req, res } = createMocks({
+      method: "PATCH",
+      body: {
+        status: "ACTIVE",
+      },
+      query: {
+        id: journal.id,
+      },
+      cookies: {
+        "next-auth.session-token": jwt,
+      },
+    });
+
+    await router(req, res);
+    expect(res._getStatusCode()).toBe(403);
+  });
+
   test("returns 404 with with incorrect method", async () => {
     const { req, res } = createMocks({
       method: "POST",
