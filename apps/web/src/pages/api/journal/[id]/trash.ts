@@ -65,6 +65,9 @@ async function handleDelete(req, res) {
 
 export default router.handler({
   onError: (err: any, req, res) => {
+    if (err.message.includes("Cannot update a deleted record")) {
+      return res.status(403).json({ errorMessage: "Forbidden" });
+    }
     console.error(err.stack);
     res.status(500).end("Something broke!");
   },
