@@ -7,12 +7,6 @@ let jwt;
 let journal;
 
 beforeAll(async () => {
-  const testUser = { id: 0 };
-  await prisma.user.upsert({
-    where: testUser,
-    create: testUser,
-    update: testUser,
-  });
   jwt = await encode({
     token: { sub: "0", user: { id: 0, salt: { data: [] } } },
     secret: process.env.NEXTAUTH_SECRET as string,

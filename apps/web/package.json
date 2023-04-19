@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "jest": "jest"
+    "jest": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' setup-tests.ts && jest"
   },
   "dependencies": {
     "ui": "*"
