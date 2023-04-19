@@ -71,17 +71,25 @@ model Tag {
   updatedAt DateTime @default(now()) @updatedAt
 }
 
+enum JournalStatus {
+  ACTIVE
+  TRASHED
+  DELETED
+}
+
 model Journal {
   id BigInt @id @default(autoincrement())
 
   authorId BigInt
   promptId BigInt?
 
-  ciphertext Bytes
-  iv         Bytes
+  ciphertext Bytes?
+  iv         Bytes?
 
   author User    @relation(fields: [authorId], references: [id])
   prompt Prompt? @relation(fields: [promptId], references: [id])
+
+  status JournalStatus @default(ACTIVE)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
