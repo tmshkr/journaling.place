@@ -25,8 +25,8 @@ beforeAll(async () => {
   });
 });
 
-describe("PATCH /api/journal/[id]/trash", () => {
-  test("returns 200 with correct parameters", async () => {
+describe("/api/journal/[id]/trash", () => {
+  test("marks journal TRASHED", async () => {
     const { req, res } = createMocks({
       method: "PATCH",
       body: {
@@ -41,7 +41,80 @@ describe("PATCH /api/journal/[id]/trash", () => {
     });
 
     await router(req, res);
-
     expect(res._getStatusCode()).toBe(200);
+
+    const updatedJournal = await prisma.journal.findUniqueOrThrow({
+      where: {
+        id_authorId: {
+          id: BigInt(journal.id),
+          authorId: BigInt(journal.authorId),
+        },
+      },
+    });
+    expect(updatedJournal.status).toBe("TRASHED");
+  });
+
+  test("marks journal ACTIVE", async () => {
+    const { req, res } = createMocks({
+      method: "PATCH",
+      body: {
+        status: "ACTIVE",
+      },
+      query: {
+        id: journal.id,
+      },
+      cookies: {
+        "next-auth.session-token": jwt,
+      },
+    });
+
+    await router(req, res);
+    expect(res._getStatusCode()).toBe(200);
+
+    const updatedJournal = await prisma.journal.findUniqueOrThrow({
+      where: {
+        id_authorId: {
+          id: BigInt(journal.id),
+          authorId: BigInt(journal.authorId),
+        },
+      },
+    });
+    expect(updatedJournal.status).toBe("ACTIVE");
+  });
+
+  test("PATCH method does not allow DELETED status", async () => {
+    const { req, res } = createMocks({
+      method: "PATCH",
+      body: {
+        status: "DELETED",
+      },
+      query: {
+        id: journal.id,
+      },
+      cookies: {
+        "next-auth.session-token": jwt,
+      },
+    });
+
+    await router(req, res);
+    expect(res._getStatusCode()).toBe(400);
+  });
+
+  test("returns 404 with with incorrect method", async () => {
+    const { req, res } = createMocks({
+      method: "POST",
+      body: {
+        status: "TRASHED",
+      },
+      query: {
+        id: journal.id,
+      },
+      cookies: {
+        "next-auth.session-token": jwt,
+      },
+    });
+
+    await router(req, res);
+    expect(res._getStatusCode()).toBe(404);
   });
 });
