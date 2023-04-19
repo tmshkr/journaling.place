@@ -47,6 +47,7 @@ export async function handleKey(salt?: Uint8Array) {
 
   // Persist salt to DB
   await axios.put("/api/me", { salt: Buffer.from(store.salt) });
+  window.location.href += "?";
 }
 
 /*
