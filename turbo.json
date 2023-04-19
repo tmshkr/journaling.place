@@ -20,6 +20,9 @@
     "jest": {
       "cache": false
     },
+    "jest:watch": {
+      "cache": false
+    },
     "report": {
       "cache": false
     }
