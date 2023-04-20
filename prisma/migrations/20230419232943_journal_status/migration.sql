@@ -11,6 +11,8 @@ RETURNS TRIGGER AS $$
 BEGIN
   IF OLD.status = 'DELETED' THEN
     RAISE EXCEPTION 'Cannot update a deleted record';
+  ELSIF NEW.status = 'DELETED' AND OLD.status = 'ACTIVE' THEN
+    RAISE EXCEPTION 'Cannot delete an active record';
   END IF;
   RETURN NEW;
 END;
