@@ -94,7 +94,56 @@ describe("/api/journal/[id]/trash", () => {
     expect(res._getStatusCode()).toBe(400);
   });
 
+  test("ACTIVE record cannot be marked DELETED", async () => {
+    await prisma.journal.update({
+      where: {
+        id_authorId: {
+          id: BigInt(journal.id),
+          authorId: BigInt(journal.authorId),
+        },
+      },
+      data: {
+        status: "ACTIVE",
+      },
+    });
+
+    const { req, res } = createMocks({
+      method: "DELETE",
+      query: {
+        id: journal.id,
+      },
+      cookies: {
+        "next-auth.session-token": jwt,
+      },
+    });
+
+    await router(req, res);
+    expect(res._getStatusCode()).toBe(403);
+
+    const oldJournal = await prisma.journal.findUniqueOrThrow({
+      where: {
+        id_authorId: {
+          id: BigInt(journal.id),
+          authorId: BigInt(journal.authorId),
+        },
+      },
+    });
+    expect(oldJournal.status).toBe("ACTIVE");
+  });
+
   test("DELETE method marks journal as DELETED", async () => {
+    await prisma.journal.update({
+      where: {
+        id_authorId: {
+          id: BigInt(journal.id),
+          authorId: BigInt(journal.authorId),
+        },
+      },
+      data: {
+        status: "TRASHED",
+      },
+    });
+
     const { req, res } = createMocks({
       method: "DELETE",
       query: {
