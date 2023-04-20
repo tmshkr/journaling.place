@@ -39,6 +39,13 @@ async function getJournals(cursor?) {
       const { journals, nextCursor, ts } = data;
 
       for (const entry of journals) {
+        if (entry.status === "DELETED") {
+          delete cache.journalsById[entry.id];
+          cache.journalsByPromptId[entry.promptId]?.delete(entry.id);
+          journalIndex.remove(Number(entry.id));
+          continue;
+        }
+
         cache.journalsById[entry.id] = entry;
 
         if (entry.promptId) {
