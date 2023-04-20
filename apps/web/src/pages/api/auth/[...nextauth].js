@@ -3,6 +3,9 @@ import { prisma } from "src/lib/prisma";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
 import { sendVerificationRequest } from "src/auth/sendVerificationRequest";
+import { sendWelcomEmail } from "mailer";
+
+const path = require("path");
 
 BigInt.prototype.toJSON = function () {
   return this.toString();
@@ -33,12 +36,17 @@ export const authOptions = {
       session.user = token.user;
       return session;
     },
-    async jwt(args) {
-      const { token } = args;
-      const user = await prisma.user.findUnique({
+    async jwt({ token, isNewUser }) {
+      token.user = await prisma.user.findUnique({
         where: { id: BigInt(token.sub) },
       });
-      token.user = user;
+
+      if (isNewUser) {
+        sendWelcomEmail(
+          token.user.email,
+          path.resolve(process.cwd(), "../../packages/mailer/emails")
+        );
+      }
       return token;
     },
   },
