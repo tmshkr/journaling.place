@@ -169,19 +169,24 @@ describe("/api/journal/[id]/trash", () => {
   });
 
   test("DELETED record cannot be updated", async () => {
+    const deletedJournal = await prisma.journal.create({
+      data: {
+        authorId: 0,
+        status: "DELETED",
+      },
+    });
     const { req, res } = createMocks({
       method: "PATCH",
       body: {
         status: "ACTIVE",
       },
       query: {
-        id: journal.id,
+        id: deletedJournal.id,
       },
       cookies: {
         "next-auth.session-token": jwt,
       },
     });
-
     await router(req, res);
     expect(res._getStatusCode()).toBe(403);
   });
