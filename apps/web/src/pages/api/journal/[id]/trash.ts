@@ -51,6 +51,9 @@ async function handleDelete(req, res) {
       },
       data: {
         status: "DELETED",
+        ciphertext: null,
+        iv: null,
+        promptId: null,
       },
     })
     .catch((err) => {
