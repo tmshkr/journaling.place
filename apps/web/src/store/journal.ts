@@ -39,34 +39,40 @@ async function getJournals(cursor?) {
       const { journals, nextCursor, ts } = data;
 
       for (const entry of journals) {
-        cache.journalsById[entry.id] = entry;
-
-        if (entry.status === "DELETED") {
+        if (entry.status !== "ACTIVE") {
           journalIndex.remove(Number(entry.id));
-          continue;
-        }
-
-        if (entry.promptId) {
-          if (cache.journalsByPromptId[entry.promptId]) {
-            cache.journalsByPromptId[entry.promptId].add(entry.id);
-          } else {
-            cache.journalsByPromptId[entry.promptId] = new Set([entry.id]);
+          const promptId = cache.journalsById[entry.id]?.promptId;
+          if (promptId) {
+            cache.journalsByPromptId[promptId].delete(entry.id);
           }
         }
 
-        journalIndex.add(Number(entry.id), entry.prompt?.text);
-        entry.ciphertext = toArrayBuffer(entry.ciphertext.data);
-        entry.iv = new Uint8Array(entry.iv.data);
-        const decrypted = await decrypt(entry.ciphertext, entry.iv);
+        cache.journalsById[entry.id] = entry;
 
-        try {
-          quill.setContents(JSON.parse(decrypted));
-          entry.plaintext = quill.getText();
-        } catch (err) {
-          entry.plaintext = decrypted;
+        if (entry.status !== "DELETED") {
+          entry.ciphertext = toArrayBuffer(entry.ciphertext.data);
+          entry.iv = new Uint8Array(entry.iv.data);
+          const decrypted = await decrypt(entry.ciphertext, entry.iv);
+
+          try {
+            quill.setContents(JSON.parse(decrypted));
+            entry.plaintext = quill.getText();
+          } catch (err) {
+            entry.plaintext = decrypted;
+          }
         }
 
-        journalIndex.append(Number(entry.id), entry.plaintext);
+        if (entry.status === "ACTIVE") {
+          journalIndex.add(Number(entry.id), entry.plaintext);
+          if (entry.promptId) {
+            journalIndex.append(Number(entry.id), entry.prompt.text);
+            if (cache.journalsByPromptId[entry.promptId]) {
+              cache.journalsByPromptId[entry.promptId].add(entry.id);
+            } else {
+              cache.journalsByPromptId[entry.promptId] = new Set([entry.id]);
+            }
+          }
+        }
       }
 
       if (nextCursor) {
