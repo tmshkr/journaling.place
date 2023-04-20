@@ -4,7 +4,11 @@ import Quill from "quill";
 import QuillMarkdown from "quilljs-markdown";
 import { useQueryClient } from "react-query";
 import { CalendarIcon } from "@heroicons/react/20/solid";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import {
+  TrashIcon,
+  ArchiveBoxIcon,
+  ArchiveBoxXMarkIcon,
+} from "@heroicons/react/24/outline";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import "quilljs-markdown/dist/quilljs-markdown-common-style.css";
@@ -73,14 +77,13 @@ export default function QuillEditor(props) {
         <div className="flex mt-3 justify-between">
           <div
             className="inline-flex items-center w-fit"
-            data-tooltip-id="updatedAt-createdAt"
+            data-tooltip-id="tooltip"
             data-tooltip-html={`Created: ${dayjs(journal.createdAt).format(
               "MMM D h:mm A"
             )}<br/>Updated: ${dayjs(journal.updatedAt).format("MMM D h:mm A")}`}
             data-tooltip-place="bottom"
             data-tooltip-variant="info"
           >
-            <Tooltip id="updatedAt-createdAt" />
             <CalendarIcon
               className="mr-1.5 w-5 flex-shrink-0 text-gray-400 inline"
               aria-hidden="true"
@@ -89,16 +92,52 @@ export default function QuillEditor(props) {
               {dayjs(journal.updatedAt).format("MMM D h:mm A")}
             </p>
           </div>
-          <button
-            className="inline-flex items-center"
-            onClick={() => sendToTrash(journal, setJournal)}
-          >
-            <TrashIcon className="w-5 stroke-gray-500" />
-          </button>
+          {journal.status === "TRASHED" ? (
+            <div className="flex justify-end">
+              <button
+                className="inline-flex items-center mr-1"
+                data-tooltip-id="tooltip"
+                data-tooltip-html="Permanently Delete"
+                data-tooltip-place="bottom"
+                data-tooltip-variant="info"
+                onClick={() => {
+                  deleteEntry(journal, setJournal, router);
+                }}
+              >
+                <TrashIcon className="w-5 stroke-gray-500" />
+              </button>
+              <button
+                className="inline-flex items-center"
+                data-tooltip-id="tooltip"
+                data-tooltip-html="Remove from Trash"
+                data-tooltip-place="bottom"
+                data-tooltip-variant="info"
+                onClick={(e) => {
+                  removeFromTrash(journal, setJournal);
+                }}
+              >
+                <ArchiveBoxIcon className="w-5 stroke-gray-500" />
+              </button>
+            </div>
+          ) : (
+            <button
+              className="inline-flex items-center"
+              data-tooltip-id="tooltip"
+              data-tooltip-html="Send to Trash"
+              data-tooltip-place="bottom"
+              data-tooltip-variant="info"
+              onClick={(e) => {
+                sendToTrash(journal, setJournal);
+              }}
+            >
+              <ArchiveBoxXMarkIcon className="w-5 stroke-gray-500" />
+            </button>
+          )}
         </div>
       )}
 
       <OtherEntries {...{ journal, prompt }} />
+      <Tooltip id="tooltip" />
     </>
   );
 }
@@ -145,6 +184,14 @@ async function loadSavedData(quillRef, journal) {
 }
 
 async function sendToTrash(journal, setJournal) {
-  await axios.patch(`/api/journal/${journal.id}/trash`);
+  await axios.patch(`/api/journal/${journal.id}/trash`, { status: "TRASHED" });
   setJournal({ ...journal, updatedAt: new Date(), status: "TRASHED" });
+}
+async function removeFromTrash(journal, setJournal) {
+  await axios.patch(`/api/journal/${journal.id}/trash`, { status: "ACTIVE" });
+  setJournal({ ...journal, updatedAt: new Date(), status: "ACTIVE" });
+}
+async function deleteEntry(journal, setJournal, router) {
+  await axios.delete(`/api/journal/${journal.id}/trash`);
+  router.push("/journal");
 }
