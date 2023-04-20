@@ -13,7 +13,7 @@ export function OtherEntries({ prompt, journal }) {
 
   if (journalsByPromptId[prompt?.id]) {
     for (const journalId of journalsByPromptId[prompt.id]) {
-      if (journalId != journal?.id) {
+      if (journalId != journal?.id && journal?.status === "ACTIVE") {
         journals.push(journalsById[journalId]);
       }
     }
@@ -29,7 +29,7 @@ export function OtherEntries({ prompt, journal }) {
       <h3 className="neuton text-center my-3 text-lg">More Responses</h3>
       <ul role="list" className="divide-y divide-gray-200">
         {journals.map((journal) => {
-          return (
+          return journal.status === "ACTIVE" ? (
             <li key={journal.id}>
               <Link
                 href={`/journal/${journal.id}`}
@@ -45,7 +45,7 @@ export function OtherEntries({ prompt, journal }) {
                 </div>
               </Link>
             </li>
-          );
+          ) : null;
         })}
       </ul>
     </div>

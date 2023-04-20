@@ -5,18 +5,12 @@ import { FloatingActionButton } from "./FloatingActionButton";
 
 export function JournalList({ journals }) {
   if (!journals) return null;
-  const sortedJournals = Object.keys(journals).sort((a, b) => {
-    return dayjs(journals[a].updatedAt).isBefore(journals[b].updatedAt)
-      ? 1
-      : -1;
-  });
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-md">
       <ul role="list" className="divide-y divide-gray-200">
-        {sortedJournals.map((key) => {
-          const journal = journals[key];
+        {journals.map((journal) => {
           return (
-            <li key={key}>
+            <li key={journal.id}>
               <Link
                 href={`/journal/${journal.id}`}
                 data-test="JournalList-entry"
