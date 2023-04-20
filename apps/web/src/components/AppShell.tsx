@@ -103,12 +103,12 @@ export function AppShell({ children }) {
     //   icon: HandThumbUpIcon,
     //   current: pathRoot === "/support",
     // },
-    // {
-    //   name: "Trash",
-    //   href: "/trash",
-    //   icon: TrashIcon,
-    //   current: pathRoot === "/trash",
-    // },
+    {
+      name: "Trash",
+      href: "/trash",
+      icon: TrashIcon,
+      current: pathRoot === "/trash",
+    },
     {
       name: "Settings",
       href: "/settings",
