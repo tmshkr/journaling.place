@@ -67,6 +67,7 @@ export default function QuillEditor(props) {
 
   return (
     <>
+      <Tooltip id="tooltip" />
       <div
         id="editor"
         data-test="editor"
@@ -101,7 +102,7 @@ export default function QuillEditor(props) {
                 data-tooltip-place="bottom"
                 data-tooltip-variant="info"
                 onClick={() => {
-                  deleteEntry(journal, setJournal, router);
+                  deleteEntry(journal, router);
                 }}
               >
                 <TrashIcon className="w-5 stroke-gray-500" />
@@ -137,7 +138,6 @@ export default function QuillEditor(props) {
       )}
 
       <OtherEntries {...{ journal, prompt }} />
-      <Tooltip id="tooltip" />
     </>
   );
 }
@@ -191,7 +191,7 @@ async function removeFromTrash(journal, setJournal) {
   await axios.patch(`/api/journal/${journal.id}/trash`, { status: "ACTIVE" });
   setJournal({ ...journal, updatedAt: new Date(), status: "ACTIVE" });
 }
-async function deleteEntry(journal, setJournal, router) {
+async function deleteEntry(journal, router) {
   await axios.delete(`/api/journal/${journal.id}/trash`);
   router.push("/journal");
 }
