@@ -5,6 +5,7 @@ const config: Config = {
   moduleNameMapper: {
     "src/(.*)": ["<rootDir>/src/$1"],
   },
+  testPathIgnorePatterns: ["<rootDir>/node_modules/", "/.next/"],
 };
 
 export default config;
