@@ -31,7 +31,7 @@ export async function sendWelcomeEmail(emailTo: string, root: string) {
     .catch(console.error);
 }
 
-export async function sendPromptOfTheDay(emailTo: string, root?: string) {
+export async function sendPromptOfTheDay(emailTo: string) {
   const count = await prisma.prompt.count();
   const [randomPrompt] = await prisma.prompt.findMany({
     take: 1,
@@ -43,12 +43,11 @@ export async function sendPromptOfTheDay(emailTo: string, root?: string) {
     message: {
       from: "hi@journaling.place",
     },
-    send: false,
+    send: true,
     transport: nodemailer.createTransport(process.env.EMAIL_SERVER),
     preview: {
       openSimulator: false,
     },
-    views: { root },
     juice: true,
     juiceSettings: {
       tableElements: ["TABLE"],

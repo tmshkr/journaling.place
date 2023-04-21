@@ -1,14 +1,19 @@
 div.container {
   max-width: 480px;
   text-align: center;
-}
-p {
-  text-align: center;
+  padding: 12px;
+  font-family: sans-serif;
 }
 
 a.button {
-  margin: 12px 0;
+  border-radius: 8px;
   padding: 10px 20px;
   color: #fff;
   background-color: #5142e0;
+  text-decoration: none;
+}
+
+hr {
+  margin-top: 12px;
+  margin-bottom: 12px;
 }
