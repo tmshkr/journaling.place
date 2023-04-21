@@ -3,7 +3,7 @@ import { prisma } from "src/lib/prisma";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
 import { sendVerificationRequest } from "src/auth/sendVerificationRequest";
-import { sendWelcomEmail } from "mailer";
+import { sendWelcomeEmail } from "mailer";
 
 const path = require("path");
 
@@ -42,7 +42,7 @@ export const authOptions = {
       });
 
       if (isNewUser) {
-        sendWelcomEmail(
+        sendWelcomeEmail(
           token.user.email,
           path.resolve(process.cwd(), "../../packages/mailer/emails")
         );
