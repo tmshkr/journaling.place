@@ -1,0 +1,12 @@
+.outer {
+  background-color: #eee;
+  padding: 36px 0;
+}
+.inner {
+  background-color: #ffffff;
+  max-width: 360px;
+  margin: 24px auto;
+  padding: 18px;
+  font-family: sans-serif;
+  font-size: medium;
+}
