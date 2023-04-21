@@ -1,0 +1,14 @@
+div.container {
+  max-width: 480px;
+  text-align: center;
+}
+p {
+  text-align: center;
+}
+
+a.button {
+  margin: 12px 0;
+  padding: 10px 20px;
+  color: #fff;
+  background-color: #5142e0;
+}

@@ -1,6 +1,12 @@
-p Here's your Prompt of the Day:
-p #{prompt.text}
-a(href=`${url}/${prompt.id}`) Create a new entry
-hr
-p If you'd like to unsubscribe, you can do so here:
-a(href=`${url}/settings`) Email Preferences
+link(rel="stylesheet", href="/style.css", data-inline)
+div(class="container")
+  p Here's your Prompt of the Day:
+  p #{prompt.text}
+  p
+    a(href=`${url}/${prompt.id}` class="button") Create New Entry
+  br
+  hr
+  br
+  p If you'd like to unsubscribe, you can do so here:
+  p 
+    a(href=`${url}/settings`) Email Preferences
