@@ -46,7 +46,7 @@ export async function handleKey(salt?: Uint8Array) {
   await cryptoStore.setItem(`key`, key);
 
   // Persist salt to DB
-  await axios.put("/api/me", { salt: Buffer.from(store.salt) });
+  await axios.put("/api/me/password", { salt: Buffer.from(store.salt) });
   window.location.href += "?";
 }
 
