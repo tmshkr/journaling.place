@@ -4,6 +4,7 @@ import { selectUser } from "src/store/user";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { useForm } from "react-hook-form";
 import { clsx } from "clsx";
+import { Toggle } from "src/components/settings/Toggle";
 import { useRouter } from "next/router";
 
 import { changePassword } from "src/lib/crypto";
@@ -32,7 +33,6 @@ export default function SettingsPage() {
 
     await changePassword(current_password, new_password)
       .then(() => {
-        setStatus("PASSWORD_UPDATED");
         window.location.href += "?status=PASSWORD_UPDATED";
       })
       .catch((err) => {
@@ -78,6 +78,8 @@ export default function SettingsPage() {
 
   return (
     <div className="m-12">
+      <h2 className="neuton text-xl mb-4">Email Preferences</h2>
+      <Toggle />
       <form onSubmit={handleSubmit(onSubmit)} className="md:w-5/12">
         <h2 className="neuton text-xl mb-4">Update Journal Password</h2>
         <label
@@ -146,7 +148,7 @@ export default function SettingsPage() {
           disabled={status === "UPDATING"}
           className="btn-primary mt-5"
         >
-          Update
+          Update Password
         </button>
       </form>
     </div>
