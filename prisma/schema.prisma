@@ -15,11 +15,12 @@ generator erd {
 }
 
 model User {
-  id            BigInt    @id @default(autoincrement())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
+  id               BigInt    @id @default(autoincrement())
+  name             String?
+  email            String?   @unique
+  emailVerified    DateTime?
+  image            String?
+  isSubscribedPOTD Boolean   @default(true)
 
   salt Bytes?
 
