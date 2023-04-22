@@ -4,11 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { createRouter } from "next-connect";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
-router.use(withUser).get(handleGet).put(handlePut);
-
-async function handleGet(req, res) {
-  return res.json({ user: req.user });
-}
+router.use(withUser).put(handlePut);
 
 async function handlePut(req, res) {
   const { salt } = req.body;

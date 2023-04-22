@@ -183,7 +183,7 @@ export async function changePassword(oldPassword: string, newPassword: string) {
   }
 
   // sync new encrypted data and salt with server
-  await axios.put("/api/me", {
+  await axios.put("/api/me/password", {
     salt: Buffer.from(newSalt),
     journals: updatedJournals,
   });
