@@ -1,10 +1,15 @@
 link(rel="stylesheet", href="/potd.css", data-inline)
-div(class="container")
-  p Here's your Prompt of the Day:
-  h2 #{prompt.text}
-  p
-    a(href=`${url}/${prompt.id}` class="button") Create New Entry
-  br
-  hr
-  p 
-    a(href=`${url}/settings`) Email Preferences
+div(class="outer")
+  a(href="https://journaling.place")
+    img(src="https://cdn.journaling.place/jp-logo-b.png", alt="journaling.place" style="max-width:360px; margin: 0 auto;")
+  div(class="inner")
+    p Here's your Prompt of the Day:
+    h2 #{prompt.text}
+    p(style="margin-top: 32px;")
+      a(href=`${url}/${prompt.id}` class="button") Create New Entry
+    br
+    hr
+    p 
+      a(href=`${url}/settings`) Email Preferences
+
+p(style="text-align:center;") Have any questions or feedback?<br/>Just reply to this email.
