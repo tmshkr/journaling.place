@@ -1,22 +1,19 @@
-require("dotenv").config({ path: "../../.env" });
 import Email from "email-templates";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
 const path = require("path");
 const nodemailer = require("nodemailer");
 const transport = nodemailer.createTransport(process.env.EMAIL_SERVER);
 
-export async function sendWelcomeEmail(emailTo: string, root?: string) {
+export async function sendWelcomeEmail(emailTo: string, root: string = "") {
   const email = new Email({
     message: {
-      from: "hi@journaling.place",
+      from: "Journaling Place <hi@journaling.place>",
     },
     send: true,
     transport,
     preview: {
       openSimulator: false,
     },
-    views: { root },
+    views: { root: path.join(root, "emails") },
     juice: true,
     juiceSettings: {
       tableElements: ["TABLE"],
@@ -24,7 +21,7 @@ export async function sendWelcomeEmail(emailTo: string, root?: string) {
     juiceResources: {
       applyStyleTags: true,
       webResources: {
-        relativeTo: path.resolve("assets"),
+        relativeTo: path.join(root, "assets"),
       },
     },
   });
@@ -42,17 +39,10 @@ export async function sendWelcomeEmail(emailTo: string, root?: string) {
     .catch(console.error);
 }
 
-export async function sendPromptOfTheDay(emailTo: string) {
-  const count = await prisma.prompt.count();
-  const [randomPrompt] = await prisma.prompt.findMany({
-    take: 1,
-    select: { id: true, text: true },
-    skip: Math.floor(Math.random() * count),
-  });
-
+export async function sendPromptOfTheDay(emailTo: string, prompt) {
   const email = new Email({
     message: {
-      from: "hi@journaling.place",
+      from: "Journaling Place <hi@journaling.place>",
     },
     send: true,
     transport,
@@ -78,7 +68,7 @@ export async function sendPromptOfTheDay(emailTo: string) {
         to: emailTo,
       },
       locals: {
-        prompt: randomPrompt,
+        prompt,
         url: process.env.NEXTAUTH_URL,
       },
     })

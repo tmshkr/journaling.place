@@ -44,7 +44,7 @@ export const authOptions = {
       if (isNewUser) {
         sendWelcomeEmail(
           token.user.email,
-          path.resolve(process.cwd(), "../../packages/mailer/emails")
+          path.resolve(process.cwd(), "../../packages/mailer")
         );
       }
       return token;
