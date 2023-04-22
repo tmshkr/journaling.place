@@ -1,12 +1,15 @@
 .outer {
   background-color: #eee;
   padding: 36px 0;
+  text-align: center;
 }
 .inner {
   background-color: #ffffff;
   max-width: 360px;
-  margin: 24px auto;
+  margin: 0 auto;
+  margin-bottom: 24px;
   padding: 18px;
   font-family: sans-serif;
   font-size: medium;
+  text-align: left;
 }

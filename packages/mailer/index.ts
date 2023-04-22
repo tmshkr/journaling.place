@@ -1,9 +1,10 @@
+require("dotenv").config({ path: "../../.env" });
 import Email from "email-templates";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-const nodemailer = require("nodemailer");
 const path = require("path");
-require("dotenv").config({ path: "../../.env" });
+const nodemailer = require("nodemailer");
+const transport = nodemailer.createTransport(process.env.EMAIL_SERVER);
 
 export async function sendWelcomeEmail(emailTo: string, root?: string) {
   const email = new Email({
@@ -11,7 +12,7 @@ export async function sendWelcomeEmail(emailTo: string, root?: string) {
       from: "hi@journaling.place",
     },
     send: true,
-    transport: nodemailer.createTransport(process.env.EMAIL_SERVER),
+    transport,
     preview: {
       openSimulator: false,
     },
@@ -23,7 +24,7 @@ export async function sendWelcomeEmail(emailTo: string, root?: string) {
     juiceResources: {
       applyStyleTags: true,
       webResources: {
-        relativeTo: path.resolve("styles"),
+        relativeTo: path.resolve("assets"),
       },
     },
   });
@@ -54,7 +55,7 @@ export async function sendPromptOfTheDay(emailTo: string) {
       from: "hi@journaling.place",
     },
     send: true,
-    transport: nodemailer.createTransport(process.env.EMAIL_SERVER),
+    transport,
     preview: {
       openSimulator: false,
     },
@@ -65,7 +66,7 @@ export async function sendPromptOfTheDay(emailTo: string) {
     juiceResources: {
       applyStyleTags: true,
       webResources: {
-        relativeTo: path.resolve("styles"),
+        relativeTo: path.resolve("assets"),
       },
     },
   });
