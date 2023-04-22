@@ -170,6 +170,7 @@ export async function changePassword(oldPassword: string, newPassword: string) {
   // decrypt then re-encrypt journals
   for (const id in journalsById) {
     const journal = journalsById[id];
+    if (journal.status === "DELETED") continue;
     const decrypted = await decrypt(journal.ciphertext, journal.iv);
     const { ciphertext, iv } = await encrypt(decrypted, newKey);
     journal.ciphertext = ciphertext;
