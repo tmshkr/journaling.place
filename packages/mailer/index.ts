@@ -33,8 +33,8 @@ export async function sendWelcomeEmail(emailTo: string, root: string = "") {
         to: emailTo,
       },
     })
-    .then((data) => {
-      console.log(data);
+    .then(({ response, envelope, messageId }) => {
+      console.log({ response, envelope, messageId });
     })
     .catch(console.error);
 }
@@ -72,8 +72,8 @@ export async function sendPromptOfTheDay(emailTo: string, prompt) {
         url: process.env.NEXTAUTH_URL,
       },
     })
-    .then((data) => {
-      console.log(data);
+    .then(({ response, envelope, messageId }) => {
+      console.log({ response, envelope, messageId });
     })
     .catch(console.error);
 }
