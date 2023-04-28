@@ -17,18 +17,16 @@ export default function PromptPage({ prompt }) {
 export async function getServerSideProps({ req, res, query }) {
   const { slug } = query;
 
-  if (Number(slug)) {
-    const prompt = await prisma.prompt.findUnique({
-      where: { id: Number(slug) },
-      select: { id: true, text: true },
-    });
-    if (prompt) {
-      return {
-        props: {
-          prompt,
-        },
-      };
-    }
+  const prompt = await prisma.prompt.findUnique({
+    where: { id: slug },
+    select: { id: true, text: true },
+  });
+  if (prompt) {
+    return {
+      props: {
+        prompt,
+      },
+    };
   }
 
   const count = await prisma.prompt.count();

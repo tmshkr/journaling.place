@@ -4,10 +4,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { createRouter } from "next-connect";
 import { z } from "zod";
 
-(BigInt as any).prototype.toJSON = function () {
-  return this.toString();
-};
-
 const router = createRouter<NextApiRequest, NextApiResponse>();
 router.use(withUser).get(handleGet).put(handlePut);
 
@@ -15,8 +11,8 @@ async function handleGet(req, res) {
   const journal = await prisma.journal.findUnique({
     where: {
       id_authorId: {
-        id: BigInt(req.query.id),
-        authorId: BigInt(req.user.id),
+        id: req.query.id,
+        authorId: req.user.id,
       },
     },
     include: {
@@ -57,8 +53,8 @@ async function handlePut(req, res) {
   await prisma.journal.update({
     where: {
       id_authorId: {
-        id: BigInt(req.query.id),
-        authorId: BigInt(req.user.id),
+        id: req.query.id,
+        authorId: req.user.id,
       },
     },
     data: {

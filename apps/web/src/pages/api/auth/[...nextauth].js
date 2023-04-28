@@ -7,10 +7,6 @@ import { sendWelcomeEmail } from "mailer";
 
 const path = require("path");
 
-BigInt.prototype.toJSON = function () {
-  return this.toString();
-};
-
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 export const authOptions = {
@@ -38,7 +34,7 @@ export const authOptions = {
     },
     async jwt({ token, isNewUser }) {
       token.user = await prisma.user.findUnique({
-        where: { id: BigInt(token.sub) },
+        where: { id: token.sub },
       });
 
       if (isNewUser) {

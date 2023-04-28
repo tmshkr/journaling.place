@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "mongodb"
+  url      = env("MONGO_URI")
 }
 
 generator erd {
@@ -15,7 +15,7 @@ generator erd {
 }
 
 model User {
-  id               BigInt    @id @default(autoincrement())
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
   name             String?
   email            String?   @unique
   emailVerified    DateTime?
@@ -31,16 +31,18 @@ model User {
 }
 
 model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   token      String   @unique
   expires    DateTime
 
-  @@id([identifier, token])
+  @@unique([identifier, token])
 }
 
 model Prompt {
-  id   BigInt @id @default(autoincrement())
-  text String @unique
+  id   String  @id @default(auto()) @map("_id") @db.ObjectId
+  text String  @unique
+  stub String?
 
   journals Journal[]
   tags     TagOnPrompt[]
@@ -50,8 +52,9 @@ model Prompt {
 }
 
 model TagOnPrompt {
-  promptId BigInt
-  tagId    BigInt
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  promptId String @db.ObjectId
+  tagId    String @db.ObjectId
 
   prompt Prompt @relation(fields: [promptId], references: [id])
   tag    Tag    @relation(fields: [tagId], references: [id])
@@ -59,11 +62,11 @@ model TagOnPrompt {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  @@id([promptId, tagId])
+  @@unique([promptId, tagId])
 }
 
 model Tag {
-  id   BigInt @id @default(autoincrement())
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
   text String @unique
 
   TagOnPrompt TagOnPrompt[]
@@ -79,10 +82,10 @@ enum JournalStatus {
 }
 
 model Journal {
-  id BigInt @id @default(autoincrement())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  authorId BigInt
-  promptId BigInt?
+  authorId String  @db.ObjectId
+  promptId String? @db.ObjectId
 
   ciphertext Bytes?
   iv         Bytes?

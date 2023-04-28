@@ -22,8 +22,8 @@ export async function handlePatch(req, res) {
     .update({
       where: {
         id_authorId: {
-          id: BigInt(req.query.id),
-          authorId: BigInt(req.user.id),
+          id: req.query.id,
+          authorId: req.user.id,
         },
       },
       data: {
@@ -45,8 +45,8 @@ async function handleDelete(req, res) {
     .update({
       where: {
         id_authorId: {
-          id: BigInt(req.query.id),
-          authorId: BigInt(req.user.id),
+          id: req.query.id,
+          authorId: req.user.id,
         },
       },
       data: {

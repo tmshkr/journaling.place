@@ -1,10 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "src/lib/prisma";
 
-(BigInt as any).prototype.toJSON = function () {
-  return this.toString();
-};
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse

@@ -4,10 +4,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { createRouter } from "next-connect";
 import { z } from "zod";
 
-(BigInt as any).prototype.toJSON = function () {
-  return this.toString();
-};
-
 const router = createRouter<NextApiRequest, NextApiResponse>();
 router.use(withUser).get(handleGet).post(handlePost);
 
@@ -19,8 +15,8 @@ async function handleGet(req, res) {
     return res.json(
       await prisma.journal.findMany({
         where: {
-          authorId: BigInt(req.user.id),
-          promptId: BigInt(promptId),
+          authorId: req.user.id,
+          promptId: promptId,
         },
         orderBy: {
           updatedAt: "desc",
@@ -33,14 +29,14 @@ async function handleGet(req, res) {
     await prisma.journal
       .findMany({
         where: {
-          authorId: BigInt(req.user.id),
+          authorId: req.user.id,
           updatedAt: {
             gt: ts ? new Date(ts) : undefined,
           },
         },
         take,
         skip: cursor ? 1 : 0,
-        cursor: cursor ? { id: BigInt(cursor) } : undefined,
+        cursor: cursor ? { id: cursor } : undefined,
         orderBy: { updatedAt: "desc" },
         include: {
           prompt: {
@@ -85,8 +81,8 @@ async function handlePost(req, res) {
   const { ciphertext, iv, promptId } = req.body;
   const { id } = await prisma.journal.create({
     data: {
-      promptId: promptId ? BigInt(promptId) : undefined,
-      authorId: BigInt(req.user.id),
+      promptId: promptId ? promptId : undefined,
+      authorId: req.user.id,
       ciphertext: Buffer.from(ciphertext),
       iv: Buffer.from(iv),
     },

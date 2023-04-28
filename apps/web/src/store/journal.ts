@@ -40,7 +40,7 @@ async function getJournals(cursor?) {
 
       for (const entry of journals) {
         if (entry.status !== "ACTIVE") {
-          journalIndex.remove(Number(entry.id));
+          journalIndex.remove(entry.id);
           const promptId = cache.journalsById[entry.id]?.promptId;
           if (promptId) {
             cache.journalsByPromptId[promptId].delete(entry.id);
@@ -63,9 +63,9 @@ async function getJournals(cursor?) {
         }
 
         if (entry.status === "ACTIVE") {
-          journalIndex.add(Number(entry.id), entry.plaintext);
+          journalIndex.add(entry.id, entry.plaintext);
           if (entry.promptId) {
-            journalIndex.append(Number(entry.id), entry.prompt.text);
+            journalIndex.append(entry.id, entry.prompt.text);
             if (cache.journalsByPromptId[entry.promptId]) {
               cache.journalsByPromptId[entry.promptId].add(entry.id);
             } else {
