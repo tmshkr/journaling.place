@@ -16,52 +16,63 @@ export async function handlePatch(req, res) {
     console.error(err);
     return res.status(400).json({ errorMessage: "Bad Request" });
   }
+  const journal = await prisma.journal.findUniqueOrThrow({
+    where: {
+      id_authorId: {
+        id: req.query.id,
+        authorId: req.user.id,
+      },
+    },
+  });
+
+  if (journal.status === "DELETED") {
+    return res.status(403).json({ errorMessage: "Forbidden" });
+  }
 
   const { status } = req.body;
-  await prisma.journal
-    .update({
-      where: {
-        id_authorId: {
-          id: req.query.id,
-          authorId: req.user.id,
-        },
+  await prisma.journal.update({
+    where: {
+      id_authorId: {
+        id: req.query.id,
+        authorId: req.user.id,
       },
-      data: {
-        status,
-      },
-    })
-    .catch((err) => {
-      if (err.code === "P2025") {
-        return res.status(404).json({ errorMessage: "Not Found" });
-      }
-      throw err;
-    });
+    },
+    data: {
+      status,
+    },
+  });
 
   return res.send();
 }
 
 async function handleDelete(req, res) {
-  await prisma.journal
-    .update({
-      where: {
-        id_authorId: {
-          id: req.query.id,
-          authorId: req.user.id,
-        },
+  const journal = await prisma.journal.findUniqueOrThrow({
+    where: {
+      id_authorId: {
+        id: req.query.id,
+        authorId: req.user.id,
       },
-      data: {
-        status: "DELETED",
-        ciphertext: null,
-        iv: null,
-        promptId: null,
+    },
+  });
+
+  if (journal.status !== "TRASHED") {
+    return res.status(403).json({ errorMessage: "Forbidden" });
+  }
+
+  await prisma.journal.update({
+    where: {
+      id_authorId: {
+        id: req.query.id,
+        authorId: req.user.id,
       },
-    })
-    .catch((err) => {
-      if (err.code === "P2025") {
-        return res.status(404).json({ errorMessage: "Not Found" });
-      }
-      throw err;
-    });
+    },
+    data: {
+      status: "DELETED",
+      ciphertext: null,
+      iv: null,
+      promptId: null,
+    },
+  });
 
   return res.send();
 }
