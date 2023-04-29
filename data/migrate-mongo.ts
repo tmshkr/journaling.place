@@ -49,7 +49,7 @@ async function run() {
   } of journals) {
     await prisma.journal.create({
       data: {
-        authorId: oldUserIdToNewUserId[authorId],
+        authorId: oldUserIdToNewUserId[authorId] || new Error("User not found"),
         promptId: oldPromptIdToNewPromptId[promptId],
         ciphertext: ciphertext ? Buffer.from(ciphertext) : undefined,
         iv: iv ? Buffer.from(iv) : undefined,
