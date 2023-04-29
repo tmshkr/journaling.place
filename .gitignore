@@ -48,6 +48,6 @@ tests-examples
 storageState.json
 
 dist
-dump.sql
+dump
 
 *.mongodb.js
