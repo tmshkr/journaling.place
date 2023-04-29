@@ -11,7 +11,6 @@ beforeAll(async () => {
   testUser = await prisma.user.findUniqueOrThrow({
     where: { email: "test@journaling.place" },
   });
-  console.log(testUser);
 
   jwt = await encode({
     token: {
