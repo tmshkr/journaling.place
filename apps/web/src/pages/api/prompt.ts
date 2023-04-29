@@ -18,20 +18,16 @@ export default async function handler(
     select: {
       id: true,
       text: true,
-      tags: {
-        include: {
-          tag: true,
-        },
-      },
+      tags: true,
     },
   });
 
   const response: any = {};
   response.id = prompt.id;
   response.text = prompt.text;
-  response.tags = prompt.tags.map(({ tag: { text } }) => text);
+  response.tags = prompt.tags;
   response.formattedTags = response.tags.map((tag) => `#${tag}`).join(" ");
-  response.url = `${process.env.NEXTAUTH_URL}/${prompt.id}`;
+  response.url = `${process.env.NEXTAUTH_URL}/prompt/${prompt.id}`;
 
   res.status(200).json(response);
 }
