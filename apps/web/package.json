@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "jest": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' setup-tests.ts && jest",
+    "jest": "jest",
     "jest:watch": "jest --watch"
   },
   "dependencies": {
