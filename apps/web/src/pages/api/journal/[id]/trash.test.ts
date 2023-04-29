@@ -5,16 +5,25 @@ import router from "./trash";
 
 let jwt;
 let journal;
+let testUser;
 
 beforeAll(async () => {
+  testUser = await prisma.user.findUniqueOrThrow({
+    where: { email: "test@journaling.place" },
+  });
+  console.log(testUser);
+
   jwt = await encode({
-    token: { sub: "0", user: { id: 0, salt: { data: [] } } },
+    token: {
+      sub: testUser.id,
+      user: { id: testUser.id, salt: { data: Array.from(testUser.salt) } },
+    },
     secret: process.env.NEXTAUTH_SECRET as string,
     maxAge: 3600,
   });
   journal = await prisma.journal.create({
     data: {
-      authorId: 0,
+      authorId: testUser.id,
     },
   });
 });
@@ -40,8 +49,8 @@ describe("/api/journal/[id]/trash", () => {
     const updatedJournal = await prisma.journal.findUniqueOrThrow({
       where: {
         id_authorId: {
-          id: BigInt(journal.id),
-          authorId: BigInt(journal.authorId),
+          id: journal.id,
+          authorId: journal.authorId,
         },
       },
     });
@@ -68,8 +77,8 @@ describe("/api/journal/[id]/trash", () => {
     const updatedJournal = await prisma.journal.findUniqueOrThrow({
       where: {
         id_authorId: {
-          id: BigInt(journal.id),
-          authorId: BigInt(journal.authorId),
+          id: journal.id,
+          authorId: journal.authorId,
         },
       },
     });
@@ -98,8 +107,8 @@ describe("/api/journal/[id]/trash", () => {
     await prisma.journal.update({
       where: {
         id_authorId: {
-          id: BigInt(journal.id),
-          authorId: BigInt(journal.authorId),
+          id: journal.id,
+          authorId: journal.authorId,
         },
       },
       data: {
@@ -123,8 +132,8 @@ describe("/api/journal/[id]/trash", () => {
     const oldJournal = await prisma.journal.findUniqueOrThrow({
       where: {
         id_authorId: {
-          id: BigInt(journal.id),
-          authorId: BigInt(journal.authorId),
+          id: journal.id,
+          authorId: journal.authorId,
         },
       },
     });
@@ -135,8 +144,8 @@ describe("/api/journal/[id]/trash", () => {
     await prisma.journal.update({
       where: {
         id_authorId: {
-          id: BigInt(journal.id),
-          authorId: BigInt(journal.authorId),
+          id: journal.id,
+          authorId: journal.authorId,
         },
       },
       data: {
@@ -160,8 +169,8 @@ describe("/api/journal/[id]/trash", () => {
     const updatedJournal = await prisma.journal.findUniqueOrThrow({
       where: {
         id_authorId: {
-          id: BigInt(journal.id),
-          authorId: BigInt(journal.authorId),
+          id: journal.id,
+          authorId: journal.authorId,
         },
       },
     });
@@ -171,7 +180,7 @@ describe("/api/journal/[id]/trash", () => {
   test("DELETED record cannot be updated", async () => {
     const deletedJournal = await prisma.journal.create({
       data: {
-        authorId: 0,
+        authorId: testUser.id,
         status: "DELETED",
       },
     });
