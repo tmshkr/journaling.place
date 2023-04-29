@@ -33,7 +33,7 @@ export const authOptions = {
       return session;
     },
     async jwt({ token, isNewUser }) {
-      token.user = await prisma.user.findUnique({
+      token.user = await prisma.user.findUniqueOrThrow({
         where: { id: token.sub },
       });
 
