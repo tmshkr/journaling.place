@@ -2,16 +2,19 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const users = require("./dump/users.json");
 const journals = require("./dump/journals.json");
+const oldPrompts = require("./dump/prompts.json");
 
 async function run() {
   const oldUserIdToNewUserId = {};
   const oldPromptIdToNewPromptId = {};
 
-  const prompts = await prisma.prompt.findMany();
+  const newPrompts = await prisma.prompt.findMany();
 
-  // for (const { id, text } of prompts) {
-  //   oldPromptIdToNewPromptId[id] = newPrompt.id;
-  // }
+  for (const { id, text } of oldPrompts) {
+    const newPrompt = newPrompts.find((p) => p.text === text);
+    if (!newPrompt) throw new Error(`Prompt not found: ${text}`);
+    oldPromptIdToNewPromptId[id] = newPrompt.id;
+  }
 
   for (const {
     id,
@@ -24,11 +27,10 @@ async function run() {
   } of users) {
     const newUser = await prisma.user.create({
       data: {
-        id,
         emailVerified,
         email,
         isSubscribedPOTD,
-        salt,
+        salt: salt ? Buffer.from(salt) : undefined,
         createdAt,
         updatedAt,
       },
@@ -37,7 +39,6 @@ async function run() {
   }
 
   for (const {
-    id,
     authorId,
     promptId,
     ciphertext,
@@ -48,11 +49,10 @@ async function run() {
   } of journals) {
     await prisma.journal.create({
       data: {
-        id,
         authorId: oldUserIdToNewUserId[authorId],
-        promptId,
-        ciphertext,
-        iv,
+        promptId: oldPromptIdToNewPromptId[promptId],
+        ciphertext: ciphertext ? Buffer.from(ciphertext) : undefined,
+        iv: iv ? Buffer.from(iv) : undefined,
         status,
         createdAt,
         updatedAt,
@@ -63,6 +63,7 @@ async function run() {
 
 run()
   .then(async () => {
+    console.log("Done!");
     await prisma.$disconnect();
   })
   .catch(async (e) => {
