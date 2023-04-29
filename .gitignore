@@ -49,3 +49,5 @@ storageState.json
 
 dist
 dump.sql
+
+*.mongodb.js
