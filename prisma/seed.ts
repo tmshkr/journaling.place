@@ -5,11 +5,12 @@ const prisma = new PrismaClient();
 async function seed() {
   let newPrompts = 0;
 
-  for (const { prompt, tags } of prompts) {
+  for (const { prompt, tags, stub } of prompts) {
     await prisma.prompt.create({
       data: {
         text: prompt,
         tags,
+        stub,
       },
     });
     console.log(`Created prompt: ${prompt}`);
