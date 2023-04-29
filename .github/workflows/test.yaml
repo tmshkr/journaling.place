@@ -23,6 +23,8 @@ jobs:
         run: docker compose -f docker-compose.test.yml up -d
       - name: Install Dependencies
         run: npm install && npx playwright install --with-deps chromium
+      - name: Run unit tests
+        run: npm run jest
       - name: Wait for server
         run: ./scripts/wait-for-server.sh https://localhost
       - name: Run e2e tests
