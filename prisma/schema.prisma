@@ -43,33 +43,9 @@ model Prompt {
   id   String  @id @default(auto()) @map("_id") @db.ObjectId
   text String  @unique
   stub String?
+  tags     String[]
 
   journals Journal[]
-  tags     TagOnPrompt[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-}
-
-model TagOnPrompt {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  promptId String @db.ObjectId
-  tagId    String @db.ObjectId
-
-  prompt Prompt @relation(fields: [promptId], references: [id])
-  tag    Tag    @relation(fields: [tagId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  @@unique([promptId, tagId])
-}
-
-model Tag {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  text String @unique
-
-  TagOnPrompt TagOnPrompt[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
