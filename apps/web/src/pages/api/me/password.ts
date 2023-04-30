@@ -18,15 +18,15 @@ async function handlePut(req, res) {
 
   await prisma.$transaction([
     prisma.user.update({
-      where: { id: BigInt(req.user.id) },
+      where: { id: req.user.id },
       data: { salt: Buffer.from(salt) },
     }),
     ...journals.map(({ id, ciphertext, iv, updatedAt }) => {
       return prisma.journal.update({
         where: {
           id_authorId: {
-            id: BigInt(id),
-            authorId: BigInt(req.user.id),
+            id: id,
+            authorId: req.user.id,
           },
         },
         data: {

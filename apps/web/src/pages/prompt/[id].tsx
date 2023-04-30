@@ -15,13 +15,29 @@ export default function PromptPage({ prompt }) {
 }
 
 export async function getServerSideProps({ req, res, query }) {
-  const { slug } = query;
+  const { id } = query;
+  if (id === "random") {
+    const count = await prisma.prompt.count();
+    const [randomPrompt] = await prisma.prompt.findMany({
+      take: 1,
+      select: { id: true, text: true },
+      skip: Math.floor(Math.random() * count),
+    });
 
-  if (Number(slug)) {
+    return {
+      redirect: {
+        destination: `/prompt/${randomPrompt.id}`,
+        permanent: false,
+      },
+    };
+  }
+
+  try {
     const prompt = await prisma.prompt.findUnique({
-      where: { id: Number(slug) },
+      where: { id },
       select: { id: true, text: true },
     });
+
     if (prompt) {
       return {
         props: {
@@ -29,19 +45,10 @@ export async function getServerSideProps({ req, res, query }) {
         },
       };
     }
+  } catch (err) {
+    console.error(err);
+    return {
+      notFound: true,
+    };
   }
-
-  const count = await prisma.prompt.count();
-  const [randomPrompt] = await prisma.prompt.findMany({
-    take: 1,
-    select: { id: true, text: true },
-    skip: Math.floor(Math.random() * count),
-  });
-
-  return {
-    redirect: {
-      destination: `/${randomPrompt.id}`,
-      permanent: false,
-    },
-  };
 }

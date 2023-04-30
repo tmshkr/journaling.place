@@ -1,5 +1,7 @@
 import { test, expect } from "@playwright/test";
 
+test.describe.configure({ mode: "serial" });
+
 test.beforeEach(async ({ page }, testInfo) => {
   console.log(`Running ${testInfo.title}`);
   page.on("dialog", async (dialog) => {

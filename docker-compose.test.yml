@@ -3,35 +3,17 @@ version: "3"
 services:
   app:
     build: .
-    command: npm run e2e:start
+    command: npm run start
     env_file: .env
     restart: always
-    depends_on:
-      - db
-      - mongo
-    environment:
-      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@db:5432/jp-test
-      MONGO_URI: mongodb://root:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/jp-test?authSource=admin
   nginx:
+    image: jonasal/nginx-certbot:latest
+    restart: unless-stopped
     env_file: .env
     depends_on:
       - app
-    image: jonasal/nginx-certbot:latest
-    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./nginx:/etc/nginx/templates
-  db:
-    image: postgres
-    env_file: .env
-    restart: always
-    ports:
-      - "5432:5432"
-  mongo:
-    env_file: .env
-    image: mongo
-    restart: always
-    ports:
-      - "27017:27017"

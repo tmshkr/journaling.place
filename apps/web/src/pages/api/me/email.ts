@@ -10,7 +10,7 @@ async function handlePut(req, res) {
   const { isSubscribedPOTD } = req.body;
 
   await prisma.user.update({
-    where: { id: BigInt(req.user.id) },
+    where: { id: req.user.id },
     data: { isSubscribedPOTD },
   });
 

@@ -26,3 +26,13 @@ services:
       resources:
         limits:
           memory: 100m
+  mongo-backup:
+    image: "istepanov/mongodump:4.2"
+    env_file: .env
+    volumes:
+      - mongo-backup:/backup
+    environment:
+      CRON_SCHEDULE: "0 11 * * *"
+
+volumes:
+  mongo-backup:

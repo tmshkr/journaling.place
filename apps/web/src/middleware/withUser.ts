@@ -11,7 +11,7 @@ export const withUser = async (req, res, next) => {
   const { sub } = nextToken;
   try {
     const user = await prisma.user.findUniqueOrThrow({
-      where: { id: BigInt(sub) },
+      where: { id: sub },
     });
 
     // Check that the token's salt is correct
@@ -25,7 +25,6 @@ export const withUser = async (req, res, next) => {
     }
 
     req.user = user;
-    req.user.id = user.id.toString();
 
     return next();
   } catch (err: any) {

@@ -1,5 +1,338 @@
 [
   {
+    "prompt": "What is something that makes you feel energized and motivated? How can you incorporate more of it into your life?",
+    "tags": [
+      "productivity",
+      "motivation",
+      "self-improvement"
+    ],
+    "stub": "Something that makes me feel energized and motivated is _____. I can incorporate more of it into my life by _____."
+  },
+  {
+    "prompt": "Write about a time when you felt really challenged in a group setting. What did you do to cope with the situation?",
+    "tags": [
+      "teamwork",
+      "communication",
+      "self-awareness"
+    ],
+    "stub": "I felt really challenged in a group setting when _____. To cope with the situation, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "Describe a time when you had to take a risk. What was the outcome of that risk?",
+    "tags": [
+      "courage",
+      "personal_growth",
+      "decision_making"
+    ],
+    "stub": "I had to take a risk when _____. The outcome of that risk was _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "What is something you've been putting off doing? Why? How can you motivate yourself to start?",
+    "tags": [
+      "procrastination",
+      "goal_setting",
+      "self-improvement"
+    ],
+    "stub": "Something I've been putting off doing is _____. I've been procrastinating because _____. To motivate myself to start, I will _____."
+  },
+  {
+    "prompt": "Reflect on a time when you were really proud of someone else. What did they do that made you proud?",
+    "tags": [
+      "gratitude",
+      "positivity",
+      "empathy"
+    ],
+    "stub": "I was really proud of someone else when _____. They did _____. This experience taught me _____."
+  },
+  {
+    "prompt": "Describe a time when you had to confront a difficult truth. How did you handle the situation?",
+    "tags": [
+      "honesty",
+      "self-awareness",
+      "personal_growth"
+    ],
+    "stub": "I had to confront a difficult truth when _____. To handle the situation, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "What is something you wish you could tell your younger self? Why?",
+    "tags": [
+      "self-reflection",
+      "self-improvement",
+      "personal_growth"
+    ],
+    "stub": "Something I wish I could tell my younger self is _____. This is important to me because _____."
+  },
+  {
+    "prompt": "Write about a time when you had to compromise with someone. How did you reach a resolution?",
+    "tags": [
+      "communication",
+      "collaboration",
+      "problem-solving"
+    ],
+    "stub": "I had to compromise with someone when _____. To reach a resolution, we _____. This experience taught me _____."
+  },
+  {
+    "prompt": "Describe a time when you had to stand up for yourself. What did you learn from that experience?",
+    "tags": [
+      "self-advocacy",
+      "self-awareness",
+      "personal_growth"
+    ],
+    "stub": "I had to stand up for myself when _____. From that experience, I learned that _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Reflect on a time when you felt completely at ease. What were the circumstances that led to that feeling?",
+    "tags": [
+      "relaxation",
+      "mindfulness",
+      "self-care"
+    ],
+    "stub": "I felt completely at ease when _____. The circumstances that led to this exeperience were..."
+  },
+  {
+    "prompt": "Write about a moment in your life when you felt truly alive. What were you doing, and what made that moment special?",
+    "tags": [
+      "mindfulness",
+      "happiness",
+      "positivity"
+    ],
+    "stub": "A moment in my life when I felt truly alive was when _____. This moment was special because _____."
+  },
+  {
+    "prompt": "What is something that you’ve been avoiding, and why have you been avoiding it? What is one step you can take to face this challenge?",
+    "tags": [
+      "procrastination",
+      "personal_growth",
+      "self-awareness"
+    ],
+    "stub": "Something I've been avoiding is _____. I've been avoiding it because _____. One step I can take to face this challenge is _____."
+  },
+  {
+    "prompt": "Reflect on a time when you had to apologize to someone. How did you go about apologizing, and what did you learn from the experience?",
+    "tags": [
+      "communication",
+      "self-awareness",
+      "personal_growth"
+    ],
+    "stub": "I had to apologize to someone when _____. To apologize, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "What is something you’ve been meaning to try, but haven’t had the opportunity to do yet? Why is it important to you?",
+    "tags": [
+      "curiosity",
+      "self-improvement",
+      "goal_setting"
+    ],
+    "stub": "Something I've been meaning to try is _____. This is important to me because _____. To achieve this goal, I will _____."
+  },
+  {
+    "prompt": "Describe a time when you were faced with a difficult decision, and you made the right choice despite the challenges. What did you learn from the experience?",
+    "tags": [
+      "decision_making",
+      "self-awareness",
+      "resilience"
+    ],
+    "stub": "I was faced with a difficult decision when _____. Despite the challenges, I made the right choice by _____. This experience taught me _____."
+  },
+  {
+    "prompt": "Write about a time when you received constructive criticism. How did you respond to it, and what did you learn from the experience?",
+    "tags": [
+      "communication",
+      "self-awareness",
+      "personal_growth"
+    ],
+    "stub": "I received constructive criticism when _____. I responded to it by _____. This experience taught me _____."
+  },
+  {
+    "prompt": "What is something that you’ve been putting off, but need to do soon? What is one step you can take to start making progress?",
+    "tags": [
+      "procrastination",
+      "goal_setting",
+      "self-improvement"
+    ],
+    "stub": "Something I've been putting off is _____. I need to do this soon because _____. One step I can take to start making progress is _____."
+  },
+  {
+    "prompt": "Reflect on a time when you felt overwhelmed. How did you handle the situation, and what did you learn from it?",
+    "tags": [
+      "stress",
+      "self-awareness",
+      "resilience"
+    ],
+    "stub": "I felt overwhelmed when _____. To handle the situation, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "What is one thing you could do to improve your self-care routine? Why is it important to prioritize self-care?",
+    "tags": [
+      "self-care",
+      "self-improvement",
+      "health"
+    ],
+    "stub": "One thing I could do to improve my self-care routine is _____. It's important to prioritize self-care because _____."
+  },
+  {
+    "prompt": "What is one thing that you've been procrastinating on? Why do you think you're putting it off?",
+    "tags": [
+      "productivity",
+      "self-awareness",
+      "goal-setting"
+    ],
+    "stub": "One thing I've been procrastinating on is _____. I think I'm putting it off because _____. To overcome this procrastination, I will _____."
+  },
+  {
+    "prompt": "Describe a time when you felt really stressed. How did you cope with that stress?",
+    "tags": [
+      "stress_management",
+      "self-care",
+      "resilience"
+    ],
+    "stub": "I felt really stressed when _____. To cope with that stress, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "Write about a time when you felt like giving up. What helped you persevere?",
+    "tags": [
+      "resilience",
+      "courage",
+      "self-awareness"
+    ],
+    "stub": "I felt like giving up when _____. What helped me persevere was _____. This experience taught me _____."
+  },
+  {
+    "prompt": "Reflect on a time when you had to apologize to someone. How did you go about apologizing?",
+    "tags": [
+      "communication",
+      "self-awareness",
+      "relationships"
+    ],
+    "stub": "I had to apologize to someone when _____. To apologize, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "What is one thing that you've been putting off because you're afraid of failure? Why do you think you're afraid of failure?",
+    "tags": [
+      "fear",
+      "self-awareness",
+      "personal_growth"
+    ],
+    "stub": "One thing I've been putting off because I'm afraid of failure is _____. I think I'm afraid of failure because _____. To overcome this fear, I will _____."
+  },
+  {
+    "prompt": "Describe a time when you felt really happy. What did you do to bring about that happiness?",
+    "tags": [
+      "positivity",
+      "self-care",
+      "gratitude"
+    ],
+    "stub": "I felt really happy when _____. To bring about that happiness, I _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Reflect on a time when you had to confront someone about something difficult. How did you approach that conversation?",
+    "tags": [
+      "communication",
+      "self-awareness",
+      "relationships"
+    ],
+    "stub": "I had to confront someone about something difficult when _____. To approach that conversation, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "What is one thing that you've been wanting to change about yourself? Why?",
+    "tags": [
+      "self-improvement",
+      "personal_growth",
+      "self-awareness"
+    ],
+    "stub": "One thing I've been wanting to change about myself is _____. This is important to me because _____. To achieve this change, I will _____."
+  },
+  {
+    "prompt": "Write about a time when you felt really inspired. What did you do to act on that inspiration?",
+    "tags": [
+      "motivation",
+      "personal_growth",
+      "self-improvement"
+    ],
+    "stub": "I felt really inspired when _____."
+  },
+  {
+    "prompt": "Write about a time when you took a risk. What did you learn from that experience?",
+    "tags": [
+      "courage",
+      "personal_growth",
+      "resilience"
+    ],
+    "stub": "I took a risk when _____. From that experience, I learned that _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Describe a person who has had a positive impact on your life. What did they do to influence you?",
+    "tags": [
+      "gratitude",
+      "personal_growth",
+      "positivity"
+    ],
+    "stub": "A person who has had a positive impact on my life is _____. What they did to influence me was _____. I'm grateful for their impact because _____."
+  },
+  {
+    "prompt": "Reflect on a time when you felt overwhelmed. What did you do to manage your stress?",
+    "tags": [
+      "self-care",
+      "mindfulness",
+      "stress_management"
+    ],
+    "stub": "I felt overwhelmed when _____. To manage my stress, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "Describe a time when you helped someone. How did you feel after helping them?",
+    "tags": [
+      "empathy",
+      "kindness",
+      "positivity"
+    ],
+    "stub": "I helped someone when _____. After helping them, I felt _____. This experience taught me _____."
+  },
+  {
+    "prompt": "Reflect on a time when you felt stuck in a situation. How did you go about moving forward?",
+    "tags": [
+      "problem-solving",
+      "resilience",
+      "self-awareness"
+    ],
+    "stub": "I felt stuck in a situation when _____. To move forward, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "What is one thing you've accomplished recently that you're proud of? Why?",
+    "tags": [
+      "self-esteem",
+      "personal_growth",
+      "positivity"
+    ],
+    "stub": "One thing I've accomplished recently that I'm proud of is _____. This is important to me because _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Describe a time when you had to apologize. How did you go about making things right?",
+    "tags": [
+      "communication",
+      "empathy",
+      "self-awareness"
+    ],
+    "stub": "I had to apologize when _____. To make things right, I _____. This experience taught me _____."
+  },
+  {
+    "prompt": "Write about a time when you had to set boundaries. Why was setting boundaries important in that situation?",
+    "tags": [
+      "self-care",
+      "communication",
+      "self-awareness"
+    ],
+    "stub": "I had to set boundaries when _____. Setting boundaries was important in that situation because _____. Moving forward, I will _____."
+  },
+  {
+    "prompt": "Reflect on a time when you learned something new. What was the learning experience like?",
+    "tags": [
+      "curiosity",
+      "personal_growth",
+      "self-improvement"
+    ],
+    "stub": "I learned something new when _____. The learning experience was _____. From that experience, I learned that _____."
+  },
+  {
     "prompt": "Write about a time when you felt overwhelmed. What strategies did you use to cope?",
     "tags": [
       "stress_management",
