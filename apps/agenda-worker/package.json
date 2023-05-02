@@ -12,7 +12,8 @@
   "dependencies": {
     "eslint-config-custom": "*",
     "tsconfig": "*",
-    "common": "*"
+    "common": "*",
+    "mailer": "*"
   },
   "keywords": [],
   "author": "",
