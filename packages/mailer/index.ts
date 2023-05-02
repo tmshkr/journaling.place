@@ -39,7 +39,11 @@ export async function sendWelcomeEmail(emailTo: string, root: string = "") {
     .catch(console.error);
 }
 
-export async function sendPromptOfTheDay(emailTo: string, prompt) {
+export async function sendPromptOfTheDay(
+  emailTo: string,
+  prompt,
+  root: string = ""
+) {
   const email = new Email({
     message: {
       from: "Journaling Place <hi@journaling.place>",
@@ -49,6 +53,7 @@ export async function sendPromptOfTheDay(emailTo: string, prompt) {
     preview: {
       openSimulator: false,
     },
+    views: { root: path.join(root, "emails") },
     juice: true,
     juiceSettings: {
       tableElements: ["TABLE"],
@@ -56,7 +61,7 @@ export async function sendPromptOfTheDay(emailTo: string, prompt) {
     juiceResources: {
       applyStyleTags: true,
       webResources: {
-        relativeTo: path.resolve("assets"),
+        relativeTo: path.join(root, "assets"),
       },
     },
   });
