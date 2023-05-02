@@ -5,7 +5,6 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist && tsc -p .",
-    "prestart": "sh ./prestart.sh",
     "start": "NODE_PATH=dist node dist/index.js",
     "dev": "NODE_PATH=src nodemon src/index.ts"
   },
