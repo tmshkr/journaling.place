@@ -1,0 +1,20 @@
+{
+  "name": "express-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rm -rf dist && tsc -p .",
+    "start": "NODE_PATH=dist node dist/index.js",
+    "dev": "NODE_PATH=src nodemon src/index.ts"
+  },
+  "dependencies": {
+    "eslint-config-custom": "*",
+    "tsconfig": "*",
+    "common": "*",
+    "mailer": "*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
