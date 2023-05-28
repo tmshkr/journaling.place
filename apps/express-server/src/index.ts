@@ -22,17 +22,12 @@ io.use(async (socket, next) => {
   try {
     const req: any = {
       cookies: cookie.parse(socket.request.headers.cookie),
-      headers: socket.request.headers,
     };
-    const token = await getToken({ req });
-    if (token) {
-      socket.request.token = token;
-      console.log(socket.request.token);
-      next();
-    } else {
-      next(new Error("Authentication error"));
-    }
-  } catch {
+    socket.token = await getToken({ req });
+    if (!socket.token) throw new Error("No token found");
+    next();
+  } catch (err) {
+    console.error(err);
     next(new Error("Authentication error"));
   }
 });
