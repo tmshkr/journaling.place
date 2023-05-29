@@ -23,8 +23,24 @@ io.use(async (socket, next) => {
     const req: any = {
       cookies: cookie.parse(socket.request.headers.cookie),
     };
-    socket.token = await getToken({ req });
-    if (!socket.token) throw new Error("No token found");
+    const token: any = await getToken({ req });
+    if (!token) throw new Error("No token found");
+
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { id: token.sub },
+    });
+
+    if (!user) throw new Error("User not found");
+    if (user.salt) {
+      for (let i = 0; i < user.salt.length; i++) {
+        if (user.salt[i] !== token.user.salt.data[i]) {
+          throw new Error("Incorrect salt");
+        }
+      }
+    }
+
+    socket.user = user;
+
     next();
   } catch (err) {
     console.error(err);
@@ -33,6 +49,7 @@ io.use(async (socket, next) => {
 });
 
 io.on("connection", (socket) => {
+  console.log("socket.user", socket.user);
   console.log("a user connected");
 
   socket.on("disconnect", () => {
