@@ -20,17 +20,17 @@ app.get("/", (req, res) => {
 
 io.use(async (socket, next) => {
   try {
-    const req: any = {
-      cookies: cookie.parse(socket.request.headers.cookie),
-    };
-    const token: any = await getToken({ req });
+    const token = await (getToken as any)({
+      req: {
+        cookies: cookie.parse(socket.request.headers.cookie),
+      },
+    });
     if (!token) throw new Error("No token found");
 
     const user = await prisma.user.findUniqueOrThrow({
       where: { id: token.sub },
     });
 
-    if (!user) throw new Error("User not found");
     if (user.salt) {
       for (let i = 0; i < user.salt.length; i++) {
         if (user.salt[i] !== token.user.salt.data[i]) {
