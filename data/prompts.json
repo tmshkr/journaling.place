@@ -1,5 +1,165 @@
 [
   {
+    "prompt": "Describe a time when you faced a difficult decision and how you ultimately made your choice.",
+    "tags": [
+      "decision-making",
+      "personal_growth"
+    ],
+    "stub": "I recently faced a difficult decision when..."
+  },
+  {
+    "prompt": "Reflect on a moment when you felt deeply inspired and motivated.",
+    "tags": [
+      "inspiration",
+      "self-reflection"
+    ],
+    "stub": "There was a moment recently when I felt deeply inspired and motivated..."
+  },
+  {
+    "prompt": "What is a fear or insecurity that holds you back, and how can you overcome it?",
+    "tags": [
+      "fear",
+      "self-improvement"
+    ],
+    "stub": "One fear or insecurity that holds me back is..."
+  },
+  {
+    "prompt": "Describe a recent setback or challenge you faced and how you bounced back from it.",
+    "tags": [
+      "resilience",
+      "overcoming_obstacles"
+    ],
+    "stub": "Recently, I faced a setback or challenge when..."
+  },
+  {
+    "prompt": "Reflect on a relationship that has had a significant impact on your life.",
+    "tags": [
+      "relationships",
+      "personal_growth"
+    ],
+    "stub": "There is a relationship in my life that has had a significant impact on me..."
+  },
+  {
+    "prompt": "What is a goal or aspiration you have for the future and what steps can you take to work towards it?",
+    "tags": [
+      "goal-setting",
+      "self-improvement"
+    ],
+    "stub": "One goal or aspiration I have for the future is..."
+  },
+  {
+    "prompt": "Describe a recent situation where you had to practice forgiveness and how it affected you.",
+    "tags": [
+      "forgiveness",
+      "emotional_healing"
+    ],
+    "stub": "There was a recent situation where I had to practice forgiveness..."
+  },
+  {
+    "prompt": "Reflect on a time when you felt overwhelmed and how you managed to find balance.",
+    "tags": [
+      "stress_management",
+      "self-care"
+    ],
+    "stub": "There was a time recently when I felt overwhelmed..."
+  },
+  {
+    "prompt": "What is a valuable lesson you learned from a mistake or failure you experienced?",
+    "tags": [
+      "learning",
+      "self-reflection"
+    ],
+    "stub": "I recently experienced a mistake or failure, and from it, I learned..."
+  },
+  {
+    "prompt": "Describe a recent act of self-care that you engaged in and how it made you feel.",
+    "tags": [
+      "self-care",
+      "well-being"
+    ],
+    "stub": "Recently, I engaged in an act of self-care when..."
+  },
+  {
+    "prompt": "Describe a recent experience that challenged your beliefs or assumptions.",
+    "tags": [
+      "reflection",
+      "personal_growth"
+    ],
+    "stub": "Recently, I had an experience that challenged my beliefs or assumptions when..."
+  },
+  {
+    "prompt": "What is something you've been avoiding that you know you need to address?",
+    "tags": [
+      "procrastination",
+      "self-improvement"
+    ],
+    "stub": "One thing I've been avoiding that I know I need to address is..."
+  },
+  {
+    "prompt": "Share a recent accomplishment you're proud of and the journey it took to get there.",
+    "tags": [
+      "personal_achievement",
+      "success"
+    ],
+    "stub": "I recently accomplished..."
+  },
+  {
+    "prompt": "Reflect on a mistake you made recently and what you learned from it.",
+    "tags": [
+      "learning",
+      "self-reflection"
+    ],
+    "stub": "Recently, I made a mistake when..."
+  },
+  {
+    "prompt": "Describe a situation where you had to step out of your comfort zone.",
+    "tags": [
+      "growth",
+      "courage"
+    ],
+    "stub": "There was a situation recently where I had to step out of my comfort zone..."
+  },
+  {
+    "prompt": "What is a skill or hobby you would like to learn or improve upon?",
+    "tags": [
+      "personal_development",
+      "skills"
+    ],
+    "stub": "One skill or hobby I would like to learn or improve upon is..."
+  },
+  {
+    "prompt": "Reflect on a time when you received help or support from someone and how it impacted you.",
+    "tags": [
+      "gratitude",
+      "relationships"
+    ],
+    "stub": "There was a time recently when I received help or support from someone, and it impacted me by..."
+  },
+  {
+    "prompt": "What is a limiting belief you have about yourself and how can you challenge it?",
+    "tags": [
+      "self-limiting_beliefs",
+      "self-improvement"
+    ],
+    "stub": "A limiting belief I have about myself is..."
+  },
+  {
+    "prompt": "Describe a situation where you had to practice patience and what you learned from it.",
+    "tags": [
+      "patience",
+      "self-control"
+    ],
+    "stub": "There was a situation recently where I had to practice patience..."
+  },
+  {
+    "prompt": "Reflect on a recent act of kindness you performed and how it made you feel.",
+    "tags": [
+      "kindness",
+      "empathy"
+    ],
+    "stub": "Recently, I performed an act of kindness when..."
+  },
+  {
     "prompt": "What is something that makes you feel energized and motivated? How can you incorporate more of it into your life?",
     "tags": [
       "productivity",
