@@ -111,9 +111,12 @@ function PageAuth({ Component, pageProps }) {
 
   useEffect(() => {
     if (user) {
-      const socket = io("ws://localhost:8888", {
-        withCredentials: true,
-      });
+      const socket = io(
+        `${window.location.protocol}//${window.location.hostname}:8888`,
+        {
+          withCredentials: true,
+        }
+      );
       console.log(socket);
     }
   }, [user]);
