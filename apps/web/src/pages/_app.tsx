@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { sync } from "src/store/journal";
 import { Provider as ReduxProvider } from "react-redux";
 import axios from "axios";
+import { io } from "socket.io-client";
 
 import { DefaultSeo } from "next-seo";
 
@@ -107,6 +108,15 @@ function PageAuth({ Component, pageProps }) {
       axios.interceptors.response.eject(responseInterceptor);
     };
   }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      const socket = io("ws://localhost:8888", {
+        withCredentials: true,
+      });
+      console.log(socket);
+    }
+  }, [user]);
 
   return user ? (
     <>
