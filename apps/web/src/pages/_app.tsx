@@ -6,7 +6,6 @@ import { useSession } from "next-auth/react";
 import { sync } from "src/store/journal";
 import { Provider as ReduxProvider } from "react-redux";
 import axios from "axios";
-import { trpc } from "src/lib/trpc";
 
 import { DefaultSeo } from "next-seo";
 
@@ -34,7 +33,10 @@ const queryClient = new QueryClient({
   },
 });
 
-function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps) {
   return (
     <>
       <Head>
@@ -153,5 +155,3 @@ function registerInterceptors(dispatch) {
 
   return { requestInterceptor, responseInterceptor };
 }
-
-export default trpc.withTRPC(App);
