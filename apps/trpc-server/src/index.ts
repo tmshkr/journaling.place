@@ -20,13 +20,12 @@ import { observable } from "@trpc/server/observable";
 import { WebSocketServer } from "ws";
 import { z } from "zod";
 
-// This is how you initialize a context for the server
-function createContext(
+async function createContext(
   opts: CreateHTTPContextOptions | CreateWSSContextFnOptions
 ) {
-  const { req, res } = opts;
-  console.log(req.headers);
-  return {};
+  const req: any = { cookies: cookie.parse(opts.req.headers.cookie || "") };
+  const token = await getToken({ req });
+  return { token, prisma };
 }
 type Context = inferAsyncReturnType<typeof createContext>;
 
@@ -35,49 +34,24 @@ const t = initTRPC.context<Context>().create();
 const publicProcedure = t.procedure;
 const router = t.router;
 
-const greetingRouter = router({
-  hello: publicProcedure
+const journalRouter = router({
+  getJournals: publicProcedure
     .input(
       z.object({
-        name: z.string(),
+        cursor: z.string().optional(),
+        promptId: z.string().optional(),
+        ts: z.date().optional(),
       })
     )
-    .query(({ input }) => `Hello, ${input.name}!`),
-});
-
-const postRouter = router({
-  createPost: publicProcedure
-    .input(
-      z.object({
-        title: z.string(),
-        text: z.string(),
-      })
-    )
-    .mutation(({ input }) => {
-      // imagine db call here
-      return {
-        id: `${Math.random()}`,
-        ...input,
-      };
+    .query(({ input }) => {
+      console.log(input);
+      return `Hello, world!`;
     }),
-  randomNumber: publicProcedure.subscription(() => {
-    return observable<{ randomNumber: number }>((emit) => {
-      const timer = setInterval(() => {
-        // emits a number every second
-        emit.next({ randomNumber: Math.random() });
-      }, 200);
-
-      return () => {
-        clearInterval(timer);
-      };
-    });
-  }),
 });
 
 // Merge routers together
 const appRouter = router({
-  greeting: greetingRouter,
-  post: postRouter,
+  journal: journalRouter,
 });
 
 export type AppRouter = typeof appRouter;
