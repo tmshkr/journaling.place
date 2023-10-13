@@ -7,7 +7,7 @@ import { PrismaClient } from "@prisma/client";
 const cookie = require("cookie");
 const prisma: PrismaClient = new PrismaClient();
 
-import { inferAsyncReturnType, initTRPC } from "@trpc/server";
+import { inferAsyncReturnType, initTRPC, TRPCError } from "@trpc/server";
 import {
   CreateHTTPContextOptions,
   createHTTPServer,
@@ -33,9 +33,38 @@ const t = initTRPC.context<Context>().create();
 
 const publicProcedure = t.procedure;
 const router = t.router;
+const middleware = t.middleware;
+
+const withUser = middleware(async (opts) => {
+  const { ctx } = opts;
+  const { token, prisma } = ctx;
+  if (!token) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  const { sub } = token;
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { id: sub },
+  });
+
+  // Check that the token's salt is correct
+  if (user.salt) {
+    for (let i = 0; i < user.salt.length; i++) {
+      if (user.salt[i] !== (token as any).user.salt.data[i]) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+    }
+  }
+
+  return opts.next({
+    ctx: {
+      user,
+    },
+  });
+});
 
 const journalRouter = router({
   getJournals: publicProcedure
+    .use(withUser)
     .input(
       z.object({
         cursor: z.string().optional(),
@@ -43,8 +72,10 @@ const journalRouter = router({
         ts: z.date().optional(),
       })
     )
-    .query(({ input }) => {
-      console.log(input);
+    .query(({ ctx, input }) => {
+      const { user } = ctx;
+      console.log({ user });
+      console.log({ input });
       return `Hello, world!`;
     }),
 });
