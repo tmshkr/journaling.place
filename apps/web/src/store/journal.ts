@@ -1,5 +1,6 @@
-import axios from "axios";
+import { Journal } from "@prisma/client";
 import store from ".";
+import { trpc } from "src/lib/trpc";
 const { Index } = require("flexsearch");
 
 import { decrypt } from "src/lib/crypto";
@@ -11,8 +12,23 @@ export const journalIndex = new Index({
   resolution: 5,
 });
 
-let cache = { journalsById: {}, journalsByPromptId: {}, ts: undefined };
+export type CacheEntry = Journal & {
+  prompt?: {
+    id: string;
+    text: string;
+  } | null;
+} & {
+  ciphertext?: ArrayBuffer;
+  iv?: Uint8Array;
+  plaintext?: string;
+};
+
 let quill;
+let cache: {
+  journalsById: Record<string, CacheEntry>;
+  journalsByPromptId: Record<string, Set<string>>;
+  ts: number;
+} = { journalsById: {}, journalsByPromptId: {}, ts: 0 };
 
 export async function sync(args?) {
   const { user } = store.getState();
@@ -26,60 +42,60 @@ export async function sync(args?) {
   }
 
   if (args?.fullSync) {
-    cache = { journalsById: {}, journalsByPromptId: {}, ts: undefined };
+    cache = { journalsById: {}, journalsByPromptId: {}, ts: 0 };
   }
 
   return getJournals();
 }
 
 async function getJournals(cursor?) {
-  return axios
-    .get("/api/journal", { params: { cursor, ts: cache.ts } })
-    .then(async ({ data }) => {
-      const { journals, nextCursor, ts } = data;
+  const { journals, ts, nextCursor } = await trpc.journal.getJournals.query({
+    cursor,
+    ts: cache.ts,
+  });
 
-      for (const entry of journals) {
-        if (entry.status !== "ACTIVE") {
-          journalIndex.remove(entry.id);
-          const promptId = cache.journalsById[entry.id]?.promptId;
-          if (promptId) {
-            cache.journalsByPromptId[promptId].delete(entry.id);
-          }
-        }
+  const parse = async (j): Promise<CacheEntry> => {
+    if (j.status !== "DELETED") {
+      j.ciphertext = toArrayBuffer(j.ciphertext!.data!);
+      j.iv = new Uint8Array(j.iv!.data!);
+      const decrypted = await decrypt(j.ciphertext, j.iv);
 
-        cache.journalsById[entry.id] = entry;
+      try {
+        quill.setContents(JSON.parse(decrypted));
+        j.plaintext = quill.getText();
+      } catch (err) {
+        j.plaintext = decrypted;
+      }
+    }
+    return j;
+  };
 
-        if (entry.status !== "DELETED") {
-          entry.ciphertext = toArrayBuffer(entry.ciphertext.data);
-          entry.iv = new Uint8Array(entry.iv.data);
-          const decrypted = await decrypt(entry.ciphertext, entry.iv);
+  for (let i = 0; i < journals.length; i++) {
+    const j = await parse(journals[i]);
+    cache.journalsById[j.id] = j;
 
-          try {
-            quill.setContents(JSON.parse(decrypted));
-            entry.plaintext = quill.getText();
-          } catch (err) {
-            entry.plaintext = decrypted;
-          }
-        }
-
-        if (entry.status === "ACTIVE") {
-          journalIndex.add(entry.id, entry.plaintext);
-          if (entry.promptId) {
-            journalIndex.append(entry.id, entry.prompt.text);
-            if (cache.journalsByPromptId[entry.promptId]) {
-              cache.journalsByPromptId[entry.promptId].add(entry.id);
-            } else {
-              cache.journalsByPromptId[entry.promptId] = new Set([entry.id]);
-            }
-          }
+    if (j.status === "ACTIVE") {
+      journalIndex.add(j.id, j.plaintext);
+      if (j.prompt) {
+        journalIndex.append(j.id, j.prompt.text);
+        if (cache.journalsByPromptId[j.prompt.id]) {
+          cache.journalsByPromptId[j.prompt.id].add(j.id);
+        } else {
+          cache.journalsByPromptId[j.prompt.id] = new Set([j.id]);
         }
       }
-
-      if (nextCursor) {
-        return getJournals(nextCursor);
+    } else {
+      journalIndex.remove(j.id);
+      if (j.promptId) {
+        cache.journalsByPromptId[j.promptId]?.delete(j.id);
       }
+    }
+  }
 
-      cache.ts = ts;
-      return cache;
-    });
+  if (nextCursor) {
+    return getJournals(nextCursor);
+  }
+
+  cache.ts = ts;
+  return cache;
 }
