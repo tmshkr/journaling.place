@@ -16,9 +16,7 @@ import {
   applyWSSHandler,
   CreateWSSContextFnOptions,
 } from "@trpc/server/adapters/ws";
-import { observable } from "@trpc/server/observable";
 import { WebSocketServer } from "ws";
-import { z } from "zod";
 
 async function createContext(
   opts: CreateHTTPContextOptions | CreateWSSContextFnOptions
@@ -31,9 +29,9 @@ type Context = inferAsyncReturnType<typeof createContext>;
 
 const t = initTRPC.context<Context>().create();
 
-const publicProcedure = t.procedure;
-const router = t.router;
-const middleware = t.middleware;
+export const publicProcedure = t.procedure;
+export const router = t.router;
+export const middleware = t.middleware;
 
 const withUser = middleware(async (opts) => {
   const { ctx } = opts;
@@ -62,25 +60,9 @@ const withUser = middleware(async (opts) => {
   });
 });
 
-const journalRouter = router({
-  getJournals: publicProcedure
-    .use(withUser)
-    .input(
-      z.object({
-        cursor: z.string().optional(),
-        promptId: z.string().optional(),
-        ts: z.date().optional(),
-      })
-    )
-    .query(({ ctx, input }) => {
-      const { user } = ctx;
-      console.log({ user });
-      console.log({ input });
-      return `Hello, world!`;
-    }),
-});
+export const authorizedProcedure = publicProcedure.use(withUser);
+import { journalRouter } from "./journal";
 
-// Merge routers together
 const appRouter = router({
   journal: journalRouter,
 });
@@ -101,7 +83,4 @@ applyWSSHandler<AppRouter>({
   createContext,
 });
 
-// setInterval(() => {
-//   console.log('Connected clients', wss.clients.size);
-// }, 1000);
 listen(2022);
