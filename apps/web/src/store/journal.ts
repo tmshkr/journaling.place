@@ -12,20 +12,20 @@ export const journalIndex = new Index({
   resolution: 5,
 });
 
-export type CacheEntry = Journal & {
+export type CachedJournal = Journal & {
   prompt?: {
     id: string;
     text: string;
   } | null;
 } & {
-  ciphertext?: ArrayBuffer;
-  iv?: Uint8Array;
-  plaintext?: string;
+  ciphertext: ArrayBuffer;
+  iv: Uint8Array;
+  plaintext: string;
 };
 
 let quill;
 let cache: {
-  journalsById: Record<string, CacheEntry>;
+  journalsById: Record<string, CachedJournal>;
   journalsByPromptId: Record<string, Set<string>>;
   ts: number;
 } = { journalsById: {}, journalsByPromptId: {}, ts: 0 };
@@ -34,7 +34,7 @@ export async function sync(args?) {
   const { user } = store.getState();
   if (!user.value) {
     args?.signal?.cancel();
-    return;
+    return cache;
   }
   if (!quill) {
     const Quill = await import("quill").then((value) => value.default);
@@ -48,13 +48,13 @@ export async function sync(args?) {
   return getJournals();
 }
 
-async function getJournals(cursor?) {
+async function getJournals(cursor?: string) {
   const { journals, ts, nextCursor } = await trpc.journal.getJournals.query({
     cursor,
     ts: cache.ts,
   });
 
-  const parse = async (j): Promise<CacheEntry> => {
+  const parse = async (j): Promise<CachedJournal> => {
     if (j.status !== "DELETED") {
       j.ciphertext = toArrayBuffer(j.ciphertext!.data!);
       j.iv = new Uint8Array(j.iv!.data!);

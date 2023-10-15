@@ -173,8 +173,8 @@ export async function changePassword(oldPassword: string, newPassword: string) {
     if (journal.status === "DELETED") continue;
     const decrypted = await decrypt(journal.ciphertext, journal.iv);
     const { ciphertext, iv } = await encrypt(decrypted, newKey);
-    journal.ciphertext = ciphertext;
-    journal.iv = iv;
+    (journal as any).ciphertext = ciphertext;
+    (journal as any).iv = iv;
     updatedJournals.push({
       id: journal.id,
       ciphertext: Buffer.from(ciphertext),
