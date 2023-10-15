@@ -1,4 +1,4 @@
-import { Journal } from "@prisma/client";
+import { JournalStatus } from "@prisma/client";
 import store from ".";
 import { trpc } from "src/lib/trpc";
 const { Index } = require("flexsearch");
@@ -12,15 +12,25 @@ export const journalIndex = new Index({
   resolution: 5,
 });
 
-export type CachedJournal = Journal & {
+type JSONBuffer = {
+  type: "Buffer";
+  data: number[];
+};
+
+export type CachedJournal = {
+  id: string;
+  authorId: string;
+  promptId?: string | null;
+  ciphertext?: JSONBuffer | ArrayBuffer | null;
+  iv?: JSONBuffer | Uint8Array | null;
+  plaintext?: string;
+  status: JournalStatus;
+  createdAt: Date | string;
+  updatedAt: Date | string;
   prompt?: {
     id: string;
     text: string;
   } | null;
-} & {
-  ciphertext: ArrayBuffer;
-  iv: Uint8Array;
-  plaintext: string;
 };
 
 let quill;
@@ -54,10 +64,13 @@ async function getJournals(cursor?: string) {
     ts: cache.ts,
   });
 
-  const parse = async (j): Promise<CachedJournal> => {
+  for (let i = 0; i < journals.length; i++) {
+    const j: CachedJournal = journals[i];
+    cache.journalsById[j.id] = j;
+
     if (j.status !== "DELETED") {
-      j.ciphertext = toArrayBuffer(j.ciphertext!.data!);
-      j.iv = new Uint8Array(j.iv!.data!);
+      j.ciphertext = toArrayBuffer((j.ciphertext as JSONBuffer).data);
+      j.iv = new Uint8Array((j.iv as JSONBuffer).data);
       const decrypted = await decrypt(j.ciphertext, j.iv);
 
       try {
@@ -67,12 +80,6 @@ async function getJournals(cursor?: string) {
         j.plaintext = decrypted;
       }
     }
-    return j;
-  };
-
-  for (let i = 0; i < journals.length; i++) {
-    const j = await parse(journals[i]);
-    cache.journalsById[j.id] = j;
 
     if (j.status === "ACTIVE") {
       journalIndex.add(j.id, j.plaintext);
