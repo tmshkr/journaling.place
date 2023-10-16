@@ -5,60 +5,7 @@ import { createRouter } from "next-connect";
 import { z } from "zod";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
-router.use(withUser).get(handleGet).post(handlePost);
-
-async function handleGet(req, res) {
-  const { cursor, promptId, ts } = req.query;
-  const take = 100;
-
-  if (promptId) {
-    return res.json(
-      await prisma.journal.findMany({
-        where: {
-          authorId: req.user.id,
-          promptId: promptId,
-        },
-        orderBy: {
-          updatedAt: "desc",
-        },
-      })
-    );
-  }
-
-  return res.json(
-    await prisma.journal
-      .findMany({
-        where: {
-          authorId: req.user.id,
-          updatedAt: {
-            gt: ts ? new Date(ts) : undefined,
-          },
-        },
-        take,
-        skip: cursor ? 1 : 0,
-        cursor: cursor ? { id: cursor } : undefined,
-        orderBy: { updatedAt: "desc" },
-        include: {
-          prompt: {
-            select: {
-              id: true,
-              text: true,
-            },
-          },
-        },
-      })
-      .then((journals) => {
-        return {
-          journals,
-          ts: new Date().toISOString(),
-          nextCursor:
-            journals.length === take
-              ? journals[journals.length - 1].id
-              : undefined,
-        };
-      })
-  );
-}
+router.use(withUser).post(handlePost);
 
 async function handlePost(req, res) {
   try {
