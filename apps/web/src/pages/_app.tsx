@@ -25,7 +25,7 @@ import { handleKey } from "src/lib/crypto";
 
 import { Modal } from "src/components/modals/ModalWrapper";
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: (args) => sync(args),
