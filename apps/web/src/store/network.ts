@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { AppState, AppThunk } from "./index";
+import { createSlice } from "@reduxjs/toolkit";
+import type { AppState } from "./index";
 
 export enum NetworkStatus {
   idle = "idle",
