@@ -159,7 +159,7 @@ export async function changePassword(oldPassword: string, newPassword: string) {
   }
 
   // sync with server
-  const { journalsById } = await sync({ fullSync: true });
+  const { journalsById } = await sync(undefined, true);
   const updatedJournals: any = [];
 
   // create new key from new password
