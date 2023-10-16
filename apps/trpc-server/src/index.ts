@@ -62,7 +62,7 @@ export const authorizedProcedure = publicProcedure.use(
   })
 );
 
-import { journalRouter } from "./journal";
+import { journalRouter } from "./journal/journalRouter";
 
 const appRouter = router({
   journal: journalRouter,
