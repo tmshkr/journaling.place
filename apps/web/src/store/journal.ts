@@ -47,24 +47,22 @@ let cache: {
 export type JournalCache = typeof cache;
 
 async function loadCache() {
-  if (cache.ts === 0) {
-    console.log("Loading journals from IndexedDB");
-    const savedJournals: CachedJournal[] = [];
-    await journalStore.iterate(function (value, key) {
-      if (key === "ts") {
-        cache.ts = value as number;
-      } else {
-        savedJournals.push(value as CachedJournal);
-      }
-    });
-
-    for (let j of savedJournals) {
-      await processJournal(j).catch((err) => {
-        console.error("Error processing journal", err);
-      });
+  console.log("Loading journals from IndexedDB");
+  const savedJournals: CachedJournal[] = [];
+  await journalStore.iterate(function (value, key) {
+    if (key === "ts") {
+      cache.ts = value as number;
+    } else {
+      savedJournals.push(value as CachedJournal);
     }
-    console.log("Done loading journals from IndexedDB");
+  });
+
+  for (let j of savedJournals) {
+    await processJournal(j).catch((err) => {
+      console.error("Error processing journal", err);
+    });
   }
+  console.log("Done loading journals from IndexedDB");
 }
 
 async function processJournal(j: CachedJournal) {
@@ -124,7 +122,7 @@ export async function sync(
         console.log("Deleted local journal cache");
       })
       .catch(console.error);
-  } else {
+  } else if (cache.ts === 0) {
     await loadCache();
   }
 
