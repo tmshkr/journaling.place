@@ -151,19 +151,20 @@ async function autosave(quillRef, journal, prompt, setJournal) {
     );
 
     if (journal?.id) {
-      await axios.put(`/api/journal/${journal?.id}`, {
-        ciphertext: Buffer.from(ciphertext),
-        iv: Buffer.from(iv),
+      await trpc.journal.updateJournal.mutate({
+        id: journal.id,
+        ciphertext: Buffer.from(ciphertext) as any,
+        iv: Buffer.from(iv) as any,
       });
       setJournal({ ...journal, updatedAt: new Date() });
     } else {
-      const newJournal = await trpc.journal.createJournal.mutate({
+      const { id } = await trpc.journal.createJournal.mutate({
         promptId: prompt ? String(prompt.id) : undefined,
         ciphertext: Buffer.from(ciphertext) as any,
         iv: Buffer.from(iv) as any,
       });
       const now = new Date();
-      setJournal({ id: newJournal.id, createdAt: now, updatedAt: now });
+      setJournal({ id, createdAt: now, updatedAt: now });
     }
   }, 1000);
 }
