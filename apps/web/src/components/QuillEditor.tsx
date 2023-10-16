@@ -18,6 +18,7 @@ import "quill/dist/quill.snow.css";
 import { setLoading } from "src/store/loading";
 import { encrypt, decrypt } from "src/lib/crypto";
 import dayjs from "src/lib/dayjs";
+import { trpc } from "src/lib/trpc";
 
 import { OtherEntries } from "./OtherEntries";
 
@@ -156,16 +157,13 @@ async function autosave(quillRef, journal, prompt, setJournal) {
       });
       setJournal({ ...journal, updatedAt: new Date() });
     } else {
-      await axios
-        .post("/api/journal", {
-          promptId: prompt ? String(prompt.id) : undefined,
-          ciphertext: Buffer.from(ciphertext),
-          iv: Buffer.from(iv),
-        })
-        .then(({ data }) => {
-          const now = new Date();
-          setJournal({ id: data.id, createdAt: now, updatedAt: now });
-        });
+      const newJournal = await trpc.journal.createJournal.mutate({
+        promptId: prompt ? String(prompt.id) : undefined,
+        ciphertext: Buffer.from(ciphertext) as any,
+        iv: Buffer.from(iv) as any,
+      });
+      const now = new Date();
+      setJournal({ id: newJournal.id, createdAt: now, updatedAt: now });
     }
   }, 1000);
 }
