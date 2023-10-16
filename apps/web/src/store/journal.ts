@@ -8,6 +8,7 @@ const { Index } = require("flexsearch");
 
 import { decrypt } from "src/lib/crypto";
 import { toArrayBuffer } from "src/utils/buffer";
+import { journalStore } from "src/lib/localForage";
 
 export const journalIndex = new Index({
   preset: "default",
@@ -24,8 +25,8 @@ export type CachedJournal = {
   id: string;
   authorId: string;
   promptId?: string | null;
-  ciphertext?: JSONBuffer | ArrayBuffer | null;
-  iv?: JSONBuffer | Uint8Array | null;
+  ciphertext?: ArrayBuffer | null;
+  iv?: Uint8Array | null;
   plaintext?: string;
   status: JournalStatus;
   createdAt: Date | string;
@@ -45,11 +46,66 @@ let cache: {
 
 export type JournalCache = typeof cache;
 
-type SyncArgs = QueryFunctionContext<QueryKey, any> & {
-  fullSync?: boolean;
-};
+async function loadCache() {
+  if (cache.ts === 0) {
+    console.log("Loading journals from IndexedDB");
+    const savedJournals: CachedJournal[] = [];
+    await journalStore.iterate(function (value, key) {
+      if (key === "ts") {
+        cache.ts = value as number;
+      } else {
+        savedJournals.push(value as CachedJournal);
+      }
+    });
 
-export async function sync(args?: SyncArgs) {
+    for (let j of savedJournals) {
+      await processJournal(j).catch((err) => {
+        console.error("Error processing journal", err);
+      });
+    }
+    console.log("Done loading journals from IndexedDB");
+  }
+}
+
+async function processJournal(j: CachedJournal) {
+  cache.journalsById[j.id] = j;
+
+  if (j.ciphertext && j.iv) {
+    const decrypted = await decrypt(
+      j.ciphertext as ArrayBuffer,
+      j.iv as Uint8Array
+    );
+
+    try {
+      quill.setContents(JSON.parse(decrypted));
+      j.plaintext = quill.getText();
+    } catch (err) {
+      j.plaintext = decrypted;
+    }
+  }
+
+  if (j.status === JournalStatus.ACTIVE) {
+    journalIndex.add(j.id, j.plaintext);
+    if (j.prompt) {
+      journalIndex.append(j.id, j.prompt.text);
+      if (cache.journalsByPromptId[j.prompt.id]) {
+        cache.journalsByPromptId[j.prompt.id].add(j.id);
+      } else {
+        cache.journalsByPromptId[j.prompt.id] = new Set([j.id]);
+      }
+    }
+  } else {
+    journalIndex.remove(j.id);
+    if (j.promptId) {
+      cache.journalsByPromptId[j.promptId]?.delete(j.id);
+    }
+  }
+}
+
+export async function sync(
+  args?: QueryFunctionContext<QueryKey, any>,
+  fullSync?: boolean
+) {
   const { user } = store.getState();
   if (!user.value) {
     queryClient.cancelQueries({ queryKey: args?.queryKey });
@@ -60,8 +116,16 @@ export async function sync(args?: SyncArgs) {
     quill = new Quill(document.createElement("div"));
   }
 
-  if (args?.fullSync) {
+  if (fullSync) {
     cache = { journalsById: {}, journalsByPromptId: {}, ts: 0 };
+    await journalStore
+      .clear()
+      .then(() => {
+        console.log("Deleted local journal cache");
+      })
+      .catch(console.error);
+  } else {
+    await loadCache();
   }
 
   return getJournals();
@@ -74,39 +138,13 @@ async function getJournals(cursor?: string) {
     ts: cache.ts,
   });
 
-  for (let i = 0; i < journals.length; i++) {
-    const j: CachedJournal = journals[i];
-    cache.journalsById[j.id] = j;
-
-    if (j.status !== JournalStatus.DELETED) {
-      j.ciphertext = toArrayBuffer((j.ciphertext as JSONBuffer).data);
-      j.iv = new Uint8Array((j.iv as JSONBuffer).data);
-      const decrypted = await decrypt(j.ciphertext, j.iv);
-
-      try {
-        quill.setContents(JSON.parse(decrypted));
-        j.plaintext = quill.getText();
-      } catch (err) {
-        j.plaintext = decrypted;
-      }
+  for (const j of journals) {
+    if (j.ciphertext && j.iv) {
+      (j as CachedJournal).ciphertext = toArrayBuffer(j.ciphertext.data);
+      (j as CachedJournal).iv = new Uint8Array(j.iv.data);
     }
-
-    if (j.status === JournalStatus.ACTIVE) {
-      journalIndex.add(j.id, j.plaintext);
-      if (j.prompt) {
-        journalIndex.append(j.id, j.prompt.text);
-        if (cache.journalsByPromptId[j.prompt.id]) {
-          cache.journalsByPromptId[j.prompt.id].add(j.id);
-        } else {
-          cache.journalsByPromptId[j.prompt.id] = new Set([j.id]);
-        }
-      }
-    } else {
-      journalIndex.remove(j.id);
-      if (j.promptId) {
-        cache.journalsByPromptId[j.promptId]?.delete(j.id);
-      }
-    }
+    journalStore.setItem(j.id, j);
+    await processJournal(j as CachedJournal);
   }
 
   if (nextCursor) {
@@ -115,5 +153,6 @@ async function getJournals(cursor?: string) {
 
   cache.ts = ts;
   store.dispatch(setNetworkStatus(NetworkStatus.succeeded));
+  journalStore.setItem("ts", ts);
   return cache;
 }
