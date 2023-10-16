@@ -3,7 +3,7 @@ import { JournalList } from "src/components/JournalList";
 import { JournalCache } from "src/store/journal";
 
 export default function JournalIndex() {
-  const { data }: { data?: JournalCache } = useQuery({
+  const { data } = useQuery<JournalCache>({
     queryKey: "journal",
   });
   if (!data) return null;

@@ -29,7 +29,7 @@ export type CachedJournal = {
   status: JournalStatus;
   createdAt: Date | string;
   updatedAt: Date | string;
-  prompt?: {
+  prompt: {
     id: string;
     text: string;
   } | null;
@@ -49,6 +49,7 @@ type SyncArgs = QueryFunctionContext<QueryKey, any> & {
 };
 
 export async function sync(args?: SyncArgs) {
+  console.log({ args });
   const { user } = store.getState();
   if (!user.value) {
     queryClient.cancelQueries({ queryKey: args?.queryKey });
