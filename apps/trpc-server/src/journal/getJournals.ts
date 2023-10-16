@@ -5,7 +5,6 @@ export const getJournals = authorizedProcedure
   .input(
     z.object({
       cursor: z.string().optional(),
-      promptId: z.string().optional(),
       ts: z.number().optional(),
     })
   )
