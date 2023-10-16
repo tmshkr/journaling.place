@@ -1,3 +1,5 @@
+import { QueryFunctionContext, QueryKey } from "react-query";
+import { queryClient } from "src/pages/_app";
 import { JournalStatus } from "@prisma/client";
 import store from ".";
 import { trpc } from "src/lib/trpc";
@@ -40,10 +42,16 @@ let cache: {
   ts: number;
 } = { journalsById: {}, journalsByPromptId: {}, ts: 0 };
 
-export async function sync(args?) {
+export type JournalCache = typeof cache;
+
+type SyncArgs = QueryFunctionContext<QueryKey, any> & {
+  fullSync?: boolean;
+};
+
+export async function sync(args?: SyncArgs) {
   const { user } = store.getState();
   if (!user.value) {
-    args?.signal?.cancel();
+    queryClient.cancelQueries({ queryKey: args?.queryKey });
     return cache;
   }
   if (!quill) {

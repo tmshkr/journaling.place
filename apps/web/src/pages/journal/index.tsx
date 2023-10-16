@@ -1,8 +1,9 @@
 import { useQuery } from "react-query";
 import { JournalList } from "src/components/JournalList";
+import { JournalCache } from "src/store/journal";
 
 export default function JournalIndex() {
-  const { data }: { data: any } = useQuery({
+  const { data }: { data?: JournalCache } = useQuery({
     queryKey: "journal",
   });
   if (!data) return null;
