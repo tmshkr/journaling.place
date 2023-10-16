@@ -20,12 +20,15 @@ import { encrypt, decrypt } from "src/lib/crypto";
 import dayjs from "src/lib/dayjs";
 import { trpc } from "src/lib/trpc";
 
+import { setNetworkStatus, NetworkStatus } from "src/store/network";
+
 import { OtherEntries } from "./OtherEntries";
 
 export default function QuillEditor(props) {
   const queryClient = useQueryClient();
   const { user, prompt, router, loading, dispatch } = props;
   const [journal, setJournal] = useState(props.journal);
+
   const quillRef: any = useRef(null);
 
   useEffect(() => {
@@ -47,7 +50,8 @@ export default function QuillEditor(props) {
     }
 
     quillRef.current.focus();
-    const changeHandler = () => autosave(quillRef, journal, prompt, setJournal);
+    const changeHandler = () =>
+      autosave(quillRef, journal, prompt, setJournal, dispatch);
     quillRef.current.on("text-change", changeHandler);
 
     return () => {
@@ -143,29 +147,45 @@ export default function QuillEditor(props) {
   );
 }
 
-async function autosave(quillRef, journal, prompt, setJournal) {
+async function autosave(quillRef, journal, prompt, setJournal, dispatch) {
   clearTimeout(quillRef.current.__timeout);
   quillRef.current.__timeout = setTimeout(async function () {
     const { ciphertext, iv } = await encrypt(
       JSON.stringify(quillRef.current.getContents())
     );
 
+    dispatch(setNetworkStatus(NetworkStatus.pending));
     if (journal?.id) {
-      await trpc.journal.updateJournal.mutate({
-        id: journal.id,
-        ciphertext: Buffer.from(ciphertext) as any,
-        iv: Buffer.from(iv) as any,
-      });
-      setJournal({ ...journal, updatedAt: new Date() });
+      await trpc.journal.updateJournal
+        .mutate({
+          id: journal.id,
+          ciphertext: Buffer.from(ciphertext) as any,
+          iv: Buffer.from(iv) as any,
+        })
+        .then(() => {
+          setJournal({ ...journal, updatedAt: new Date() });
+        })
+        .catch((err) => {
+          console.error(err);
+          dispatch(setNetworkStatus(NetworkStatus.failed));
+        });
     } else {
-      const { id } = await trpc.journal.createJournal.mutate({
-        promptId: prompt ? String(prompt.id) : undefined,
-        ciphertext: Buffer.from(ciphertext) as any,
-        iv: Buffer.from(iv) as any,
-      });
-      const now = new Date();
-      setJournal({ id, createdAt: now, updatedAt: now });
+      await trpc.journal.createJournal
+        .mutate({
+          promptId: prompt ? String(prompt.id) : undefined,
+          ciphertext: Buffer.from(ciphertext) as any,
+          iv: Buffer.from(iv) as any,
+        })
+        .then(({ id }) => {
+          const now = new Date();
+          setJournal({ id, createdAt: now, updatedAt: now });
+        })
+        .catch((err) => {
+          console.error(err);
+          dispatch(setNetworkStatus(NetworkStatus.failed));
+        });
     }
+    dispatch(setNetworkStatus(NetworkStatus.succeeded));
   }, 1000);
 }
 
