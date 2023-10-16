@@ -18,7 +18,7 @@ import { clsx } from "clsx";
 import { useAppSelector } from "src/store";
 import { selectUser } from "src/store/user";
 import { getPathRoot } from "src/utils/path";
-import { selectNetworkStatus } from "src/store/network";
+import { selectNetworkStatus, NetworkStatus } from "src/store/network";
 
 import { SearchBar } from "./SearchBar";
 import { SearchResults } from "./SearchResults";
@@ -47,7 +47,7 @@ export function AppShell({ children }) {
 
   useEffect(() => {
     clearTimeout(spinnerTimeoutRef.current);
-    if (networkStatus === "pending") {
+    if (networkStatus === NetworkStatus.pending) {
       setStatusIcon(networkStatus);
     } else {
       spinnerTimeoutRef.current = setTimeout(() => {
