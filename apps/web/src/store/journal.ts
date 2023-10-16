@@ -68,7 +68,7 @@ async function getJournals(cursor?: string) {
     const j: CachedJournal = journals[i];
     cache.journalsById[j.id] = j;
 
-    if (j.status !== "DELETED") {
+    if (j.status !== JournalStatus.DELETED) {
       j.ciphertext = toArrayBuffer((j.ciphertext as JSONBuffer).data);
       j.iv = new Uint8Array((j.iv as JSONBuffer).data);
       const decrypted = await decrypt(j.ciphertext, j.iv);
@@ -81,7 +81,7 @@ async function getJournals(cursor?: string) {
       }
     }
 
-    if (j.status === "ACTIVE") {
+    if (j.status === JournalStatus.ACTIVE) {
       journalIndex.add(j.id, j.plaintext);
       if (j.prompt) {
         journalIndex.append(j.id, j.prompt.text);
