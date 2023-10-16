@@ -16,11 +16,6 @@ export const journalIndex = new Index({
   resolution: 5,
 });
 
-type JSONBuffer = {
-  type: "Buffer";
-  data: number[];
-};
-
 export type CachedJournal = {
   id: string;
   authorId: string;
