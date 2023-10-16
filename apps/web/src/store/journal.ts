@@ -1,7 +1,8 @@
 import { QueryFunctionContext, QueryKey } from "react-query";
 import { queryClient } from "src/pages/_app";
 import { JournalStatus } from "@prisma/client";
-import store from ".";
+import store from "src/store";
+import { setNetworkStatus, NetworkStatus } from "src/store/network";
 import { trpc } from "src/lib/trpc";
 const { Index } = require("flexsearch");
 
@@ -49,7 +50,6 @@ type SyncArgs = QueryFunctionContext<QueryKey, any> & {
 };
 
 export async function sync(args?: SyncArgs) {
-  console.log({ args });
   const { user } = store.getState();
   if (!user.value) {
     queryClient.cancelQueries({ queryKey: args?.queryKey });
@@ -68,6 +68,7 @@ export async function sync(args?: SyncArgs) {
 }
 
 async function getJournals(cursor?: string) {
+  store.dispatch(setNetworkStatus(NetworkStatus.pending));
   const { journals, ts, nextCursor } = await trpc.journal.getJournals.query({
     cursor,
     ts: cache.ts,
@@ -113,5 +114,6 @@ async function getJournals(cursor?: string) {
   }
 
   cache.ts = ts;
+  store.dispatch(setNetworkStatus(NetworkStatus.succeeded));
   return cache;
 }

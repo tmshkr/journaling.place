@@ -1,12 +1,18 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { AppState, AppThunk } from "./index";
 
+export enum NetworkStatus {
+  idle = "idle",
+  pending = "pending",
+  succeeded = "succeeded",
+  failed = "failed",
+}
 export interface NetworkState {
-  status: "idle" | "pending" | "succeeded" | "failed";
+  status: NetworkStatus;
 }
 
 const initialState: NetworkState = {
-  status: "idle",
+  status: NetworkStatus.idle,
 };
 
 export const networkSlice = createSlice({
