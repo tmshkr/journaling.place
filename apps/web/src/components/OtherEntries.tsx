@@ -5,7 +5,7 @@ import { JournalCache, CachedJournal } from "src/store/journal";
 import dayjs from "src/lib/dayjs";
 
 export function OtherEntries({ prompt, journal }) {
-  if (!journal || !prompt) return null;
+  if (!journal && !prompt) return null;
   const queryClient = useQueryClient();
   const cache = queryClient.getQueryData<JournalCache>("journal");
   if (!cache) return null;
@@ -15,7 +15,7 @@ export function OtherEntries({ prompt, journal }) {
 
   if (journalsByPromptId[prompt.id]) {
     for (const journalId of journalsByPromptId[prompt.id]) {
-      if (journalId !== journal.id) {
+      if (journalId !== journal?.id) {
         relatedJournals.push(journalsById[journalId]);
       }
     }
