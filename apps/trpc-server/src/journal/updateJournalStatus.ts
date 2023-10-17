@@ -36,7 +36,7 @@ export const updateJournalStatus = authorizedProcedure
 
     if (
       journal.status === JournalStatus.ACTIVE &&
-      status === JournalStatus.DELETED
+      input.status === JournalStatus.DELETED
     ) {
       throw new TRPCError({
         message: "Cannot delete active journal",
@@ -44,7 +44,7 @@ export const updateJournalStatus = authorizedProcedure
       });
     }
 
-    await prisma.journal.update({
+    const updateJournal = await prisma.journal.update({
       where: {
         id_authorId: {
           id,
@@ -56,4 +56,6 @@ export const updateJournalStatus = authorizedProcedure
           ? { status, ciphertext: null, iv: null, promptId: null }
           : { status },
     });
+
+    return { id: updateJournal.id, status: updateJournal.status };
   });

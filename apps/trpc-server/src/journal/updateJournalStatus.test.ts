@@ -17,7 +17,23 @@ beforeAll(async () => {
 });
 
 describe("updateJournalStatus", () => {
-  it("should not allow the journal to be deleted when it is ACTIVE", async () => {
+  it("should not allow a journal to be updated when it is DELETED", async () => {
+    const testJournal = await prisma.journal.create({
+      data: { authorId: testUser.id, status: JournalStatus.DELETED },
+    });
+
+    try {
+      await caller.journal.updateJournalStatus({
+        id: testJournal.id,
+        status: JournalStatus.ACTIVE,
+      });
+    } catch (err: unknown) {
+      expect((err as TRPCError).code).toBe("BAD_REQUEST");
+      expect((err as TRPCError).message).toBe("Cannot update deleted journal");
+    }
+  });
+
+  it("should not allow a journal to be deleted when it is ACTIVE", async () => {
     const testJournal = await prisma.journal.create({
       data: { authorId: testUser.id, status: JournalStatus.ACTIVE },
     });
@@ -31,6 +47,32 @@ describe("updateJournalStatus", () => {
       expect((err as TRPCError).code).toBe("BAD_REQUEST");
       expect((err as TRPCError).message).toBe("Cannot delete active journal");
     }
+  });
+
+  it("should be able to move an ACTIVE journal into TRASHED status", async () => {
+    const testJournal = await prisma.journal.create({
+      data: { authorId: testUser.id, status: JournalStatus.ACTIVE },
+    });
+
+    const updatedJournal = await caller.journal.updateJournalStatus({
+      id: testJournal.id,
+      status: JournalStatus.TRASHED,
+    });
+    expect(updatedJournal.id).toBe(testJournal.id);
+    expect(updatedJournal.status).toBe(JournalStatus.TRASHED);
+  });
+
+  it("should be able to move a TRASHED journal into DELETED status", async () => {
+    const testJournal = await prisma.journal.create({
+      data: { authorId: testUser.id, status: JournalStatus.TRASHED },
+    });
+
+    const updatedJournal = await caller.journal.updateJournalStatus({
+      id: testJournal.id,
+      status: JournalStatus.DELETED,
+    });
+    expect(updatedJournal.id).toBe(testJournal.id);
+    expect(updatedJournal.status).toBe(JournalStatus.DELETED);
   });
 });
 
