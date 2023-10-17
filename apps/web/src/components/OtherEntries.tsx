@@ -13,7 +13,7 @@ export function OtherEntries({ prompt, journal }) {
   const { journalsById, journalsByPromptId } = cache;
   const relatedJournals: CachedJournal[] = [];
 
-  if (journalsByPromptId[prompt.id]) {
+  if (journalsByPromptId[prompt?.id]) {
     for (const journalId of journalsByPromptId[prompt.id]) {
       if (journalId !== journal?.id) {
         relatedJournals.push(journalsById[journalId]);
