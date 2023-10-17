@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import Quill from "quill";
 import QuillMarkdown from "quilljs-markdown";
@@ -21,6 +20,7 @@ import dayjs from "src/lib/dayjs";
 import { trpc } from "src/lib/trpc";
 
 import { setNetworkStatus, NetworkStatus } from "src/store/network";
+import { JournalStatus } from "@prisma/client";
 
 import { OtherEntries } from "./OtherEntries";
 
@@ -98,7 +98,7 @@ export default function QuillEditor(props) {
               {dayjs(journal.updatedAt).format("MMM D h:mm A")}
             </p>
           </div>
-          {journal.status === "TRASHED" ? (
+          {journal.status === JournalStatus.TRASHED ? (
             <div className="flex justify-end">
               <button
                 className="inline-flex items-center mr-1"
@@ -107,7 +107,7 @@ export default function QuillEditor(props) {
                 data-tooltip-place="bottom"
                 data-tooltip-variant="info"
                 onClick={() => {
-                  deleteEntry(journal, router);
+                  deleteEntry(journal, router, dispatch);
                 }}
               >
                 <TrashIcon className="w-5 stroke-gray-500" />
@@ -119,7 +119,7 @@ export default function QuillEditor(props) {
                 data-tooltip-place="bottom"
                 data-tooltip-variant="info"
                 onClick={(e) => {
-                  removeFromTrash(journal, setJournal);
+                  removeFromTrash(journal, setJournal, dispatch);
                 }}
               >
                 <ArchiveBoxIcon className="w-5 stroke-gray-500" />
@@ -133,7 +133,7 @@ export default function QuillEditor(props) {
               data-tooltip-place="bottom"
               data-tooltip-variant="info"
               onClick={(e) => {
-                sendToTrash(journal, setJournal);
+                sendToTrash(journal, setJournal, dispatch);
               }}
             >
               <ArchiveBoxXMarkIcon className="w-5 stroke-gray-500" />
@@ -202,15 +202,38 @@ async function loadSavedData(quillRef, journal) {
   }
 }
 
-async function sendToTrash(journal, setJournal) {
-  await axios.patch(`/api/journal/${journal.id}/trash`, { status: "TRASHED" });
-  setJournal({ ...journal, updatedAt: new Date(), status: "TRASHED" });
+async function sendToTrash(journal, setJournal, dispatch) {
+  dispatch(setNetworkStatus(NetworkStatus.pending));
+  await trpc.journal.updateJournalStatus.mutate({
+    id: journal.id,
+    status: JournalStatus.TRASHED,
+  });
+  dispatch(setNetworkStatus(NetworkStatus.succeeded));
+  setJournal({
+    ...journal,
+    updatedAt: new Date(),
+    status: JournalStatus.TRASHED,
+  });
 }
-async function removeFromTrash(journal, setJournal) {
-  await axios.patch(`/api/journal/${journal.id}/trash`, { status: "ACTIVE" });
-  setJournal({ ...journal, updatedAt: new Date(), status: "ACTIVE" });
+async function removeFromTrash(journal, setJournal, dispatch) {
+  dispatch(setNetworkStatus(NetworkStatus.pending));
+  await trpc.journal.updateJournalStatus.mutate({
+    id: journal.id,
+    status: JournalStatus.ACTIVE,
+  });
+  dispatch(setNetworkStatus(NetworkStatus.succeeded));
+  setJournal({
+    ...journal,
+    updatedAt: new Date(),
+    status: JournalStatus.ACTIVE,
+  });
 }
-async function deleteEntry(journal, router) {
-  await axios.delete(`/api/journal/${journal.id}/trash`);
+async function deleteEntry(journal, router, dispatch) {
+  dispatch(setNetworkStatus(NetworkStatus.pending));
+  await trpc.journal.updateJournalStatus.mutate({
+    id: journal.id,
+    status: JournalStatus.DELETED,
+  });
+  dispatch(setNetworkStatus(NetworkStatus.succeeded));
   router.push("/journal");
 }
