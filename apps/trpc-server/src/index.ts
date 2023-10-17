@@ -5,7 +5,7 @@ if (process.env.NODE_ENV === "development") {
 import { getToken } from "next-auth/jwt";
 import { PrismaClient } from "@prisma/client";
 const cookie = require("cookie");
-const prisma: PrismaClient = new PrismaClient();
+export const prisma: PrismaClient = new PrismaClient();
 
 import { inferAsyncReturnType, initTRPC, TRPCError } from "@trpc/server";
 import {
@@ -64,7 +64,7 @@ export const authorizedProcedure = publicProcedure.use(
 
 import { journalRouter } from "./journal/journalRouter";
 
-const appRouter = router({
+export const appRouter = router({
   journal: journalRouter,
 });
 
