@@ -3,10 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "build:next": "next build",
+    "build:server": "tsc --project tsconfig.server.json",
+    "build": "run-s build:*",
     "dev:next": "next dev",
     "dev:wss": "tsx watch src/server/wssDevServer.ts",
     "dev": "run-p dev:*",
-    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "jest": "jest",
