@@ -8,7 +8,6 @@ services:
     command: npm run dev
     env_file: .env
     environment:
-      - NEXT_PUBLIC_NEXTAUTH_URL=https://localhost
       - NEXTAUTH_URL=https://localhost
     restart: always
     volumes:
