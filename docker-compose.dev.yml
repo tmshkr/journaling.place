@@ -7,6 +7,9 @@ services:
       context: ./
     command: npm run dev
     env_file: .env
+    environment:
+      - NEXT_PUBLIC_NEXTAUTH_URL=https://localhost
+      - NEXTAUTH_URL=https://localhost
     restart: always
     volumes:
       - /app/node_modules
@@ -15,6 +18,10 @@ services:
     image: jonasal/nginx-certbot:latest
     restart: unless-stopped
     env_file: .env
+    environment:
+      - SERVER_NAME=localhost
+      - CERTBOT_EMAIL=test@journaling.place
+      - USE_LOCAL_CA=1
     depends_on:
       - app
     ports:
