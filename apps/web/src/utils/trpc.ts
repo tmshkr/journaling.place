@@ -19,7 +19,7 @@ function getLink() {
             .replace("http", "ws")
             .replace(
               "3000",
-              process.env.NODE_ENV === "development" ? "3001" : "3000"
+              process.env.NODE_ENV === "development" ? "2222" : "3000"
             ),
         }),
       });
