@@ -5,9 +5,9 @@ import { JournalCache, CachedJournal } from "src/store/journal";
 import dayjs from "src/lib/dayjs";
 
 export function OtherEntries({ prompt, journal }) {
-  if (!journal && !prompt) return null;
   const queryClient = useQueryClient();
   const cache = queryClient.getQueryData<JournalCache>("journal");
+  if (!journal && !prompt) return null;
   if (!cache) return null;
 
   const { journalsById, journalsByPromptId } = cache;
