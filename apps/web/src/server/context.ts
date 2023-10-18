@@ -2,8 +2,11 @@ import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
 import { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http";
 import { IncomingMessage } from "http";
-import { getSession } from "next-auth/react";
+import { getToken } from "next-auth/jwt";
+
 import ws from "ws";
+import { prisma } from "src/lib/prisma";
+const cookie = require("cookie");
 
 /**
  * Creates context for an incoming request
@@ -14,12 +17,12 @@ export const createContext = async (
     | NodeHTTPCreateContextFnOptions<IncomingMessage, ws>
     | trpcNext.CreateNextContextOptions
 ) => {
-  const session = await getSession(opts);
-
-  console.log("createContext for", session?.user?.name ?? "unknown user");
+  const req: any = { cookies: cookie.parse(opts.req.headers.cookie || "") };
+  const token = await getToken({ req });
 
   return {
-    session,
+    token,
+    prisma,
   };
 };
 

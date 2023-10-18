@@ -1,3 +1,4 @@
+require("dotenv").config({ path: "../../.env" });
 import { createContext } from "./context";
 import { appRouter } from "./routers/_app";
 import { applyWSSHandler } from "@trpc/server/adapters/ws";

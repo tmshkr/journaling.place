@@ -17,7 +17,7 @@ import "quill/dist/quill.snow.css";
 import { setLoading } from "src/store/loading";
 import { encrypt, decrypt } from "src/lib/crypto";
 import dayjs from "src/lib/dayjs";
-import { trpc } from "src/lib/trpc";
+import { trpc } from "src/utils/trpc";
 
 import { setNetworkStatus, NetworkStatus } from "src/store/network";
 import { JournalStatus } from "@prisma/client";

@@ -3,7 +3,7 @@ import { queryClient } from "src/pages/_app";
 import { JournalStatus } from "@prisma/client";
 import store from "src/store";
 import { setNetworkStatus, NetworkStatus } from "src/store/network";
-import { trpc } from "src/lib/trpc";
+import { trpc } from "src/utils/trpc";
 const { Index } = require("flexsearch");
 
 import { decrypt } from "src/lib/crypto";

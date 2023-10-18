@@ -48,7 +48,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   );
 }
 
-export default trpc.withTRPC(App);
+export default App;
 
 function PageAuth({ Component, pageProps }) {
   const { data: session, status } = useSession();

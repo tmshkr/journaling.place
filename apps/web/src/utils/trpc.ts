@@ -1,5 +1,9 @@
-import { httpBatchLink, createWSClient, wsLink } from "@trpc/client";
-import { createTRPCNext } from "@trpc/next";
+import {
+  createTRPCProxyClient,
+  httpBatchLink,
+  createWSClient,
+  wsLink,
+} from "@trpc/client";
 import type { AppRouter } from "src/server/routers/_app";
 
 const trpcUrl = process.env.NEXTAUTH_URL + "/api/trpc";
@@ -21,14 +25,6 @@ function getLink() {
       });
 }
 
-export const trpc = createTRPCNext<AppRouter>({
-  config(opts) {
-    return {
-      links: [getLink()],
-    };
-  },
-  /**
-   * @link https://trpc.io/docs/ssr
-   **/
-  ssr: false,
+export const trpc = createTRPCProxyClient<AppRouter>({
+  links: [getLink()],
 });
