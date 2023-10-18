@@ -12,6 +12,7 @@ import { DefaultSeo } from "next-seo";
 import SEO from "../../next-seo.config";
 
 import { QueryClient, QueryClientProvider } from "react-query";
+import { trpc } from "src/utils/trpc";
 
 import store from "src/store";
 import { useAppDispatch, useAppSelector } from "src/store";
@@ -32,10 +33,7 @@ export const queryClient = new QueryClient({
   },
 });
 
-export default function App({
-  Component,
-  pageProps: { session, ...pageProps },
-}: AppProps) {
+function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <>
       <DefaultSeo {...SEO} />
@@ -49,6 +47,8 @@ export default function App({
     </>
   );
 }
+
+export default trpc.withTRPC(App);
 
 function PageAuth({ Component, pageProps }) {
   const { data: session, status } = useSession();
