@@ -5,17 +5,16 @@ import type { AppRouter } from "trpc-server/src";
 function getLink() {
   return typeof window === "undefined"
     ? httpBatchLink({
-        url:
-          process.env.NODE_ENV === "development"
-            ? `http://localhost:2022`
-            : process.env.NEXTAUTH_URL! + "/trpc",
+        url: process.env.NEXT_PUBLIC_NEXTAUTH_URL
+          ? process.env.NEXT_PUBLIC_NEXTAUTH_URL! + "/trpc"
+          : `http://localhost:2222`,
       })
     : wsLink<AppRouter>({
         client: createWSClient({
-          url:
-            process.env.NODE_ENV === "development"
-              ? `ws://localhost:2022`
-              : process.env.NEXTAUTH_URL!.replace("https", "wss") + "/trpc",
+          url: process.env.NEXT_PUBLIC_NEXTAUTH_URL
+            ? process.env.NEXT_PUBLIC_NEXTAUTH_URL!.replace("https", "wss") +
+              "/trpc"
+            : `ws://localhost:2222`,
         }),
       });
 }
