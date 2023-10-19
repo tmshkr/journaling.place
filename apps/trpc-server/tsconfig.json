@@ -5,6 +5,6 @@
     "baseUrl": "src"
   },
   "extends": "tsconfig/base.json",
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
