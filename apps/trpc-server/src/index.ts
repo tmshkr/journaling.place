@@ -35,30 +35,37 @@ export const middleware = t.middleware;
 
 export const authorizedProcedure = publicProcedure.use(
   middleware(async (opts) => {
-    const { ctx } = opts;
-    const { token, prisma } = ctx;
-    if (!token) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-    const { sub } = token;
-    const user = await prisma.user.findUniqueOrThrow({
-      where: { id: sub },
-    });
+    try {
+      const { ctx } = opts;
+      const { token, prisma } = ctx;
+      if (!token) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+      const { sub } = token;
+      const user = await prisma.user.findUniqueOrThrow({
+        where: { id: sub },
+      });
 
-    // Check that the token's salt is correct
-    if (user.salt) {
-      for (let i = 0; i < user.salt.length; i++) {
-        if (user.salt[i] !== (token as any).user.salt.data[i]) {
-          throw new TRPCError({ code: "UNAUTHORIZED" });
+      // Check that the token's salt is correct
+      if (user.salt) {
+        for (let i = 0; i < user.salt.length; i++) {
+          if (user.salt[i] !== (token as any).user.salt.data[i]) {
+            throw new TRPCError({ code: "UNAUTHORIZED" });
+          }
         }
       }
-    }
 
-    return opts.next({
-      ctx: {
-        user,
-      },
-    });
+      return opts.next({
+        ctx: {
+          user,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+      });
+    }
   })
 );
 
