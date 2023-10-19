@@ -1,7 +1,8 @@
-import { appRouter, prisma } from "..";
 import { JournalStatus } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { User } from "@prisma/client";
+import { appRouter } from "../router";
+import { prisma } from "../context";
 
 let testUser: User;
 let caller;

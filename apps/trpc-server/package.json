@@ -2,11 +2,11 @@
   "name": "trpc-server",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/server.js",
   "scripts": {
     "build": "rm -rf dist && tsc -p .",
-    "start": "NODE_PATH=dist node dist/index.js",
-    "dev": "NODE_PATH=src nodemon src/index.ts",
+    "start": "NODE_PATH=dist node dist/server.js",
+    "dev": "NODE_PATH=src nodemon src/server.ts",
     "jest": "jest",
     "jest:watch": "jest --watch"
   },
