@@ -4,12 +4,10 @@ import {
   createWSClient,
   wsLink,
 } from "@trpc/client";
+
 import type { AppRouter } from "trpc-server/src/index";
 
-const trpcUrl = `${process.env.NEXTAUTH_URL!.replace(
-  /(:3000|)$/,
-  ":2222"
-)}/api/trpc`;
+const trpcUrl = process.env.NEXTAUTH_URL!.replace(":3000", ":2222") + "/trpc";
 
 function getLink() {
   return typeof window === "undefined"
