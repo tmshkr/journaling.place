@@ -4,9 +4,12 @@ import {
   createWSClient,
   wsLink,
 } from "@trpc/client";
-import type { AppRouter } from "src/server/routers/_app";
+import type { AppRouter } from "trpc-server/src/index";
 
-const trpcUrl = process.env.NEXTAUTH_URL + "/api/trpc";
+const trpcUrl = `${process.env.NEXTAUTH_URL!.replace(
+  /(:3000|)$/,
+  ":2222"
+)}/api/trpc`;
 
 function getLink() {
   return typeof window === "undefined"
@@ -15,12 +18,7 @@ function getLink() {
       })
     : wsLink<AppRouter>({
         client: createWSClient({
-          url: trpcUrl
-            .replace("http", "ws")
-            .replace(
-              "3000",
-              process.env.NODE_ENV === "development" ? "2222" : "3000"
-            ),
+          url: trpcUrl.replace("http", "ws"),
         }),
       });
 }
