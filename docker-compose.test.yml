@@ -4,10 +4,10 @@ services:
   app:
     build:
       dockerfile: ./Dockerfile
-      args:
-        NEXTAUTH_URL: https://localhost
     command: npm run start
     env_file: .env
+    environment:
+      - NEXTAUTH_URL=https://localhost
     restart: always
   nginx:
     image: jonasal/nginx-certbot:latest
