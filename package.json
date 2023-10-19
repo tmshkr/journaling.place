@@ -18,7 +18,7 @@
     "start": "prisma db push && turbo run start --parallel",
     "e2e:test": "turbo run test --filter=e2e",
     "e2e:report": "turbo run report --filter=e2e",
-    "jest": "turbo run jest --filter=web",
+    "jest": "turbo run jest --filter=trpc-server",
     "jest:watch": "turbo run jest:watch --filter=web",
     "send:potd": "npm run send:potd --workspace mailer"
   },
