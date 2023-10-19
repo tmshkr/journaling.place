@@ -1,7 +1,3 @@
-if (process.env.NODE_ENV === "development") {
-  require("dotenv").config({ path: "../../.env" });
-}
-
 module.exports = {
   webpack(config) {
     // Grab the existing rule that handles SVG imports
@@ -31,9 +27,6 @@ module.exports = {
     return config;
   },
   assetPrefix: process.env.CDN_PREFIX,
-  env: {
-    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-  },
   reactStrictMode: true,
   transpilePackages: ["ui", "common", "mailer"],
 };
