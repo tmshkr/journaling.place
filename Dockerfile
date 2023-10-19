@@ -18,4 +18,5 @@ COPY ./ ./
 
 RUN DISABLE_ERD=true npm run prisma:generate
 ARG CDN_PREFIX
+ARG NEXTAUTH_URL
 RUN npm run build
