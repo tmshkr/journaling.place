@@ -5,6 +5,7 @@ if (process.env.NODE_ENV === "development") {
 import { getToken } from "next-auth/jwt";
 import { PrismaClient } from "@prisma/client";
 const cookie = require("cookie");
+
 export const prisma: PrismaClient = new PrismaClient();
 
 import { inferAsyncReturnType, initTRPC, TRPCError } from "@trpc/server";
@@ -39,7 +40,7 @@ export const authorizedProcedure = publicProcedure.use(
       const { ctx } = opts;
       const { token, prisma } = ctx;
       if (!token) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "No token" });
       }
       const { sub } = token;
       const user = await prisma.user.findUniqueOrThrow({
@@ -50,7 +51,7 @@ export const authorizedProcedure = publicProcedure.use(
       if (user.salt) {
         for (let i = 0; i < user.salt.length; i++) {
           if (user.salt[i] !== (token as any).user.salt.data[i]) {
-            throw new TRPCError({ code: "UNAUTHORIZED" });
+            throw new TRPCError({ code: "UNAUTHORIZED", message: "Bad salt" });
           }
         }
       }
