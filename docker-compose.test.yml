@@ -2,7 +2,10 @@ version: "3"
 
 services:
   app:
-    build: .
+    build:
+      dockerfile: ./Dockerfile
+      args:
+        NEXTAUTH_URL: https://localhost
     command: npm run start
     env_file: .env
     restart: always
@@ -10,6 +13,10 @@ services:
     image: jonasal/nginx-certbot:latest
     restart: unless-stopped
     env_file: .env
+    environment:
+      - SERVER_NAME=localhost
+      - CERTBOT_EMAIL=test@journaling.place
+      - USE_LOCAL_CA=1
     depends_on:
       - app
     ports:
