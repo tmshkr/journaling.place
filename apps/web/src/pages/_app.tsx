@@ -12,7 +12,6 @@ import { DefaultSeo } from "next-seo";
 import SEO from "../../next-seo.config";
 
 import { QueryClient, QueryClientProvider } from "react-query";
-import { trpc } from "src/utils/trpc";
 
 import store from "src/store";
 import { useAppDispatch, useAppSelector } from "src/store";
@@ -51,15 +50,14 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 export default App;
 
 function PageAuth({ Component, pageProps }) {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const user = useAppSelector(selectUser);
   const loading = useAppSelector(selectLoadingState);
   const dispatch = useAppDispatch();
 
   const handleSession = async () => {
     if (status === "authenticated") {
-      const user: any = session.user;
-      await handleKey(user.salt ? new Uint8Array(user.salt.data) : undefined);
+      await handleKey(session.user, update);
       dispatch(setUser(session.user));
     } else if (status === "unauthenticated") {
       dispatch(clearUser());
