@@ -18,7 +18,6 @@ export const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       const user = action.payload;
-      delete user.salt;
       state.value = user;
       state.status = "succeeded";
     },
