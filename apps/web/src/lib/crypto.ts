@@ -1,3 +1,4 @@
+import { Session } from "next-auth";
 import { cryptoStore } from "src/lib/localForage";
 import { sync } from "src/store/journal";
 import axios from "axios";
@@ -26,15 +27,21 @@ function isKeySet() {
   return !!store.key;
 }
 
-export async function handleKey(salt?: Uint8Array) {
-  store.salt = salt || window.crypto.getRandomValues(new Uint8Array(16));
-
+export async function handleKey(
+  user,
+  update: (data?: any) => Promise<Session | null>
+) {
   if (isKeySet()) return;
   const localKey: CryptoKey | null = await cryptoStore.getItem(`key`);
 
-  if (localKey) {
+  if (localKey && user.salt) {
+    store.salt = new Uint8Array(user.salt.data);
     setKey(localKey);
     return;
+  } else if (user.salt) {
+    store.salt = new Uint8Array(user.salt.data);
+  } else {
+    store.salt = window.crypto.getRandomValues(new Uint8Array(16));
   }
 
   // Derive a key from a password
@@ -47,7 +54,10 @@ export async function handleKey(salt?: Uint8Array) {
 
   // Persist salt to DB
   await axios.put("/api/me/password", { salt: Buffer.from(store.salt) });
-  window.location.href += "?";
+
+  // Update session amd reload
+  await update();
+  window.location.reload();
 }
 
 /*
