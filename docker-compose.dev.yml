@@ -18,7 +18,7 @@ services:
   db:
     image: mongo:7
     container_name: db
-    command: mongod --replSet rs0 --bind_ip_all --keyFile /keyfile
+    command: --replSet rs0 --bind_ip_all --keyFile /keyfile
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
@@ -29,7 +29,7 @@ services:
       - ./mongo/keyfile:/keyfile
     healthcheck:
       test: |
-        test $$(mongosh --quiet -u root -p root --eval "try { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'db' }] }).ok } catch (_) { rs.status().ok }") -eq 1
+        test $$(mongosh --quiet -u root -p root --eval "try { rs.initiate().ok } catch (_) { rs.status().ok }") -eq 1
       start_period: 30s
   nginx:
     image: jonasal/nginx-certbot:latest
