@@ -5,10 +5,30 @@ services:
     build:
       dockerfile: ./Dockerfile
     command: npm run start
+    container_name: app
+    depends_on:
+      - db
     env_file: .env
     environment:
-      - NEXTAUTH_URL=https://localhost
+      NEXTAUTH_URL: https://localhost
+      MONGO_URI: mongodb://root:root@db/jp-test?authSource=admin&tls=false
     restart: always
+  db:
+    image: mongo:7
+    container_name: db
+    command: --replSet rs0 --bind_ip_all --keyFile /keyfile
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo/keyfile:/keyfile
+    healthcheck:
+      test: |
+        test $$(mongosh --quiet -u root -p root --eval "try { rs.initiate().ok } catch (_) { rs.status().ok }") -eq 1
+      start_period: 30s
   nginx:
     image: jonasal/nginx-certbot:latest
     restart: unless-stopped
