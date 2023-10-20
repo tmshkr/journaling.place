@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile.dev
       context: ./
     command: npm run dev
+    container_name: app
     env_file: .env
     environment:
       NEXTAUTH_URL: https://localhost
@@ -17,6 +18,7 @@ services:
   db:
     build:
       context: ./mongo/
+    container_name: db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
@@ -30,6 +32,7 @@ services:
       start_period: 30s
   nginx:
     image: jonasal/nginx-certbot:latest
+    container_name: nginx
     restart: unless-stopped
     env_file: .env
     environment:
