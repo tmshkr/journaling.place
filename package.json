@@ -10,6 +10,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "dev:web": "turbo run dev --filter=web --filter=trpc-server",
+    "docker:dev": "docker compose -f docker-compose.dev.yml up",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prisma:generate": "prisma generate",
