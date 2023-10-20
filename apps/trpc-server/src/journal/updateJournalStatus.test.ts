@@ -8,9 +8,16 @@ let testUser: User;
 let caller;
 
 beforeAll(async () => {
-  testUser = await prisma.user.findUniqueOrThrow({
-    where: { email: "test@journaling.place" },
-  });
+  testUser = await prisma.user
+    .findUniqueOrThrow({
+      where: { email: "test@journaling.place" },
+    })
+    .catch(async () => {
+      return await prisma.user.create({
+        data: { email: "test@journaling.place" },
+      });
+    });
+
   caller = appRouter.createCaller({
     token: { sub: testUser.id, user: { salt: { data: testUser.salt } } },
     prisma,
