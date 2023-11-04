@@ -5,12 +5,17 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
-    "report": "playwright show-report"
+    "report": "playwright show-report",
+    "postinstall": "playwright install --with-deps chromium"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "common": "*"
+    "mongodb": "^6.2.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.39.0",
+    "@types/node": "^20.8.10"
   }
 }
