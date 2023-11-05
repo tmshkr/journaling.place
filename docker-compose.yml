@@ -4,14 +4,12 @@ services:
   app:
     image: 983436253905.dkr.ecr.us-west-2.amazonaws.com/journaling.place:${SHA}
     command: npm run start
+    container_name: app
     env_file: .env
     restart: always
-    deploy:
-      resources:
-        limits:
-          memory: 600m
   nginx:
     image: jonasal/nginx-certbot:latest
+    container_name: nginx
     restart: unless-stopped
     env_file: .env
     depends_on:
@@ -22,13 +20,3 @@ services:
     volumes:
       - /efs/${ENVIRONMENT}/letsencrypt:/etc/letsencrypt
       - ./nginx:/etc/nginx/templates
-    deploy:
-      resources:
-        limits:
-          memory: 100m
-  mongo-backup:
-    image: "tmshkr/mongodump"
-    env_file: .env
-    environment:
-      CRON_SCHEDULE: "0 11 * * *"
-      TARGET_FOLDER: ""
