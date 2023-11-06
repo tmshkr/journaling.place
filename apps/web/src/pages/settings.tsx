@@ -6,13 +6,23 @@ import { useForm } from "react-hook-form";
 import { clsx } from "clsx";
 import { Toggle } from "src/components/settings/Toggle";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 import { changePassword } from "src/lib/crypto";
+
+enum SettingsStatus {
+  READY = "READY",
+  UPDATING = "UPDATING",
+  PASSWORD_UPDATED = "PASSWORD_UPDATED",
+}
 
 export default function SettingsPage() {
   const user = useAppSelector(selectUser);
   const router = useRouter();
-  const [status, setStatus] = useState(router.query.status || "READY");
+  const { update } = useSession();
+  const [status, setStatus] = useState(
+    router.query.status || SettingsStatus.READY
+  );
   const { register, handleSubmit, formState, setError, setFocus, setValue } =
     useForm();
   const { errors }: { errors: any } = formState;
@@ -29,24 +39,25 @@ export default function SettingsPage() {
       return;
     }
 
-    setStatus("UPDATING");
+    setStatus(SettingsStatus.UPDATING);
 
-    await changePassword(current_password, new_password)
+    await changePassword(current_password, new_password, update)
       .then(() => {
-        window.location.href += "?status=PASSWORD_UPDATED";
+        setStatus(SettingsStatus.PASSWORD_UPDATED);
+        window.location.href += `?status=${SettingsStatus.PASSWORD_UPDATED}`;
       })
       .catch((err) => {
         if (err.message === "Incorrect password") {
           setError("current_password", {
             message: "Current password is incorrect.",
           });
-          setStatus("READY");
+          setStatus(SettingsStatus.READY);
           setFocus("current_password");
         } else throw err;
       });
   };
 
-  if (status === "PASSWORD_UPDATED") {
+  if (status === SettingsStatus.PASSWORD_UPDATED) {
     return (
       <div
         className="m-12 rounded-md bg-green-50 p-4"
