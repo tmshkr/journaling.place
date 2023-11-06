@@ -6,7 +6,7 @@
   "scripts": {
     "test": "playwright test",
     "report": "playwright show-report",
-    "postinstall": "playwright install --with-deps chromium"
+    "install:playwright": "playwright install --with-deps chromium"
   },
   "keywords": [],
   "author": "",
