@@ -1,5 +1,5 @@
 import { Session } from "next-auth";
-import { cryptoStore } from "src/lib/localForage";
+import { cryptoStore, journalStore } from "src/lib/localForage";
 import { sync } from "src/store/journal";
 import axios from "axios";
 
@@ -32,13 +32,31 @@ export async function handleKey(
   update: (data?: any) => Promise<Session | null>
 ) {
   if (isKeySet()) return;
-  const localKey: CryptoKey | null = await cryptoStore.getItem(`key`);
+  let localKey: CryptoKey | null = await cryptoStore.getItem(`key`);
+  let localSalt: Uint8Array | null = await cryptoStore.getItem(`salt`);
+
+  // check if local salt is the same as on the server
+  if (user.salt) {
+    try {
+      for (let i = 0; i < user.salt.data.length; i++) {
+        if (user.salt.data[i] !== (localSalt as Uint8Array)[i]) {
+          throw new Error("Salt mismatch");
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      localKey = null;
+      localSalt = null;
+    }
+  }
 
   if (localKey && user.salt) {
     store.salt = new Uint8Array(user.salt.data);
     setKey(localKey);
     return;
-  } else if (user.salt) {
+  }
+
+  if (user.salt) {
     store.salt = new Uint8Array(user.salt.data);
   } else {
     store.salt = window.crypto.getRandomValues(new Uint8Array(16));
@@ -49,13 +67,16 @@ export async function handleKey(
   const key = await deriveKey(keyMaterial, store.salt);
   setKey(key);
 
-  // Persist the key to IndexedDB
-  await cryptoStore.setItem(`key`, key);
-
   // Persist salt to DB
-  await axios.put("/api/me/password", { salt: Buffer.from(store.salt) });
+  if (!user.salt) {
+    await axios.put("/api/me/password", { salt: Buffer.from(store.salt) });
+  }
 
-  // Update session amd reload
+  // Persist key and salt to IndexedDB
+  await cryptoStore.setItem(`key`, key);
+  await cryptoStore.setItem(`salt`, store.salt);
+
+  // Update session and reload
   await update();
   window.location.reload();
 }
@@ -135,12 +156,10 @@ export async function decrypt(
       ciphertext
     )
     .catch((err) => {
+      // TODO: prompt user about decryption error
       console.log("Error decrypting", err);
+      throw err;
     });
-
-  if (!decrypted) {
-    throw new Error("No decrypted value");
-  }
 
   let dec = new TextDecoder();
 
@@ -162,7 +181,11 @@ export async function testPassword(password: string) {
   return testDecrypted === "test";
 }
 
-export async function changePassword(oldPassword: string, newPassword: string) {
+export async function changePassword(
+  oldPassword: string,
+  newPassword: string,
+  update: (data?: any) => Promise<Session | null>
+) {
   const oldPasswordIsCorrect = await testPassword(oldPassword);
   if (!oldPasswordIsCorrect) {
     throw new Error("Incorrect password");
@@ -202,9 +225,13 @@ export async function changePassword(oldPassword: string, newPassword: string) {
     journals: updatedJournals,
   });
 
+  // clear old journals from local store
+  await journalStore.clear();
+
   // update local crypto store
   await cryptoStore.setItem("key", newKey);
+  await cryptoStore.setItem("salt", newSalt);
 
-  store.key = newKey;
-  store.salt = newSalt;
+  // Update session
+  await update();
 }
