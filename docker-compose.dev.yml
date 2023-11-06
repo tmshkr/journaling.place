@@ -4,7 +4,6 @@ services:
   app:
     build:
       dockerfile: Dockerfile.dev
-      context: ./
     command: npm run dev
     container_name: app
     depends_on:
@@ -25,7 +24,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - mongodb_data:/data/db
       - ./mongo/keyfile:/keyfile
