@@ -48,10 +48,11 @@ jobs:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
           green_env: ${{ vars.GREEN_ENV }}
+          option_settings: option-settings.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           promote: ${{ github.ref_name == 'main' }}
-          source_bundle: "bundle.zip"
+          source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ github.sha }}
