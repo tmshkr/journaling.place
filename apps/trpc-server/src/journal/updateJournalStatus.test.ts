@@ -6,6 +6,7 @@ import { prisma } from "../context";
 
 let testUser: User;
 let caller;
+const journalsToDelete: string[] = [];
 
 beforeAll(async () => {
   testUser = await prisma.user
@@ -29,6 +30,7 @@ describe("updateJournalStatus", () => {
     const testJournal = await prisma.journal.create({
       data: { authorId: testUser.id, status: JournalStatus.DELETED },
     });
+    journalsToDelete.push(testJournal.id);
 
     try {
       await caller.journal.updateJournalStatus({
@@ -45,6 +47,7 @@ describe("updateJournalStatus", () => {
     const testJournal = await prisma.journal.create({
       data: { authorId: testUser.id, status: JournalStatus.ACTIVE },
     });
+    journalsToDelete.push(testJournal.id);
 
     try {
       await caller.journal.updateJournalStatus({
@@ -61,6 +64,7 @@ describe("updateJournalStatus", () => {
     const testJournal = await prisma.journal.create({
       data: { authorId: testUser.id, status: JournalStatus.ACTIVE },
     });
+    journalsToDelete.push(testJournal.id);
 
     const updatedJournal = await caller.journal.updateJournalStatus({
       id: testJournal.id,
@@ -74,6 +78,7 @@ describe("updateJournalStatus", () => {
     const testJournal = await prisma.journal.create({
       data: { authorId: testUser.id, status: JournalStatus.TRASHED },
     });
+    journalsToDelete.push(testJournal.id);
 
     const updatedJournal = await caller.journal.updateJournalStatus({
       id: testJournal.id,
@@ -85,5 +90,6 @@ describe("updateJournalStatus", () => {
 });
 
 afterAll(async () => {
+  await prisma.journal.deleteMany({ where: { id: { in: journalsToDelete } } });
   await prisma.$disconnect();
 });
