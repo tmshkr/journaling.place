@@ -27,7 +27,8 @@ services:
       - ./mongo/keyfile:/keyfile
     healthcheck:
       test: |
-        test $$(mongosh --quiet -u root -p root --eval "try { rs.initiate().ok } catch (_) { rs.status().ok }") -eq 1
+        test $$(mongosh --quiet -u root -p root --eval "try { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'db' }] }).ok } catch (_) { rs.status().ok }") -eq 1
+      interval: 10s
       start_period: 30s
   nginx:
     image: jonasal/nginx-certbot:latest
