@@ -22,8 +22,6 @@ jobs:
           AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
       - name: Start docker compose
         run: docker compose -f docker-compose.test.yml up -d
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
       - name: Wait for server
         run: ./scripts/wait-for-server.sh https://localhost
       - name: Run unit tests
@@ -31,7 +29,7 @@ jobs:
       - name: Install e2e deps
         run: npm install --workspace=e2e && npm run install:playwright --workspace=e2e
       - name: Run e2e tests
-        run: npm run e2e:test
+        run: npm run test --workspace=e2e
       - uses: actions/upload-artifact@v3
         if: always()
         with:
