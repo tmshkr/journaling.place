@@ -27,7 +27,7 @@ jobs:
       - name: Wait for server
         run: ./scripts/wait-for-server.sh https://localhost
       - name: Run unit tests
-        run: docker exec -it app sh -c "npm run jest"
+        run: docker exec app sh -c "npm run jest"
       - name: Install e2e deps
         run: npm install --workspace=e2e && npm run install:playwright --workspace=e2e
       - name: Run e2e tests
