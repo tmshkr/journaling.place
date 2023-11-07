@@ -11,8 +11,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
       - name: Get env vars
         run: |
           echo "test" > ENVIRONMENT
@@ -24,6 +22,8 @@ jobs:
           AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
       - name: Start docker compose
         run: docker compose -f docker-compose.test.yml up -d
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
       - name: Wait for server
         run: ./scripts/wait-for-server.sh https://localhost
       - name: Run unit tests
