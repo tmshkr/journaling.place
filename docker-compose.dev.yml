@@ -17,9 +17,9 @@ services:
       - /app/node_modules
       - ./:/app
   db:
-    image: mongo:7
+    build:
+      context: ./mongo/
     container_name: db
-    command: --replSet rs0 --bind_ip_all --keyFile /keyfile
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
@@ -27,7 +27,7 @@ services:
       - "27018:27017"
     volumes:
       - mongodb_data:/data/db
-      - ./mongo/keyfile:/keyfile
+    restart: always
     healthcheck:
       test: |
         test $$(mongosh --quiet -u root -p root --eval "try { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'db' }] }).ok } catch (_) { rs.status().ok }") -eq 1

@@ -14,9 +14,9 @@ services:
       MONGO_URI: mongodb://root:root@db/jp-test?authSource=admin&tls=false
     restart: always
   db:
-    image: mongo:7
+    build:
+      context: ./mongo/
     container_name: db
-    command: --replSet rs0 --bind_ip_all --keyFile /keyfile
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
@@ -24,7 +24,6 @@ services:
       - "27018:27017"
     volumes:
       - mongodb_data:/data/db
-      - ./mongo/keyfile:/keyfile
     restart: always
     healthcheck:
       test: |
