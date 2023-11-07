@@ -8,13 +8,13 @@ on:
 env:
   AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Log in to ECR
         run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
       - name: Check if image exists in ECR
@@ -33,7 +33,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Generate deployment package
         run: |
           echo ${{ github.ref_name }} > ENVIRONMENT
@@ -58,13 +58,13 @@ jobs:
         run: |
           curl -X POST https://${{ secrets.DNS_USERNAME }}:${{ secrets.DNS_PASSWORD }}@domains.google.com/nic/update?hostname=journaling.place&myip=${{ steps.deploy.outputs.target_env_endpoint_url }}
       - name: Tag image
-        run: ./scripts/tag-image.sh ${{ github.sha }}
+        run: ./scripts/tag-image.sh ${{ github.sha }} ${{ github.ref_name }}
 
   test:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: 20
