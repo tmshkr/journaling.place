@@ -11,5 +11,6 @@ aws ssm get-parameters-by-path --path "/journaling.place/$ENVIRONMENT/" --recurs
 done
 
 
-printf "\nENVIRONMENT=$ENVIRONMENT\n" >> .env
-printf "\nSHA=$SHA\n" >> .env
+echo "ENVIRONMENT=$ENVIRONMENT" >> .env
+echo "SHA=$SHA" >> .env
+echo "NEXT_PUBLIC_VERSION=$ENVIRONMENT-$SHA" >> .env
