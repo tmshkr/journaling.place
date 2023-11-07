@@ -23,7 +23,7 @@ jobs:
       - name: Start docker compose
         run: docker compose -f docker-compose.test.yml up -d
       - name: Wait for server
-        run: ./scripts/wait-for-server.sh https://localhost
+        run: ./scripts/wait-for-server.sh https://localhost test-${{ github.sha }}
       - name: Run unit tests
         run: docker exec app sh -c "npm run jest"
       - name: Install e2e deps

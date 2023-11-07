@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Log in to ECR
-        run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
+        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
       - name: Check if image exists in ECR
         id: check-image-exists
         run: node scripts/check-image-exists.js ${{ github.sha }}
@@ -32,6 +32,8 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    outputs:
+      target_env: ${{ steps.deploy.outputs }}
     steps:
       - uses: actions/checkout@v4
       - name: Generate deployment package
@@ -76,6 +78,8 @@ jobs:
           echo ${{ github.ref_name }} > ENVIRONMENT
           echo ${{ github.sha }} > SHA
           ./.platform/hooks/prebuild/get-env-vars.sh
+      - name: Wait for server
+        run: ./scripts/wait-for-server.sh ${{ needs.deploy.outputs.target_env.target_env_cname }} ${{ github.ref_name }}-${{ github.sha }}
       - name: Run e2e tests
         run: npm run test --workspace=e2e
       - uses: actions/upload-artifact@v3
