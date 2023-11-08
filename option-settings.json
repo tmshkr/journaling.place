@@ -12,7 +12,7 @@
   {
     "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "ServiceRole",
-    "Value": "role/aws-elasticbeanstalk-service-role"
+    "Value": "aws-elasticbeanstalk-service-role"
   },
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
