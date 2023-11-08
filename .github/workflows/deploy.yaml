@@ -59,7 +59,7 @@ jobs:
       - name: Update DNS
         if: ${{ github.ref_name == 'main' }}
         run: |
-          curl -X POST https://${{ secrets.DNS_USERNAME }}:${{ secrets.DNS_PASSWORD }}@domains.google.com/nic/update?hostname=journaling.place&myip=${{ steps.deploy.outputs.target_env_endpoint_url }}
+          curl -X POST "https://${{ secrets.DNS_USERNAME }}:${{ secrets.DNS_PASSWORD }}@domains.google.com/nic/update?hostname=journaling.place&myip=${{ steps.deploy.outputs.target_env_endpoint_url }}"
       - name: Tag image
         run: ./scripts/tag-image.sh ${{ github.sha }} ${{ github.ref_name }}
 
