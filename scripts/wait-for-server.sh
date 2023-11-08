@@ -6,8 +6,7 @@ while true; do
   if [[ $version == $2 ]]; then
     echo "$1 running version $version"
     break
-  else
-    echo "Waiting for $1 to be ready"
   fi
+  echo "Waiting for $1 to be ready"
   sleep 5
 done
