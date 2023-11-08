@@ -51,15 +51,11 @@ jobs:
           option_settings: option-settings.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
           production_cname: ${{ vars.PRODUCTION_CNAME }}
-          promote: ${{ github.ref_name == 'main' }}
+          promote: false
           source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ github.sha }}
-      - name: Update DNS
-        if: ${{ github.ref_name == 'main' }}
-        run: |
-          curl -X POST "https://${{ secrets.DNS_USERNAME }}:${{ secrets.DNS_PASSWORD }}@domains.google.com/nic/update?hostname=journaling.place&myip=${{ steps.deploy.outputs.target_env_endpoint_url }}"
       - name: Tag image
         run: ./scripts/tag-image.sh ${{ github.sha }} ${{ github.ref_name }}
 
@@ -89,3 +85,30 @@ jobs:
           name: playwright-report
           path: packages/e2e/playwright-report/
           retention-days: 30
+
+  promote:
+    if: ${{ github.ref_name == 'main' }}
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get env vars
+        run: |
+          echo ${{ github.ref_name }} > ENVIRONMENT
+          echo ${{ github.sha }} > SHA
+          ./.platform/hooks/prebuild/get-env-vars.sh
+      - name: Promote
+        id: promote
+        uses: tmshkr/blue-green-beanstalk@v2.1
+        with:
+          app_name: "journaling.place"
+          blue_env: ${{ vars.BLUE_ENV }}
+          deploy: false
+          green_env: ${{ vars.GREEN_ENV }}
+          platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
+          production_cname: ${{ vars.PRODUCTION_CNAME }}
+          promote: true
+          staging_cname: ${{ vars.STAGING_CNAME }}
+      - name: Update DNS
+        run: |
+          curl -X POST "https://${{ secrets.DNS_USERNAME }}:${{ secrets.DNS_PASSWORD }}@domains.google.com/nic/update?hostname=journaling.place&myip=${{ steps.promote.outputs.target_env_endpoint_url }}"
