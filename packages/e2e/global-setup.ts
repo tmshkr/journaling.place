@@ -27,7 +27,7 @@ export async function globalSetup(config: FullConfig) {
             email: "test@journaling.place",
           },
         });
-      }
+      } else throw e;
     });
 
   writeFileSync(
@@ -37,7 +37,7 @@ export async function globalSetup(config: FullConfig) {
         {
           name: `${isSecure ? "__Host-" : ""}next-auth.csrf-token`,
           value: randomString(32),
-          domain: "localhost",
+          domain: baseURL.hostname,
           path: "/",
           expires: -1,
           httpOnly: true,
@@ -47,7 +47,7 @@ export async function globalSetup(config: FullConfig) {
         {
           name: `${isSecure ? "__Secure-" : ""}next-auth.callback-url`,
           value: encodeURIComponent(baseURL.toString()),
-          domain: "localhost",
+          domain: baseURL.hostname,
           path: "/",
           expires: -1,
           httpOnly: true,
@@ -66,7 +66,7 @@ export async function globalSetup(config: FullConfig) {
             },
             secret: process.env.NEXTAUTH_SECRET,
           }),
-          domain: baseURL.host,
+          domain: baseURL.hostname,
           path: "/",
           expires: new Date().setDate(new Date().getDate() + 30) / 1000,
           httpOnly: true,
