@@ -4,31 +4,32 @@ on:
 
 jobs:
   test:
-    if: github.event.pull_request.draft == false
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    environment: test
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
-      - name: Get env file
-        run: aws s3 cp s3://${{ vars.CONFIG_S3_BUCKET }}/test.env .env
+          node-version: 20
+      - name: Get env vars
+        run: |
+          echo "test" > ENVIRONMENT
+          echo ${{ github.sha }} > SHA
+          ./.platform/hooks/prebuild/get-env-vars.sh
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
       - name: Start docker compose
         run: docker compose -f docker-compose.test.yml up -d
-      - name: Install Dependencies
-        run: npm install && npx playwright install --with-deps chromium
-      - name: Run unit tests
-        run: npm run jest
       - name: Wait for server
-        run: ./scripts/wait-for-server.sh https://localhost
+        run: ./scripts/wait-for-server.sh https://localhost test-${{ github.sha }}
+      - name: Run unit tests
+        run: docker exec app sh -c "npm run jest"
+      - name: Install e2e deps
+        run: npm install --workspace=e2e && npm run install:playwright --workspace=e2e
       - name: Run e2e tests
-        run: npm run e2e:test
+        run: npm run test --workspace=e2e
       - uses: actions/upload-artifact@v3
         if: always()
         with:

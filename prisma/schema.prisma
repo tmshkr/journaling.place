@@ -40,10 +40,10 @@ model VerificationToken {
 }
 
 model Prompt {
-  id   String  @id @default(auto()) @map("_id") @db.ObjectId
-  text String  @unique
+  id   String   @id @default(auto()) @map("_id") @db.ObjectId
+  text String   @unique
   stub String?
-  tags     String[]
+  tags String[]
 
   journals Journal[]
 

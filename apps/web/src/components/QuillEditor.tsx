@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import Quill from "quill";
 import QuillMarkdown from "quilljs-markdown";
@@ -18,6 +17,10 @@ import "quill/dist/quill.snow.css";
 import { setLoading } from "src/store/loading";
 import { encrypt, decrypt } from "src/lib/crypto";
 import dayjs from "src/lib/dayjs";
+import { trpc } from "src/utils/trpc";
+
+import { setNetworkStatus, NetworkStatus } from "src/store/network";
+import { JournalStatus } from "@prisma/client";
 
 import { OtherEntries } from "./OtherEntries";
 
@@ -25,6 +28,7 @@ export default function QuillEditor(props) {
   const queryClient = useQueryClient();
   const { user, prompt, router, loading, dispatch } = props;
   const [journal, setJournal] = useState(props.journal);
+
   const quillRef: any = useRef(null);
 
   useEffect(() => {
@@ -46,7 +50,8 @@ export default function QuillEditor(props) {
     }
 
     quillRef.current.focus();
-    const changeHandler = () => autosave(quillRef, journal, prompt, setJournal);
+    const changeHandler = () =>
+      autosave(quillRef, journal, prompt, setJournal, dispatch);
     quillRef.current.on("text-change", changeHandler);
 
     return () => {
@@ -93,7 +98,7 @@ export default function QuillEditor(props) {
               {dayjs(journal.updatedAt).format("MMM D h:mm A")}
             </p>
           </div>
-          {journal.status === "TRASHED" ? (
+          {journal.status === JournalStatus.TRASHED ? (
             <div className="flex justify-end">
               <button
                 className="inline-flex items-center mr-1"
@@ -102,7 +107,7 @@ export default function QuillEditor(props) {
                 data-tooltip-place="bottom"
                 data-tooltip-variant="info"
                 onClick={() => {
-                  deleteEntry(journal, router);
+                  deleteEntry(journal, router, dispatch);
                 }}
               >
                 <TrashIcon className="w-5 stroke-gray-500" />
@@ -114,7 +119,7 @@ export default function QuillEditor(props) {
                 data-tooltip-place="bottom"
                 data-tooltip-variant="info"
                 onClick={(e) => {
-                  removeFromTrash(journal, setJournal);
+                  removeFromTrash(journal, setJournal, dispatch);
                 }}
               >
                 <ArchiveBoxIcon className="w-5 stroke-gray-500" />
@@ -128,7 +133,7 @@ export default function QuillEditor(props) {
               data-tooltip-place="bottom"
               data-tooltip-variant="info"
               onClick={(e) => {
-                sendToTrash(journal, setJournal);
+                sendToTrash(journal, setJournal, dispatch);
               }}
             >
               <ArchiveBoxXMarkIcon className="w-5 stroke-gray-500" />
@@ -142,31 +147,45 @@ export default function QuillEditor(props) {
   );
 }
 
-async function autosave(quillRef, journal, prompt, setJournal) {
+async function autosave(quillRef, journal, prompt, setJournal, dispatch) {
   clearTimeout(quillRef.current.__timeout);
   quillRef.current.__timeout = setTimeout(async function () {
     const { ciphertext, iv } = await encrypt(
       JSON.stringify(quillRef.current.getContents())
     );
 
+    dispatch(setNetworkStatus(NetworkStatus.pending));
     if (journal?.id) {
-      await axios.put(`/api/journal/${journal?.id}`, {
-        ciphertext: Buffer.from(ciphertext),
-        iv: Buffer.from(iv),
-      });
-      setJournal({ ...journal, updatedAt: new Date() });
-    } else {
-      await axios
-        .post("/api/journal", {
-          promptId: prompt ? String(prompt.id) : undefined,
-          ciphertext: Buffer.from(ciphertext),
-          iv: Buffer.from(iv),
+      await trpc.journal.updateJournal
+        .mutate({
+          id: journal.id,
+          ciphertext: Buffer.from(ciphertext) as any,
+          iv: Buffer.from(iv) as any,
         })
-        .then(({ data }) => {
+        .then(() => {
+          setJournal({ ...journal, updatedAt: new Date() });
+        })
+        .catch((err) => {
+          console.error(err);
+          dispatch(setNetworkStatus(NetworkStatus.failed));
+        });
+    } else {
+      await trpc.journal.createJournal
+        .mutate({
+          promptId: prompt ? String(prompt.id) : undefined,
+          ciphertext: Buffer.from(ciphertext) as any,
+          iv: Buffer.from(iv) as any,
+        })
+        .then(({ id }) => {
           const now = new Date();
-          setJournal({ id: data.id, createdAt: now, updatedAt: now });
+          setJournal({ id, createdAt: now, updatedAt: now });
+        })
+        .catch((err) => {
+          console.error(err);
+          dispatch(setNetworkStatus(NetworkStatus.failed));
         });
     }
+    dispatch(setNetworkStatus(NetworkStatus.succeeded));
   }, 1000);
 }
 
@@ -183,15 +202,38 @@ async function loadSavedData(quillRef, journal) {
   }
 }
 
-async function sendToTrash(journal, setJournal) {
-  await axios.patch(`/api/journal/${journal.id}/trash`, { status: "TRASHED" });
-  setJournal({ ...journal, updatedAt: new Date(), status: "TRASHED" });
+async function sendToTrash(journal, setJournal, dispatch) {
+  dispatch(setNetworkStatus(NetworkStatus.pending));
+  await trpc.journal.updateJournalStatus.mutate({
+    id: journal.id,
+    status: JournalStatus.TRASHED,
+  });
+  dispatch(setNetworkStatus(NetworkStatus.succeeded));
+  setJournal({
+    ...journal,
+    updatedAt: new Date(),
+    status: JournalStatus.TRASHED,
+  });
 }
-async function removeFromTrash(journal, setJournal) {
-  await axios.patch(`/api/journal/${journal.id}/trash`, { status: "ACTIVE" });
-  setJournal({ ...journal, updatedAt: new Date(), status: "ACTIVE" });
+async function removeFromTrash(journal, setJournal, dispatch) {
+  dispatch(setNetworkStatus(NetworkStatus.pending));
+  await trpc.journal.updateJournalStatus.mutate({
+    id: journal.id,
+    status: JournalStatus.ACTIVE,
+  });
+  dispatch(setNetworkStatus(NetworkStatus.succeeded));
+  setJournal({
+    ...journal,
+    updatedAt: new Date(),
+    status: JournalStatus.ACTIVE,
+  });
 }
-async function deleteEntry(journal, router) {
-  await axios.delete(`/api/journal/${journal.id}/trash`);
+async function deleteEntry(journal, router, dispatch) {
+  dispatch(setNetworkStatus(NetworkStatus.pending));
+  await trpc.journal.updateJournalStatus.mutate({
+    id: journal.id,
+    status: JournalStatus.DELETED,
+  });
+  dispatch(setNetworkStatus(NetworkStatus.succeeded));
   router.push("/journal");
 }

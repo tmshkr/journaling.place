@@ -1,4 +1,4 @@
-import "src/styles/globals.scss";
+import "src/styles/globals.css";
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import { SessionProvider } from "next-auth/react";
@@ -18,14 +18,13 @@ import { useAppDispatch, useAppSelector } from "src/store";
 import { selectUser, setUser, clearUser } from "src/store/user";
 import { selectLoadingState, setLoading } from "src/store/loading";
 import { setNetworkStatus } from "src/store/network";
-import Head from "next/head";
 import { AppShell } from "src/components/AppShell";
 import { LoadingScreen } from "src/components/LoadingScreen";
 import { handleKey } from "src/lib/crypto";
 
 import { Modal } from "src/components/modals/ModalWrapper";
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: (args) => sync(args),
@@ -33,28 +32,9 @@ const queryClient = new QueryClient({
   },
 });
 
-export default function App({
-  Component,
-  pageProps: { session, ...pageProps },
-}: AppProps) {
+function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <>
-      <Head>
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="true"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Neuton&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
       <DefaultSeo {...SEO} />
       <SessionProvider session={session}>
         <QueryClientProvider client={queryClient}>
@@ -67,16 +47,17 @@ export default function App({
   );
 }
 
+export default App;
+
 function PageAuth({ Component, pageProps }) {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const user = useAppSelector(selectUser);
   const loading = useAppSelector(selectLoadingState);
   const dispatch = useAppDispatch();
 
   const handleSession = async () => {
     if (status === "authenticated") {
-      const user: any = session.user;
-      await handleKey(user.salt ? new Uint8Array(user.salt.data) : undefined);
+      await handleKey(session.user, update);
       dispatch(setUser(session.user));
     } else if (status === "unauthenticated") {
       dispatch(clearUser());

@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 COPY package*.json ./
@@ -7,7 +7,7 @@ COPY packages packages/
 RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs rm -rf
 RUN find apps \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs rm -rf
 
-FROM node:16-alpine
+FROM node:20-alpine
 RUN apk add git
 WORKDIR /app
 # Copy files from the first build stage.

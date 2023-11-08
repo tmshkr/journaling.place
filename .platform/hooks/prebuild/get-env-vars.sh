@@ -5,10 +5,12 @@ set -e
 ENVIRONMENT=$(cat ENVIRONMENT)
 SHA=$(cat SHA)
 
-# get staging or production environment variables
-CONFIG_S3_BUCKET=$(/opt/elasticbeanstalk/bin/get-config environment -k CONFIG_S3_BUCKET)
-aws s3 cp s3://$CONFIG_S3_BUCKET/$ENVIRONMENT.env .env
-echo "Environment variables loaded from S3"
+# Retrieve parameters from AWS SSM
+aws ssm get-parameters-by-path --path "/journaling.place/$ENVIRONMENT/" --recursive --with-decryption --query "Parameters[*].[Name,Value]" --output text | while read -r name value; do
+  echo "$(echo $name | sed "s/\/journaling.place\/$ENVIRONMENT\///")=$value" >> .env
+done
 
-printf "\nENVIRONMENT=$ENVIRONMENT\n" >> .env
-printf "\nSHA=$SHA\n" >> .env
+
+echo "ENVIRONMENT=$ENVIRONMENT" >> .env
+echo "SHA=$SHA" >> .env
+echo "NEXT_PUBLIC_VERSION=$ENVIRONMENT-$SHA" >> .env

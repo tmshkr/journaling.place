@@ -1,6 +1,5 @@
-// global-setup.ts
-import { chromium, expect, FullConfig } from "@playwright/test";
-import { mongoClient } from "common/mongo";
+import { chromium, FullConfig } from "@playwright/test";
+import { mongoClient } from "./mongo";
 
 export async function globalSetup(config: FullConfig) {
   const browser = await chromium.launch();
@@ -12,11 +11,12 @@ export async function globalSetup(config: FullConfig) {
     .locator("[id=input-email-for-email-provider]")
     .fill("test@journaling.place");
   await page.locator("[type=submit]").click();
-  const doc = await mongoClient
+  const { url } = await mongoClient
     .db()
     .collection("testing")
-    .findOneAndDelete({ _id: "test@journaling.place" });
-  await page.goto(doc.value.url);
+    .findOneAndDelete({ _id: "test@journaling.place" as any });
+
+  await page.goto(url);
 
   // Save signed-in state to 'storageState.json'.
   await page.context().storageState({ path: "storageState.json" });

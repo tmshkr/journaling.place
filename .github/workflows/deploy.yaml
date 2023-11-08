@@ -6,28 +6,17 @@ on:
       - main
       - staging
 env:
-  APP_NAME: ${{ vars.APP_NAME }}
   AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
-  BLUE_ENV: ${{ vars.BLUE_ENV }}
-  BRANCH: ${{ github.ref_name }}
-  CONFIG_S3_BUCKET: ${{ vars.CONFIG_S3_BUCKET }}
-  GREEN_ENV: ${{ vars.GREEN_ENV }}
-  PRODUCTION_CNAME: ${{ vars.PRODUCTION_CNAME }}
-  STAGING_CNAME: ${{ vars.STAGING_CNAME }}
-  STAGING_URL: https://jp-staging.us-west-2.elasticbeanstalk.com/
+  AWS_REGION: ${{ vars.AWS_REGION }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Prepare target EB environment
-        id: target-env
-        run: node scripts/get-target-env.js
+      - uses: actions/checkout@v4
       - name: Log in to ECR
-        run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
+        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
       - name: Check if image exists in ECR
         id: check-image-exists
         run: node scripts/check-image-exists.js ${{ github.sha }}
@@ -38,77 +27,62 @@ jobs:
           push: true
           build-args: |
             CDN_PREFIX=https://cdn.journaling.place
-            TURBO_TEAM=${{ secrets.TURBO_TEAM }}
-            TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
           tags: ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }}
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    outputs:
+      target_env_cname: ${{ steps.deploy.outputs.target_env_cname }}
     steps:
-      - uses: actions/checkout@v3
-      - name: Get target EB environment
-        id: target-env
-        run: node scripts/get-target-env.js --wait
+      - uses: actions/checkout@v4
       - name: Generate deployment package
-        run: echo ${{ github.sha }} >> SHA && node scripts/generate-deployment-package.js
-      - name: Deploy to EB
-        uses: einaregilsson/beanstalk-deploy@v21
-        with:
-          aws_access_key: ${{ vars.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: ${{ vars.APP_NAME }}
-          environment_name: ${{ steps.target-env.outputs.TARGET_ENV }}
-          version_label: ${{ github.ref_name }}-${{ github.sha }}
-          version_description: ${{ github.event.head_commit.message }}
-          region: ${{ vars.AWS_DEFAULT_REGION }}
-          deployment_package: deploy.zip
-          wait_for_environment_recovery: 60
-          use_existing_version_if_available: true
-      - name: Verify Deployment
-        env:
-          TARGET_ENV: ${{ steps.target-env.outputs.TARGET_ENV }}
-          VERSION_LABEL: ${{ github.ref_name }}-${{ github.sha }}
-        run: node scripts/verify-deployment.js
-      - name: Tag image
-        run: ./scripts/tag-image.sh ${{ github.sha }}
-
-  promote:
-    needs: deploy
-    if: ${{ github.ref_name == 'main' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Get target EB environment
-        id: target-env
-        run: node scripts/get-target-env.js --wait
-      - name: Wait for server
-        run: ./scripts/wait-for-server.sh $STAGING_URL
-      - name: Swap CNAMEs
         run: |
-          aws elasticbeanstalk swap-environment-cnames --source-environment-name ${{ vars.BLUE_ENV }} --destination-environment-name ${{ vars.GREEN_ENV }}
+          echo ${{ github.ref_name }} > ENVIRONMENT
+          echo ${{ github.sha }} > SHA
+          zip -r bundle.zip . -x '*.git*'
+      - name: Deploy
+        uses: tmshkr/blue-green-beanstalk@v2.1
+        id: deploy
+        with:
+          app_name: "journaling.place"
+          blue_env: ${{ vars.BLUE_ENV }}
+          green_env: ${{ vars.GREEN_ENV }}
+          option_settings: option-settings.json
+          platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
+          production_cname: ${{ vars.PRODUCTION_CNAME }}
+          promote: ${{ github.ref_name == 'main' }}
+          source_bundle: bundle.zip
+          staging_cname: ${{ vars.STAGING_CNAME }}
+          version_description: ${{ github.event.head_commit.message }}
+          version_label: ${{ github.ref_name }}-${{ github.sha }}
       - name: Update DNS
-        env:
-          DNS_USERNAME: ${{ secrets.DNS_USERNAME }}
-          DNS_PASSWORD: ${{ secrets.DNS_PASSWORD }}
-          TARGET_ENV: ${{ steps.target-env.outputs.TARGET_ENV }}
-        run: node scripts/update-dynamic-dns.js
+        if: ${{ github.ref_name == 'main' }}
+        run: |
+          curl -X POST https://${{ secrets.DNS_USERNAME }}:${{ secrets.DNS_PASSWORD }}@domains.google.com/nic/update?hostname=journaling.place&myip=${{ steps.deploy.outputs.target_env_endpoint_url }}
+      - name: Tag image
+        run: ./scripts/tag-image.sh ${{ github.sha }} ${{ github.ref_name }}
 
   test:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
           cache: "npm"
-      - name: Install Dependencies
-        run: npm install && npx playwright install --with-deps chromium
-      - name: Get env file
-        run: node scripts/get-env-vars.js
+      - name: Install e2e deps
+        run: npm install --workspace=e2e && npm run install:playwright --workspace=e2e
+      - name: Get env vars
+        run: |
+          echo ${{ github.ref_name }} > ENVIRONMENT
+          echo ${{ github.sha }} > SHA
+          ./.platform/hooks/prebuild/get-env-vars.sh
+      - name: Wait for server
+        run: ./scripts/wait-for-server.sh https://${{ needs.deploy.outputs.target_env_cname }} ${{ github.ref_name }}-${{ github.sha }}
       - name: Run e2e tests
-        run: npm run e2e:test
+        run: npm run test --workspace=e2e
       - uses: actions/upload-artifact@v3
         if: always()
         with:

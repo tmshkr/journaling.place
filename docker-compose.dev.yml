@@ -4,17 +4,44 @@ services:
   app:
     build:
       dockerfile: Dockerfile.dev
-      context: ./
     command: npm run dev
+    container_name: app
+    depends_on:
+      - db
     env_file: .env
+    environment:
+      NEXTAUTH_URL: https://localhost
+      MONGO_URI: mongodb://root:root@db/jp-dev?authSource=admin&tls=false
     restart: always
     volumes:
       - /app/node_modules
       - ./:/app
+  db:
+    build:
+      context: ./mongo/
+    container_name: db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: always
+    healthcheck:
+      test: |
+        test $$(mongosh --quiet -u root -p root --eval "try { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'db' }] }).ok } catch (_) { rs.status().ok }") -eq 1
+      interval: 10s
+      start_period: 30s
   nginx:
     image: jonasal/nginx-certbot:latest
+    container_name: nginx
     restart: unless-stopped
     env_file: .env
+    environment:
+      - SERVER_NAME=localhost
+      - CERTBOT_EMAIL=test@journaling.place
+      - USE_LOCAL_CA=1
     depends_on:
       - app
     ports:
@@ -26,3 +53,4 @@ services:
 
 volumes:
   nginx_secrets:
+  mongodb_data:
