@@ -51,7 +51,7 @@ export async function globalSetup(config: FullConfig) {
           path: "/",
           expires: -1,
           httpOnly: true,
-          secure: true,
+          secure: isSecure,
           sameSite: "Lax",
         },
         {
@@ -70,7 +70,7 @@ export async function globalSetup(config: FullConfig) {
           path: "/",
           expires: new Date().setDate(new Date().getDate() + 30) / 1000,
           httpOnly: true,
-          secure: true,
+          secure: isSecure,
           sameSite: "Lax",
         },
       ],
