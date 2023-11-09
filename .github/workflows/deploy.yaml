@@ -71,7 +71,7 @@ jobs:
           node-version: 20
           cache: "npm"
       - name: Install e2e deps
-        run: npm install --workspace=e2e && npm run install:playwright --workspace=e2e
+        run: npm run install:ci --workspace=e2e
       - name: Get env vars
         run: |
           echo ${{ github.ref_name }} > ENVIRONMENT
