@@ -62,6 +62,8 @@ jobs:
   test:
     needs: deploy
     runs-on: ubuntu-latest
+    env:
+      BASE_URL: https://${{ needs.deploy.outputs.target_env_cname }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
@@ -76,9 +78,9 @@ jobs:
           echo ${{ github.sha }} > SHA
           ./.platform/hooks/prebuild/get-env-vars.sh
       - name: Wait for server
-        run: ./scripts/wait-for-server.sh https://${{ needs.deploy.outputs.target_env_cname }} ${{ github.ref_name }}-${{ github.sha }}
+        run: ./scripts/wait-for-server.sh ${{ env.BASE_URL }} ${{ github.ref_name }}-${{ github.sha }}
       - name: Run e2e tests
-        run: npm run test --workspace=e2e
+        run: npm run e2e:test
       - uses: actions/upload-artifact@v3
         if: always()
         with:
@@ -92,11 +94,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Get env vars
-        run: |
-          echo ${{ github.ref_name }} > ENVIRONMENT
-          echo ${{ github.sha }} > SHA
-          ./.platform/hooks/prebuild/get-env-vars.sh
       - name: Promote
         id: promote
         uses: tmshkr/blue-green-beanstalk@v2.1
