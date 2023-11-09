@@ -3,7 +3,6 @@ import { writeFileSync } from "fs";
 import { getRandomValues } from "crypto";
 import { encode } from "next-auth/jwt";
 import { PrismaClient } from "@prisma/client";
-import { execSync } from "child_process";
 const prisma = new PrismaClient();
 
 export function randomString(size: number) {
@@ -17,11 +16,9 @@ const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
 const isSecure = baseURL.protocol === "https:";
 
 export async function globalSetup(config: FullConfig) {
-  const version = execSync(
-    `curl --silent --fail -k ${baseURL}api/info | jq -r '.version'`
-  )
-    .toString()
-    .trim();
+  const { version } = await fetch(`${baseURL}api/info`).then((res) =>
+    res.json()
+  );
 
   if (version !== process.env.NEXT_PUBLIC_VERSION) {
     throw new Error(
