@@ -12,7 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mongodb": "^6.2.0"
+    "@prisma/client": "^5.5.2",
+    "mongodb": "^6.2.0",
+    "next-auth": "^4.24.4"
   },
   "devDependencies": {
     "@playwright/test": "^1.39.0",
