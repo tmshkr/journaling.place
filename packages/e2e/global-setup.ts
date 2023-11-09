@@ -3,6 +3,7 @@ import { writeFileSync } from "fs";
 import { getRandomValues } from "crypto";
 import { encode } from "next-auth/jwt";
 import { PrismaClient } from "@prisma/client";
+import { execSync } from "child_process";
 const prisma = new PrismaClient();
 
 export function randomString(size: number) {
@@ -16,13 +17,25 @@ const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
 const isSecure = baseURL.protocol === "https:";
 
 export async function globalSetup(config: FullConfig) {
+  const version = execSync(
+    `curl --silent --fail -k ${baseURL}api/info | jq -r '.version'`
+  )
+    .toString()
+    .trim();
+
+  if (version !== process.env.NEXT_PUBLIC_VERSION) {
+    throw new Error(
+      `Version mismatch: ${version} (server) !== ${process.env.NEXT_PUBLIC_VERSION} (client)`
+    );
+  }
+
   const user = await prisma.user
     .findUniqueOrThrow({
       where: { email: "test@journaling.place" },
     })
-    .catch((e) => {
+    .catch(async (e) => {
       if (e.code === "P2025") {
-        return prisma.user.create({
+        return await prisma.user.create({
           data: {
             email: "test@journaling.place",
           },
