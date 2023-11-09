@@ -27,7 +27,7 @@ jobs:
       - name: Run unit tests
         run: docker exec app sh -c "npm run jest"
       - name: Install e2e deps
-        run: npm install --workspace=e2e && npm run install:playwright --workspace=e2e
+        run: npm run install:ci --workspace=e2e
       - name: Run e2e tests
         run: npm run test --workspace=e2e
       - uses: actions/upload-artifact@v3

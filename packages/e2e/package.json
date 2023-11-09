@@ -6,6 +6,7 @@
   "scripts": {
     "test": "playwright test",
     "report": "playwright show-report",
+    "install:ci": "npm install && npm run install:playwright && prisma generate",
     "install:playwright": "playwright install --with-deps chromium"
   },
   "keywords": [],
@@ -19,7 +20,8 @@
   "devDependencies": {
     "@playwright/test": "^1.39.0",
     "@types/node": "^20.8.10",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "prisma": "^5.5.2"
   },
   "prisma": {
     "schema": "../../prisma/schema.prisma"
