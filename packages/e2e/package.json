@@ -8,7 +8,7 @@
     "report": "playwright show-report",
     "install:ci": "npm run remove-generator && npm install && npm run install:playwright && prisma generate",
     "install:playwright": "playwright install --with-deps chromium",
-    "remove-generator": "sed -i '' '/generator erd/,/}/d' ../../prisma/schema.prisma"
+    "remove-generator": "sed -i '/generator erd/,/}/d' ../../prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",
