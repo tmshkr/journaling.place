@@ -6,7 +6,7 @@
   "scripts": {
     "test": "playwright test",
     "report": "playwright show-report",
-    "install:ci": "npm install && npm run install:playwright && prisma generate",
+    "install:ci": "npm install && npm run install:playwright && DISABLE_ERD=true prisma generate",
     "install:playwright": "playwright install --with-deps chromium"
   },
   "keywords": [],
