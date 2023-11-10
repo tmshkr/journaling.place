@@ -13,6 +13,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
       - name: Log in to ECR
@@ -27,7 +29,11 @@ jobs:
           push: true
           build-args: |
             CDN_PREFIX=https://cdn.journaling.place
-          tags: ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }}
+          tags: ${{ env.DOCKER_IMAGE }}
+      - name: Export static assets to S3
+        run: |
+          docker run -v ./export:/app/export ${{ env.DOCKER_IMAGE }} sh /app/scripts/export-static-assets.sh
+          aws cp --recursive export s3://cdn.journaling.place/_next/
 
   deploy:
     needs: build
