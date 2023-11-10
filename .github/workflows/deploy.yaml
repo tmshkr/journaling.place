@@ -33,7 +33,7 @@ jobs:
       - name: Export static assets to S3
         run: |
           docker run -v ./export:/app/export ${{ env.DOCKER_IMAGE }} sh /app/scripts/export-static-assets.sh
-          aws cp --recursive export s3://cdn.journaling.place/_next/
+          aws s3 cp --recursive export s3://cdn.journaling.place/_next/
 
   deploy:
     needs: build
