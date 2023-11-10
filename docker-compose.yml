@@ -7,6 +7,9 @@ services:
     container_name: app
     env_file: .env
     restart: always
+    volumes:
+      - /app/node_modules
+
   nginx:
     image: jonasal/nginx-certbot:latest
     container_name: nginx

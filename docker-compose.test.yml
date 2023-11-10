@@ -4,6 +4,7 @@ services:
   app:
     build:
       dockerfile: ./Dockerfile
+    image: app:test
     command: npm run start:ci
     container_name: app
     depends_on:
@@ -13,6 +14,9 @@ services:
       NEXTAUTH_URL: https://localhost
       MONGO_URI: mongodb://root:root@db/jp-test?authSource=admin&tls=false
     restart: always
+    volumes:
+      - /app/node_modules
+
   db:
     build:
       context: ./mongo/

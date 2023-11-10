@@ -4,6 +4,7 @@ services:
   app:
     build:
       dockerfile: Dockerfile.dev
+    image: app:dev
     command: npm run dev
     container_name: app
     depends_on:
