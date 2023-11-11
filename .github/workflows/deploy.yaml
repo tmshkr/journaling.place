@@ -31,6 +31,7 @@ jobs:
             CDN_PREFIX=https://cdn.journaling.place
           tags: ${{ env.DOCKER_IMAGE }}
       - name: Export static assets to S3
+        if: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS == 'false' }}
         run: |
           docker run -v ./export:/app/export ${{ env.DOCKER_IMAGE }} sh /app/scripts/export-static-assets.sh
           aws s3 cp --recursive export s3://cdn.journaling.place/_next/
