@@ -14,8 +14,8 @@ services:
     container_name: nginx
     restart: unless-stopped
     environment:
-      - CERTBOT_EMAIL: ${CERTBOT_EMAIL}
-      - SERVER_NAME: ${SERVER_NAME}
+      CERTBOT_EMAIL:
+      SERVER_NAME:
     depends_on:
       - app
     ports:
@@ -28,6 +28,6 @@ services:
     image: "tmshkr/mongodump"
     environment:
       CRON_SCHEDULE: "0 10 * * *"
-      MONGO_URI: ${MONGO_URI}
+      MONGO_URI:
       TARGET_FOLDER: "/backup"
-      TARGET_S3_FOLDER: ${MONGO_BACKUP_S3_FOLDER}
+      TARGET_S3_FOLDER: "${MONGO_BACKUP_S3_FOLDER}"
