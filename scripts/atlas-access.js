@@ -13,7 +13,7 @@ switch (op) {
     restrictAccess();
     break;
   default:
-    console.log("Unknown input");
+    console.log("Must provide an operation: open, restrict");
 }
 
 function addEntry(cidrBlock) {
