@@ -29,6 +29,7 @@ jobs:
           wait_for_environment: false
 
   build:
+    needs: prep
     runs-on: ubuntu-latest
     env:
       DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }}
