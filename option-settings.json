@@ -10,6 +10,16 @@
     "Value": "SingleInstance"
   },
   {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "RootVolumeType",
+    "Value": "gp2"
+  },
+  {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "RootVolumeSize",
+    "Value": 12
+  },
+  {
     "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "ServiceRole",
     "Value": "aws-elasticbeanstalk-service-role"
