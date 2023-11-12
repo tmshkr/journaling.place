@@ -13,7 +13,7 @@ switch (op) {
     restrictAccess();
     break;
   default:
-    console.log("Must provide an operation: open, restrict");
+    describeAccessList();
 }
 
 function addEntry(cidrBlock) {
@@ -33,6 +33,19 @@ function addEntry(cidrBlock) {
   ])}'`);
   console.log(JSON.parse(res.toString()));
   console.log(`Added ${cidrBlock || "0.0.0.0/0"}`);
+}
+
+function describeAccessList() {
+  const { results } = JSON.parse(
+    execSync(`
+    curl -s \
+    --user "${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}" --digest \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/vnd.atlas.2023-02-01+json" \
+    --request GET "https://cloud.mongodb.com/api/atlas/v2/groups/${ATLAS_GROUP_ID}/accessList"`)
+  );
+
+  console.log(results);
 }
 
 function restrictAccess() {
