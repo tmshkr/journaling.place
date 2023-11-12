@@ -11,6 +11,22 @@ env:
   AWS_REGION: ${{ vars.AWS_REGION }}
 
 jobs:
+  prep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get target env
+        uses: tmshkr/blue-green-beanstalk@v2.1
+        with:
+          app_name: "journaling.place"
+          blue_env: ${{ vars.BLUE_ENV }}
+          green_env: ${{ vars.GREEN_ENV }}
+          option_settings: option-settings.json
+          platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
+          production_cname: ${{ vars.PRODUCTION_CNAME }}
+          staging_cname: ${{ vars.STAGING_CNAME }}
+          wait_for_environment: false
+
   build:
     runs-on: ubuntu-latest
     env:
