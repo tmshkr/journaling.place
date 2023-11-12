@@ -38,11 +38,10 @@ services:
     image: jonasal/nginx-certbot:latest
     container_name: nginx
     restart: unless-stopped
-    env_file: .env
     environment:
-      - SERVER_NAME=localhost
-      - CERTBOT_EMAIL=test@journaling.place
-      - USE_LOCAL_CA=1
+      - SERVER_NAME: localhost
+      - CERTBOT_EMAIL: test@journaling.place
+      - USE_LOCAL_CA: 1
     depends_on:
       - app
     ports:
