@@ -24,6 +24,7 @@ jobs:
           option_settings: option-settings.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
           production_cname: ${{ vars.PRODUCTION_CNAME }}
+          promote: false
           staging_cname: ${{ vars.STAGING_CNAME }}
           wait_for_environment: false
 
