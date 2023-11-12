@@ -3,11 +3,12 @@ const { execSync } = require("child_process");
 
 const { ATLAS_PUBLIC_KEY, ATLAS_PRIVATE_KEY, ATLAS_GROUP_ID } = process.env;
 
-const input = process.argv[2];
+const op = process.argv[2];
+const ipAddress = process.argv[3];
 
-switch (input) {
+switch (op) {
   case "open":
-    openAccess();
+    addEntry(ipAddress);
     break;
   case "restrict":
     restrictAccess();
@@ -16,7 +17,7 @@ switch (input) {
     console.log("Unknown input");
 }
 
-function openAccess() {
+function addEntry(cidrBlock) {
   const res = execSync(`
   curl -s \
   --user "${ATLAS_PUBLIC_KEY}:${ATLAS_PRIVATE_KEY}" --digest \
@@ -24,26 +25,29 @@ function openAccess() {
   --header "Accept: application/vnd.atlas.2023-02-01+json" \
   --request POST "https://cloud.mongodb.com/api/atlas/v2/groups/${ATLAS_GROUP_ID}/accessList" \
   --data '${JSON.stringify([
-    {
-      cidrBlock: "0.0.0.0/0",
-      deleteAfterDate: new Date(Date.now() + 1000 * 60 * 60),
-    },
+    cidrBlock
+      ? { cidrBlock }
+      : {
+          cidrBlock: "0.0.0.0/0",
+          deleteAfterDate: new Date(Date.now() + 1000 * 60 * 60),
+        },
   ])}'`);
-  console.log(JSON.parse(res));
+  console.log(JSON.parse(res.toString()));
+  console.log(`Added ${cidrBlock || "0.0.0.0/0"}`);
 }
 
 function restrictAccess() {
   const myIP = execSync("curl -s https://checkip.amazonaws.com")
     .toString()
     .trim();
-  const allowed = [`${myIP}/32`];
+  const allowed = new Set([`${myIP}/32`]);
 
   const { Environments } = JSON.parse(
     execSync("aws elasticbeanstalk describe-environments --no-include-deleted")
   );
   Environments.forEach((env) => {
     if (env.Health !== "Grey") {
-      allowed.push(`${env.EndpointURL}/32`);
+      allowed.add(`${env.EndpointURL}/32`);
     }
   });
 
@@ -56,10 +60,18 @@ function restrictAccess() {
     --request GET "https://cloud.mongodb.com/api/atlas/v2/groups/${ATLAS_GROUP_ID}/accessList"`)
   );
 
+  const accessList = new Set(results.map((entry) => entry.cidrBlock));
+
+  allowed.forEach((cidrBlock) => {
+    if (!accessList.has(cidrBlock)) {
+      addEntry(cidrBlock);
+    }
+  });
+
   const toDelete = [];
-  results.forEach((access) => {
-    if (!allowed.includes(access.cidrBlock)) {
-      toDelete.push(access.cidrBlock);
+  accessList.forEach((cidrBlock) => {
+    if (!allowed.has(cidrBlock)) {
+      toDelete.push(cidrBlock);
     }
   });
 
