@@ -4,11 +4,10 @@ const { execSync } = require("child_process");
 const { ATLAS_PUBLIC_KEY, ATLAS_PRIVATE_KEY, ATLAS_GROUP_ID } = process.env;
 
 const op = process.argv[2];
-const ipAddress = process.argv[3];
 
 switch (op) {
   case "open":
-    addEntry(ipAddress);
+    addEntry();
     break;
   case "restrict":
     restrictAccess();
