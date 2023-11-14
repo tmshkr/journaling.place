@@ -18,10 +18,9 @@ RUN sed -i '/generator erd/,/}/d' ./prisma/schema.prisma
 RUN npx prisma generate
 ARG CDN_PREFIX
 RUN npm run build
-RUN mkdir -p saved_modules
-RUN mv node_modules/.bin node_modules/*prisma saved_modules/
-RUN rm -rf node_modules
-RUN mv saved_modules node_modules
+RUN sh scripts/prune-modules.sh
 
 FROM base as runner
 COPY --from=builder /app ./
+RUN mv apps/web/.next/static/ apps/web/.next/standalone/apps/web/.next/static/
+RUN mv apps/web/public/ apps/web/.next/standalone/apps/web/public
