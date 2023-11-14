@@ -1,6 +1,6 @@
 import { createTransport } from "nodemailer";
 import { Theme } from "next-auth";
-import { mongoClient } from "common/mongo";
+import { mongoClient } from "src/lib/mongo";
 
 export async function sendVerificationRequest(params) {
   const { identifier, url, provider, theme } = params;

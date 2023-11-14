@@ -4,7 +4,6 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && tsc -p .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "send:potd": "ts-node scripts/send-potd.ts"
   },

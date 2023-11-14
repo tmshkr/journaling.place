@@ -4,9 +4,9 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "build": "rm -rf dist && tsc -p .",
-    "start": "NODE_PATH=dist node dist/server.js",
-    "dev": "NODE_PATH=src nodemon src/server.ts",
+    "build": "ncc build src/server.ts",
+    "start": "node dist/index.js",
+    "dev": "nodemon src/server.ts",
     "jest": "jest",
     "jest:watch": "jest --watch"
   },

@@ -29,6 +29,7 @@ module.exports = {
     return config;
   },
   assetPrefix: process.env.CDN_PREFIX,
+  output: "standalone",
   reactStrictMode: true,
   transpilePackages: ["ui", "common", "mailer"],
 };

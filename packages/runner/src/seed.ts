@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
-const prompts = require("../data/prompts.json");
-const prisma = new PrismaClient();
+import { prisma } from "./index";
 
-async function seed() {
+export async function seed(prompts) {
   let newPrompts = 0;
 
   for (const { prompt, tags, stub } of prompts) {
@@ -27,13 +25,3 @@ async function seed() {
 
   console.log(`Created ${newPrompts} new prompts`);
 }
-
-seed()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });

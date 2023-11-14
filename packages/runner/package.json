@@ -1,0 +1,16 @@
+{
+  "name": "runner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "ncc build src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "prisma": {
+    "schema": "../../prisma/schema.prisma",
+    "seed": "node dist/index.js seed"
+  }
+}
