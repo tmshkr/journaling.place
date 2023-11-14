@@ -86,7 +86,7 @@
     "turbo": "1.10.16"
   },
   "prisma": {
-    "seed": "node packages/runner/dist/index.js seed"
+    "seed": "node scripts/seed.mjs"
   },
   "optionalDependencies": {
     "@mermaid-js/mermaid-cli": "^10.6.0",
