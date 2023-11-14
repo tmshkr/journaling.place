@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "build": "ncc build src/server.ts",
+    "build": "ncc build src/server.ts && mv dist/client/libquery_engine* dist",
     "start": "node dist/index.js",
     "dev": "nodemon src/server.ts",
     "jest": "jest",
