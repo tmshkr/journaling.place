@@ -4,8 +4,20 @@ import { ObjectId } from "mongodb";
 
 export const prismaMock = mockDeep<PrismaClient>();
 
-const userDB: { [id: string]: User } = {};
-const journalDB: { [id_authorId: string]: Journal } = {};
+let db: {
+  users: { [id: string]: User };
+  journals: { [id_authorId: string]: Journal };
+} = {
+  users: {},
+  journals: {},
+};
+
+export function resetDB() {
+  db = {
+    users: {},
+    journals: {},
+  };
+}
 
 prismaMock.user.create.mockImplementation((args): any => {
   const { data } = args!;
@@ -20,14 +32,14 @@ prismaMock.user.create.mockImplementation((args): any => {
     createdAt: new Date(),
     updatedAt: new Date(),
   };
-  userDB[user.id] = user;
+  db.users[user.id] = user;
   return user;
 });
 
 prismaMock.user.findUniqueOrThrow.mockImplementation((args): any => {
   const { where } = args!;
   if (!where?.id) throw new Error("Only ID lookup supported");
-  const user = userDB[where.id];
+  const user = db.users[where.id];
   if (!user) throw new Error("Not found");
   return user;
 });
@@ -45,13 +57,13 @@ prismaMock.journal.create.mockImplementation((args): any => {
     updatedAt: new Date(),
   };
   const key = `${journal.id}_${journal.authorId}`;
-  journalDB[key] = journal;
+  db.journals[key] = journal;
   return journal;
 });
 
 prismaMock.journal.findUniqueOrThrow.mockImplementation((args): any => {
   const { id, authorId } = args!.where!.id_authorId!;
-  const journal = journalDB[`${id}_${authorId}`];
+  const journal = db.journals[`${id}_${authorId}`];
   if (!journal) throw new Error("Not found");
   return journal;
 });
@@ -60,7 +72,7 @@ prismaMock.journal.update.mockImplementation((args): any => {
   const { id, authorId } = args!.where!.id_authorId!;
   const { ciphertext, iv, status } = args.data!;
   const key = `${id}_${authorId}`;
-  const journal = journalDB[key];
+  const journal = db.journals[key];
   if (!journal) throw new Error("Not found");
 
   const updatedJournal: Journal = {
@@ -73,7 +85,7 @@ prismaMock.journal.update.mockImplementation((args): any => {
     createdAt: journal.createdAt,
     updatedAt: new Date(),
   };
-  journalDB[key] = updatedJournal;
+  db.journals[key] = updatedJournal;
 
   return updatedJournal;
 });
