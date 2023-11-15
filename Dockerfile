@@ -23,5 +23,3 @@ RUN sh scripts/prune-modules.sh
 
 FROM base as runner
 COPY --from=builder /app ./
-RUN mv apps/web/.next/static/ apps/web/.next/standalone/apps/web/.next/static/
-RUN mv apps/web/public/ apps/web/.next/standalone/apps/web/public
