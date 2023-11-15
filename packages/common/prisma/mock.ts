@@ -4,6 +4,11 @@ import { ObjectId } from "mongodb";
 
 export const prismaMock = mockDeep<PrismaClient>();
 
+jest.mock("common/prisma/client", () => ({
+  __esModule: true,
+  prisma: prismaMock,
+}));
+
 export const db: {
   users: { [id: string]: User };
   journals: { [id_authorId: string]: Journal };
@@ -13,7 +18,6 @@ export const db: {
   journals: {},
   reset() {
     for (const key of Object.keys(this)) {
-      if (typeof this[key] === "function") continue;
       if (typeof this[key] === "object") {
         this[key] = {};
       }
