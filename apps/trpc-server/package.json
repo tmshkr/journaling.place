@@ -11,6 +11,7 @@
     "jest:watch": "jest --watch"
   },
   "dependencies": {
+    "common": "*",
     "eslint-config-custom": "*",
     "tsconfig": "*",
     "mailer": "*"

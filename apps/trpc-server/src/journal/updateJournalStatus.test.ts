@@ -2,32 +2,30 @@ import { JournalStatus } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { User } from "@prisma/client";
 import { appRouter } from "../router";
-import { prisma } from "../context";
+import { prismaMock } from "common/prisma/mock";
 
 let testUser: User;
 let caller;
 const journalsToDelete: string[] = [];
 
 beforeAll(async () => {
-  testUser = await prisma.user
-    .findUniqueOrThrow({
-      where: { email: "test@journaling.place" },
-    })
-    .catch(async () => {
-      return await prisma.user.create({
-        data: { email: "test@journaling.place" },
-      });
-    });
+  testUser = await prismaMock.user.create({
+    data: { email: "test@journaling.place" },
+  });
+  console.log("testUser", testUser);
 
   caller = appRouter.createCaller({
-    token: { sub: testUser.id, user: { salt: { data: testUser.salt } } },
-    prisma,
+    token: {
+      sub: testUser.id,
+      user: { salt: { data: testUser.salt || null } },
+    },
+    prisma: prismaMock,
   });
 });
 
 describe("updateJournalStatus", () => {
   it("should not allow a journal to be updated when it is DELETED", async () => {
-    const testJournal = await prisma.journal.create({
+    const testJournal = await prismaMock.journal.create({
       data: { authorId: testUser.id, status: JournalStatus.DELETED },
     });
     journalsToDelete.push(testJournal.id);
@@ -44,7 +42,7 @@ describe("updateJournalStatus", () => {
   });
 
   it("should not allow a journal to be deleted when it is ACTIVE", async () => {
-    const testJournal = await prisma.journal.create({
+    const testJournal = await prismaMock.journal.create({
       data: { authorId: testUser.id, status: JournalStatus.ACTIVE },
     });
     journalsToDelete.push(testJournal.id);
@@ -61,7 +59,7 @@ describe("updateJournalStatus", () => {
   });
 
   it("should be able to move an ACTIVE journal into TRASHED status", async () => {
-    const testJournal = await prisma.journal.create({
+    const testJournal = await prismaMock.journal.create({
       data: { authorId: testUser.id, status: JournalStatus.ACTIVE },
     });
     journalsToDelete.push(testJournal.id);
@@ -75,7 +73,7 @@ describe("updateJournalStatus", () => {
   });
 
   it("should be able to move a TRASHED journal into DELETED status", async () => {
-    const testJournal = await prisma.journal.create({
+    const testJournal = await prismaMock.journal.create({
       data: { authorId: testUser.id, status: JournalStatus.TRASHED },
     });
     journalsToDelete.push(testJournal.id);
@@ -90,6 +88,8 @@ describe("updateJournalStatus", () => {
 });
 
 afterAll(async () => {
-  await prisma.journal.deleteMany({ where: { id: { in: journalsToDelete } } });
-  await prisma.$disconnect();
+  await prismaMock.journal.deleteMany({
+    where: { id: { in: journalsToDelete } },
+  });
+  await prismaMock.$disconnect();
 });

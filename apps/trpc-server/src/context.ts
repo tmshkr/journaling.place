@@ -3,9 +3,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 import { getToken } from "next-auth/jwt";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "common/prisma/client";
 const cookie = require("cookie");
-export const prisma: PrismaClient = new PrismaClient();
 
 import { inferAsyncReturnType } from "@trpc/server";
 import { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
