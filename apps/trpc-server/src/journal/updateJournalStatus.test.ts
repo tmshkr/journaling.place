@@ -12,7 +12,6 @@ beforeAll(async () => {
   testUser = await prismaMock.user.create({
     data: { email: "test@journaling.place" },
   });
-  console.log("testUser", testUser);
 
   caller = appRouter.createCaller({
     token: {
