@@ -3,15 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "next build && ./postbuild.sh",
+    "build": "next build && sh postbuild.sh",
     "dev": "next dev",
     "start": "node .next/standalone/apps/web/server.js",
     "lint": "next lint",
     "jest": "jest",
     "jest:watch": "jest --watch"
-  },
-  "dependencies": {
-    "ui": "*"
   },
   "devDependencies": {
     "eslint-config-custom": "*",
