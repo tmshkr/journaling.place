@@ -1,5 +1,5 @@
 import { PrismaClient, Journal, User, JournalStatus } from "@prisma/client";
-import { mockDeep, mockReset, DeepMockProxy } from "jest-mock-extended";
+import { mockDeep } from "jest-mock-extended";
 import { ObjectId } from "mongodb";
 
 export const prismaMock = mockDeep<PrismaClient>();
