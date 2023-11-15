@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 
 export const prismaMock = mockDeep<PrismaClient>();
 
-let db: {
+export let db: {
   users: { [id: string]: User };
   journals: { [id_authorId: string]: Journal };
 } = {

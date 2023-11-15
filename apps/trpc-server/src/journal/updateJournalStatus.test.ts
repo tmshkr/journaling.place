@@ -2,7 +2,7 @@ import { JournalStatus } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { User } from "@prisma/client";
 import { appRouter } from "../router";
-import { prismaMock } from "common/prisma/mock";
+import { prismaMock, resetDB } from "common/prisma/mock";
 
 let testUser: User;
 let caller;
@@ -79,4 +79,8 @@ describe("updateJournalStatus", () => {
     expect(updatedJournal.id).toBe(testJournal.id);
     expect(updatedJournal.status).toBe(JournalStatus.DELETED);
   });
+});
+
+afterAll(() => {
+  resetDB();
 });
