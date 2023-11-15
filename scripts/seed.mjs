@@ -33,7 +33,7 @@ async function seed() {
         });
     } else if (
       (stub && dbPrompt.stub !== stub) ||
-      (tags && !tags.every((tag) => dbPrompt.tags.includes(tag)))
+      (tags && !tags.every((tag) => dbPrompt.tags?.includes(tag)))
     ) {
       await prisma.prompt
         .update({
