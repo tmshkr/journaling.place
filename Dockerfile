@@ -1,4 +1,4 @@
-FROM node:20-alpine as base
+FROM node:21-alpine as base
 RUN apk add git
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
@@ -16,6 +16,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY ./ ./
 RUN sed -i '/generator erd/,/}/d' ./prisma/schema.prisma
 RUN npx prisma generate
+RUN npm run jest
 ARG CDN_PREFIX
 RUN npm run build
 RUN sh scripts/prune-modules.sh
