@@ -4,20 +4,22 @@ import { ObjectId } from "mongodb";
 
 export const prismaMock = mockDeep<PrismaClient>();
 
-export let db: {
+export const db: {
   users: { [id: string]: User };
   journals: { [id_authorId: string]: Journal };
+  reset(): void;
 } = {
   users: {},
   journals: {},
+  reset() {
+    for (const key of Object.keys(this)) {
+      if (typeof this[key] === "function") continue;
+      if (typeof this[key] === "object") {
+        this[key] = {};
+      }
+    }
+  },
 };
-
-export function resetDB() {
-  db = {
-    users: {},
-    journals: {},
-  };
-}
 
 prismaMock.user.create.mockImplementation((args): any => {
   const { data } = args!;

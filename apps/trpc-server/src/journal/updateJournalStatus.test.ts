@@ -2,7 +2,7 @@ import { JournalStatus } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { User } from "@prisma/client";
 import { appRouter } from "../router";
-import { prismaMock, resetDB } from "common/prisma/mock";
+import { prismaMock, db as mockDB } from "common/prisma/mock";
 
 let testUser: User;
 let caller;
@@ -82,5 +82,5 @@ describe("updateJournalStatus", () => {
 });
 
 afterAll(() => {
-  resetDB();
+  mockDB.reset();
 });
