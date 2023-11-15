@@ -4,6 +4,8 @@ services:
   app:
     build:
       dockerfile: ./Dockerfile
+      cache_from: type=gha
+      cache_to: type=gha,mode=max
     image: app:test
     command: npm run start
     container_name: app
