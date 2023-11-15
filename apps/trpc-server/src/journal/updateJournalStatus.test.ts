@@ -6,7 +6,6 @@ import { prismaMock } from "common/prisma/mock";
 
 let testUser: User;
 let caller;
-const journalsToDelete: string[] = [];
 
 beforeAll(async () => {
   testUser = await prismaMock.user.create({
@@ -27,7 +26,6 @@ describe("updateJournalStatus", () => {
     const testJournal = await prismaMock.journal.create({
       data: { authorId: testUser.id, status: JournalStatus.DELETED },
     });
-    journalsToDelete.push(testJournal.id);
 
     try {
       await caller.journal.updateJournalStatus({
@@ -44,7 +42,6 @@ describe("updateJournalStatus", () => {
     const testJournal = await prismaMock.journal.create({
       data: { authorId: testUser.id, status: JournalStatus.ACTIVE },
     });
-    journalsToDelete.push(testJournal.id);
 
     try {
       await caller.journal.updateJournalStatus({
@@ -61,7 +58,6 @@ describe("updateJournalStatus", () => {
     const testJournal = await prismaMock.journal.create({
       data: { authorId: testUser.id, status: JournalStatus.ACTIVE },
     });
-    journalsToDelete.push(testJournal.id);
 
     const updatedJournal = await caller.journal.updateJournalStatus({
       id: testJournal.id,
@@ -75,7 +71,6 @@ describe("updateJournalStatus", () => {
     const testJournal = await prismaMock.journal.create({
       data: { authorId: testUser.id, status: JournalStatus.TRASHED },
     });
-    journalsToDelete.push(testJournal.id);
 
     const updatedJournal = await caller.journal.updateJournalStatus({
       id: testJournal.id,
@@ -84,11 +79,4 @@ describe("updateJournalStatus", () => {
     expect(updatedJournal.id).toBe(testJournal.id);
     expect(updatedJournal.status).toBe(JournalStatus.DELETED);
   });
-});
-
-afterAll(async () => {
-  await prismaMock.journal.deleteMany({
-    where: { id: { in: journalsToDelete } },
-  });
-  await prismaMock.$disconnect();
 });
