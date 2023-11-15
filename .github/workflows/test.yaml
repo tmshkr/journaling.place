@@ -11,6 +11,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          tags: app:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - name: Get env vars
         run: |
           echo "test" > ENVIRONMENT
