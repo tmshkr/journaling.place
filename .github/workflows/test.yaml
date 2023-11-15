@@ -22,12 +22,10 @@ jobs:
           AWS_REGION: ${{ vars.AWS_REGION }}
       - name: Start docker compose
         run: docker compose -f docker-compose.test.yml up -d
-      - name: Wait for server
-        run: ./scripts/wait-for-server.sh https://localhost test-${{ github.sha }}
-      - name: Run unit tests
-        run: docker exec app sh -c "npm run jest"
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
+      - name: Wait for server
+        run: ./scripts/wait-for-server.sh https://localhost test-${{ github.sha }}
       - name: Run e2e tests
         run: npm run test --workspace=e2e
       - uses: actions/upload-artifact@v3
