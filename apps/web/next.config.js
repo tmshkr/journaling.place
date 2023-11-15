@@ -1,5 +1,3 @@
-require("dotenv").config({ path: "../../.env" });
-
 module.exports = {
   webpack(config) {
     // Grab the existing rule that handles SVG imports
