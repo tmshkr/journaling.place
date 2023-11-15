@@ -5,7 +5,7 @@ services:
     build:
       dockerfile: ./Dockerfile
     image: app:test
-    command: npm run start:ci
+    command: npm run start
     container_name: app
     depends_on:
       - db

@@ -14,8 +14,7 @@
     "docker:test": "docker compose -f docker-compose.test.yml up",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "start": "prisma db push && turbo run start --parallel",
-    "start:ci": "prisma db push && prisma db seed && turbo run start --parallel",
+    "start": "prisma db push && prisma db seed && turbo run start --parallel",
     "e2e:test": "npm run test --workspace e2e",
     "e2e:report": "turbo run report --filter=e2e",
     "jest": "turbo run jest --filter=trpc-server"
@@ -51,6 +50,7 @@
     "eslint-config-next": "14.0.1",
     "express": "^4.18.2",
     "flexsearch": "^0.7.31",
+    "jest-mock-extended": "^3.0.5",
     "localforage": "^1.10.0",
     "mongodb": "^6.2.0",
     "next": "^14.0.2",
