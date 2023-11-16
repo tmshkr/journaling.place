@@ -16,16 +16,27 @@ export function randomString(size: number) {
 const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
 const isSecure = baseURL.protocol === "https:";
 
-export async function globalSetup(config: FullConfig) {
-  const { version } = JSON.parse(
-    execSync(`curl --silent -k ${baseURL}api/info`).toString()
-  );
+async function checkVersion() {
+  while (true) {
+    try {
+      var { version } = JSON.parse(
+        execSync(`curl --no-progress-meter -k ${baseURL}api/info`).toString()
+      );
+      break;
+    } catch (e) {
+      await new Promise((r) => setTimeout(r, 5000));
+    }
+  }
 
   if (version !== process.env.NEXT_PUBLIC_VERSION) {
     throw new Error(
       `Version mismatch: ${version} (server) !== ${process.env.NEXT_PUBLIC_VERSION} (client)`
     );
   }
+}
+
+export async function globalSetup(config: FullConfig) {
+  await checkVersion();
 
   const user = await prisma.user
     .findUniqueOrThrow({
