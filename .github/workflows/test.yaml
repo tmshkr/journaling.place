@@ -6,6 +6,8 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.39.0-jammy
     steps:
       - uses: actions/checkout@v4
         with:
@@ -14,12 +16,6 @@ jobs:
         with:
           cache: "npm"
           node-version: 21
-      - name: Setup Action Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-cache
-          path: |
-            /home/runner/.cache/ms-playwright/
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
