@@ -5,9 +5,9 @@ services:
     build:
       dockerfile: ./Dockerfile
       cache_from:
-        - type=local,dest=docker-cache
+        - type=local,src=/tmp/docker/cache
       cache_to:
-        - type=local,dest=docker-cache,mode=max
+        - type=local,dest=/tmp/docker/cache,mode=max
     image: app:test
     command: npm run start
     container_name: app
