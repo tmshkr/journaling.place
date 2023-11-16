@@ -16,8 +16,12 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY ./ ./
 RUN sed -i '/generator erd/,/}/d' ./prisma/schema.prisma
 RUN npx prisma generate
-RUN npm run jest
+
+ARG TURBO_TEAM
+ARG TURBO_TOKEN
 ARG CDN_PREFIX
+
+RUN npm run jest
 RUN npm run build
 RUN sh scripts/prune-modules.sh
 
