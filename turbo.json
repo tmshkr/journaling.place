@@ -3,7 +3,7 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "lint": {
       "outputs": []
@@ -14,11 +14,8 @@
     "start": {
       "cache": false
     },
-    "test": {
-      "cache": false
-    },
     "jest": {
-      "cache": false
+      "dependsOn": ["^build"]
     },
     "jest:watch": {
       "cache": false
