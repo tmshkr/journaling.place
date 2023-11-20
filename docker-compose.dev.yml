@@ -11,7 +11,7 @@ services:
       - db
     env_file: .env
     environment:
-      NEXTAUTH_URL: https://localhost
+      NEXTAUTH_URL: http://localhost
       MONGO_URI: mongodb://root:root@db/jp-dev?authSource=admin&tls=false
     restart: always
     volumes:
@@ -35,22 +35,15 @@ services:
       interval: 10s
       start_period: 30s
   nginx:
-    image: jonasal/nginx-certbot:latest
+    image: nginx:alpine
     container_name: nginx
     restart: unless-stopped
-    environment:
-      - SERVER_NAME=localhost
-      - CERTBOT_EMAIL=test@journaling.place
-      - USE_LOCAL_CA=1
     depends_on:
       - app
     ports:
       - "80:80"
-      - "443:443"
     volumes:
-      - nginx_secrets:/etc/letsencrypt
-      - ./nginx:/etc/nginx/templates
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
 
 volumes:
-  nginx_secrets:
   mongodb_data:
