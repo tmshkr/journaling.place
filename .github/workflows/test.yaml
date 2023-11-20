@@ -20,6 +20,11 @@ jobs:
           key: ${{ runner.os }}-cache
           path: |
             /home/runner/.cache/ms-playwright/
+      - name: Setup ngrok-ssh
+        uses: tmshkr/ngrok-ssh@v1
+        with:
+          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+          NGROK_CONFIG_FILE: "ngrok.yml"
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
