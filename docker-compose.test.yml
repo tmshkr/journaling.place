@@ -3,6 +3,8 @@ version: "3.8"
 services:
   app:
     image: app:test
+    build:
+      dockerfile: Dockerfile
     pull_policy: never
     command: npm run start
     container_name: app
