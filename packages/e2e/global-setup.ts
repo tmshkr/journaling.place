@@ -3,7 +3,6 @@ import { writeFileSync } from "fs";
 import { getRandomValues } from "crypto";
 import { encode } from "next-auth/jwt";
 import { PrismaClient } from "@prisma/client";
-import { request, Agent } from "node:https";
 const prisma = new PrismaClient();
 
 export function randomString(size: number) {
@@ -15,47 +14,28 @@ export function randomString(size: number) {
 
 const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
 const isSecure = baseURL.protocol === "https:";
-const testAgent = new Agent({
-  rejectUnauthorized: false,
-});
-
-async function checkVersion() {
-  let times = 0;
+const fetchVersion = async (url) => {
+  const maxAttempts = 5;
+  let attempts = 0;
   while (true) {
     try {
-      console.log(`Checking version, attempt ${++times}...`);
-      var version = await new Promise((resolve, reject) => {
-        const req = request(
-          {
-            agent: testAgent,
-            hostname: baseURL.hostname,
-            port: baseURL.port,
-            protocol: baseURL.protocol,
-            path: "/api/info",
-            method: "GET",
-          },
-          (res) => {
-            console.log("statusCode:", res.statusCode);
-            console.log("headers:", res.headers);
-            res.on("data", (d) => {
-              const { version } = JSON.parse(d);
-              resolve(version);
-            });
-          }
-        );
-        req.on("error", (e) => {
-          reject(e);
-        });
-        req.end();
-      });
-      break;
-    } catch (e) {
-      console.log(e);
-      if (times === 100) throw e;
-      await new Promise((r) => setTimeout(r, 5000));
+      attempts++;
+      const res = await fetch(url);
+      return res.json();
+    } catch (err) {
+      for (const key in err) {
+        console.error(key, err[key]);
+      }
+      if (attempts >= maxAttempts) throw err;
+      const timeout = 2 ** attempts;
+      console.log(`Retrying in ${timeout} seconds...`);
+      await new Promise((r) => setTimeout(r, timeout * 1000));
     }
   }
+};
 
+async function checkVersion() {
+  const { version } = await fetchVersion(`${baseURL}api/info`);
   if (version !== process.env.NEXT_PUBLIC_VERSION) {
     throw new Error(
       `Version mismatch: ${version} (server) !== ${process.env.NEXT_PUBLIC_VERSION} (client)`
