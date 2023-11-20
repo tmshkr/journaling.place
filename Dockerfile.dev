@@ -11,7 +11,7 @@ RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs
 RUN find apps \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs rm -rf
 RUN PUPPETEER_SKIP_DOWNLOAD=true npm ci omit=optional
 
-FROM base as runner
+FROM base as dev
 COPY --from=deps /app/node_modules ./node_modules
 COPY ./ ./
 RUN sed -i '/generator erd/,/}/d' ./prisma/schema.prisma
