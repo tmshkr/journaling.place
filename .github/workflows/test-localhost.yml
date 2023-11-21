@@ -1,0 +1,59 @@
+name: Run Tests
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v3
+        with:
+          cache: "npm"
+          node-version: 21
+      - name: Setup Action Cache
+        uses: actions/cache@v3
+        with:
+          key: ${{ runner.os }}-cache
+          path: |
+            /home/runner/.cache/ms-playwright/
+      - name: Setup ngrok-ssh
+        uses: tmshkr/ngrok-ssh@v1
+        with:
+          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+          NGROK_CONFIG_FILE: "ngrok.yml"
+      - name: build
+        run: npm ci && npm run build
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+          TURBO_REMOTE_ONLY: true
+      - name: Get env vars
+        run: |
+          echo "test" > ENVIRONMENT
+          echo ${{ github.sha }} > SHA
+          ./.platform/hooks/prebuild/get-env-vars.sh
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+      - name: Start processes
+        run: docker compose -f docker-compose.localhost.yml up db -d \
+          && sh scripts/start.sh \
+          && docker compose -f docker-compose.localhost.yml up nginx -d
+      - name: Install e2e deps
+        run: npm run install:ci --workspace=e2e
+      - name: Run e2e tests
+        run: npm run test --workspace=e2e
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: packages/e2e/playwright-report/
+          retention-days: 30
+      - name: Stop docker compose
+        if: always()
+        run: docker compose -f docker-compose.test.yml down
