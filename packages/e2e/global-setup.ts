@@ -5,15 +5,7 @@ import { encode } from "next-auth/jwt";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export function randomString(size: number) {
-  const i2hex = (i: number) => ("0" + i.toString(16)).slice(-2);
-  const r = (a: string, i: number): string => a + i2hex(i);
-  const bytes = getRandomValues(new Uint8Array(size));
-  return Array.from(bytes).reduce(r, "");
-}
-
 const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
-const isSecure = baseURL.protocol === "https:";
 const fetchVersion = async (url) => {
   const maxAttempts = 5;
   let attempts = 0;
@@ -60,6 +52,19 @@ export async function globalSetup(config: FullConfig) {
       } else throw e;
     });
 
+  mockJWT(user, baseURL);
+}
+
+export default globalSetup;
+
+async function mockJWT(user, baseURL) {
+  function randomString(size: number) {
+    const i2hex = (i: number) => ("0" + i.toString(16)).slice(-2);
+    const r = (a: string, i: number): string => a + i2hex(i);
+    const bytes = getRandomValues(new Uint8Array(size));
+    return Array.from(bytes).reduce(r, "");
+  }
+  const isSecure = baseURL.protocol === "https:";
   writeFileSync(
     "storageState.json",
     JSON.stringify({
@@ -122,5 +127,3 @@ export async function globalSetup(config: FullConfig) {
     })
   );
 }
-
-export default globalSetup;
