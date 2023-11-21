@@ -16,7 +16,7 @@ function getLink() {
         client: createWSClient({
           url: `${window.location.origin
             .replace("http", "ws")
-            .replace(":3000", ":2222")}/trpc`,
+            .replace(":3000", ":3333")}/trpc`,
         }),
       });
 }

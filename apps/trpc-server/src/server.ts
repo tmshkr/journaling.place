@@ -3,7 +3,7 @@ import { WebSocketServer } from "ws";
 import { appRouter, AppRouter } from "./router";
 import { createContext } from "./context";
 
-const port = 2222;
+const port = 3333;
 
 const wss = new WebSocketServer({ port });
 const handler = applyWSSHandler<AppRouter>({
