@@ -10,7 +10,6 @@ services:
     container_name: app
     depends_on:
       - db
-    env_file: .env
     environment:
       EMAIL_FROM:
       EMAIL_SERVER:
