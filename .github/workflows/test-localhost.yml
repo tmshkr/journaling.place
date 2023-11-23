@@ -18,7 +18,6 @@ jobs:
         image: nginx:alpine
         ports:
           - 80:80
-        options: "host"
         volumes:
           - nginx:/etc/nginx/
     container:
