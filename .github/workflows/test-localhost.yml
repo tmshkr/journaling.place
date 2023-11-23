@@ -12,16 +12,19 @@ jobs:
         env:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: root
-        ports:
-          - "27017:27017"
         volumes:
           - mongodb_data:/data/db
       nginx:
         image: nginx:alpine
         ports:
           - 80:80
+        options: "host"
         volumes:
-          - /home/runner/nginx:/etc/nginx/
+          - nginx:/etc/nginx/
+    container:
+      image: node:21-alpine
+      volumes:
+        - nginx:/nginx/test/
     steps:
       - uses: actions/checkout@v4
         with:
