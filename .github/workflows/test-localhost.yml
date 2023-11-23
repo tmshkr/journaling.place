@@ -20,8 +20,8 @@ jobs:
         image: nginx:alpine
         ports:
           - 80:80
-        volumes:
-          - ./nginx-localhost.conf:/etc/nginx/nginx.conf:ro
+        # volumes:
+        #   - ./nginx-localhost.conf:/etc/nginx/nginx.conf:ro
     steps:
       - uses: actions/checkout@v4
         with:
