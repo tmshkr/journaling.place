@@ -12,7 +12,7 @@ jobs:
       NEXTAUTH_URL: http://localhost
       NEXT_PUBLIC_VERSION: test-${{ github.sha }}
       NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-      MONGO_URI: mongodb://root:root@localhost:27018/jp-test?authSource=admin&tls=false
+      MONGO_URI: mongodb://root:root@localhost:27018/jp-test?authSource=admin&tls=false&directConnection=true
     steps:
       - uses: actions/checkout@v4
         with:
