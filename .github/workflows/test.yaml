@@ -38,7 +38,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Generate .env
-        run: $GITHUB_ENV >> .env
+        run: cat $GITHUB_ENV >> .env
         env:
           EMAIL_FROM: ${{ vars.EMAIL_FROM }}
           EMAIL_SERVER: ${{ secrets.EMAIL_SERVER }}
