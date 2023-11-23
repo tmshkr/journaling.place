@@ -12,12 +12,15 @@ services:
       - db
     env_file: .env
     environment:
+      EMAIL_FROM:
+      EMAIL_SERVER:
+      NEXT_PUBLIC_VERSION:
+      NEXTAUTH_SECRET:
       NEXTAUTH_URL: http://localhost
       MONGO_URI: mongodb://root:root@db/jp-test?authSource=admin&tls=false
     restart: always
     volumes:
       - /app/node_modules
-
   db:
     build:
       context: ./mongo/
@@ -35,7 +38,6 @@ services:
         test $$(mongosh --quiet -u root -p root --eval "try { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'db' }] }).ok } catch (_) { rs.status().ok }") -eq 1
       interval: 10s
       start_period: 30s
-
   nginx:
     image: nginx:alpine
     container_name: nginx

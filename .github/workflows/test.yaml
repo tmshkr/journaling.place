@@ -6,6 +6,12 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    env:
+      EMAIL_FROM: ${{ vars.EMAIL_FROM }}
+      EMAIL_SERVER: ${{ secrets.EMAIL_SERVER }}
+      NEXTAUTH_URL: http://localhost
+      NEXT_PUBLIC_VERSION: test-${{ github.sha }}
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,21 +43,14 @@ jobs:
           tags: app:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: Get env vars
-        run: |
-          echo "test" > ENVIRONMENT
-          echo ${{ github.sha }} > SHA
-          ./.platform/hooks/prebuild/get-env-vars.sh
-        env:
-          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ vars.AWS_REGION }}
       - name: Start docker compose
         run: docker compose -f docker-compose.test.yml up -d
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
       - name: Run e2e tests
         run: npm run test --workspace=e2e
+        env:
+          MONGO_URI: mongodb://root:root@localhost:27018/jp-test?authSource=admin&tls=false
       - uses: actions/upload-artifact@v3
         if: always()
         with:
