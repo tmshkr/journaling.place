@@ -12,10 +12,6 @@ services:
       - db
     env_file: .env
     environment:
-      EMAIL_FROM:
-      EMAIL_SERVER:
-      NEXT_PUBLIC_VERSION:
-      NEXTAUTH_SECRET:
       NEXTAUTH_URL: http://localhost
       MONGO_URI: mongodb://root:root@db/jp-test?authSource=admin&tls=false
     restart: always
