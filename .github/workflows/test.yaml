@@ -25,15 +25,15 @@ jobs:
         with:
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
           NGROK_CONFIG_FILE: "ngrok.yml"
-      - name: Generate .env
-        run: printenv >> .env
-        env:
-          EMAIL_FROM: ${{ vars.EMAIL_FROM }}
-          EMAIL_SERVER: ${{ secrets.EMAIL_SERVER }}
-          NEXTAUTH_URL: http://localhost
-          NEXT_PUBLIC_VERSION: test-${{ github.sha }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          MONGO_URI: mongodb://root:root@localhost:27018/jp-test?authSource=admin&tls=false&directConnection=true
+      - uses: tmshkr/handle-env@v1
+        with:
+          env: |
+            EMAIL_FROM=${{ vars.EMAIL_FROM }}
+            EMAIL_SERVER=${{ secrets.EMAIL_SERVER }}
+            NEXTAUTH_URL=http://localhost
+            NEXT_PUBLIC_VERSION=test-${{ github.sha }}
+            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+            MONGO_URI=mongodb://root:root@localhost:27018/jp-test?authSource=admin&tls=false&directConnection=true
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
