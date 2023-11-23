@@ -12,6 +12,7 @@ jobs:
       NEXTAUTH_URL: http://localhost
       NEXT_PUBLIC_VERSION: test-${{ github.sha }}
       NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+      MONGO_URI: mongodb://root:root@localhost:27018/jp-test?authSource=admin&tls=false
     steps:
       - uses: actions/checkout@v4
         with:
@@ -43,14 +44,14 @@ jobs:
           tags: app:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Generate .env
+        run: printenv >> .env
       - name: Start docker compose
         run: docker compose -f docker-compose.test.yml up -d
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
       - name: Run e2e tests
         run: npm run test --workspace=e2e
-        env:
-          MONGO_URI: mongodb://root:root@localhost:27018/jp-test?authSource=admin&tls=false
       - uses: actions/upload-artifact@v3
         if: always()
         with:
