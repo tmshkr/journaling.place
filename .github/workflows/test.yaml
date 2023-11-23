@@ -45,7 +45,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Generate .env
-        run: printenv >> .env
+        run: $GITHUB_ENV >> .env
       - name: Start docker compose
         run: docker compose -f docker-compose.test.yml up -d
       - name: Install e2e deps
