@@ -17,7 +17,7 @@ function createDeployment() {
   /repos/tmshkr/journaling.place/deployments \
   -f ref='${GITHUB_REF_NAME}' \
   -f payload='${JSON.stringify({
-    NGROK_TUNNELS,
+    NGROK_TUNNELS: JSON.parse(NGROK_TUNNELS),
     SSH_COMMAND,
     SSH_HOST_PUBLIC_KEY,
   })}' \
