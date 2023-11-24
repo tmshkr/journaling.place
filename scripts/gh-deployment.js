@@ -9,6 +9,8 @@ const {
 } = process.env;
 
 function createDeployment() {
+  console.log("Creating deployment");
+  console.log("Commit message: ", COMMIT_MESSAGE);
   const res = execSync(`
   gh api \
   --method POST \
@@ -20,8 +22,7 @@ function createDeployment() {
     NGROK_TUNNELS: JSON.parse(NGROK_TUNNELS),
     SSH_COMMAND,
     SSH_HOST_PUBLIC_KEY,
-  })}' \
-  -f description='${COMMIT_MESSAGE}'
+  })}'
   `);
   console.log(JSON.parse(res.toString()));
 }
