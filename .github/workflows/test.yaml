@@ -19,7 +19,7 @@ jobs:
       - name: Run Playwright workflow
         run: |
           BASE_URL=$(echo '${{ steps.ngrok-ssh.outputs.NGROK_TUNNELS }}' | jq -r '.[] | select(.name == "web") | .public_url')
-          gh workflow run playwright-test.yml \
+          gh workflow run playwright-test.yaml \
           -f BASE_URL=$BASE_URL \
           -f SSH_HOST_PUBLIC_KEY=${{ steps.ngrok-ssh.outputs.SSH_HOST_PUBLIC_KEY }}
         env:
