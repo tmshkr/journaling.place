@@ -2,15 +2,15 @@ name: Playwright Test
 on:
   workflow_dispatch:
     inputs:
-      NGROK_TUNNELS:
+      BASE_URL:
         type: string
         required: true
       SSH_COMMAND:
         type: string
-        required: true
+        required: false
       SSH_HOST_PUBLIC_KEY:
         type: string
-        required: true
+        required: false
 
 jobs:
   playwright:
@@ -27,9 +27,11 @@ jobs:
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
       - name: Run e2e tests
-        run: |
-          export BASE_URL=$(echo ${{ inputs.NGROK_TUNNELS }} | jq -r '.[] | select(.name == "web") | .public_url')
-          npm run test --workspace=e2e
+        env:
+          BASE_URL: ${{ inputs.BASE_URL }}
+          NEXT_PUBLIC_VERSION: test-${{ github.sha }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+        run: npm run test --workspace=e2e
       - uses: actions/upload-artifact@v3
         if: always()
         with:
