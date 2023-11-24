@@ -22,7 +22,7 @@ jobs:
             /home/runner/.cache/ms-playwright/
       - name: Setup ngrok-ssh
         id: ngrok-ssh
-        uses: tmshkr/ngrok-ssh@v1.1
+        uses: tmshkr/ngrok-ssh@dev
         with:
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
           NGROK_CONFIG_FILE: "ngrok.yml"
@@ -38,7 +38,6 @@ jobs:
       - name: Create GH Deployment
         run: node scripts/gh-deployment.js
         env:
-          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
           GH_TOKEN: ${{ github.token }}
           NGROK_TUNNELS: ${{ steps.ngrok-ssh.outputs.NGROK_TUNNELS }}
           SSH_COMMAND: ${{ steps.ngrok-ssh.outputs.SSH_COMMAND }}
