@@ -1,0 +1,26 @@
+name: Playwright Test
+on:
+  workflow_dispatch:
+    inputs:
+      NGROK_TUNNELS:
+        description: "ngrok tunnels"
+        type: string
+        required: true
+      SSH_COMMAND:
+        description: "ssh command"
+        type: string
+        required: true
+      SSH_HOST_PUBLIC_KEY:
+        description: "SSH_HOST_PUBLIC_KEY"
+        type: string
+        required: true
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.39.0-jammy
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm install:ci --workspace e2e
