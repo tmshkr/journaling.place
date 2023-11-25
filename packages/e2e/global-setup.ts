@@ -1,27 +1,24 @@
 import { FullConfig } from "@playwright/test";
-import { writeFileSync } from "fs";
-import { getRandomValues } from "crypto";
-import { encode } from "next-auth/jwt";
 import { PrismaClient } from "@prisma/client";
+import { mockJWT } from "./utils/mockJWT";
 const prisma = new PrismaClient();
 
 const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
-const fetchVersion = async (url) => {
-  const maxAttempts = 5;
+const fetchVersion = async (url, maxAttempts = 100) => {
   let attempts = 0;
   while (true) {
     try {
       attempts++;
-      const res = await fetch(url);
-      return res.json();
+      const res = await fetch(url).then((res) => res.json());
+      return res;
     } catch (err) {
+      console.error(err.message);
       for (const key in err) {
         console.error(key, err[key]);
       }
       if (attempts >= maxAttempts) throw err;
-      const timeout = 2 ** attempts;
-      console.log(`Retrying in ${timeout} seconds...`);
-      await new Promise((r) => setTimeout(r, timeout * 1000));
+      console.log(`Attempt ${attempts}: Retrying in 5 seconds...`);
+      await new Promise((r) => setTimeout(r, 5000));
     }
   }
 };
@@ -35,7 +32,7 @@ async function checkVersion() {
   }
 }
 
-export async function globalSetup(config: FullConfig) {
+async function globalSetup(config: FullConfig) {
   await checkVersion();
 
   const user = await prisma.user
@@ -56,74 +53,3 @@ export async function globalSetup(config: FullConfig) {
 }
 
 export default globalSetup;
-
-async function mockJWT(user, baseURL) {
-  function randomString(size: number) {
-    const i2hex = (i: number) => ("0" + i.toString(16)).slice(-2);
-    const r = (a: string, i: number): string => a + i2hex(i);
-    const bytes = getRandomValues(new Uint8Array(size));
-    return Array.from(bytes).reduce(r, "");
-  }
-  const isSecure = baseURL.protocol === "https:";
-  writeFileSync(
-    "storageState.json",
-    JSON.stringify({
-      cookies: [
-        {
-          name: `${isSecure ? "__Host-" : ""}next-auth.csrf-token`,
-          value: randomString(32),
-          domain: baseURL.hostname,
-          path: "/",
-          expires: -1,
-          httpOnly: true,
-          secure: isSecure,
-          sameSite: "Lax",
-        },
-        {
-          name: `${isSecure ? "__Secure-" : ""}next-auth.callback-url`,
-          value: encodeURIComponent(baseURL.toString()),
-          domain: baseURL.hostname,
-          path: "/",
-          expires: -1,
-          httpOnly: true,
-          secure: isSecure,
-          sameSite: "Lax",
-        },
-        {
-          name: `${isSecure ? "__Secure-" : ""}next-auth.session-token`,
-          value: await encode({
-            token: {
-              name: null,
-              email: user.email,
-              picture: null,
-              sub: user.id.toString(),
-              user,
-            },
-            secret: process.env.NEXTAUTH_SECRET,
-          }),
-          domain: baseURL.hostname,
-          path: "/",
-          expires: new Date().setDate(new Date().getDate() + 30) / 1000,
-          httpOnly: true,
-          secure: isSecure,
-          sameSite: "Lax",
-        },
-      ],
-      origins: [
-        {
-          origin: baseURL.origin,
-          localStorage: [
-            {
-              name: "nextauth.message",
-              value: JSON.stringify({
-                event: "session",
-                data: { trigger: "getSession" },
-                timestamp: Math.floor(Date.now() / 1000),
-              }),
-            },
-          ],
-        },
-      ],
-    })
-  );
-}
