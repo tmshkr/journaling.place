@@ -3,3 +3,6 @@ tunnels:
   web:
     addr: 80
     proto: http
+  mongo:
+    addr: 27018
+    proto: tcp
