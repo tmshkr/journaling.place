@@ -16,15 +16,6 @@ jobs:
         with:
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
           NGROK_CONFIG_FILE: "ngrok.yml"
-      - name: Run Playwright workflow
-        run: ./scripts/run-playwright-workflow.sh
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_REF_NAME: ${{ github.ref_name }}
-          MONGO_USER: ${{ vars.MONGO_USER }}
-          MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
-          NGROK_TUNNELS: ${{ steps.ngrok-ssh.outputs.NGROK_TUNNELS }}
-          SSH_HOST_PUBLIC_KEY: ${{ steps.ngrok-ssh.outputs.SSH_HOST_PUBLIC_KEY }}
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
@@ -37,6 +28,16 @@ jobs:
           tags: app:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Run Playwright workflow
+        id: run-playwright
+        run: ./scripts/run-playwright-workflow.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          MONGO_USER: ${{ vars.MONGO_USER }}
+          MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+          NGROK_TUNNELS: ${{ steps.ngrok-ssh.outputs.NGROK_TUNNELS }}
+          SSH_HOST_PUBLIC_KEY: ${{ steps.ngrok-ssh.outputs.SSH_HOST_PUBLIC_KEY }}
       - uses: tmshkr/handle-env@v1.1
         with:
           env: |
@@ -46,5 +47,6 @@ jobs:
             MONGO_USER=${{ vars.MONGO_USER }}
             MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}
             NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+            NEXTAUTH_URL=${{ steps.run-playwright.outputs.BASE_URL }}
       - name: Start docker compose
         run: docker compose -f docker-compose.test.yml up
