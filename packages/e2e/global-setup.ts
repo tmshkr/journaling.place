@@ -26,9 +26,9 @@ const fetchVersion = async (url, maxAttempts = 100) => {
 
 async function checkVersion() {
   const { version } = await fetchVersion(`${baseURL}api/info`);
-  if (version !== process.env.NEXT_PUBLIC_VERSION) {
+  if (version !== process.env.APP_VERSION) {
     throw new Error(
-      `Version mismatch: ${version} (server) !== ${process.env.NEXT_PUBLIC_VERSION} (client)`
+      `Version mismatch: ${version} (server) !== ${process.env.APP_VERSION} (client)`
     );
   }
 }

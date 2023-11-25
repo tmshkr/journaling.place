@@ -103,7 +103,7 @@ jobs:
       - name: Run e2e tests
         env:
           BASE_URL: https://${{ needs.deploy.outputs.target_env_cname }}
-          NEXT_PUBLIC_VERSION: ${{ github.ref_name}}-${{ github.sha }}
+          APP_VERSION: ${{ github.ref_name}}-${{ github.sha }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
         run: npm run test --workspace=e2e
       - uses: actions/upload-artifact@v3

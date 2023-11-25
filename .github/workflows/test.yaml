@@ -17,9 +17,10 @@ jobs:
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
           NGROK_CONFIG_FILE: "ngrok.yml"
       - name: Run Playwright workflow
+        # make sure it runs for the correct github ref
         run: |
           BASE_URL=$(echo '${{ steps.ngrok-ssh.outputs.NGROK_TUNNELS }}' | jq -r '.[] | select(.name == "web") | .public_url')
-          gh workflow run playwright-test.yaml \
+          gh workflow run playwright-test.yaml \ 
           -f BASE_URL=$BASE_URL \
           -f SSH_HOST_PUBLIC_KEY=${{ steps.ngrok-ssh.outputs.SSH_HOST_PUBLIC_KEY }}
         env:
@@ -41,7 +42,9 @@ jobs:
           env: |
             EMAIL_FROM=${{ vars.EMAIL_FROM }}
             EMAIL_SERVER=${{ secrets.EMAIL_SERVER }}
-            NEXT_PUBLIC_VERSION=test-${{ github.sha }}
+            MONGO_USER=${{ vars.MONGO_USER }}
+            MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}
+            APP_VERSION=test-${{ github.sha }}
             NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
       - name: Start docker compose
         run: docker compose -f docker-compose.test.yml up
