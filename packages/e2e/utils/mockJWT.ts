@@ -1,4 +1,3 @@
-import { writeFileSync } from "fs";
 import { getRandomValues } from "crypto";
 import { encode } from "next-auth/jwt";
 
