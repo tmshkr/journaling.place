@@ -26,7 +26,7 @@ jobs:
           hostname=$(echo $mongo_url | cut -d'/' -f3 | cut -d':' -f1)
           port=$(echo $mongo_url | cut -d':' -f3)
 
-          MONGO_URI=mongodb://${{ vars.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@$hostname:$port/jp-test?authSource=admin&directConnection=true
+          MONGO_URI="mongodb://${{ vars.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@$hostname:$port/jp-test?authSource=admin&directConnection=true"
 
           gh workflow run playwright-test.yaml \ 
           -f BASE_URL=$BASE_URL \
