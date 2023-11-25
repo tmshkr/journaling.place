@@ -1,7 +1,8 @@
+import { User } from "@prisma/client";
 import { getRandomValues } from "crypto";
 import { encode } from "next-auth/jwt";
 
-export async function mockJWT(user, baseURL) {
+export async function mockJWT(user: User, baseURL: URL) {
   function randomString(size: number) {
     const i2hex = (i: number) => ("0" + i.toString(16)).slice(-2);
     const r = (a: string, i: number): string => a + i2hex(i);
