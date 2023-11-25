@@ -1,6 +1,7 @@
 import { FullConfig } from "@playwright/test";
 import { PrismaClient } from "@prisma/client";
 import { mockJWT } from "./utils/mockJWT";
+import { writeFileSync } from "fs";
 const prisma = new PrismaClient();
 
 const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
@@ -49,7 +50,8 @@ async function globalSetup(config: FullConfig) {
       } else throw e;
     });
 
-  mockJWT(user, baseURL);
+  const token = await mockJWT(user, baseURL);
+  writeFileSync("storageState.json", token);
 }
 
 export default globalSetup;
