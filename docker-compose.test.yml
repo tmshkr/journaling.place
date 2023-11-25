@@ -12,7 +12,6 @@ services:
       - db
     env_file: .env
     environment:
-      NEXTAUTH_URL: http://localhost
       MONGO_URI: mongodb://$MONGO_USER:$MONGO_PASSWORD@db/jp-test?authSource=admin&tls=false
     restart: always
     volumes:
