@@ -8,10 +8,16 @@ on:
       MONGO_URI:
         type: string
         required: true
-      SSH_COMMAND:
+      SSH_HOST_PUBLIC_KEY:
         type: string
         required: false
-      SSH_HOST_PUBLIC_KEY:
+      SSH_HOSTNAME:
+        type: string
+        required: false
+      SSH_PORT:
+        type: string
+        required: false
+      SSH_USER:
         type: string
         required: false
 
@@ -30,12 +36,21 @@ jobs:
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
       - name: Run e2e tests
+        run: npm run test --workspace=e2e
         env:
           BASE_URL: ${{ inputs.BASE_URL }}
           APP_VERSION: test-${{ github.sha }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           MONGO_URI: ${{ inputs.MONGO_URI }}
-        run: npm run test --workspace=e2e
+      - name: Stop test server
+        run: ./scripts/stop-test-server.sh
+        env:
+          SSH_HOSTNAME: ${{ inputs.SSH_HOSTNAME }}
+          SSH_PORT: ${{ inputs.SSH_PORT }}
+          SSH_HOST_PUBLIC_KEY: ${{ inputs.SSH_HOST_PUBLIC_KEY }}
+          SSH_CLIENT_PUBLIC_KEY: ${{ vars.SSH_PUBLIC_KEY }}
+          SSH_CLIENT_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_USER: ${{ inputs.SSH_USER }}
       - uses: actions/upload-artifact@v3
         if: always()
         with:

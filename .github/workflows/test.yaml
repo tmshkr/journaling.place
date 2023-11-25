@@ -14,8 +14,10 @@ jobs:
         id: ngrok-ssh
         uses: tmshkr/ngrok-ssh@dev
         with:
+          BASH_PROFILE: ".bash_profile"
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
           NGROK_CONFIG_FILE: "ngrok.yml"
+          SSH_CLIENT_PUBLIC_KEY: ${{ vars.SSH_PUBLIC_KEY }}
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
@@ -37,7 +39,10 @@ jobs:
           MONGO_USER: ${{ vars.MONGO_USER }}
           MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
           NGROK_TUNNELS: ${{ steps.ngrok-ssh.outputs.NGROK_TUNNELS }}
+          SSH_HOSTNAME: ${{ steps.ngrok-ssh.outputs.SSH_HOSTNAME }}
+          SSH_PORT: ${{ steps.ngrok-ssh.outputs.SSH_PORT }}
           SSH_HOST_PUBLIC_KEY: ${{ steps.ngrok-ssh.outputs.SSH_HOST_PUBLIC_KEY }}
+          SSH_USER: ${{ steps.ngrok-ssh.outputs.SSH_USER }}
       - uses: tmshkr/handle-env@v1.1
         with:
           env: |

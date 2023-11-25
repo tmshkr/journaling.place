@@ -11,6 +11,9 @@ MONGO_URI="mongodb://$MONGO_USER:$MONGO_PASSWORD@$hostname:$port/jp-test?authSou
 gh workflow run playwright-test.yaml \
   -f BASE_URL=$BASE_URL \
   -f MONGO_URI=$MONGO_URI \
+  -f SSH_HOSTNAME=$SSH_HOSTNAME \
+  -f SSH_USER=$SSH_USER \
+  -f SSH_PORT=$SSH_PORT \
   -f SSH_HOST_PUBLIC_KEY=$SSH_HOST_PUBLIC_KEY \
   --ref $GITHUB_REF_NAME
 
