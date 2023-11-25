@@ -9,7 +9,7 @@ port=$(echo $mongo_url | cut -d':' -f3)
 echo "hostname: $hostname"
 echo "port: $port"
 
-MONGO_URI="mongodb://$MONGO_USER:$MONGO_PASSWORD@$hostname:$port/jp-test?authSource=admin&directConnection=true"
+MONGO_URI="mongodb://$MONGO_USER:$MONGO_PASSWORD@$hostname:$port/jp-test?authSource=admin&tls=false&directConnection=true"
 
 echo "BASE_URL: $BASE_URL"
 echo "MONGO_URI: $MONGO_URI"
