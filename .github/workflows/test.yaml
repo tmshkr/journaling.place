@@ -20,9 +20,19 @@ jobs:
         # make sure it runs for the correct github ref
         run: |
           BASE_URL=$(echo '${{ steps.ngrok-ssh.outputs.NGROK_TUNNELS }}' | jq -r '.[] | select(.name == "web") | .public_url')
+          mongo_url=$(echo '${{ steps.ngrok-ssh.outputs.NGROK_TUNNELS }}' | jq -r '.[] | select(.name == "mongo") | .public_url')
+
+          # parse tcp url
+          hostname=$(echo $mongo_url | cut -d'/' -f3 | cut -d':' -f1)
+          port=$(echo $mongo_url | cut -d':' -f3)
+
+          MONGO_URI=mongodb://${{ vars.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@$hostname:$port/jp-test?authSource=admin&directConnection=true
+
           gh workflow run playwright-test.yaml \ 
           -f BASE_URL=$BASE_URL \
+          -f MONGO_URI=$MONGO_URI \
           -f SSH_HOST_PUBLIC_KEY=${{ steps.ngrok-ssh.outputs.SSH_HOST_PUBLIC_KEY }}
+          --ref ${{ github.ref_name }}
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Setup Docker Buildx

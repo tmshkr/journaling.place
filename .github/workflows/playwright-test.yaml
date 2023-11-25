@@ -5,6 +5,9 @@ on:
       BASE_URL:
         type: string
         required: true
+      MONGO_URI:
+        type: string
+        required: true
       SSH_COMMAND:
         type: string
         required: false
@@ -31,6 +34,7 @@ jobs:
           BASE_URL: ${{ inputs.BASE_URL }}
           APP_VERSION: test-${{ github.sha }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          MONGO_URI: ${{ inputs.MONGO_URI }}
         run: npm run test --workspace=e2e
       - uses: actions/upload-artifact@v3
         if: always()
