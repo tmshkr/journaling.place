@@ -32,7 +32,7 @@ services:
     restart: always
     healthcheck:
       test: |
-        test $$(mongosh --quiet -u root -p root --eval "try { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'db' }] }).ok } catch (_) { rs.status().ok }") -eq 1
+        test $$(mongosh --quiet -u $MONGO_USER -p $MONGO_PASSWORD --eval "try { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'db' }] }).ok } catch (_) { rs.status().ok }") -eq 1
       interval: 10s
       start_period: 30s
   nginx:
