@@ -2,7 +2,7 @@ import { User } from "@prisma/client";
 import { getRandomValues } from "crypto";
 import { encode } from "next-auth/jwt";
 
-export async function mockJWT(user: User, baseURL: URL) {
+export async function mockStorageState(user: User, baseURL: URL) {
   function randomString(size: number) {
     const i2hex = (i: number) => ("0" + i.toString(16)).slice(-2);
     const r = (a: string, i: number): string => a + i2hex(i);
@@ -10,7 +10,7 @@ export async function mockJWT(user: User, baseURL: URL) {
     return Array.from(bytes).reduce(r, "");
   }
   const isSecure = baseURL.protocol === "https:";
-  const token = JSON.stringify({
+  const state = JSON.stringify({
     cookies: [
       {
         name: `${isSecure ? "__Host-" : ""}next-auth.csrf-token`,
@@ -69,5 +69,5 @@ export async function mockJWT(user: User, baseURL: URL) {
     ],
   });
 
-  return token;
+  return state;
 }
