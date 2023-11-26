@@ -10,4 +10,4 @@ chmod 600 $HOME/.ssh/*
 
 ssh -o StrictHostKeychecking=no -i $HOME/.ssh/id_rsa -p $SSH_PORT $SSH_USER@$SSH_HOSTNAME $1
 
-cat $HOME/.ssh/known_hosts
+cat /etc/ssh/known_hosts

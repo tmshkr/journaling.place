@@ -20,6 +20,10 @@ on:
       SSH_USER:
         type: string
         required: false
+      WORKSPACE:
+        type: string
+        description: "The path to the workspace directory where the project is checked out."
+        required: false
 
 jobs:
   playwright:
@@ -45,7 +49,7 @@ jobs:
       - name: Stop test server
         run: |
           ./scripts/ssh-client.sh \
-          docker compose -f $GITHUB_WORKSPACE/docker-compose.test.yml down
+          docker compose -f $WORKSPACE/docker-compose.test.yml down
         env:
           SSH_HOSTNAME: ${{ inputs.SSH_HOSTNAME }}
           SSH_PORT: ${{ inputs.SSH_PORT }}
@@ -53,6 +57,7 @@ jobs:
           SSH_CLIENT_PUBLIC_KEY: ${{ vars.SSH_PUBLIC_KEY }}
           SSH_CLIENT_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USER: ${{ inputs.SSH_USER }}
+          WORKSPACE: ${{ inputs.workspace }}
       - uses: actions/upload-artifact@v3
         if: always()
         with:
