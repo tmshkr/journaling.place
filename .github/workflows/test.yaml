@@ -47,7 +47,7 @@ jobs:
           SSH_PORT: ${{ steps.ngrok-ssh.outputs.SSH_PORT }}
           SSH_HOST_PUBLIC_KEY: ${{ steps.ngrok-ssh.outputs.SSH_HOST_PUBLIC_KEY }}
           SSH_USER: ${{ steps.ngrok-ssh.outputs.SSH_USER }}
-          REMOTE_WORKSPACE: ${{ github.workspace }}
+
       - uses: tmshkr/handle-env@dev
         with:
           env: |
