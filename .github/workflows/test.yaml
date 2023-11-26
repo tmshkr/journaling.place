@@ -30,10 +30,6 @@ jobs:
           tags: app:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          # build-args: |
-          #   TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
-          #   TURBO_TEAM=${{ secrets.TURBO_TEAM }}
-          #   TURBO_REMOTE_ONLY=true
       - name: Run Playwright workflow
         id: run-playwright
         run: ./scripts/run-playwright-workflow.sh
