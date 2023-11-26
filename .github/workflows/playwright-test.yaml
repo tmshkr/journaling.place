@@ -48,8 +48,7 @@ jobs:
           MONGO_URI: ${{ inputs.MONGO_URI }}
       - name: Stop test server
         run: |
-          ./scripts/ssh-client.sh \
-          docker compose -f $WORKSPACE/docker-compose.test.yml down
+          ./scripts/ssh-client.sh
         env:
           SSH_HOSTNAME: ${{ inputs.SSH_HOSTNAME }}
           SSH_PORT: ${{ inputs.SSH_PORT }}
