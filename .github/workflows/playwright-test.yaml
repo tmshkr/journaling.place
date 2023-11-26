@@ -20,9 +20,9 @@ on:
       SSH_USER:
         type: string
         required: false
-      WORKSPACE:
+      REMOTE_WORKSPACE:
         type: string
-        description: "The path to the workspace directory where the project is checked out."
+        description: "Path to the workspace directory on the remote runner where the project is currently checked out."
         required: false
 
 jobs:
@@ -56,7 +56,7 @@ jobs:
           SSH_CLIENT_PUBLIC_KEY: ${{ vars.SSH_PUBLIC_KEY }}
           SSH_CLIENT_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USER: ${{ inputs.SSH_USER }}
-          WORKSPACE: ${{ inputs.workspace }}
+          REMOTE_WORKSPACE: ${{ inputs.REMOTE_WORKSPACE }}
       - uses: actions/upload-artifact@v3
         if: always()
         with:

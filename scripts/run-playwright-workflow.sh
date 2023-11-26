@@ -15,7 +15,7 @@ gh workflow run playwright-test.yaml \
   -f SSH_USER=$SSH_USER \
   -f SSH_PORT=$SSH_PORT \
   -f SSH_HOST_PUBLIC_KEY="$SSH_HOST_PUBLIC_KEY" \
-  -f WORKSPACE=$WORKSPACE \
+  -f REMOTE_WORKSPACE=$REMOTE_WORKSPACE \
   --ref $GITHUB_REF_NAME
 
 # Set Output

@@ -10,8 +10,9 @@ chmod 600 $HOME/.ssh/*
 
 echo "WORKSPACE=$WORKSPACE"
 echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+echo "REMOTE_WORKSPACE=$REMOTE_WORKSPACE"
 
-ssh -o StrictHostKeychecking=no -i $HOME/.ssh/id_rsa -p $SSH_PORT $SSH_USER@$SSH_HOSTNAME docker compose -f $WORKSPACE/docker-compose.test.yml down
+ssh -o StrictHostKeychecking=no -i $HOME/.ssh/id_rsa -p $SSH_PORT $SSH_USER@$SSH_HOSTNAME docker compose -f $REMOTE_WORKSPACE/docker-compose.test.yml down
 
 ls -al /etc/ssh
 ls -al $HOME/.ssh
