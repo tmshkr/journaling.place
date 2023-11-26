@@ -8,7 +8,7 @@ echo "$SSH_CLIENT_PUBLIC_KEY" >>$HOME/.ssh/id_rsa.pub
 echo "$SSH_CLIENT_PRIVATE_KEY" >>$HOME/.ssh/id_rsa
 chmod 600 $HOME/.ssh/*
 
-ssh -o StrictHostKeychecking=no -i $HOME/.ssh/id_rsa -p $SSH_PORT $SSH_USER@$SSH_HOSTNAME pwd
+ssh -o StrictHostKeychecking=no -i $HOME/.ssh/id_rsa -p $SSH_PORT $SSH_USER@$SSH_HOSTNAME docker compose -f $WORKSPACE/docker-compose.test.yml down
 
 ls -al /etc/ssh
 ls -al $HOME/.ssh
