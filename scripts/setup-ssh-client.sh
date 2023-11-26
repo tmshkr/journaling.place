@@ -8,7 +8,7 @@ Host $SSH_HOSTNAME
   User $SSH_USER
   Port $SSH_PORT
   IdentityFile $HOME/.ssh/id_rsa
-  StrictHostKeyChecking no
+  StrictHostKeyChecking yes
   UserKnownHostsFile $HOME/.ssh/known_hosts
 "
 
