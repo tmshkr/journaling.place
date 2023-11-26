@@ -10,16 +10,16 @@ on:
         required: true
       SSH_HOST_PUBLIC_KEY:
         type: string
-        required: false
+        required: true
       SSH_HOSTNAME:
         type: string
-        required: false
+        required: true
       SSH_PORT:
         type: string
-        required: false
+        required: true
       SSH_USER:
         type: string
-        required: false
+        required: true
 
 jobs:
   playwright:
@@ -43,9 +43,8 @@ jobs:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           MONGO_URI: ${{ inputs.MONGO_URI }}
       - name: Stop test server
-        run: |
-          ./scripts/setup-ssh-client.sh
-          ./scripts/stop-test-server.sh
+        if: always()
+        run: ./scripts/stop-test-server.sh
         env:
           SSH_HOSTNAME: ${{ inputs.SSH_HOSTNAME }}
           SSH_PORT: ${{ inputs.SSH_PORT }}
