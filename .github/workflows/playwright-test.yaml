@@ -43,7 +43,9 @@ jobs:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           MONGO_URI: ${{ inputs.MONGO_URI }}
       - name: Stop test server
-        run: ./scripts/ssh-client.sh ./scripts/stop-test-server.sh
+        run: |
+          ./scripts/ssh-client.sh \
+          docker compose -f $GITHUB_WORKSPACE/docker-compose.test.yml down
         env:
           SSH_HOSTNAME: ${{ inputs.SSH_HOSTNAME }}
           SSH_PORT: ${{ inputs.SSH_PORT }}
