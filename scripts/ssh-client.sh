@@ -2,7 +2,8 @@
 
 echo "Setting up SSH Client"
 mkdir -m 700 $HOME/.ssh
-echo "$SSH_HOST_PUBLIC_KEY" >>$HOME/.ssh/known_hosts
+echo "$SSH_HOSTNAME $SSH_HOST_PUBLIC_KEY" >>$HOME/.ssh/known_hosts
+ssh-keygen -H -f $HOME/.ssh/known_hosts
 echo "$SSH_CLIENT_PUBLIC_KEY" >>$HOME/.ssh/id_rsa.pub
 echo "$SSH_CLIENT_PRIVATE_KEY" >>$HOME/.ssh/id_rsa
 

@@ -14,7 +14,7 @@ gh workflow run playwright-test.yaml \
   -f SSH_HOSTNAME=$SSH_HOSTNAME \
   -f SSH_USER=$SSH_USER \
   -f SSH_PORT=$SSH_PORT \
-  -f SSH_HOST_PUBLIC_KEY=$SSH_HOST_PUBLIC_KEY \
+  -f SSH_HOST_PUBLIC_KEY="$SSH_HOST_PUBLIC_KEY" \
   --ref $GITHUB_REF_NAME
 
 # Set Output
