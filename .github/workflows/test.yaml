@@ -24,6 +24,9 @@ jobs:
           install: true
       - name: Build
         uses: docker/build-push-action@v5
+        env:
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
         with:
           load: true
           push: false
