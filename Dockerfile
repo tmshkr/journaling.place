@@ -14,7 +14,7 @@ RUN PUPPETEER_SKIP_DOWNLOAD=true npm ci omit=optional
 FROM base as builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY ./ ./
-COPY ./.turbo ./.turbo
+COPY .turbo .turbo
 RUN ls -al .turbo || true
 RUN sed -i '/generator erd/,/}/d' ./prisma/schema.prisma
 RUN npx prisma generate
