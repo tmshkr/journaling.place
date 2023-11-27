@@ -20,7 +20,7 @@ RUN npx prisma generate
 ARG CDN_PREFIX
 
 RUN npm run jest
-RUN ls -al .turbo
+RUN ls -al .turbo || true
 RUN npm run build
 RUN sh scripts/prune-modules.sh
 
