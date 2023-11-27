@@ -18,13 +18,13 @@ jobs:
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
           NGROK_CONFIG_FILE: "ngrok.yml"
           SSH_CLIENT_PUBLIC_KEY: ${{ vars.SSH_PUBLIC_KEY }}
-      - name: Setup cache
+      - name: Setup turbo cache
         uses: actions/cache@v3
         with:
-          path: cache
-          key: ${{ runner.os }}-cache-
-      - name: Restore turbo cache
-        run: ./scripts/turbo-cache.sh restore
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:

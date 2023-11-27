@@ -16,21 +16,16 @@ case "$command" in
 "export")
   if [ "$IS_DOCKER" == true ]; then
     echo "Exporting .turbo"
-    cp -R .turbo cache
+    cp -R .turbo export
   else
-    docker run --rm -e IS_DOCKER=true -v ./cache:/app/cache app sh /app/scripts/turbo-cache.sh export
+    docker run --rm -e IS_DOCKER=true -v ./export:/app/export app sh /app/scripts/turbo-cache.sh export
+    echo "Deleting existing .turbo directory"
+    rm -rvf .turbo
+    echo "Moving exported .turbo directory to current directory"
+    mv -v export/.turbo .
   fi
   ;;
-"restore")
-  if [ -d cache/.turbo ]; then
-    echo "Restoring .turbo"
-    rm -rf .turbo
-    mv cache/.turbo .
-  else
-    echo "No .turbo cache found"
-  fi
 
-  ;;
 *)
   echo "Usage: $0 <command>"
   exit 1

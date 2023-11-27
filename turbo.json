@@ -15,7 +15,7 @@
       "cache": false
     },
     "jest": {
-      "dependsOn": ["^build"]
+      "cache": false
     },
     "jest:watch": {
       "cache": false
