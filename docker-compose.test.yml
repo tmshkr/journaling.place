@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   app:
-    image: app:test
+    image: app
     build:
       dockerfile: Dockerfile
     pull_policy: never

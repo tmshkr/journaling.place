@@ -17,8 +17,6 @@ COPY ./ ./
 RUN sed -i '/generator erd/,/}/d' ./prisma/schema.prisma
 RUN npx prisma generate
 
-ARG TURBO_TEAM
-ARG TURBO_TOKEN
 ARG CDN_PREFIX
 
 RUN npm run jest
