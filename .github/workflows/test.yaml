@@ -34,7 +34,7 @@ jobs:
         with:
           load: true
           push: false
-          tags: app:test
+          tags: app
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Export turbo cache
