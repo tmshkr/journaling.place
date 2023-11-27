@@ -16,13 +16,13 @@ case "$command" in
 "export")
   if [ "$IS_DOCKER" == true ]; then
     echo "Exporting .turbo"
-    cp -R .turbo export
+    cp -vR .turbo export
   else
     docker run --rm -e IS_DOCKER=true -v ./export:/app/export app sh /app/scripts/turbo-cache.sh export
     echo "Deleting existing .turbo directory"
     rm -rvf .turbo
-    echo "Moving exported .turbo directory to $(pwd)"
-    sudo mv -v export/.turbo .
+    echo "Copying exported .turbo directory to $(pwd)"
+    cp -vR export/.turbo .
   fi
   ;;
 
