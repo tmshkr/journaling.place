@@ -1,5 +1,9 @@
 #! /bin/bash -e
 
+if [ -z "$IMAGE_NAME" ]; then
+  IMAGE_NAME="app"
+fi
+
 command=$1
 case "$command" in
 "delete")
@@ -18,7 +22,7 @@ case "$command" in
     echo "Exporting .turbo from docker container..."
     cp -vR .turbo export
   else
-    docker run --rm -e IS_DOCKER=true -v ./export:/app/export app sh /app/scripts/turbo-cache.sh export
+    docker run --rm -e IS_DOCKER=true -v ./export:/app/export $IMAGE_NAME sh /app/scripts/turbo-cache.sh export
     echo "Deleting existing .turbo directory"
     rm -rvf .turbo
     echo "Copying exported .turbo directory to $(pwd)"
