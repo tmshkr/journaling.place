@@ -1,4 +1,4 @@
-name: Build and Run Test Server
+name: Test Run
 on:
   workflow_dispatch:
 
