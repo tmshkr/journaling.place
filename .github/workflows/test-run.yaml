@@ -12,7 +12,7 @@ jobs:
           fetch-depth: 2
       - name: Setup ngrok-ssh
         id: ngrok-ssh
-        uses: tmshkr/ngrok-ssh@dev
+        uses: tmshkr/ngrok-ssh@v1.2
         with:
           BASH_PROFILE: ".bash_profile"
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
@@ -55,7 +55,7 @@ jobs:
           SSH_HOST_PUBLIC_KEY: ${{ steps.ngrok-ssh.outputs.SSH_HOST_PUBLIC_KEY }}
           SSH_USER: ${{ steps.ngrok-ssh.outputs.SSH_USER }}
 
-      - uses: tmshkr/handle-env@dev
+      - uses: tmshkr/handle-env@v1.2
         with:
           env: |
             APP_VERSION=test-${{ github.sha }}
