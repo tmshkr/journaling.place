@@ -15,7 +15,7 @@ case "$command" in
   ;;
 "export")
   if [ "$IS_DOCKER" == true ]; then
-    echo "Exporting .turbo"
+    echo "Exporting .turbo from docker container..."
     cp -vR .turbo export
   else
     docker run --rm -e IS_DOCKER=true -v ./export:/app/export app sh /app/scripts/turbo-cache.sh export
