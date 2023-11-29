@@ -1,3 +1,4 @@
+#!/usr/local/bin/node
 require("dotenv").config();
 const { execSync } = require("child_process");
 
