@@ -67,13 +67,15 @@ jobs:
         with:
           context: .
           load: true
-          push: true
+          push: false
           build-args: |
             CDN_PREFIX=https://cdn.journaling.place
           tags: ${{ env.DOCKER_IMAGE }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
+      - run: docker push ${{ env.DOCKER_IMAGE }}
+        if: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS == 'false' }}
       - name: Export turbo cache
         run: ./scripts/turbo-cache.sh export
       - name: Export static assets to S3
