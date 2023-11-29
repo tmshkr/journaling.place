@@ -34,7 +34,7 @@ async function checkVersion() {
   }
 }
 
-async function getSSMParameters(env: string) {
+async function getSSMParameters(env = "staging") {
   const client = new SSMClient({ region: "us-west-2" });
   const { Parameters } = await client.send(
     new GetParametersCommand({
@@ -53,11 +53,8 @@ async function getSSMParameters(env: string) {
 
 async function globalSetup(config: FullConfig) {
   await checkVersion();
-  const { ENVIRONMENT } = process.env;
-
-  if (["staging", "main"].includes(ENVIRONMENT)) {
-    await getSSMParameters(ENVIRONMENT);
-  }
+  console.log("Getting SSM parameters");
+  await getSSMParameters();
 
   const user = await prisma.user
     .findUniqueOrThrow({
