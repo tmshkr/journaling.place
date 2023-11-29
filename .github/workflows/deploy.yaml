@@ -1,10 +1,19 @@
 name: Blue/Green Deployment
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
       - staging
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: "Environment to deploy to"
+        required: true
+        default: staging
+        options:
+          - staging
+          - production
 env:
   AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -115,15 +124,11 @@ jobs:
           node-version: 21
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
-      - name: Get params from SSM
-        run: ./scripts/gh-get-ssm-params.sh
       - name: Run e2e tests
         env:
           BASE_URL: https://${{ needs.deploy.outputs.target_env_cname }}
           APP_VERSION: ${{ github.ref_name}}-${{ github.sha }}
         run: npm run test --workspace=e2e
-      - run: shred -uv .env
-        if: always()
       - uses: actions/upload-artifact@v3
         if: always()
         with:
