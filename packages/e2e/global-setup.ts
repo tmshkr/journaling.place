@@ -34,13 +34,13 @@ async function checkVersion() {
   }
 }
 
-async function getSSMParameters() {
+async function getSSMParameters(env: string) {
   const client = new SSMClient({ region: "us-west-2" });
   const { Parameters } = await client.send(
     new GetParametersCommand({
       Names: [
-        `/journaling.place/staging/MONGO_URI`,
-        `/journaling.place/staging/NEXTAUTH_SECRET`,
+        `/journaling.place/${env}/MONGO_URI`,
+        `/journaling.place/${env}/NEXTAUTH_SECRET`,
       ],
       WithDecryption: true,
     })
@@ -53,9 +53,10 @@ async function getSSMParameters() {
 
 async function globalSetup(config: FullConfig) {
   await checkVersion();
+  const { GITHUB_REF_NAME } = process.env;
 
-  if (process.env.CI) {
-    await getSSMParameters();
+  if (["staging", "main"].includes(GITHUB_REF_NAME)) {
+    await getSSMParameters(GITHUB_REF_NAME);
   }
 
   const user = await prisma.user
