@@ -26,7 +26,7 @@ case "$command" in
     echo "Deleting existing .turbo directory"
     rm -rvf .turbo
     echo "Copying exported .turbo directory to $(pwd)"
-    cp -vR export/.turbo .
+    sudo mv -v export/.turbo .
   fi
   ;;
 
