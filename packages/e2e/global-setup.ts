@@ -1,5 +1,6 @@
 import { FullConfig } from "@playwright/test";
 import { PrismaClient } from "@prisma/client";
+import { SSMClient, GetParametersCommand } from "@aws-sdk/client-ssm";
 import { mockStorageState } from "./utils/mockStorageState";
 import { writeFileSync } from "fs";
 const prisma = new PrismaClient();
@@ -33,8 +34,29 @@ async function checkVersion() {
   }
 }
 
+async function getSSMParameters() {
+  const client = new SSMClient({ region: "us-west-2" });
+  const { Parameters } = await client.send(
+    new GetParametersCommand({
+      Names: [
+        `/journaling.place/staging/MONGO_URI`,
+        `/journaling.place/staging/NEXTAUTH_SECRET`,
+      ],
+      WithDecryption: true,
+    })
+  );
+  for (const { Name, Value } of Parameters) {
+    process.env[Name.split("/").pop()] = Value;
+    console.log(`::add-mask::${Value}`);
+  }
+}
+
 async function globalSetup(config: FullConfig) {
   await checkVersion();
+
+  if (process.env.CI) {
+    await getSSMParameters();
+  }
 
   const user = await prisma.user
     .findUniqueOrThrow({
