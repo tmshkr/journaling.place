@@ -65,6 +65,7 @@ jobs:
         if: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS == 'false' }}
         uses: docker/build-push-action@v5
         with:
+          context: .
           push: true
           build-args: |
             CDN_PREFIX=https://cdn.journaling.place
@@ -126,8 +127,9 @@ jobs:
         run: npm run install:ci --workspace=e2e
       - name: Run e2e tests
         env:
-          BASE_URL: https://${{ needs.deploy.outputs.target_env_cname }}
           APP_VERSION: ${{ github.ref_name}}-${{ github.sha }}
+          BASE_URL: https://${{ needs.deploy.outputs.target_env_cname }}
+          ENVIRONMENT: ${{ github.ref_name }}
         run: npm run test --workspace=e2e
       - uses: actions/upload-artifact@v3
         if: always()

@@ -53,10 +53,10 @@ async function getSSMParameters(env: string) {
 
 async function globalSetup(config: FullConfig) {
   await checkVersion();
-  const { GITHUB_REF_NAME } = process.env;
+  const { ENVIRONMENT } = process.env;
 
-  if (["staging", "main"].includes(GITHUB_REF_NAME)) {
-    await getSSMParameters(GITHUB_REF_NAME);
+  if (["staging", "main"].includes(ENVIRONMENT)) {
+    await getSSMParameters(ENVIRONMENT);
   }
 
   const user = await prisma.user
