@@ -62,6 +62,7 @@ jobs:
           tags: ${{ env.DOCKER_IMAGE }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          provenance: false
       - name: Export turbo cache
         run: ./scripts/turbo-cache.sh export
       - name: Export static assets to S3
@@ -120,9 +121,9 @@ jobs:
         env:
           BASE_URL: https://${{ needs.deploy.outputs.target_env_cname }}
           APP_VERSION: ${{ github.ref_name}}-${{ github.sha }}
-          MONGO_URI: ${{ env.MONGO_URI }}
-          NEXTAUTH_SECRET: ${{ env.NEXTAUTH_SECRET }}
         run: npm run test --workspace=e2e
+      - run: shred -uv .env
+        if: always()
       - uses: actions/upload-artifact@v3
         if: always()
         with:
