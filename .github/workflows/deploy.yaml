@@ -119,6 +119,11 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.40.0-jammy
     steps:
       - uses: actions/checkout@v4
+      - name: Setup ngrok-ssh
+        uses: tmshkr/ngrok-ssh@latest
+        with:
+          BASH_PROFILE: ".bash_profile"
+          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
       - uses: actions/setup-node@v3
         with:
           cache: "npm"
