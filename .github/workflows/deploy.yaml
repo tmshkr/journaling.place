@@ -66,6 +66,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          load: true
           push: true
           build-args: |
             CDN_PREFIX=https://cdn.journaling.place
@@ -120,7 +121,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup ngrok-ssh
-        uses: tmshkr/ngrok-ssh@latest
+        uses: tmshkr/ngrok-ssh@dev
         with:
           BASH_PROFILE: ".bash_profile"
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
