@@ -12,7 +12,7 @@ jobs:
           fetch-depth: 2
       - name: Setup ngrok-ssh
         id: ngrok-ssh
-        uses: tmshkr/ngrok-ssh@latest
+        uses: tmshkr/ngrok-ssh@dev
         with:
           BASH_PROFILE: ".bash_profile"
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
