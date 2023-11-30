@@ -18,6 +18,7 @@ env:
   AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: ${{ vars.AWS_REGION }}
+  ENVIRONMENT: ${{ inputs.environment || github.ref_name }}
 
 jobs:
   prep:
@@ -31,15 +32,15 @@ jobs:
       - name: Check if image exists in ECR
         id: check-image-exists
         run: ./scripts/check-image-exists.js ${{ github.sha }}
-      - name: Get target env
+      - name: Prep target env
         uses: tmshkr/blue-green-beanstalk@dev
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
-          deploy: true
           green_env: ${{ vars.GREEN_ENV }}
           option_settings: option-settings.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
+          prep: true
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           staging_cname: ${{ vars.STAGING_CNAME }}
           wait_for_deployment: false
@@ -130,7 +131,6 @@ jobs:
         with:
           BASH_PROFILE: ".bash_profile"
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
-          SSH_DEBUG: true
       - uses: actions/setup-node@v3
         with:
           cache: "npm"
@@ -141,7 +141,6 @@ jobs:
         env:
           APP_VERSION: ${{ github.ref_name}}-${{ github.sha }}
           BASE_URL: https://${{ needs.deploy.outputs.target_env_cname }}
-          ENVIRONMENT: ${{ github.ref_name }}
         run: npm run test --workspace=e2e
       - uses: actions/upload-artifact@v3
         if: always()
@@ -151,7 +150,7 @@ jobs:
           retention-days: 30
 
   promote:
-    if: always() && needs.test.result == 'success' && github.ref_name == 'main'
+    if: always() && needs.test.result == 'success' && (inputs.environment == 'main' || github.ref_name == 'main')
     needs: test
     runs-on: ubuntu-latest
     steps:
