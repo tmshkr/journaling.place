@@ -13,7 +13,7 @@ on:
         default: staging
         options:
           - staging
-          - production
+          - main
 env:
   AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -127,8 +127,6 @@ jobs:
         with:
           BASH_PROFILE: ".bash_profile"
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
-          SET_RANDOM_PASSWORD: true
-          WAIT_FOR_CONNECTION: true
       - uses: actions/setup-node@v3
         with:
           cache: "npm"
