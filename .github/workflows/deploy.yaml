@@ -22,8 +22,15 @@ env:
 jobs:
   prep:
     runs-on: ubuntu-latest
+    outputs:
+      image_exists: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS }}
     steps:
       - uses: actions/checkout@v4
+      - name: Log in to ECR
+        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
+      - name: Check if image exists in ECR
+        id: check-image-exists
+        run: ./scripts/check-image-exists.js ${{ github.sha }}
       - name: Get target env
         uses: tmshkr/blue-green-beanstalk@dev
         with:
@@ -39,6 +46,7 @@ jobs:
 
   build:
     needs: prep
+    if: ${{ needs.prep.outputs.image_exists == 'false' }}
     runs-on: ubuntu-latest
     env:
       DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }}
@@ -46,9 +54,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Log in to ECR
         run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
-      - name: Check if image exists in ECR
-        id: check-image-exists
-        run: node scripts/check-image-exists.js ${{ github.sha }}
       - name: Setup turbo cache
         uses: actions/cache@v3
         with:
@@ -62,7 +67,6 @@ jobs:
           install: true
           platforms: linux/amd64
       - name: Build and push
-        if: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS == 'false' }}
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -75,17 +79,16 @@ jobs:
           cache-to: type=gha,mode=max
           provenance: false
       - run: docker push ${{ env.DOCKER_IMAGE }}
-        if: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS == 'false' }}
       - name: Export turbo cache
         run: ./scripts/turbo-cache.sh export
       - name: Export static assets to S3
-        if: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS == 'false' }}
         run: |
           docker run -v ./export:/app/export ${{ env.DOCKER_IMAGE }} sh /app/scripts/export-static-assets.sh
           aws s3 cp --recursive export s3://cdn.journaling.place/_next/
 
   deploy:
     needs: build
+    if: always() && ${{ needs.build.result == 'skipped' || needs.build.result == 'success' }}
     runs-on: ubuntu-latest
     outputs:
       target_env_cname: ${{ steps.deploy.outputs.target_env_cname }}
@@ -112,7 +115,7 @@ jobs:
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ github.sha }}
       - name: Tag image
-        run: ./scripts/tag-image.sh ${{ github.sha }} ${{ github.ref_name }}
+        run: ./scripts/tag-image.js ${{ github.sha }} ${{ github.ref_name }}
 
   test:
     name: "Playwright Tests"
