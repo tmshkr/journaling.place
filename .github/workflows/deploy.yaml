@@ -127,6 +127,7 @@ jobs:
         with:
           BASH_PROFILE: ".bash_profile"
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+          SSH_DEBUG: true
       - uses: actions/setup-node@v3
         with:
           cache: "npm"
