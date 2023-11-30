@@ -46,7 +46,7 @@ jobs:
 
   build:
     needs: prep
-    if: ${{ needs.prep.outputs.image_exists == 'false' }}
+    if: needs.prep.outputs.image_exists == 'false'
     runs-on: ubuntu-latest
     env:
       DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }}
@@ -118,7 +118,7 @@ jobs:
         run: ./scripts/tag-image.js ${{ github.sha }} ${{ github.ref_name }}
 
   test:
-    name: "Playwright Tests"
+    if: always() && needs.deploy.result == 'success'
     needs: deploy
     runs-on: ubuntu-latest
     container:
@@ -151,7 +151,7 @@ jobs:
           retention-days: 30
 
   promote:
-    if: ${{ github.ref_name == 'main' }}
+    if: always() && needs.test.result == 'success' && github.ref_name == 'main'
     needs: test
     runs-on: ubuntu-latest
     steps:
