@@ -2,7 +2,7 @@ version: "3"
 
 services:
   app:
-    image: ${DOCKER_REGISTRY}/journaling.place:${SHA}
+    image: ${DOCKER_REGISTRY}/journaling.place:${TAG}
     command: npm run start
     container_name: app
     env_file: .env
