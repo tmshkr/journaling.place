@@ -140,7 +140,11 @@ jobs:
       - name: Run e2e tests
         run: npm run test --workspace=e2e
         env:
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY  }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
           APP_VERSION: ${{ github.ref_name}}-${{ github.sha }}
+          ENVIRONMENT: ${{ inputs.environment || github.ref_name }}
           BASE_URL: https://${{ needs.deploy.outputs.target_env_cname }}
       - uses: actions/upload-artifact@v3
         if: always()
