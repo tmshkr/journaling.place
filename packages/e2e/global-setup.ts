@@ -3,7 +3,6 @@ import { PrismaClient } from "@prisma/client";
 import { SSMClient, GetParametersCommand } from "@aws-sdk/client-ssm";
 import { mockStorageState } from "./utils/mockStorageState";
 import { writeFileSync } from "fs";
-const prisma = new PrismaClient();
 
 const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
 const { ENVIRONMENT } = process.env;
@@ -59,7 +58,7 @@ async function globalSetup(config: FullConfig) {
   if (["main", "staging"].includes(ENVIRONMENT)) {
     await getSSMParameters();
   }
-
+  const prisma = new PrismaClient();
   const user = await prisma.user
     .findUniqueOrThrow({
       where: { email: "test@journaling.place" },
@@ -73,6 +72,7 @@ async function globalSetup(config: FullConfig) {
         });
       } else throw e;
     });
+  await prisma.$disconnect();
 
   const state = await mockStorageState(user, baseURL);
   writeFileSync("storageState.json", state);
