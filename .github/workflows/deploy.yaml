@@ -127,7 +127,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup ngrok-ssh
-        uses: tmshkr/ngrok-ssh@latest
+        uses: tmshkr/ngrok-ssh@dev
         with:
           BASH_PROFILE: ".bash_profile"
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
@@ -138,7 +138,7 @@ jobs:
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
       - name: Run e2e tests
-        run: npm run test --workspace=e2e
+        run: tmux new-session -d && npm run test --workspace=e2e
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY  }}
