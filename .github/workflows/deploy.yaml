@@ -127,7 +127,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup ngrok-ssh
-        uses: tmshkr/ngrok-ssh@dev
+        uses: tmshkr/ngrok-ssh@latest
         with:
           BASH_PROFILE: ".bash_profile"
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
@@ -138,10 +138,10 @@ jobs:
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
       - name: Run e2e tests
+        run: npm run test --workspace=e2e
         env:
           APP_VERSION: ${{ github.ref_name}}-${{ github.sha }}
           BASE_URL: https://${{ needs.deploy.outputs.target_env_cname }}
-        run: npm run test --workspace=e2e
       - uses: actions/upload-artifact@v3
         if: always()
         with:

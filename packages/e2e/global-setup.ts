@@ -6,6 +6,7 @@ import { writeFileSync } from "fs";
 const prisma = new PrismaClient();
 
 const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
+const { ENVIRONMENT } = process.env;
 const fetchVersion = async (url, maxAttempts = 100) => {
   let attempts = 0;
   while (true) {
@@ -34,13 +35,14 @@ async function checkVersion() {
   }
 }
 
-async function getSSMParameters(env = "staging") {
+async function getSSMParameters() {
+  console.log("Getting SSM parameters");
   const client = new SSMClient({ region: "us-west-2" });
   const { Parameters } = await client.send(
     new GetParametersCommand({
       Names: [
-        `/journaling.place/${env}/MONGO_URI`,
-        `/journaling.place/${env}/NEXTAUTH_SECRET`,
+        `/journaling.place/${ENVIRONMENT}/MONGO_URI`,
+        `/journaling.place/${ENVIRONMENT}/NEXTAUTH_SECRET`,
       ],
       WithDecryption: true,
     })
@@ -53,8 +55,10 @@ async function getSSMParameters(env = "staging") {
 
 async function globalSetup(config: FullConfig) {
   await checkVersion();
-  console.log("Getting SSM parameters");
-  await getSSMParameters();
+
+  if (["main", "staging"].includes(ENVIRONMENT)) {
+    await getSSMParameters();
+  }
 
   const user = await prisma.user
     .findUniqueOrThrow({
