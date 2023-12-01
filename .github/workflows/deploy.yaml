@@ -14,11 +14,17 @@ on:
         options:
           - staging
           - main
+      tag:
+        type: string
+        description: "Tag to deploy"
+        required: false
 env:
   AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: ${{ vars.AWS_REGION }}
+  DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ inputs.tag || github.sha }}
   ENVIRONMENT: ${{ inputs.environment || github.ref_name }}
+  TAG: ${{ inputs.tag || github.sha }}
 
 jobs:
   prep:
@@ -31,7 +37,7 @@ jobs:
         run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
       - name: Check if image exists in ECR
         id: check-image-exists
-        run: ./scripts/check-image-exists.js ${{ github.sha }}
+        run: ./scripts/check-image-exists.js ${{ env.TAG }}
       - name: Prep target env
         uses: tmshkr/blue-green-beanstalk@dev
         with:
@@ -49,8 +55,6 @@ jobs:
     needs: prep
     if: needs.prep.outputs.image_exists == 'false'
     runs-on: ubuntu-latest
-    env:
-      DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place:${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
       - name: Log in to ECR
@@ -116,7 +120,7 @@ jobs:
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ github.sha }}
       - name: Tag image
-        run: ./scripts/tag-image.js ${{ github.sha }} ${{ github.ref_name }}
+        run: ./scripts/tag-image.js ${{ env.TAG }} ${{ github.ref_name }}
 
   test:
     if: always() && needs.deploy.result == 'success'
@@ -138,7 +142,7 @@ jobs:
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
       - name: Run e2e tests
-        run: tmux new-session -d && npm run test --workspace=e2e
+        run: npm run test --workspace=e2e
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY  }}
