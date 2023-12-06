@@ -35,11 +35,6 @@
     "Value": "aws-eb"
   },
   {
-    "Namespace": "aws:autoscaling:launchconfiguration",
-    "OptionName": "EC2KeyName",
-    "Value": "aws-eb"
-  },
-  {
     "Namespace": "aws:elasticbeanstalk:application:environment",
     "OptionName": "ENVIRONMENT",
     "Value": "$ENVIRONMENT"
