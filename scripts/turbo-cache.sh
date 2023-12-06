@@ -4,6 +4,10 @@ if [ -z "$DOCKER_IMAGE" ]; then
   DOCKER_IMAGE="app"
 fi
 
+if [ -z "$TAG" ]; then
+  TAG="latest"
+fi
+
 command=$1
 case "$command" in
 "delete")
@@ -22,7 +26,7 @@ case "$command" in
     echo "Exporting .turbo from docker container..."
     cp -vR .turbo export
   else
-    docker run --rm -e IS_DOCKER=true -v ./export:/app/export $DOCKER_IMAGE sh /app/scripts/turbo-cache.sh export
+    docker run --rm -e IS_DOCKER=true -v ./export:/app/export "$DOCKER_IMAGE:$TAG" sh /app/scripts/turbo-cache.sh export
     echo "Deleting existing .turbo directory"
     rm -rvf .turbo
     echo "Copying exported .turbo directory to $(pwd)"
