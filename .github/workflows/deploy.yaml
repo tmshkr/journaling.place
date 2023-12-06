@@ -102,7 +102,7 @@ jobs:
       - name: Generate deployment package
         run: |
           echo APP_VERSION=${{ github.ref_name }}-${{ env.TAG }} >> .env
-          echo ENVIRONMENT=${{ env.ENVIRONMENT }} >> .emv
+          echo ENVIRONMENT=${{ env.ENVIRONMENT }} >> .env
           echo SHA=${{ github.sha }} >> .env
           echo TAG=${{ env.TAG }} >> .env
           zip -r bundle.zip . -x '*.git*'
