@@ -122,7 +122,10 @@ jobs:
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ env.TAG }}
       - name: Tag image
-        run: ./scripts/tag-image.js "${{ env.DOCKER_IMAGE }}:${{ env.TAG }}" ${{ env.ENVIRONMENT }}
+        run: ./scripts/tag-image.js
+        env:
+          ENVIRONMENT: ${{ env.ENVIRONMENT }}
+          SHA: ${{ github.sha }}
 
   test:
     if: always() && needs.deploy.result == 'success'

@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 const { execSync } = require("child_process");
 
-const SHA = process.argv[2];
-const TAG = process.argv[3];
+const { SHA, TAG: ENVIRONMENT } = process.env;
 
 const { images } = JSON.parse(
   execSync(
@@ -11,7 +10,7 @@ const { images } = JSON.parse(
 );
 try {
   execSync(
-    `aws ecr put-image --repository-name journaling.place --image-tag ${TAG} --image-manifest '${images[0].imageManifest}'`,
+    `aws ecr put-image --repository-name journaling.place --image-tag ${ENVIRONMENT} --image-manifest '${images[0].imageManifest}'`,
     { stdio: "pipe" }
   );
 } catch (err) {
