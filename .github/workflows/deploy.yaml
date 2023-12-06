@@ -101,8 +101,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Generate deployment package
         run: |
-          export ENVIRONMENT=staging
-          echo $(envsubst < option-settings.json) > option-settings.json
+          echo ENVIRONMENT=staging > .env
           echo APP_VERSION=${{ github.ref_name }}-${{ env.TAG }} >> .env
           echo SHA=${{ github.sha }} >> .env
           echo TAG=${{ env.TAG }} >> .env
@@ -160,10 +159,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Swap environment variables
-        run: |
-          export ENVIRONMENT=main
-          echo $(envsubst < option-settings.json) > option-settings.json
       - name: Promote
         id: promote
         uses: tmshkr/blue-green-beanstalk@dev
@@ -172,7 +167,7 @@ jobs:
           blue_env: ${{ vars.BLUE_ENV }}
           deploy: true
           green_env: ${{ vars.GREEN_ENV }}
-          option_settings: option-settings.json
+          option_settings: option-settings.main.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           promote: true
