@@ -169,8 +169,8 @@ jobs:
           green_env: ${{ vars.GREEN_ENV }}
           option_settings: option-settings.prod.json
           production_cname: ${{ vars.PRODUCTION_CNAME }}
-          promote: false
+          promote: true
           staging_cname: ${{ vars.STAGING_CNAME }}
-      # - name: Update DNS
-      #   run: |
-      #     curl -X POST "https://${{ secrets.DNS_USERNAME }}:${{ secrets.DNS_PASSWORD }}@domains.google.com/nic/update?hostname=journaling.place&myip=${{ steps.promote.outputs.target_env_endpoint_url }}"
+      - name: Update DNS
+        run: |
+          curl -X POST "https://${{ secrets.DNS_USERNAME }}:${{ secrets.DNS_PASSWORD }}@domains.google.com/nic/update?hostname=journaling.place&myip=${{ steps.promote.outputs.target_env_endpoint_url }}"
