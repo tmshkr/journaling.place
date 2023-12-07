@@ -168,7 +168,6 @@ jobs:
           deploy: true
           green_env: ${{ vars.GREEN_ENV }}
           option_settings: option-settings.prod.json
-          platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           promote: false
           staging_cname: ${{ vars.STAGING_CNAME }}
