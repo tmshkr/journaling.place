@@ -1,5 +1,5 @@
 {
   "Namespace": "aws:elasticbeanstalk:application:environment",
-  "OptionName": "ENVIRONMENT",
-  "Value": "main"
+  "OptionName": "IS_PRODUCTION",
+  "Value": "true"
 }

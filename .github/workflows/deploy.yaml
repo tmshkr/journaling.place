@@ -169,10 +169,10 @@ jobs:
           blue_env: ${{ vars.BLUE_ENV }}
           deploy: true
           green_env: ${{ vars.GREEN_ENV }}
-          option_settings: option-settings.main.json
+          option_settings: option-settings.prod.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
           production_cname: ${{ vars.PRODUCTION_CNAME }}
-          promote: true
+          promote: false
           staging_cname: ${{ vars.STAGING_CNAME }}
       - name: Update DNS
         run: |
