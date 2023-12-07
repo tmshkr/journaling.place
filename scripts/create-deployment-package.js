@@ -5,7 +5,7 @@ const { execSync } = require("child_process");
 const { APP_VERSION, ENVIRONMENT, STAGING_CNAME, SHA, TAG } = process.env;
 
 writeFileSync(
-  "deployment.json",
+  "env.json",
   JSON.stringify({
     APP_VERSION,
     ENVIRONMENT,
