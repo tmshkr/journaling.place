@@ -1,5 +1,7 @@
-{
-  "Namespace": "aws:elasticbeanstalk:application:environment",
-  "OptionName": "IS_PRODUCTION",
-  "Value": "true"
-}
+[
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "IS_PRODUCTION",
+    "Value": "true"
+  }
+]
