@@ -31,6 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image_exists: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS }}
+      target_env_cname: ${{ steps.prep.outputs.target_env_cname }}
     steps:
       - uses: actions/checkout@v4
       - name: Log in to ECR
@@ -39,6 +40,7 @@ jobs:
         id: check-image-exists
         run: ./scripts/check-image-exists.js ${{ env.TAG }}
       - name: Prep target env
+        id: prep
         uses: tmshkr/blue-green-beanstalk@dev
         with:
           app_name: "journaling.place"
@@ -92,17 +94,17 @@ jobs:
           aws s3 cp --recursive export s3://cdn.journaling.place/_next/
 
   deploy:
-    needs: build
+    needs: [build, prep]
     if: always() && (needs.build.result == 'success' || needs.build.result == 'skipped')
     runs-on: ubuntu-latest
-    outputs:
-      target_env_cname: ${{ steps.deploy.outputs.target_env_cname }}
     steps:
       - uses: actions/checkout@v4
       - name: Generate deployment package
         run: |
-          echo ENVIRONMENT=staging > .env
           echo APP_VERSION=${{ github.ref_name }}-${{ env.TAG }} >> .env
+          echo ENVIRONMENT=${{ env.ENVIRONMENT }} >> .env
+          echo NEXTAUTH_URL=https://${{ needs.prep.outputs.target_env_cname }} >> .env
+          echo SERVER_NAME=${{ needs.prep.outputs.target_env_cname }} >> .env
           echo SHA=${{ github.sha }} >> .env
           echo TAG=${{ env.TAG }} >> .env
           zip -r bundle.zip . -x '*.git*'
@@ -129,7 +131,7 @@ jobs:
 
   test:
     if: always() && needs.deploy.result == 'success'
-    needs: deploy
+    needs: [deploy, prep]
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.40.0-jammy
@@ -145,7 +147,7 @@ jobs:
         run: npm run test --workspace=e2e
         env:
           APP_VERSION: ${{ github.ref_name}}-${{ env.TAG }}
-          BASE_URL: https://${{ needs.deploy.outputs.target_env_cname }}
+          BASE_URL: https://${{ needs.prep.outputs.target_env_cname }}
       - uses: actions/upload-artifact@v3
         if: always()
         with:
