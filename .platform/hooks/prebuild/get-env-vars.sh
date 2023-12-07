@@ -10,8 +10,12 @@ aws ssm get-parameters-by-path --path "/journaling.place/$ENVIRONMENT/" --recurs
   echo "$key=$value" >>.env
 done
 
-if [ "$ENVIRONMENT" == "main" && "$IS_PRODUCTION" != "true" ]; then
-  # get pre-production vars from ssm
+echo "APP_VERSION=$(cat env.json | jq -r '.APP_VERSION')" >>.env
+echo "ENVIRONMENT=$(cat env.json | jq -r '.ENVIRONMENT')" >>.env
+echo "TAG=$(cat env.json | jq -r '.TAG')" >>.env
+
+if [[ "$ENVIRONMENT" == "main" && "$IS_PRODUCTION" != "true" ]]; then
+  printf "\n# pre-production vars from ssm\n\n" >>.env
   aws ssm get-parameters \
     --names "/journaling.place/staging/NEXTAUTH_URL" "/journaling.place/staging/SERVER_NAME" \
     --with-decryption --query "Parameters[*].[Name,Value]" \
@@ -20,7 +24,3 @@ if [ "$ENVIRONMENT" == "main" && "$IS_PRODUCTION" != "true" ]; then
     echo "$key=$value" >>.env
   done
 fi
-
-echo "APP_VERSION=$(cat env.json | jq -r '.APP_VERSION')" >>.env
-echo "ENVIRONMENT=$(cat env.json | jq -r '.ENVIRONMENT')" >>.env
-echo "TAG=$(cat env.json | jq -r '.TAG')" >>.env
