@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const { execSync } = require("child_process");
 
-const { SHA, TAG: ENVIRONMENT } = process.env;
+const { SHA, ENVIRONMENT } = process.env;
 
 const { images } = JSON.parse(
   execSync(
