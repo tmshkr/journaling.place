@@ -100,14 +100,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Generate deployment package
-        run: |
-          echo APP_VERSION=${{ github.ref_name }}-${{ env.TAG }} >> .env
-          echo ENVIRONMENT=${{ env.ENVIRONMENT }} >> .env
-          echo NEXTAUTH_URL=https://${{ needs.prep.outputs.target_env_cname }} >> .env
-          echo SERVER_NAME=${{ needs.prep.outputs.target_env_cname }} >> .env
-          echo SHA=${{ github.sha }} >> .env
-          echo TAG=${{ env.TAG }} >> .env
-          zip -r bundle.zip . -x '*.git*'
+        run: ./scripts/create-deployment-package.js
+        env:
+          APP_VERSION: ${{ github.ref_name }}-${{ env.TAG }}
+          ENVIRONMENT: ${{ env.ENVIRONMENT }}
+          STAGING_CNAME: ${{ needs.prep.outputs.target_env_cname }}
+          SHA: ${{ github.sha }}
+          TAG: ${{ env.TAG }}
       - name: Deploy
         uses: tmshkr/blue-green-beanstalk@dev
         id: deploy
