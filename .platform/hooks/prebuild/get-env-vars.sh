@@ -10,7 +10,7 @@ aws ssm get-parameters-by-path --path "/journaling.place/$ENVIRONMENT/" --recurs
   echo "$key=$value" >>.env
 done
 
-if [ "$IS_PRODUCTION" != "true" ]; then
+if [ "$ENVIRONMENT" == "main" && "$IS_PRODUCTION" != "true" ]; then
   # get pre-production vars from ssm
   aws ssm get-parameters \
     --names "/journaling.place/staging/NEXTAUTH_URL" "/journaling.place/staging/SERVER_NAME" \
