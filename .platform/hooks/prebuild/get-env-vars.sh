@@ -7,6 +7,6 @@ source .env
 aws ssm get-parameters-by-path --path "/journaling.place/$ENVIRONMENT/" --recursive --with-decryption --query "Parameters[*].[Name,Value]" --output text | while read -r name value; do
   key=$(echo $name | sed "s/\/journaling.place\/$ENVIRONMENT\///")
   if ! cat .env | grep -q "$key"; then
-    echo "$key=$value" >>test.env
+    echo "$key=$value" >>.env
   fi
 done
