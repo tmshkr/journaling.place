@@ -41,7 +41,7 @@ jobs:
         run: ./scripts/check-image-exists.js ${{ env.TAG }}
       - name: Prep target env
         id: prep
-        uses: tmshkr/blue-green-beanstalk@dev
+        uses: tmshkr/blue-green-beanstalk@latest
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
@@ -107,7 +107,7 @@ jobs:
           SHA: ${{ github.sha }}
           TAG: ${{ env.TAG }}
       - name: Deploy
-        uses: tmshkr/blue-green-beanstalk@dev
+        uses: tmshkr/blue-green-beanstalk@latest
         id: deploy
         with:
           deploy: true
@@ -161,7 +161,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Promote
         id: promote
-        uses: tmshkr/blue-green-beanstalk@dev
+        uses: tmshkr/blue-green-beanstalk@latest
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
