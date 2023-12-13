@@ -37,7 +37,7 @@ export class JournalingPlace extends cdk.Stack {
       ],
     });
 
-    new iam.Role(this, "aws-elasticbeanstalk-ec2-role", {
+    const ec2Role = new iam.Role(this, "aws-elasticbeanstalk-ec2-role", {
       assumedBy: new iam.ServicePrincipal("ec2.amazonaws.com"),
       roleName: "aws-elasticbeanstalk-ec2-role",
       managedPolicies: [
@@ -54,6 +54,11 @@ export class JournalingPlace extends cdk.Stack {
           "AmazonSSMManagedInstanceCore"
         ),
       ],
+    });
+
+    new iam.InstanceProfile(this, "aws-elasticbeanstalk-ec2-profile", {
+      instanceProfileName: "aws-elasticbeanstalk-ec2-profile",
+      role: ec2Role,
     });
 
     new iam.Role(this, "aws-elasticbeanstalk-service-role", {
