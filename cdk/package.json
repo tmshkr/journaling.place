@@ -1,0 +1,14 @@
+{
+  "name": "cdk",
+  "main": "index.ts",
+  "scripts": {
+    "cdk-bootstrap": "cdk bootstrap",
+    "cdk-deploy": "cdk deploy"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.103.1"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1"
+  }
+}
