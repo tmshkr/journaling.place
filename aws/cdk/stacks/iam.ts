@@ -1,7 +1,7 @@
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as cdk from "aws-cdk-lib";
 
-export class IAMConfig extends cdk.Stack {
+export class IamStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -32,9 +32,20 @@ export class IAMConfig extends cdk.Stack {
         iam.ManagedPolicy.fromAwsManagedPolicyName(
           "ElasticLoadBalancingFullAccess"
         ),
-        iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonS3FullAccess"),
         iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMReadOnlyAccess"),
       ],
+      inlinePolicies: {
+        s3WriteAccess: iam.PolicyDocument.fromJson({
+          Version: "2012-10-17",
+          Statement: [
+            {
+              Effect: "Allow",
+              Action: "s3:PutObject",
+              Resource: ["arn:aws:s3:::cdn.journaling.place/*"],
+            },
+          ],
+        }),
+      },
     });
 
     const ec2Role = new iam.Role(this, "aws-elasticbeanstalk-ec2-role", {
@@ -54,6 +65,18 @@ export class IAMConfig extends cdk.Stack {
           "AmazonSSMManagedInstanceCore"
         ),
       ],
+      inlinePolicies: {
+        s3WriteAccess: iam.PolicyDocument.fromJson({
+          Version: "2012-10-17",
+          Statement: [
+            {
+              Effect: "Allow",
+              Action: "s3:PutObject",
+              Resource: [`${cdk.Fn.importValue("backupBucketArn")}/*`],
+            },
+          ],
+        }),
+      },
     });
 
     new iam.InstanceProfile(this, "aws-elasticbeanstalk-ec2-profile", {
