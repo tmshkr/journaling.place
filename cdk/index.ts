@@ -62,8 +62,14 @@ export class JournalingPlace extends cdk.Stack {
     });
 
     new iam.Role(this, "aws-elasticbeanstalk-service-role", {
-      assumedBy: new iam.ServicePrincipal("elasticbeanstalk.amazonaws.com"),
-      path: "/service-role/",
+      assumedBy: new iam.PrincipalWithConditions(
+        new iam.ServicePrincipal("elasticbeanstalk.amazonaws.com"),
+        {
+          StringEquals: {
+            "sts:ExternalId": "elasticbeanstalk",
+          },
+        }
+      ),
       roleName: "aws-elasticbeanstalk-service-role",
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName(
