@@ -36,6 +36,39 @@ export class JournalingPlace extends cdk.Stack {
         iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMReadOnlyAccess"),
       ],
     });
+
+    new iam.Role(this, "aws-elasticbeanstalk-ec2-role", {
+      assumedBy: new iam.ServicePrincipal("ec2.amazonaws.com"),
+      roleName: "aws-elasticbeanstalk-ec2-role",
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName(
+          "AWSElasticBeanstalkWebTier"
+        ),
+        iam.ManagedPolicy.fromAwsManagedPolicyName(
+          "AWSElasticBeanstalkMulticontainerDocker"
+        ),
+        iam.ManagedPolicy.fromAwsManagedPolicyName(
+          "AWSElasticBeanstalkWorkerTier"
+        ),
+        iam.ManagedPolicy.fromAwsManagedPolicyName(
+          "AmazonSSMManagedInstanceCore"
+        ),
+      ],
+    });
+
+    new iam.Role(this, "aws-elasticbeanstalk-service-role", {
+      assumedBy: new iam.ServicePrincipal("elasticbeanstalk.amazonaws.com"),
+      path: "/service-role/",
+      roleName: "aws-elasticbeanstalk-service-role",
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName(
+          "service-role/AWSElasticBeanstalkEnhancedHealth"
+        ),
+        iam.ManagedPolicy.fromAwsManagedPolicyName(
+          "AWSElasticBeanstalkManagedUpdatesCustomerRolePolicy"
+        ),
+      ],
+    });
   }
 }
 
