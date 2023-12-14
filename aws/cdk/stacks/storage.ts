@@ -12,13 +12,11 @@ export class StorageStack extends cdk.Stack {
       versioned: true,
       lifecycleRules: [
         {
-          expiration: cdk.Duration.days(30),
-          transitions: [
-            {
-              storageClass: s3.StorageClass.INFREQUENT_ACCESS,
-              transitionAfter: cdk.Duration.days(7),
-            },
-          ],
+          expiration: cdk.Duration.days(90),
+          noncurrentVersionExpiration: cdk.Duration.days(3),
+        },
+        {
+          expiredObjectDeleteMarker: true,
         },
       ],
     });
