@@ -17,10 +17,12 @@ export class CdnStack extends cdk.Stack {
 
     const distro = new cloudfront.Distribution(this, "distro", {
       defaultBehavior: {
+        cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
         origin: cdnOrigin,
       },
       additionalBehaviors: {
         "_next/static/*": {
+          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
           origin: new origins.OriginGroup({
             primaryOrigin: cdnOrigin,
             fallbackOrigin: new origins.HttpOrigin("journaling.place"),
