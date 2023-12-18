@@ -1,4 +1,5 @@
 import * as s3 from "aws-cdk-lib/aws-s3";
+import * as efs from "aws-cdk-lib/aws-efs";
 import * as cdk from "aws-cdk-lib";
 
 export class StorageStack extends cdk.Stack {
