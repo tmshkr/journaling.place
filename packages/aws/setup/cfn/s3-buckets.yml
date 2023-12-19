@@ -1,0 +1,27 @@
+Resources:
+  BackupBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      LifecycleConfiguration:
+        Rules:
+          - Id: "Delete after 90 days"
+            ExpirationInDays: 90
+            NoncurrentVersionExpirationInDays: 3
+            Status: Enabled
+          - Id: "Remove delete markers"
+            ExpiredObjectDeleteMarker: true
+            Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+
+Outputs:
+  BackupBucket:
+    Description: The name of the S3 bucket
+    Value: !Ref BackupBucket
+    Export:
+      Name: BackupBucket

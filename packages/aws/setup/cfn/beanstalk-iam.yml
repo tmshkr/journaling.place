@@ -99,6 +99,8 @@ Resources:
       RoleName: "aws-elasticbeanstalk-service-role"
 
 Outputs:
-  RoleARN:
+  GitHubActionsRoleARN:
     Description: ARN of IAM role for use with GitHub Actions
     Value: !GetAtt GitHubActionsRole.Arn
+    Export:
+      Name: GitHubActionsRoleARN

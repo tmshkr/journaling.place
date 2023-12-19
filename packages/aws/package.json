@@ -8,5 +8,13 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-cloudfront": "^3.476.0",
+    "@aws-sdk/client-ec2": "^3.476.0",
+    "@aws-sdk/client-efs": "^3.476.0",
+    "@aws-sdk/client-ssm": "^3.476.0",
+    "aws-cdk": "^2.115.0",
+    "aws-cdk-lib": "^2.115.0"
+  }
 }
