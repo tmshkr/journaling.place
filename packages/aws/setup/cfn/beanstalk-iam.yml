@@ -104,3 +104,7 @@ Outputs:
     Value: !GetAtt GitHubActionsRole.Arn
     Export:
       Name: GitHubActionsRoleARN
+  InstanceRole:
+    Value: !GetAtt InstanceRole.Arn
+    Export:
+      Name: BeanstalkInstanceRoleARN
