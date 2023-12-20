@@ -40,7 +40,7 @@ Resources:
               - "sts:AssumeRole"
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
-        - "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker"
+        - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
         - "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
       RoleName: "aws-elasticbeanstalk-ec2-role"
