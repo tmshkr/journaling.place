@@ -1,6 +1,6 @@
 import * as s3 from "aws-cdk-lib/aws-s3";
-import * as efs from "aws-cdk-lib/aws-efs";
 import * as cdk from "aws-cdk-lib";
+import * as iam from "aws-cdk-lib/aws-iam";
 
 export class StorageStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -13,14 +13,25 @@ export class StorageStack extends cdk.Stack {
       versioned: true,
       lifecycleRules: [
         {
+          id: "Delete after 90 days",
           expiration: cdk.Duration.days(90),
           noncurrentVersionExpiration: cdk.Duration.days(3),
         },
-        {
-          expiredObjectDeleteMarker: true,
-        },
+        { id: "Remove delete markers", expiredObjectDeleteMarker: true },
       ],
     });
+
+    backupBucket.addToResourcePolicy(
+      new iam.PolicyStatement({
+        sid: "AllowEC2ToPutObject",
+        actions: ["s3:PutObject"],
+        effect: iam.Effect.ALLOW,
+        resources: [`${backupBucket.bucketArn}/*`],
+        principals: [
+          new iam.ArnPrincipal(cdk.Fn.importValue("BeanstalkInstanceRoleARN")),
+        ],
+      })
+    );
 
     new cdk.CfnOutput(this, "backupBucketArn", {
       value: backupBucket.bucketArn,
