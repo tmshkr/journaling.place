@@ -20,6 +20,7 @@ on:
         required: false
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
+  AWS_ROLE: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/GitHubActions
   DOCKER_IMAGE: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/journaling.place
   DOCKER_REGISTRY: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
   ENVIRONMENT: ${{ inputs.environment || github.ref_name }}
@@ -32,17 +33,14 @@ jobs:
       id-token: write
       contents: read
     outputs:
-      aws_session_token: ${{ steps.aws-creds.outputs.aws-session-token }}
       image_exists: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS }}
       target_env_cname: ${{ steps.prep.outputs.target_env_cname }}
     steps:
       - uses: actions/checkout@v4
-      - id: aws-creds
-        uses: aws-actions/configure-aws-credentials@v3
+      - uses: aws-actions/configure-aws-credentials@v3
         with:
           aws-region: ${{ env.AWS_REGION }}
-          output-credentials: true
-          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/GitHubActions
+          role-to-assume: ${{ env.AWS_ROLE }}
       - name: Log in to ECR
         run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.DOCKER_REGISTRY }}
       - name: Check if image exists in ECR
@@ -64,12 +62,14 @@ jobs:
 
   build:
     needs: prep
-    env:
-      AWS_SESSION_TOKEN: ${{ needs.prep.outputs.aws_session_token }}
     if: needs.prep.outputs.image_exists == 'false'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE }}
       - name: Log in to ECR
         run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.DOCKER_REGISTRY }}
       - name: Setup turbo cache
@@ -105,13 +105,15 @@ jobs:
           aws s3 cp --recursive export s3://${{ vars.CDN_BUCKET}}/_next/
 
   deploy:
-    needs: [build, prep]
-    env:
-      AWS_SESSION_TOKEN: ${{ needs.prep.outputs.aws_session_token }}
-    if: always() && needs.prep.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
+    needs: build
+    if: always() && (needs.build.result == 'success' || needs.build.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE }}
       - name: Generate deployment package
         run: |
           echo APP_VERSION=${{ github.ref_name }}-${{ env.TAG }} >> .env
@@ -141,14 +143,16 @@ jobs:
 
   test:
     if: always() && needs.deploy.result == 'success'
-    needs: [deploy, prep]
-    env:
-      AWS_SESSION_TOKEN: ${{ needs.prep.outputs.aws_session_token }}
+    needs: deploy
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.40.0-jammy
     steps:
       - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE }}
       - uses: actions/setup-node@v3
         with:
           cache: "npm"
@@ -169,12 +173,14 @@ jobs:
 
   promote:
     if: always() && needs.test.result == 'success' && (inputs.environment == 'main' || github.ref_name == 'main')
-    needs: [test, prep]
-    env:
-      AWS_SESSION_TOKEN: ${{ needs.prep.outputs.aws_session_token }}
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE }}
       - name: Promote
         id: promote
         uses: tmshkr/blue-green-beanstalk@latest
