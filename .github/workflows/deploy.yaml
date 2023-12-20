@@ -19,23 +19,32 @@ on:
         description: "Tag to deploy"
         required: false
 env:
-  AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: ${{ vars.AWS_REGION }}
-  DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place
+  DOCKER_IMAGE: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/journaling.place
+  DOCKER_REGISTRY: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
   ENVIRONMENT: ${{ inputs.environment || github.ref_name }}
   TAG: ${{ inputs.tag || github.sha }}
 
 jobs:
   prep:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     outputs:
+      aws_session_token: ${{ steps.aws-creds.outputs.aws-session-token }}
       image_exists: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS }}
       target_env_cname: ${{ steps.prep.outputs.target_env_cname }}
     steps:
       - uses: actions/checkout@v4
+      - id: aws-creds
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          output-credentials: true
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/GitHubActions
       - name: Log in to ECR
-        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
+        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.DOCKER_REGISTRY }}
       - name: Check if image exists in ECR
         id: check-image-exists
         run: ./scripts/check-image-exists.js ${{ env.TAG }}
@@ -55,12 +64,14 @@ jobs:
 
   build:
     needs: prep
+    env:
+      AWS_SESSION_TOKEN: ${{ needs.prep.outputs.aws_session_token }}
     if: needs.prep.outputs.image_exists == 'false'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Log in to ECR
-        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
+        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.DOCKER_REGISTRY }}
       - name: Setup turbo cache
         uses: actions/cache@v3
         with:
@@ -91,10 +102,12 @@ jobs:
       - name: Export static assets to S3
         run: |
           docker run -v ./export:/app/export "${{ env.DOCKER_IMAGE }}:${{ env.TAG }}" sh /app/scripts/export-static-assets.sh
-          aws s3 cp --recursive export s3://cdn.journaling.place/_next/
+          aws s3 cp --recursive export s3://${{ vars.CDN_BUCKET}}/_next/
 
   deploy:
-    needs: build
+    needs: [build, prep]
+    env:
+      AWS_SESSION_TOKEN: ${{ needs.prep.outputs.aws_session_token }}
     if: always() && (needs.build.result == 'success' || needs.build.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
@@ -130,6 +143,8 @@ jobs:
   test:
     if: always() && needs.deploy.result == 'success'
     needs: [deploy, prep]
+    env:
+      AWS_SESSION_TOKEN: ${{ needs.prep.outputs.aws_session_token }}
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.40.0-jammy
@@ -155,7 +170,9 @@ jobs:
 
   promote:
     if: always() && needs.test.result == 'success' && (inputs.environment == 'main' || github.ref_name == 'main')
-    needs: test
+    needs: [test, prep]
+    env:
+      AWS_SESSION_TOKEN: ${{ needs.prep.outputs.aws_session_token }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
