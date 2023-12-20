@@ -120,6 +120,7 @@ jobs:
           echo ENVIRONMENT=${{ env.ENVIRONMENT }} >> .env
           echo SHA=${{ github.sha }} >> .env
           echo TAG=${{ env.TAG }} >> .env
+          zip -r bundle.zip . -x '*.git*'
       - name: Deploy
         uses: tmshkr/blue-green-beanstalk@latest
         id: deploy
@@ -193,6 +194,6 @@ jobs:
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           promote: true
           staging_cname: ${{ vars.STAGING_CNAME }}
-      - name: Update DNS
-        run: |
-          curl -X POST "https://${{ secrets.DNS_USERNAME }}:${{ secrets.DNS_PASSWORD }}@domains.google.com/nic/update?hostname=journaling.place&myip=${{ steps.promote.outputs.target_env_endpoint_url }}"
+      # - name: Update DNS
+      #   run: |
+      #     curl -X POST "https://${{ secrets.DNS_USERNAME }}:${{ secrets.DNS_PASSWORD }}@domains.google.com/nic/update?hostname=journaling.place&myip=${{ steps.promote.outputs.target_env_endpoint_url }}"
