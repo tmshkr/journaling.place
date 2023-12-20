@@ -108,17 +108,16 @@ jobs:
     needs: [build, prep]
     env:
       AWS_SESSION_TOKEN: ${{ needs.prep.outputs.aws_session_token }}
-    if: always() && (needs.build.result == 'success' || needs.build.result == 'skipped')
+    if: always() && needs.prep.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Generate deployment package
-        run: ./scripts/create-deployment-package.js
-        env:
-          APP_VERSION: ${{ github.ref_name }}-${{ env.TAG }}
-          ENVIRONMENT: ${{ env.ENVIRONMENT }}
-          SHA: ${{ github.sha }}
-          TAG: ${{ env.TAG }}
+        run: |
+          echo APP_VERSION=${{ github.ref_name }}-${{ env.TAG }} >> .env
+          echo ENVIRONMENT=${{ env.ENVIRONMENT }} >> .env
+          echo SHA=${{ github.sha }} >> .env
+          echo TAG=${{ env.TAG }} >> .env
       - name: Deploy
         uses: tmshkr/blue-green-beanstalk@latest
         id: deploy
