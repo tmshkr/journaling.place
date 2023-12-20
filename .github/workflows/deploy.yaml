@@ -1,4 +1,7 @@
 name: Blue/Green Deployment
+permissions:
+  id-token: write
+  contents: read
 on:
   push:
     branches:
@@ -29,9 +32,6 @@ env:
 jobs:
   prep:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
     outputs:
       image_exists: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS }}
       target_env_cname: ${{ steps.prep.outputs.target_env_cname }}
