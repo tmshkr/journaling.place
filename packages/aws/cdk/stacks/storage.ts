@@ -33,9 +33,9 @@ export class StorageStack extends cdk.Stack {
       })
     );
 
-    new cdk.CfnOutput(this, "backupBucketArn", {
-      value: backupBucket.bucketArn,
-      exportName: "backupBucketArn",
+    new cdk.CfnOutput(this, "BackupBucketName", {
+      value: backupBucket.bucketName,
+      exportName: "BackupBucketName",
     });
   }
 }
