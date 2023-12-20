@@ -79,6 +79,8 @@ Resources:
       RoleName: GitHubActions
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/AdministratorAccess-AWSElasticBeanstalk"
+        - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
+        - "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
         - "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
   ServiceRole:
     Type: AWS::IAM::Role
