@@ -1,0 +1,1 @@
+../../hooks/prebuild/10-docker-login.sh

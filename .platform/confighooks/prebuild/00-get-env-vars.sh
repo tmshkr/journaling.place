@@ -1,0 +1,1 @@
+../../hooks/prebuild/00-get-env-vars.sh
