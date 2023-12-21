@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   app:
-    image: ${DOCKER_REGISTRY}/journaling.place:${TAG}
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/journaling.place:${TAG}
     command: npm run start
     container_name: app
     env_file: .env
