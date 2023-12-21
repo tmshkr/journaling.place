@@ -154,12 +154,6 @@ jobs:
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ env.AWS_ROLE }}
-      - name: Setup ngrok-ssh
-        uses: tmshkr/ngrok-ssh@latest
-        with:
-          BASH_PROFILE: ".bash_profile"
-          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
-          NGROK_CONFIG_FILE: "ngrok.yml"
       - uses: actions/setup-node@v3
         with:
           cache: "npm"
