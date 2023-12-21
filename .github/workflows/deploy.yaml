@@ -170,7 +170,7 @@ jobs:
         run: npm run test --workspace=e2e
         env:
           APP_VERSION: ${{ github.ref_name}}-${{ env.TAG }}
-          BASE_URL: https://${{ needs.prep.outputs.target_env_cname }}
+          BASE_URL: http://${{ needs.prep.outputs.target_env_cname }}
       - uses: actions/upload-artifact@v3
         if: always()
         with:
