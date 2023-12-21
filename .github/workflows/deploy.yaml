@@ -154,6 +154,12 @@ jobs:
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ env.AWS_ROLE }}
+      - name: Setup ngrok-ssh
+        uses: tmshkr/ngrok-ssh@latest
+        with:
+          BASH_PROFILE: ".bash_profile"
+          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+          NGROK_CONFIG_FILE: "ngrok.yml"
       - uses: actions/setup-node@v3
         with:
           cache: "npm"
@@ -194,6 +200,3 @@ jobs:
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           promote: true
           staging_cname: ${{ vars.STAGING_CNAME }}
-      # - name: Update DNS
-      #   run: |
-      #     curl -X POST "https://${{ secrets.DNS_USERNAME }}:${{ secrets.DNS_PASSWORD }}@domains.google.com/nic/update?hostname=journaling.place&myip=${{ steps.promote.outputs.target_env_endpoint_url }}"
