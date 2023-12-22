@@ -3,5 +3,10 @@
     "Namespace": "aws:elasticbeanstalk:application:environment",
     "OptionName": "IS_PRODUCTION",
     "Value": "true"
+  },
+  {
+    "Namespace": "aws:elbv2:listener:443",
+    "OptionName": "SSLCertificateArns",
+    "Value": "$SSL_CERTIFICATE_ARN"
   }
 ]
