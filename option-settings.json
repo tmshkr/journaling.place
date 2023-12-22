@@ -15,6 +15,16 @@
     "Value": "application"
   },
   {
+    "Namespace": "aws:elasticbeanstalk:environment:process:default",
+    "OptionName": "Protocol",
+    "Value": "HTTPS"
+  },
+  {
+    "Namespace": "aws:elbv2:listener:default",
+    "OptionName": "SSLCertificateArns",
+    "Value": "$SSL_CERTIFICATE_ARN"
+  },
+  {
     "Namespace": "aws:autoscaling:launchconfiguration",
     "OptionName": "RootVolumeType",
     "Value": "gp2"
@@ -23,11 +33,6 @@
     "Namespace": "aws:autoscaling:launchconfiguration",
     "OptionName": "RootVolumeSize",
     "Value": 12
-  },
-  {
-    "Namespace": "aws:autoscaling:launchconfiguration",
-    "OptionName": "IamInstanceProfile",
-    "Value": "aws-elasticbeanstalk-ec2-role"
   },
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
