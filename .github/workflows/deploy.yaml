@@ -46,6 +46,9 @@ jobs:
         id: check-image-exists
         run: ./scripts/check-image-exists.js ${{ env.TAG }}
       - run: ./scripts/sub-option-settings.sh
+        env:
+          DOMAIN_NAME: staging.journaling.place
+          IS_PRODUCTION: false
       - name: Prep target env
         id: prep
         uses: tmshkr/blue-green-beanstalk@latest
@@ -116,6 +119,9 @@ jobs:
           role-to-assume: ${{ env.AWS_ROLE }}
       - name: Generate deployment package
         run: ./scripts/generate-deployment-package.sh
+        env:
+          DOMAIN_NAME: staging.journaling.place
+          IS_PRODUCTION: false
       - name: Deploy
         uses: tmshkr/blue-green-beanstalk@latest
         id: deploy
@@ -177,6 +183,10 @@ jobs:
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ env.AWS_ROLE }}
+      - run: ./scripts/sub-option-settings.sh
+        env:
+          DOMAIN_NAME: journaling.place
+          IS_PRODUCTION: true
       - name: Promote
         id: promote
         uses: tmshkr/blue-green-beanstalk@latest
@@ -185,7 +195,7 @@ jobs:
           blue_env: ${{ vars.BLUE_ENV }}
           deploy: true
           green_env: ${{ vars.GREEN_ENV }}
-          option_settings: option-settings.prod.json
+          option_settings: option-settings.json
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           promote: true
           staging_cname: ${{ vars.STAGING_CNAME }}
