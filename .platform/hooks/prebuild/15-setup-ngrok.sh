@@ -15,7 +15,7 @@ if ! command -v "ngrok" >/dev/null 2>&1; then
   rm ngrok-v3-stable-linux-amd64.tgz
 fi
 
-NGROK_AUTHTOKEN=$(aws ssm get-parameter --name "/journaling.place/NGROK_AUTHTOKEN" --with-decryption --query "Parameter.Value")
+NGROK_AUTHTOKEN=$(aws ssm get-parameter --name "/journaling.place/NGROK_AUTHTOKEN" --with-decryption --query "Parameter.Value" | jq -r '.')
 
 ngrok http 80 --authtoken $NGROK_AUTHTOKEN --log "ngrok.log" >/dev/null &
 
