@@ -114,12 +114,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ env.AWS_ROLE }}
       - name: Generate deployment package
-        run: |
-          echo APP_VERSION=${{ github.ref_name }}-${{ env.TAG }} >> .env
-          echo ENVIRONMENT=${{ env.ENVIRONMENT }} >> .env
-          echo SHA=${{ github.sha }} >> .env
-          echo TAG=${{ env.TAG }} >> .env
-          zip -r bundle.zip . -x '*.git*'
+        run: ./scripts/generate-deployment-package.sh
       - name: Deploy
         uses: tmshkr/blue-green-beanstalk@latest
         id: deploy
