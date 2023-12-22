@@ -39,10 +39,7 @@ async function getSSMParameters() {
   const client = new SSMClient();
   const { Parameters } = await client.send(
     new GetParametersCommand({
-      Names: [
-        `/journaling.place/${ENVIRONMENT}/MONGO_URI`,
-        `/journaling.place/NGROK_URL`,
-      ],
+      Names: [`/journaling.place/${ENVIRONMENT}/MONGO_URI`],
       WithDecryption: true,
     })
   );
@@ -57,9 +54,7 @@ async function globalSetup(config: FullConfig) {
     await getSSMParameters();
   }
 
-  const baseURL = new URL(
-    process.env.NGROK_URL || process.env.BASE_URL || process.env.NEXTAUTH_URL
-  );
+  const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
 
   await checkVersion(baseURL);
 

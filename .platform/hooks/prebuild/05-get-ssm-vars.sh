@@ -7,3 +7,7 @@ aws ssm get-parameters-by-path --path "/journaling.place/$ENVIRONMENT/" --recurs
   key=$(echo $name | sed "s/\/journaling.place\/$ENVIRONMENT\///")
   echo "$key=$value" >>.env
 done
+
+if [ "$IS_PRODUCTION" != "true" ]; then
+  echo "NEXTAUTH_URL=https://staging.journaling.place" >>.env
+fi
