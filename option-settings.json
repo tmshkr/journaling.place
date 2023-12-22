@@ -15,7 +15,12 @@
     "Value": "application"
   },
   {
-    "Namespace": "aws:elasticbeanstalk:environment:process:default",
+    "Namespace": "aws:elasticbeanstalk:environment:process:https",
+    "OptionName": "Port",
+    "Value": "443"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment:process:https",
     "OptionName": "Protocol",
     "Value": "HTTPS"
   },
