@@ -25,7 +25,7 @@
     "Value": "HTTPS"
   },
   {
-    "Namespace": "aws:elbv2:listener:default",
+    "Namespace": "aws:elbv2:listener:443",
     "OptionName": "SSLCertificateArns",
     "Value": "$SSL_CERTIFICATE_ARN"
   },
