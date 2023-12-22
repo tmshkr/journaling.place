@@ -45,6 +45,7 @@ jobs:
       - name: Check if image exists in ECR
         id: check-image-exists
         run: ./scripts/check-image-exists.js ${{ env.TAG }}
+      - run: ./scripts/sub-option-settings.sh
       - name: Prep target env
         id: prep
         uses: tmshkr/blue-green-beanstalk@latest

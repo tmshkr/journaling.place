@@ -1,6 +1,5 @@
 #!/bin/bash -e
-
-export SSL_CERTIFICATE_ARN=$(aws acm list-certificates --query "CertificateSummaryList[?DomainName=='staging.journaling.place'].CertificateArn" --output text)
+source sub-option-settings.sh
 
 echo $(envsubst <option-settings.json) >option-settings.json
 echo APP_VERSION=$GITHUB_REF_NAME-$TAG >>.env
