@@ -25,12 +25,7 @@
     "Value": "application"
   },
   {
-    "Namespace": "aws:elasticbeanstalk:environment:process:https",
-    "OptionName": "Port",
-    "Value": "443"
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:environment:process:https",
+    "Namespace": "aws:elbv2:listener:443",
     "OptionName": "Protocol",
     "Value": "HTTPS"
   },
