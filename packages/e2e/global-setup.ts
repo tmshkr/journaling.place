@@ -4,10 +4,9 @@ import { SSMClient, GetParametersCommand } from "@aws-sdk/client-ssm";
 import { mockStorageState } from "./utils/mockStorageState";
 import { writeFileSync } from "fs";
 
-const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
 const { ENVIRONMENT } = process.env;
 
-async function checkVersion() {
+async function checkVersion(baseURL) {
   const fetchVersion = async (url, maxAttempts = 10) => {
     let attempts = 0;
     while (true) {
@@ -42,7 +41,7 @@ async function getSSMParameters() {
     new GetParametersCommand({
       Names: [
         `/journaling.place/${ENVIRONMENT}/MONGO_URI`,
-        `/journaling.place/${ENVIRONMENT}/NEXTAUTH_SECRET`,
+        `/journaling.place/NGROK_URL`,
       ],
       WithDecryption: true,
     })
@@ -54,11 +53,15 @@ async function getSSMParameters() {
 }
 
 async function globalSetup(config: FullConfig) {
-  await checkVersion();
-
   if (["main", "staging"].includes(ENVIRONMENT)) {
     await getSSMParameters();
   }
+
+  const baseURL = new URL(
+    process.env.NGROK_URL || process.env.BASE_URL || process.env.NEXTAUTH_URL
+  );
+
+  await checkVersion(baseURL);
 
   const prisma = new PrismaClient();
   const user = await prisma.user
