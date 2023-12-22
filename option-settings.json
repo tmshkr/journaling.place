@@ -6,6 +6,16 @@
   },
   {
     "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "ServiceRole",
+    "Value": "service-role/aws-elasticbeanstalk-service-role"
+  },
+  {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "IamInstanceProfile",
+    "Value": "aws-elasticbeanstalk-ec2-role"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "EnvironmentType",
     "Value": "LoadBalanced"
   },
