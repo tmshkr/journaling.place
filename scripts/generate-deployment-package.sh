@@ -1,5 +1,5 @@
 #!/bin/bash -e
-source sub-option-settings.sh
+source ./scripts/sub-option-settings.sh
 
 echo APP_VERSION=$GITHUB_REF_NAME-$TAG >>.env
 echo ENVIRONMENT=$ENVIRONMENT >>.env
