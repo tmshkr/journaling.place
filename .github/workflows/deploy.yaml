@@ -163,6 +163,7 @@ jobs:
         run: npm run test --workspace=e2e
         env:
           APP_VERSION: ${{ github.ref_name}}-${{ env.TAG }}
+          BASE_URL: https://staging.journaling.place
       - uses: actions/upload-artifact@v3
         if: always()
         with:
