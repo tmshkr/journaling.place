@@ -56,10 +56,30 @@ function restrictAccess() {
   const allowed = new Set([`${myIP}/32`]);
 
   const { Environments } = JSON.parse(
-    execSync("aws elasticbeanstalk describe-environments --no-include-deleted")
+    execSync(
+      "aws elasticbeanstalk describe-environments --application-name journaling.place --no-include-deleted"
+    )
   );
   Environments.forEach((env) => {
-    if (env.Health !== "Grey") {
+    if (env.Health === "Grey") return;
+    if (env.EndpointURL.includes("elb.amazonaws.com")) {
+      // load-balanced env
+      const instanceIds = JSON.parse(
+        execSync(
+          `aws elasticbeanstalk describe-environment-resources --environment-id ${env.EnvironmentId}`
+        )
+      )
+        .EnvironmentResources.Instances.map(({ Id }) => Id)
+        .join(" ");
+
+      const { Instances } = JSON.parse(
+        execSync(`aws ec2 describe-instances --instance-ids ${instanceIds}`)
+      ).Reservations[0];
+
+      for (const { PublicIpAddress } of Instances) {
+        allowed.add(`${PublicIpAddress}/32`);
+      }
+    } else {
       allowed.add(`${env.EndpointURL}/32`);
     }
   });
