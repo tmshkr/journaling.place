@@ -51,3 +51,6 @@ dump
 
 *.mongodb.js
 docker-build.log
+
+cdk.out
+cdn

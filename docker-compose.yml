@@ -1,8 +1,8 @@
-version: "3"
+version: "3.8"
 
 services:
   app:
-    image: ${DOCKER_REGISTRY}/journaling.place:${TAG}
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/journaling.place:${TAG}
     command: npm run start
     container_name: app
     env_file: .env
@@ -10,24 +10,19 @@ services:
     volumes:
       - /app/node_modules
   nginx:
-    image: jonasal/nginx-certbot:latest
+    image: nginx:alpine
     container_name: nginx
     restart: unless-stopped
-    environment:
-      CERTBOT_EMAIL:
-      SERVER_NAME:
     depends_on:
       - app
     ports:
       - "80:80"
-      - "443:443"
     volumes:
-      - /efs/${ENVIRONMENT}/letsencrypt:/etc/letsencrypt
-      - ./nginx:/etc/nginx/templates
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
   mongo-backup:
     image: "tmshkr/mongodump"
     environment:
       CRON_SCHEDULE: "0 10 * * *"
       MONGO_URI:
       TARGET_FOLDER: "/backup"
-      TARGET_S3_FOLDER: "${MONGO_BACKUP_S3_FOLDER}"
+      TARGET_S3_FOLDER: "s3://${BACKUP_BUCKET_NAME}/${ENVIRONMENT}"

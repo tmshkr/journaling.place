@@ -1,4 +1,7 @@
 name: Blue/Green Deployment
+permissions:
+  id-token: write
+  contents: read
 on:
   push:
     branches:
@@ -19,10 +22,10 @@ on:
         description: "Tag to deploy"
         required: false
 env:
-  AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: ${{ vars.AWS_REGION }}
-  DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place
+  AWS_ROLE: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/GitHubActions
+  DOCKER_IMAGE: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/journaling.place
+  DOCKER_REGISTRY: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
   ENVIRONMENT: ${{ inputs.environment || github.ref_name }}
   TAG: ${{ inputs.tag || github.sha }}
 
@@ -31,17 +34,24 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image_exists: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS }}
-      target_env_cname: ${{ steps.prep.outputs.target_env_cname }}
     steps:
       - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE }}
       - name: Log in to ECR
-        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
+        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.DOCKER_REGISTRY }}
       - name: Check if image exists in ECR
         id: check-image-exists
         run: ./scripts/check-image-exists.js ${{ env.TAG }}
+      - run: ./scripts/sub-option-settings.sh
+        env:
+          DOMAIN_NAME: staging.journaling.place
+          IS_PRODUCTION: false
       - name: Prep target env
         id: prep
-        uses: tmshkr/blue-green-beanstalk@dev
+        uses: tmshkr/blue-green-beanstalk@latest
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
@@ -59,8 +69,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE }}
       - name: Log in to ECR
-        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
+        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.DOCKER_REGISTRY }}
       - name: Setup turbo cache
         uses: actions/cache@v3
         with:
@@ -91,7 +105,7 @@ jobs:
       - name: Export static assets to S3
         run: |
           docker run -v ./export:/app/export "${{ env.DOCKER_IMAGE }}:${{ env.TAG }}" sh /app/scripts/export-static-assets.sh
-          aws s3 cp --recursive export s3://cdn.journaling.place/_next/
+          aws s3 cp --recursive export s3://${{ vars.CDN_BUCKET}}/_next/
 
   deploy:
     needs: build
@@ -99,15 +113,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE }}
       - name: Generate deployment package
-        run: ./scripts/create-deployment-package.js
+        run: ./scripts/generate-deployment-package.sh
         env:
-          APP_VERSION: ${{ github.ref_name }}-${{ env.TAG }}
-          ENVIRONMENT: ${{ env.ENVIRONMENT }}
-          SHA: ${{ github.sha }}
-          TAG: ${{ env.TAG }}
+          DOMAIN_NAME: staging.journaling.place
+          IS_PRODUCTION: false
       - name: Deploy
-        uses: tmshkr/blue-green-beanstalk@dev
+        uses: tmshkr/blue-green-beanstalk@latest
         id: deploy
         with:
           deploy: true
@@ -129,12 +145,16 @@ jobs:
 
   test:
     if: always() && needs.deploy.result == 'success'
-    needs: [deploy, prep]
+    needs: deploy
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.40.0-jammy
     steps:
       - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE }}
       - uses: actions/setup-node@v3
         with:
           cache: "npm"
@@ -145,7 +165,7 @@ jobs:
         run: npm run test --workspace=e2e
         env:
           APP_VERSION: ${{ github.ref_name}}-${{ env.TAG }}
-          BASE_URL: https://${{ needs.prep.outputs.target_env_cname }}
+          BASE_URL: https://staging.journaling.place
       - uses: actions/upload-artifact@v3
         if: always()
         with:
@@ -159,18 +179,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE }}
+      - run: ./scripts/sub-option-settings.sh
+        env:
+          DOMAIN_NAME: journaling.place
+          IS_PRODUCTION: true
       - name: Promote
         id: promote
-        uses: tmshkr/blue-green-beanstalk@dev
+        uses: tmshkr/blue-green-beanstalk@latest
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
           deploy: true
           green_env: ${{ vars.GREEN_ENV }}
-          option_settings: option-settings.prod.json
+          option_settings: option-settings.json
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           promote: true
           staging_cname: ${{ vars.STAGING_CNAME }}
-      - name: Update DNS
-        run: |
-          curl -X POST "https://${{ secrets.DNS_USERNAME }}:${{ secrets.DNS_PASSWORD }}@domains.google.com/nic/update?hostname=journaling.place&myip=${{ steps.promote.outputs.target_env_endpoint_url }}"

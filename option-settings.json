@@ -6,8 +6,33 @@
   },
   {
     "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "ServiceRole",
+    "Value": "service-role/aws-elasticbeanstalk-service-role"
+  },
+  {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "IamInstanceProfile",
+    "Value": "aws-elasticbeanstalk-ec2-role"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "EnvironmentType",
-    "Value": "SingleInstance"
+    "Value": "LoadBalanced"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "LoadBalancerType",
+    "Value": "application"
+  },
+  {
+    "Namespace": "aws:elbv2:listener:443",
+    "OptionName": "Protocol",
+    "Value": "HTTPS"
+  },
+  {
+    "Namespace": "aws:elbv2:listener:443",
+    "OptionName": "SSLCertificateArns",
+    "Value": "$SSL_CERTIFICATE_ARN"
   },
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
@@ -20,18 +45,13 @@
     "Value": 12
   },
   {
-    "Namespace": "aws:elasticbeanstalk:environment",
-    "OptionName": "ServiceRole",
-    "Value": "aws-elasticbeanstalk-service-role"
-  },
-  {
-    "Namespace": "aws:autoscaling:launchconfiguration",
-    "OptionName": "IamInstanceProfile",
-    "Value": "aws-elasticbeanstalk-ec2-role"
-  },
-  {
     "Namespace": "aws:autoscaling:launchconfiguration",
     "OptionName": "EC2KeyName",
     "Value": "aws-eb"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "IS_PRODUCTION",
+    "Value": "$IS_PRODUCTION"
   }
 ]

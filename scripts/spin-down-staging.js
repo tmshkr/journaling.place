@@ -1,21 +1,50 @@
 #!/usr/bin/env node
 const { execSync } = require("child_process");
 
-function spinDownStaging() {
+main();
+function main() {
   const stagingEnv = JSON.parse(
     execSync(
-      `aws elasticbeanstalk describe-environments --application-name journaling.place`
+      `aws elasticbeanstalk describe-environments --application-name journaling.place --no-include-deleted`
     )
-  ).Environments.find(
-    ({ CNAME, Status }) => CNAME.startsWith("jp-staging") && Status === "Ready"
+  ).Environments.find(({ CNAME }) => CNAME.startsWith("jp-staging"));
+
+  if (!stagingEnv) {
+    console.log("Staging environment not found");
+    return;
+  }
+
+  if (stagingEnv.Status !== "Ready") {
+    console.log("Staging environment is not ready");
+    return;
+  }
+
+  const { EnvironmentResources } = JSON.parse(
+    execSync(
+      `aws elasticbeanstalk describe-environment-resources --environment-id ${stagingEnv.EnvironmentId}`
+    )
   );
 
-  const stagingASG = JSON.parse(
-    execSync(`aws autoscaling describe-auto-scaling-groups`)
-  ).AutoScalingGroups.find(({ AutoScalingGroupName }) =>
-    AutoScalingGroupName.startsWith(`awseb-${stagingEnv.EnvironmentId}`)
-  );
+  console.log(`Spinning down ${stagingEnv.EnvironmentName}`);
+  if (EnvironmentResources.LoadBalancers.length > 0) {
+    spinDownLoadBalancer(EnvironmentResources);
+  } else {
+    spinDownSingleInstance(stagingEnv, EnvironmentResources);
+  }
+  console.log("Done");
+}
 
+function spinDownLoadBalancer(EnvironmentResources) {
+  const asgName = EnvironmentResources.AutoScalingGroups[0].Name;
+  const elbName = EnvironmentResources.LoadBalancers[0].Name;
+  execSync(`
+    aws autoscaling update-auto-scaling-group --auto-scaling-group-name ${asgName} --min-size 0 --max-size 0 --desired-capacity 0
+    aws elbv2 delete-load-balancer --load-balancer-arn ${elbName}
+    `);
+}
+
+function spinDownSingleInstance(stagingEnv, EnvironmentResources) {
+  const asgName = EnvironmentResources.AutoScalingGroups[0].Name;
   const eip = JSON.parse(execSync(`aws ec2 describe-addresses`)).Addresses.find(
     ({ PublicIp }) => PublicIp === stagingEnv.EndpointURL
   );
@@ -23,8 +52,6 @@ function spinDownStaging() {
   execSync(`
     aws ec2 disassociate-address --association-id ${eip.AssociationId}
     aws ec2 release-address --allocation-id ${eip.AllocationId}
-    aws autoscaling update-auto-scaling-group --auto-scaling-group-name ${stagingASG.AutoScalingGroupName} --min-size 0 --max-size 0 --desired-capacity 0
+    aws autoscaling update-auto-scaling-group --auto-scaling-group-name ${asgName} --min-size 0 --max-size 0 --desired-capacity 0
     `);
 }
-
-spinDownStaging();
