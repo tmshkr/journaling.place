@@ -39,7 +39,10 @@ async function getSSMParameters() {
   const client = new SSMClient();
   const { Parameters } = await client.send(
     new GetParametersCommand({
-      Names: [`/journaling.place/${ENVIRONMENT}/MONGO_URI`],
+      Names: [
+        `/journaling.place/${ENVIRONMENT}/MONGO_URI`,
+        `/journaling.place/${ENVIRONMENT}/NEXTAUTH_SECRET`,
+      ],
       WithDecryption: true,
     })
   );
