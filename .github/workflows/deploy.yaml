@@ -40,21 +40,19 @@ jobs:
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ env.AWS_ROLE }}
-      - name: Log in to ECR
-        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.DOCKER_REGISTRY }}
       - name: Check if image exists in ECR
         id: check-image-exists
         run: ./scripts/check-image-exists.js ${{ env.TAG }}
       - run: ./scripts/sub-option-settings.sh
         env:
           DOMAIN_NAME: staging.journaling.place
-          IS_PRODUCTION: false
       - name: Prep target env
         id: prep
-        uses: tmshkr/blue-green-beanstalk@latest
+        uses: tmshkr/blue-green-beanstalk@dev
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
+          disable_termination_protection: true
           green_env: ${{ vars.GREEN_ENV }}
           option_settings: option-settings.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
@@ -73,8 +71,6 @@ jobs:
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ env.AWS_ROLE }}
-      - name: Log in to ECR
-        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.DOCKER_REGISTRY }}
       - name: Setup turbo cache
         uses: actions/cache@v3
         with:
@@ -99,7 +95,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
-      - run: docker push --all-tags ${{ env.DOCKER_IMAGE }}
+      - run: |
+          aws ecr get-login-password | docker login --username AWS --password-stdin ${{ env.DOCKER_REGISTRY }}
+          docker push --all-tags ${{ env.DOCKER_IMAGE }}
+          docker logout ${{ env.DOCKER_REGISTRY }}
       - name: Export turbo cache
         run: ./scripts/turbo-cache.sh export
       - name: Export static assets to S3
@@ -121,14 +120,14 @@ jobs:
         run: ./scripts/generate-deployment-package.sh
         env:
           DOMAIN_NAME: staging.journaling.place
-          IS_PRODUCTION: false
       - name: Deploy
-        uses: tmshkr/blue-green-beanstalk@latest
+        uses: tmshkr/blue-green-beanstalk@dev
         id: deploy
         with:
-          deploy: true
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
+          deploy: true
+          enable_termination_protection: true
           green_env: ${{ vars.GREEN_ENV }}
           option_settings: option-settings.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
@@ -186,10 +185,9 @@ jobs:
       - run: ./scripts/sub-option-settings.sh
         env:
           DOMAIN_NAME: journaling.place
-          IS_PRODUCTION: true
       - name: Promote
         id: promote
-        uses: tmshkr/blue-green-beanstalk@latest
+        uses: tmshkr/blue-green-beanstalk@dev
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
