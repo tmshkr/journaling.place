@@ -107,8 +107,8 @@ jobs:
           aws s3 cp --recursive export s3://${{ vars.CDN_BUCKET}}/_next/
 
   deploy:
-    needs: build
-    if: always() && (needs.build.result == 'success' || needs.build.result == 'skipped')
+    needs: [prep, build]
+    if: always() && needs.prep.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
