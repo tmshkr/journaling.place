@@ -51,7 +51,7 @@
   },
   {
     "Namespace": "aws:elasticbeanstalk:application:environment",
-    "OptionName": "IS_PRODUCTION",
-    "Value": "$IS_PRODUCTION"
+    "OptionName": "DOMAIN_NAME",
+    "Value": "$DOMAIN_NAME"
   }
 ]
