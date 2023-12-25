@@ -57,6 +57,6 @@
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
     "OptionName": "SSHSourceRestriction",
-    "Value": "$DEFAULT_SECURITY_GROUP"
+    "Value": "$DEFAULT_SECURITY_GROUP_ID"
   }
 ]
