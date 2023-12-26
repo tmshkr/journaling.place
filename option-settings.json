@@ -1,13 +1,13 @@
 [
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
-    "OptionName": "IamInstanceProfile",
-    "Value": "aws-elasticbeanstalk-ec2-role"
+    "OptionName": "EC2KeyName",
+    "Value": "aws-eb"
   },
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
-    "OptionName": "RootVolumeType",
-    "Value": "gp2"
+    "OptionName": "IamInstanceProfile",
+    "Value": "aws-elasticbeanstalk-ec2-role"
   },
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
@@ -16,8 +16,8 @@
   },
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
-    "OptionName": "EC2KeyName",
-    "Value": "aws-eb"
+    "OptionName": "RootVolumeType",
+    "Value": "gp2"
   },
   {
     "Namespace": "aws:ec2:instances",
@@ -31,11 +31,6 @@
   },
   {
     "Namespace": "aws:elasticbeanstalk:environment",
-    "OptionName": "ServiceRole",
-    "Value": "service-role/aws-elasticbeanstalk-service-role"
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "EnvironmentType",
     "Value": "LoadBalanced"
   },
@@ -43,6 +38,11 @@
     "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "LoadBalancerType",
     "Value": "application"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "ServiceRole",
+    "Value": "service-role/aws-elasticbeanstalk-service-role"
   },
   {
     "Namespace": "aws:elbv2:listener:443",
