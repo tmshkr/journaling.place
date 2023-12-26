@@ -22,7 +22,7 @@
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
     "OptionName": "SSHSourceRestriction",
-    "Value": "tcp, 22, 22, $DEFAULT_SECURITY_GROUP_ID"
+    "Value": "tcp,22,22,default"
   },
   {
     "Namespace": "aws:ec2:instances",
