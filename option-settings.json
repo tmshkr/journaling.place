@@ -20,6 +20,11 @@
     "Value": "gp2"
   },
   {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "SSHSourceRestriction",
+    "Value": "'`{ \"Fn::ImportValue\" : \"SSHAccessListId\" }`'"
+  },
+  {
     "Namespace": "aws:ec2:instances",
     "OptionName": "InstanceTypes",
     "Value": "t3.micro,t2.micro"
