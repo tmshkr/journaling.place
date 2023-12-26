@@ -22,7 +22,7 @@
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
     "OptionName": "SSHSourceRestriction",
-    "Value": "tcp,22,22,$SSH_ACCESS_LIST"
+    "Value": "tcp, 22, 22, 127.0.0.1/32"
   },
   {
     "Namespace": "aws:ec2:instances",
