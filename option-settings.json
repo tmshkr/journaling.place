@@ -1,18 +1,38 @@
 [
   {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "IamInstanceProfile",
+    "Value": "aws-elasticbeanstalk-ec2-role"
+  },
+  {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "RootVolumeType",
+    "Value": "gp2"
+  },
+  {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "RootVolumeSize",
+    "Value": 12
+  },
+  {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "EC2KeyName",
+    "Value": "aws-eb"
+  },
+  {
     "Namespace": "aws:ec2:instances",
     "OptionName": "InstanceTypes",
     "Value": "t3.micro,t2.micro"
   },
   {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "NEXTAUTH_URL",
+    "Value": "https://$DOMAIN_NAME"
+  },
+  {
     "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "ServiceRole",
     "Value": "service-role/aws-elasticbeanstalk-service-role"
-  },
-  {
-    "Namespace": "aws:autoscaling:launchconfiguration",
-    "OptionName": "IamInstanceProfile",
-    "Value": "aws-elasticbeanstalk-ec2-role"
   },
   {
     "Namespace": "aws:elasticbeanstalk:environment",
@@ -33,25 +53,5 @@
     "Namespace": "aws:elbv2:listener:443",
     "OptionName": "SSLCertificateArns",
     "Value": "$SSL_CERTIFICATE_ARN"
-  },
-  {
-    "Namespace": "aws:autoscaling:launchconfiguration",
-    "OptionName": "RootVolumeType",
-    "Value": "gp2"
-  },
-  {
-    "Namespace": "aws:autoscaling:launchconfiguration",
-    "OptionName": "RootVolumeSize",
-    "Value": 12
-  },
-  {
-    "Namespace": "aws:autoscaling:launchconfiguration",
-    "OptionName": "EC2KeyName",
-    "Value": "aws-eb"
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:application:environment",
-    "OptionName": "NEXTAUTH_URL",
-    "Value": "https://$DOMAIN_NAME"
   }
 ]
