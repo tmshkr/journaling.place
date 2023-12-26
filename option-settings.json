@@ -53,10 +53,5 @@
     "Namespace": "aws:elasticbeanstalk:application:environment",
     "OptionName": "NEXTAUTH_URL",
     "Value": "https://$DOMAIN_NAME"
-  },
-  {
-    "Namespace": "aws:autoscaling:launchconfiguration",
-    "OptionName": "SSHSourceRestriction",
-    "Value": "tcp, 22, 22, $DEFAULT_SECURITY_GROUP_ID"
   }
 ]
