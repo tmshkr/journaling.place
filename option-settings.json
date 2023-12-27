@@ -41,6 +41,11 @@
   },
   {
     "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "LoadBalancerIsShared",
+    "Value": "true"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "LoadBalancerType",
     "Value": "application"
   },
@@ -57,6 +62,15 @@
   {
     "Namespace": "aws:elbv2:listener:443",
     "OptionName": "SSLCertificateArns",
-    "Value": "$SSL_CERTIFICATE_ARN"
+    "Value": {
+      "Fn::ImportValue": "HttpsCertificateArn"
+    }
+  },
+  {
+    "Namespace": "aws:elbv2:loadbalancer",
+    "OptionName": "SharedLoadBalancer",
+    "Value": {
+      "Fn::ImportValue": "SharedLoadBalancerArn"
+    }
   }
 ]
