@@ -63,7 +63,7 @@ jobs:
           staging_cname: ${{ vars.STAGING_CNAME }}
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ env.TAG }}
-          wait_for_deployment: false
+          wait_for_deployment: true
 
   build:
     needs: prep
