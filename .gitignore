@@ -53,4 +53,5 @@ dump
 docker-build.log
 
 cdk.out
+cdk.context.json
 cdn
