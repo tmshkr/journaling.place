@@ -47,9 +47,8 @@ jobs:
         run: ./scripts/generate-deployment-package.sh
         env:
           DOMAIN_NAME: staging.journaling.place
-          PREP: true
+          STAGE: prep
       - name: Prep target env
-        id: prep
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
         with:
           app_name: "journaling.place"
@@ -62,7 +61,8 @@ jobs:
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
-          version_label: prep-${{ env.TAG }}
+          version_description: ${{ github.event.head_commit.message }}
+          version_label: ${{ github.ref_name }}-${{ env.TAG }}
           wait_for_deployment: false
 
   build:
@@ -120,10 +120,11 @@ jobs:
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ env.AWS_ROLE }}
-      - name: Generate deployment package
-        run: ./scripts/generate-deployment-package.sh
+      - name: Update option settings
+        run: ./scripts/sub-option-settings.sh
         env:
           DOMAIN_NAME: staging.journaling.place
+          STAGE: run
       - name: Deploy
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
         id: deploy
@@ -136,10 +137,7 @@ jobs:
           option_settings: option-settings.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
           production_cname: ${{ vars.PRODUCTION_CNAME }}
-          source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
-          version_description: ${{ github.event.head_commit.message }}
-          version_label: ${{ github.ref_name }}-${{ env.TAG }}
       - name: Tag image
         run: ./scripts/tag-image.js
         env:
@@ -189,6 +187,7 @@ jobs:
       - run: ./scripts/sub-option-settings.sh
         env:
           DOMAIN_NAME: journaling.place
+          STAGE: run
       - name: Promote
         id: promote
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
