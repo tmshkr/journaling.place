@@ -48,7 +48,7 @@ jobs:
           DOMAIN_NAME: staging.journaling.place
       - name: Prep target env
         id: prep
-        uses: tmshkr/blue-green-beanstalk@v3
+        uses: tmshkr/blue-green-beanstalk@use-shared-alb
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
@@ -121,7 +121,7 @@ jobs:
         env:
           DOMAIN_NAME: staging.journaling.place
       - name: Deploy
-        uses: tmshkr/blue-green-beanstalk@v3
+        uses: tmshkr/blue-green-beanstalk@use-shared-alb
         id: deploy
         with:
           app_name: "journaling.place"
@@ -187,7 +187,7 @@ jobs:
           DOMAIN_NAME: journaling.place
       - name: Promote
         id: promote
-        uses: tmshkr/blue-green-beanstalk@v3
+        uses: tmshkr/blue-green-beanstalk@use-shared-alb
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
