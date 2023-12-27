@@ -47,7 +47,7 @@ jobs:
         run: ./scripts/generate-deployment-package.sh
         env:
           DOMAIN_NAME: staging.journaling.place
-          prep: true
+          PREP: true
       - name: Prep target env
         id: prep
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
