@@ -60,14 +60,14 @@
     "Value": "service-role/aws-elasticbeanstalk-service-role"
   },
   {
-    "Namespace": " aws:elbv2:listenerrule:https",
-    "OptionName": "Process",
-    "Value": "default"
-  },
-  {
     "Namespace": "aws:elbv2:listener:443",
     "OptionName": "Rules",
     "Value": "https"
+  },
+  {
+    "Namespace": "aws:elbv2:listenerrule:https",
+    "OptionName": "Process",
+    "Value": "default"
   },
   {
     "Namespace": "aws:elbv2:loadbalancer",
