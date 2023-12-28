@@ -119,8 +119,8 @@ jobs:
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ env.AWS_ROLE }}
-      - name: Update option settings
-        run: ./scripts/sub-option-settings.sh
+      - name: Generate deployment package
+        run: ./scripts/generate-deployment-package.sh
         env:
           PREP: false
       - name: Deploy
@@ -134,7 +134,10 @@ jobs:
           option_settings: option-settings.staging.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
           production_cname: ${{ vars.PRODUCTION_CNAME }}
+          source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
+          version_description: ${{ github.event.head_commit.message }}
+          version_label: ${{ github.ref_name }}-${{ env.TAG }}
       - name: Tag image
         run: ./scripts/tag-image.js
         env:
