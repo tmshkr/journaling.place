@@ -32,7 +32,7 @@
   {
     "Namespace": "aws:elasticbeanstalk:application:environment",
     "OptionName": "NEXTAUTH_URL",
-    "Value": "https://$DOMAIN_NAME"
+    "Value": "https://staging.journaling.place"
   },
   {
     "Namespace": "aws:elasticbeanstalk:application:environment",
@@ -62,12 +62,12 @@
   {
     "Namespace": "aws:elbv2:listener:443",
     "OptionName": "Rules",
-    "Value": "default,staging"
+    "Value": "staging"
   },
   {
     "Namespace": "aws:elbv2:listener:80",
     "OptionName": "Rules",
-    "Value": "default,staging"
+    "Value": "staging"
   },
   {
     "Namespace": "aws:elbv2:listenerrule:staging",

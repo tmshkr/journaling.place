@@ -46,7 +46,6 @@ jobs:
       - name: Generate deployment package
         run: ./scripts/generate-deployment-package.sh
         env:
-          DOMAIN_NAME: staging.journaling.place
           STAGE: prep
       - name: Prep target env
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
@@ -55,7 +54,7 @@ jobs:
           blue_env: ${{ vars.BLUE_ENV }}
           disable_termination_protection: true
           green_env: ${{ vars.GREEN_ENV }}
-          option_settings: option-settings.json
+          option_settings: option-settings.staging.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
           prep: true
           production_cname: ${{ vars.PRODUCTION_CNAME }}
@@ -123,7 +122,6 @@ jobs:
       - name: Update option settings
         run: ./scripts/sub-option-settings.sh
         env:
-          DOMAIN_NAME: staging.journaling.place
           STAGE: run
       - name: Deploy
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
@@ -134,7 +132,7 @@ jobs:
           deploy: true
           enable_termination_protection: true
           green_env: ${{ vars.GREEN_ENV }}
-          option_settings: option-settings.json
+          option_settings: option-settings.staging.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           staging_cname: ${{ vars.STAGING_CNAME }}
@@ -184,10 +182,6 @@ jobs:
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ env.AWS_ROLE }}
-      - run: ./scripts/sub-option-settings.sh
-        env:
-          DOMAIN_NAME: journaling.place
-          STAGE: run
       - name: Promote
         id: promote
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
@@ -196,7 +190,7 @@ jobs:
           blue_env: ${{ vars.BLUE_ENV }}
           deploy: true
           green_env: ${{ vars.GREEN_ENV }}
-          option_settings: option-settings.json
+          option_settings: option-settings.prod.json
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           promote: true
           staging_cname: ${{ vars.STAGING_CNAME }}
