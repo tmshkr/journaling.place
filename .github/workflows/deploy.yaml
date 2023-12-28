@@ -45,6 +45,8 @@ jobs:
         run: ./scripts/check-image-exists.js ${{ env.TAG }}
       - name: Generate deployment package
         run: ./scripts/generate-deployment-package.sh
+        env:
+          PREP: true
       - name: Prep target env
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
         with:
@@ -119,6 +121,8 @@ jobs:
           role-to-assume: ${{ env.AWS_ROLE }}
       - name: Update option settings
         run: ./scripts/sub-option-settings.sh
+        env:
+          PREP: false
       - name: Deploy
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
         with:
