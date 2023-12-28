@@ -45,8 +45,6 @@ jobs:
         run: ./scripts/check-image-exists.js ${{ env.TAG }}
       - name: Generate deployment package
         run: ./scripts/generate-deployment-package.sh
-        env:
-          STAGE: prep
       - name: Prep target env
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
         with:
@@ -121,11 +119,8 @@ jobs:
           role-to-assume: ${{ env.AWS_ROLE }}
       - name: Update option settings
         run: ./scripts/sub-option-settings.sh
-        env:
-          STAGE: run
       - name: Deploy
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
-        id: deploy
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
@@ -183,7 +178,6 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ env.AWS_ROLE }}
       - name: Promote
-        id: promote
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
         with:
           app_name: "journaling.place"

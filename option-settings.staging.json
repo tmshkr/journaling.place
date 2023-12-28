@@ -35,11 +35,6 @@
     "Value": "https://staging.journaling.place"
   },
   {
-    "Namespace": "aws:elasticbeanstalk:application:environment",
-    "OptionName": "STAGE",
-    "Value": "$STAGE"
-  },
-  {
     "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "EnvironmentType",
     "Value": "LoadBalanced"
