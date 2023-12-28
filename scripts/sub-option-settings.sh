@@ -8,4 +8,4 @@ if [ -z "$SHARED_LOAD_BALANCER_ARN" ]; then
   exit 1
 fi
 
-echo$(envsubst <option-settings.staging.json) >option-settings.staging.json
+echo $(envsubst <option-settings.staging.json) >option-settings.staging.json
