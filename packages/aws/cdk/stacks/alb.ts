@@ -43,8 +43,9 @@ export class ALBStack extends cdk.Stack {
         contentType: "text/plain",
         messageBody: "OK",
       }),
-      sslPolicy: elbv2.SslPolicy.RECOMMENDED,
       certificates: [cert],
+      protocol: elbv2.ApplicationProtocol.HTTPS,
+      sslPolicy: elbv2.SslPolicy.RECOMMENDED,
     });
 
     new cdk.CfnOutput(this, "HttpsCertificateArn", {
