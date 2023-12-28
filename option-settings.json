@@ -41,11 +41,6 @@
   },
   {
     "Namespace": "aws:elasticbeanstalk:environment",
-    "OptionName": "ServiceRole",
-    "Value": "service-role/aws-elasticbeanstalk-service-role"
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "EnvironmentType",
     "Value": "LoadBalanced"
   },
@@ -60,14 +55,19 @@
     "Value": "application"
   },
   {
-    "Namespace": "aws:elbv2:listener:443",
-    "OptionName": "Protocol",
-    "Value": "HTTPS"
+    "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "ServiceRole",
+    "Value": "service-role/aws-elasticbeanstalk-service-role"
+  },
+  {
+    "Namespace": " aws:elbv2:listenerrule:https",
+    "OptionName": "Process",
+    "Value": "default"
   },
   {
     "Namespace": "aws:elbv2:listener:443",
-    "OptionName": "SSLCertificateArns",
-    "Value": "$HTTPS_CERTIFICATE_ARN"
+    "OptionName": "Rules",
+    "Value": "https"
   },
   {
     "Namespace": "aws:elbv2:loadbalancer",
