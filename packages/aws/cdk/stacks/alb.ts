@@ -27,26 +27,74 @@ export class ALBStack extends cdk.Stack {
       vpc: ec2.Vpc.fromLookup(this, "DefaultVPC", { isDefault: true }),
     });
 
-    alb.addListener("HttpListener", {
+    const httpListener = alb.addListener("HttpListener", {
       port: 80,
       open: true,
       defaultAction: elbv2.ListenerAction.fixedResponse(200, {
         contentType: "text/plain",
-        messageBody: "OK",
+        messageBody: alb.loadBalancerDnsName,
       }),
     });
 
-    alb.addListener("HttpsListener", {
+    const httpsListener = alb.addListener("HttpsListener", {
       port: 443,
       open: true,
       defaultAction: elbv2.ListenerAction.fixedResponse(200, {
         contentType: "text/plain",
-        messageBody: "OK",
+        messageBody: alb.loadBalancerDnsName,
       }),
       certificates: [cert],
       protocol: elbv2.ApplicationProtocol.HTTPS,
       sslPolicy: elbv2.SslPolicy.RECOMMENDED,
     });
+
+    new elbv2.ApplicationListenerRule(this, "http://journaling.place", {
+      listener: httpListener,
+      priority: 1,
+      conditions: [elbv2.ListenerCondition.hostHeaders(["journaling.place"])],
+      action: elbv2.ListenerAction.fixedResponse(200, {
+        contentType: "text/plain",
+        messageBody: "journaling.place",
+      }),
+    });
+
+    new elbv2.ApplicationListenerRule(this, "https://journaling.place", {
+      listener: httpsListener,
+      priority: 1,
+      conditions: [elbv2.ListenerCondition.hostHeaders(["journaling.place"])],
+      action: elbv2.ListenerAction.fixedResponse(200, {
+        contentType: "text/plain",
+        messageBody: "journaling.place",
+      }),
+    });
+
+    new elbv2.ApplicationListenerRule(this, "http://staging.journaling.place", {
+      listener: httpListener,
+      priority: 2,
+      conditions: [
+        elbv2.ListenerCondition.hostHeaders(["staging.journaling.place"]),
+      ],
+      action: elbv2.ListenerAction.fixedResponse(200, {
+        contentType: "text/plain",
+        messageBody: "staging.journaling.place",
+      }),
+    });
+
+    new elbv2.ApplicationListenerRule(
+      this,
+      "https://staging.journaling.place",
+      {
+        listener: httpsListener,
+        priority: 2,
+        conditions: [
+          elbv2.ListenerCondition.hostHeaders(["staging.journaling.place"]),
+        ],
+        action: elbv2.ListenerAction.fixedResponse(200, {
+          contentType: "text/plain",
+          messageBody: "staging.journaling.place",
+        }),
+      }
+    );
 
     new cdk.CfnOutput(this, "HttpsCertificateArn", {
       value: cert.certificateArn,
