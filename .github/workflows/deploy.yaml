@@ -43,9 +43,9 @@ jobs:
       - name: Check if image exists in ECR
         id: check-image-exists
         run: ./scripts/check-image-exists.js ${{ env.TAG }}
-      - name: Generate deployment package
-        run: ./scripts/generate-deployment-package.sh
+      - run: ./scripts/generate-deployment-package.sh
         env:
+          DOMAIN_NAME: staging.journaling.place
           PREP: true
       - name: Prep target env
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
@@ -119,10 +119,9 @@ jobs:
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ env.AWS_ROLE }}
-      - name: Generate deployment package
-        run: ./scripts/generate-deployment-package.sh
+      - run: ./scripts/generate-deployment-package.sh
         env:
-          PREP: false
+          DOMAIN_NAME: staging.journaling.place
       - name: Deploy
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
         with:
@@ -131,7 +130,7 @@ jobs:
           deploy: true
           enable_termination_protection: true
           green_env: ${{ vars.GREEN_ENV }}
-          option_settings: option-settings.staging.json
+          option_settings: option-settings.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           source_bundle: bundle.zip
@@ -184,6 +183,9 @@ jobs:
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ env.AWS_ROLE }}
+      - run: ./scripts/sub-option-settings.sh
+        env:
+          DOMAIN_NAME: journaling.place
       - name: Promote
         uses: tmshkr/blue-green-beanstalk@use-shared-alb
         with:
@@ -191,7 +193,8 @@ jobs:
           blue_env: ${{ vars.BLUE_ENV }}
           deploy: true
           green_env: ${{ vars.GREEN_ENV }}
-          option_settings: option-settings.prod.json
+          option_settings: option-settings.json
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           promote: true
           staging_cname: ${{ vars.STAGING_CNAME }}
+      - run: ./scripts/update-listeners.sh

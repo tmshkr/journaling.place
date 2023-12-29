@@ -1,7 +1,0 @@
-[
-  {
-    "Namespace": "aws:elasticbeanstalk:application:environment",
-    "OptionName": "NEXTAUTH_URL",
-    "Value": "https://journaling.place"
-  }
-]
