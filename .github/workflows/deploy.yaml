@@ -137,6 +137,11 @@ jobs:
           staging_cname: ${{ vars.STAGING_CNAME }}
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ env.TAG }}
+      - run: ./scripts/update-listener-rules.sh
+        env:
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          PRODUCTION_CNAME: ${{ vars.PRODUCTION_CNAME }}
+          STAGING_CNAME: ${{ vars.STAGING_CNAME }}
       - name: Tag image
         run: ./scripts/tag-image.js
         env:
@@ -197,4 +202,8 @@ jobs:
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           promote: true
           staging_cname: ${{ vars.STAGING_CNAME }}
-      - run: ./scripts/update-listeners.sh
+      - run: ./scripts/update-listener-rules.sh
+        env:
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          PRODUCTION_CNAME: ${{ vars.PRODUCTION_CNAME }}
+          STAGING_CNAME: ${{ vars.STAGING_CNAME }}
