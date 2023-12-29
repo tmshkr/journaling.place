@@ -62,17 +62,7 @@
   {
     "Namespace": "aws:elbv2:listener:443",
     "OptionName": "Rules",
-    "Value": "staging"
-  },
-  {
-    "Namespace": "aws:elbv2:listener:80",
-    "OptionName": "Rules",
-    "Value": "staging"
-  },
-  {
-    "Namespace": "aws:elbv2:listenerrule:staging",
-    "OptionName": "HostHeaders",
-    "Value": "staging.journaling.place"
+    "Value": "default"
   },
   {
     "Namespace": "aws:elbv2:loadbalancer",
