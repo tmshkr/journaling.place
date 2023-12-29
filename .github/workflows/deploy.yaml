@@ -54,7 +54,7 @@ jobs:
           blue_env: ${{ vars.BLUE_ENV }}
           disable_termination_protection: true
           green_env: ${{ vars.GREEN_ENV }}
-          option_settings: option-settings.staging.json
+          option_settings: option-settings.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
           prep: true
           production_cname: ${{ vars.PRODUCTION_CNAME }}

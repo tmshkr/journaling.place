@@ -21,4 +21,4 @@ if [ "$failed" == true ]; then
   exit 1
 fi
 
-echo $(envsubst <option-settings.json) >option-settings.staging.json
+echo $(envsubst <option-settings.json) >option-settings.json
