@@ -48,18 +48,20 @@ jobs:
           DOMAIN_NAME: staging.journaling.place
           PREP: true
       - name: Prep target env
-        uses: tmshkr/blue-green-beanstalk@use-shared-alb
+        uses: tmshkr/blue-green-beanstalk@update-listener-rules
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
+          deploy: true
           disable_termination_protection: true
           green_env: ${{ vars.GREEN_ENV }}
           option_settings: option-settings.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
-          prep: true
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
+          update_environment: false
+          update_listener_rules: true
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ env.TAG }}
           wait_for_deployment: true
@@ -123,7 +125,7 @@ jobs:
         env:
           DOMAIN_NAME: staging.journaling.place
       - name: Deploy
-        uses: tmshkr/blue-green-beanstalk@use-shared-alb
+        uses: tmshkr/blue-green-beanstalk@update-listener-rules
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
@@ -135,13 +137,9 @@ jobs:
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
+          update_listener_rules: true
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ env.TAG }}
-      - run: ./scripts/update-listener-rules.sh
-        env:
-          AWS_REGION: ${{ vars.AWS_REGION }}
-          PRODUCTION_CNAME: ${{ vars.PRODUCTION_CNAME }}
-          STAGING_CNAME: ${{ vars.STAGING_CNAME }}
       - name: Tag image
         run: ./scripts/tag-image.js
         env:
@@ -192,7 +190,7 @@ jobs:
         env:
           DOMAIN_NAME: journaling.place
       - name: Promote
-        uses: tmshkr/blue-green-beanstalk@use-shared-alb
+        uses: tmshkr/blue-green-beanstalk@update-listener-rules
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
@@ -202,8 +200,4 @@ jobs:
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           promote: true
           staging_cname: ${{ vars.STAGING_CNAME }}
-      - run: ./scripts/update-listener-rules.sh
-        env:
-          AWS_REGION: ${{ vars.AWS_REGION }}
-          PRODUCTION_CNAME: ${{ vars.PRODUCTION_CNAME }}
-          STAGING_CNAME: ${{ vars.STAGING_CNAME }}
+          update_listener_rules: true
