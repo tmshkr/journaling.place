@@ -48,39 +48,51 @@ export class ALBStack extends cdk.Stack {
       sslPolicy: elbv2.SslPolicy.RECOMMENDED,
     });
 
-    new elbv2.ApplicationListenerRule(this, "http://journaling.place", {
-      listener: httpListener,
-      priority: 1,
-      conditions: [elbv2.ListenerCondition.hostHeaders(["journaling.place"])],
-      action: elbv2.ListenerAction.fixedResponse(200, {
-        contentType: "text/plain",
-        messageBody: "journaling.place",
-      }),
-    });
+    const prodHttpListenerRule = new elbv2.ApplicationListenerRule(
+      this,
+      "http://journaling.place",
+      {
+        listener: httpListener,
+        priority: 1,
+        conditions: [elbv2.ListenerCondition.hostHeaders(["journaling.place"])],
+        action: elbv2.ListenerAction.fixedResponse(200, {
+          contentType: "text/plain",
+          messageBody: "journaling.place",
+        }),
+      }
+    );
 
-    new elbv2.ApplicationListenerRule(this, "https://journaling.place", {
-      listener: httpsListener,
-      priority: 1,
-      conditions: [elbv2.ListenerCondition.hostHeaders(["journaling.place"])],
-      action: elbv2.ListenerAction.fixedResponse(200, {
-        contentType: "text/plain",
-        messageBody: "journaling.place",
-      }),
-    });
+    const prodHttpsListenerRule = new elbv2.ApplicationListenerRule(
+      this,
+      "https://journaling.place",
+      {
+        listener: httpsListener,
+        priority: 1,
+        conditions: [elbv2.ListenerCondition.hostHeaders(["journaling.place"])],
+        action: elbv2.ListenerAction.fixedResponse(200, {
+          contentType: "text/plain",
+          messageBody: "journaling.place",
+        }),
+      }
+    );
 
-    new elbv2.ApplicationListenerRule(this, "http://staging.journaling.place", {
-      listener: httpListener,
-      priority: 2,
-      conditions: [
-        elbv2.ListenerCondition.hostHeaders(["staging.journaling.place"]),
-      ],
-      action: elbv2.ListenerAction.fixedResponse(200, {
-        contentType: "text/plain",
-        messageBody: "staging.journaling.place",
-      }),
-    });
+    const stagingHttpListenerRule = new elbv2.ApplicationListenerRule(
+      this,
+      "http://staging.journaling.place",
+      {
+        listener: httpListener,
+        priority: 2,
+        conditions: [
+          elbv2.ListenerCondition.hostHeaders(["staging.journaling.place"]),
+        ],
+        action: elbv2.ListenerAction.fixedResponse(200, {
+          contentType: "text/plain",
+          messageBody: "staging.journaling.place",
+        }),
+      }
+    );
 
-    new elbv2.ApplicationListenerRule(
+    const stagingHttpsListenerRule = new elbv2.ApplicationListenerRule(
       this,
       "https://staging.journaling.place",
       {
@@ -104,6 +116,26 @@ export class ALBStack extends cdk.Stack {
     new cdk.CfnOutput(this, "SharedLoadBalancerArn", {
       value: alb.loadBalancerArn,
       exportName: "SharedLoadBalancerArn",
+    });
+
+    new cdk.CfnOutput(this, "prod-http-listener-rule-arn", {
+      value: prodHttpListenerRule.listenerRuleArn,
+      exportName: "prod-http-listener-rule-arn",
+    });
+
+    new cdk.CfnOutput(this, "prod-https-listener-rule-arn", {
+      value: prodHttpsListenerRule.listenerRuleArn,
+      exportName: "prod-https-listener-rule-arn",
+    });
+
+    new cdk.CfnOutput(this, "staging-http-listener-rule-arn", {
+      value: stagingHttpListenerRule.listenerRuleArn,
+      exportName: "staging-http-listener-rule-arn",
+    });
+
+    new cdk.CfnOutput(this, "staging-https-listener-rule-arn", {
+      value: stagingHttpsListenerRule.listenerRuleArn,
+      exportName: "staging-https-listener-rule-arn",
     });
   }
 }
