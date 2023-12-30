@@ -128,22 +128,22 @@ export class ALBStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, "ProdHttpListenerRuleArn", {
       value: prodHttpListenerRule.listenerRuleArn,
-      exportName: "prod_http_listener_rule_arn",
+      exportName: "ProdHttpListenerRuleArn",
     });
 
     new cdk.CfnOutput(this, "ProdHttpsListenerRuleArn", {
       value: prodHttpsListenerRule.listenerRuleArn,
-      exportName: "prod_https_listener_rule_arn",
+      exportName: "ProdHttpsListenerRuleArn",
     });
 
     new cdk.CfnOutput(this, "StagingHttpListenerRuleArn", {
       value: stagingHttpListenerRule.listenerRuleArn,
-      exportName: "staging_http_listener_rule_arn",
+      exportName: "StagingHttpListenerRuleArn",
     });
 
     new cdk.CfnOutput(this, "StagingHttpsListenerRuleArn", {
       value: stagingHttpsListenerRule.listenerRuleArn,
-      exportName: "staging_https_listener_rule_arn",
+      exportName: "StagingHttpsListenerRuleArn",
     });
   }
 }
