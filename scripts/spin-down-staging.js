@@ -36,11 +36,15 @@ function main() {
 
 function spinDownLoadBalancer(EnvironmentResources) {
   const asgName = EnvironmentResources.AutoScalingGroups[0].Name;
-  const elbName = EnvironmentResources.LoadBalancers[0].Name;
   execSync(`
     aws autoscaling update-auto-scaling-group --auto-scaling-group-name ${asgName} --min-size 0 --max-size 0 --desired-capacity 0
-    aws elbv2 delete-load-balancer --load-balancer-arn ${elbName}
     `);
+
+  // delete dedicated load balancer
+  const elbArn = EnvironmentResources.LoadBalancers[0].Name;
+  if (elbArn.split("/")[2].startsWith("awseb--AWSEB")) {
+    execSync(`aws elbv2 delete-load-balancer --load-balancer-arn ${elbArn}`);
+  }
 }
 
 function spinDownSingleInstance(stagingEnv, EnvironmentResources) {
