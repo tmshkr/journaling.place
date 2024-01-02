@@ -48,7 +48,7 @@ jobs:
           DOMAIN_NAME: staging.journaling.place
           PREP: true
       - name: Prep target env
-        uses: tmshkr/blue-green-beanstalk@update-listener-rules
+        uses: tmshkr/blue-green-beanstalk@v4
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
@@ -125,7 +125,7 @@ jobs:
         env:
           DOMAIN_NAME: staging.journaling.place
       - name: Deploy
-        uses: tmshkr/blue-green-beanstalk@update-listener-rules
+        uses: tmshkr/blue-green-beanstalk@v4
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
@@ -190,7 +190,7 @@ jobs:
         env:
           DOMAIN_NAME: journaling.place
       - name: Promote
-        uses: tmshkr/blue-green-beanstalk@update-listener-rules
+        uses: tmshkr/blue-green-beanstalk@v4
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
@@ -198,6 +198,6 @@ jobs:
           green_env: ${{ vars.GREEN_ENV }}
           option_settings: option-settings.json
           production_cname: ${{ vars.PRODUCTION_CNAME }}
-          promote: true
           staging_cname: ${{ vars.STAGING_CNAME }}
+          swap_cnames: true
           update_listener_rules: true
