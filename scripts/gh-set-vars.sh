@@ -11,9 +11,9 @@ ProdHttpsListenerRuleArn=$(echo $alb_stack | jq -r '.Stacks[0].Outputs[] | selec
 StagingHttpListenerRuleArn=$(echo $alb_stack | jq -r '.Stacks[0].Outputs[] | select(.ExportName=="StagingHttpListenerRuleArn") | .OutputValue')
 StagingHttpsListenerRuleArn=$(echo $alb_stack | jq -r '.Stacks[0].Outputs[] | select(.ExportName=="StagingHttpsListenerRuleArn") | .OutputValue')
 
-aws elbv2 add-tags --resource-arns $ProdHttpListenerRuleArn --tags Key=elasticbeanstalk:cname,Value=jp-main-$key
-aws elbv2 add-tags --resource-arns $ProdHttpsListenerRuleArn --tags Key=elasticbeanstalk:cname,Value=jp-main-$key
-aws elbv2 add-tags --resource-arns $StagingHttpListenerRuleArn --tags Key=elasticbeanstalk:cname,Value=jp-staging-$key
-aws elbv2 add-tags --resource-arns $StagingHttpsListenerRuleArn --tags Key=elasticbeanstalk:cname,Value=jp-staging-$key
+aws elbv2 add-tags --resource-arns $ProdHttpListenerRuleArn --tags Key=bluegreenbeanstalk:target_cname,Value=jp-main-$key
+aws elbv2 add-tags --resource-arns $ProdHttpsListenerRuleArn --tags Key=bluegreenbeanstalk:target_cname,Value=jp-main-$key
+aws elbv2 add-tags --resource-arns $StagingHttpListenerRuleArn --tags Key=bluegreenbeanstalk:target_cname,Value=jp-staging-$key
+aws elbv2 add-tags --resource-arns $StagingHttpsListenerRuleArn --tags Key=bluegreenbeanstalk:target_cname,Value=jp-staging-$key
 
 echo "Updated listener rule tags"
