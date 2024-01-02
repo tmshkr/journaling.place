@@ -60,16 +60,6 @@
     "Value": "service-role/aws-elasticbeanstalk-service-role"
   },
   {
-    "Namespace": "aws:elbv2:listener:443",
-    "OptionName": "Rules",
-    "Value": "default"
-  },
-  {
-    "Namespace": "aws:elbv2:listener:80",
-    "OptionName": "Rules",
-    "Value": "default"
-  },
-  {
     "Namespace": "aws:elbv2:loadbalancer",
     "OptionName": "SharedLoadBalancer",
     "Value": "$SHARED_LOAD_BALANCER_ARN"
