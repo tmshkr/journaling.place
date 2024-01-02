@@ -64,7 +64,7 @@ jobs:
           update_listener_rules: true
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ env.TAG }}
-          wait_for_deployment: true
+          wait_for_deployment: false
 
   build:
     needs: prep
