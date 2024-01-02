@@ -142,12 +142,9 @@ jobs:
           update_listener_rules: true
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ env.TAG }}
-      - run: |
-          health=$(echo ${{ steps.deploy.outputs.target_env_json }} | jq -r '.Health')
-          if [ "$health" != "Green" ]; then
-            echo "Target environment is not healthy"
-            exit 1
-          fi
+      - run: ./scripts/check-target-env.sh
+        env:
+          TARGET_ENV_JSON: ${{ steps.deploy.outputs.target_env_json }}
       - name: Tag image
         run: ./scripts/tag-image.js
         env:
