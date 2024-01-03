@@ -27,7 +27,7 @@
   {
     "Namespace": "aws:ec2:instances",
     "OptionName": "InstanceTypes",
-    "Value": "t4g.small"
+    "Value": "t3.micro,t2.micro"
   },
   {
     "Namespace": "aws:elasticbeanstalk:application:environment",
