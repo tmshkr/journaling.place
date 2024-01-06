@@ -1,80 +1,70 @@
 import { Session } from "next-auth";
+import { store } from "src/store";
 import { cryptoStore, journalStore } from "src/lib/localForage";
 import { sync } from "src/store/journal";
+import { SettingsStatus } from "src/pages/settings";
 import axios from "axios";
 
-const store: {
-  key: CryptoKey | undefined;
-  salt: Uint8Array | undefined;
-} = {
-  key: undefined,
-  salt: undefined,
-};
+let key: CryptoKey | null;
+let salt: Uint8Array | null;
 
 function getKey() {
-  return store.key;
+  return key;
 }
 
-export function setKey(newKey: CryptoKey) {
-  store.key = newKey;
+function getSalt() {
+  return salt;
 }
 
 export function clearKey() {
-  store.key = undefined;
-}
-
-function isKeySet() {
-  return !!store.key;
+  key = null;
 }
 
 export async function handleKey(
   user,
   update: (data?: any) => Promise<Session | null>
 ) {
-  if (isKeySet()) return;
-  let localKey: CryptoKey | null = await cryptoStore.getItem(`key`);
-  let localSalt: Uint8Array | null = await cryptoStore.getItem(`salt`);
+  if (key) return;
+  key = await cryptoStore.getItem(`key`);
+  salt = await cryptoStore.getItem(`salt`);
 
   // check if local salt is the same as on the server
-  if (user.salt) {
+  if (user.salt && salt) {
     try {
       for (let i = 0; i < user.salt.data.length; i++) {
-        if (user.salt.data[i] !== (localSalt as Uint8Array)[i]) {
+        if (user.salt.data[i] !== salt[i]) {
           throw new Error("Salt mismatch");
         }
       }
     } catch (err) {
       console.error(err);
-      localKey = null;
-      localSalt = null;
+      key = null;
+      salt = null;
     }
   }
 
-  if (localKey && user.salt) {
-    store.salt = new Uint8Array(user.salt.data);
-    setKey(localKey);
+  if (key && salt) {
     return;
   }
 
   if (user.salt) {
-    store.salt = new Uint8Array(user.salt.data);
+    salt = new Uint8Array(user.salt.data);
   } else {
-    store.salt = window.crypto.getRandomValues(new Uint8Array(16));
+    salt = window.crypto.getRandomValues(new Uint8Array(16));
   }
 
   // Derive a key from a password
   const keyMaterial = await getKeyMaterial();
-  const key = await deriveKey(keyMaterial, store.salt);
-  setKey(key);
+  key = await deriveKey(keyMaterial, salt);
 
   // Persist salt to DB
   if (!user.salt) {
-    await axios.put("/api/me/password", { salt: Buffer.from(store.salt) });
+    await axios.put("/api/me/password", { salt: Buffer.from(salt) });
   }
 
   // Persist key and salt to IndexedDB
   await cryptoStore.setItem(`key`, key);
-  await cryptoStore.setItem(`salt`, store.salt);
+  await cryptoStore.setItem(`salt`, salt);
 
   // Update session and reload
   await update();
@@ -109,6 +99,8 @@ function getKeyMaterial(password?: string) {
   derive an AES-GCM key using PBKDF2.
 */
 function deriveKey(keyMaterial: CryptoKey, salt: Uint8Array) {
+  if (!keyMaterial) throw new Error("No key material provided");
+  if (!salt) throw new Error("No salt provided");
   return window.crypto.subtle.deriveKey(
     {
       name: "PBKDF2",
@@ -167,13 +159,16 @@ export async function decrypt(
 }
 
 export async function testPassword(password: string) {
+  if (!salt) throw new Error("No salt available");
+  if (!key) throw new Error("No key available");
+
   const testEncrypted = await encrypt("test");
   const keyMaterial = await getKeyMaterial(password);
-  const key = await deriveKey(keyMaterial, store.salt as Uint8Array);
+  const testKey = await deriveKey(keyMaterial, salt);
   const testDecrypted = await decrypt(
     testEncrypted.ciphertext,
     testEncrypted.iv,
-    key
+    testKey
   ).catch((err) => {
     console.log("Error decrypting", err);
   });
@@ -234,4 +229,5 @@ export async function changePassword(
 
   // Update session
   await update();
+  window.location.href += `?status=${SettingsStatus.PASSWORD_UPDATED}`;
 }

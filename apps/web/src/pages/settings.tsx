@@ -10,7 +10,7 @@ import { useSession } from "next-auth/react";
 
 import { changePassword } from "src/lib/crypto";
 
-enum SettingsStatus {
+export enum SettingsStatus {
   READY = "READY",
   UPDATING = "UPDATING",
   PASSWORD_UPDATED = "PASSWORD_UPDATED",
@@ -41,20 +41,17 @@ export default function SettingsPage() {
 
     setStatus(SettingsStatus.UPDATING);
 
-    await changePassword(current_password, new_password, update)
-      .then(() => {
-        setStatus(SettingsStatus.PASSWORD_UPDATED);
-        window.location.href += `?status=${SettingsStatus.PASSWORD_UPDATED}`;
-      })
-      .catch((err) => {
+    await changePassword(current_password, new_password, update).catch(
+      (err) => {
         if (err.message === "Incorrect password") {
           setError("current_password", {
-            message: "Current password is incorrect.",
+            message: "Provided password is incorrect.",
           });
           setStatus(SettingsStatus.READY);
           setFocus("current_password");
         } else throw err;
-      });
+      }
+    );
   };
 
   if (status === SettingsStatus.PASSWORD_UPDATED) {
