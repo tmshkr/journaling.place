@@ -16,3 +16,5 @@ export default function JournalIndex() {
 
   return <JournalList journals={journals} />;
 }
+
+JournalIndex.auth = true;

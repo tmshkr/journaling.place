@@ -162,3 +162,5 @@ export default function SettingsPage() {
     </div>
   );
 }
+
+SettingsPage.auth = true;

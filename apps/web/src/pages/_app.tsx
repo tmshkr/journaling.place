@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import { SessionProvider } from "next-auth/react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { sync } from "src/store/journal";
 import { Provider as ReduxProvider } from "react-redux";
 import axios from "axios";
@@ -54,19 +55,27 @@ function PageAuth({ Component, pageProps }) {
   const user = useAppSelector(selectUser);
   const loading = useAppSelector(selectLoadingState);
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const handleSession = async () => {
-    if (status === "authenticated") {
-      await handleKey(session.user, update);
-      dispatch(setUser(session.user));
-    } else if (status === "unauthenticated") {
-      dispatch(clearUser());
-    }
-
-    if (status === "loading") {
-      dispatch(setLoading({ ...loading, user: true }));
-    } else {
-      dispatch(setLoading({ ...loading, user: false }));
+    switch (status) {
+      case "loading":
+        dispatch(setLoading({ ...loading, user: true }));
+        break;
+      case "authenticated":
+        await handleKey(session.user, update);
+        dispatch(setUser(session.user));
+        dispatch(setLoading({ ...loading, user: false }));
+        break;
+      case "unauthenticated":
+        dispatch(clearUser());
+        dispatch(setLoading({ ...loading, user: false }));
+        if (Component.auth) {
+          router.push("/");
+        }
+        break;
+      default:
+        break;
     }
   };
 
@@ -89,18 +98,27 @@ function PageAuth({ Component, pageProps }) {
     };
   }, [dispatch]);
 
-  return user ? (
-    <>
-      <LoadingScreen />
-      <AppShell>
-        <Component {...pageProps} />
-        <Modal />
-      </AppShell>
-    </>
-  ) : (
+  if (user) {
+    return (
+      <>
+        <LoadingScreen />
+        <AppShell>
+          <Component {...pageProps} />
+          <Modal />
+        </AppShell>
+      </>
+    );
+  }
+
+  if (Component.auth) {
+    return null;
+  }
+
+  return (
     <>
       <LoadingScreen />
       <Component {...pageProps} />
+      <Modal />
     </>
   );
 }

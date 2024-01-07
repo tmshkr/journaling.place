@@ -9,3 +9,5 @@ export default function PromptPage() {
 
   return <JournalView prompt={null} journal={null} />;
 }
+
+PromptPage.auth = true;

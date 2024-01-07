@@ -26,3 +26,5 @@ export default function JournalPage() {
     <JournalView prompt={journal.prompt} journal={journal} />
   ) : null;
 }
+
+JournalPage.auth = true;
