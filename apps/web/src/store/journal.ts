@@ -100,7 +100,7 @@ export async function sync(
   fullSync?: boolean
 ) {
   const { user } = store.getState();
-  if (!user.value?.salt) {
+  if (!user.value?.salt || !user.value?.keyIsSet) {
     queryClient.cancelQueries({ queryKey: args?.queryKey });
     return cache;
   }

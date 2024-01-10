@@ -4,21 +4,29 @@ import { Dialog, Transition } from "@headlessui/react";
 import { useAppDispatch, useAppSelector } from "src/store";
 import { selectModal, setModal } from "src/store/modal";
 import { CreateNewEntryModal } from "./CreateNewEntryModal";
+import { DecryptionError } from "./DecryptionError";
+import { PasswordInput } from "./PasswordInput";
 
 const modals = {
   CreateNewEntryModal,
+  DecryptionError,
+  PasswordInput,
 };
 
 export function Modal() {
   const dispatch = useAppDispatch();
   const modal = useAppSelector(selectModal);
+  if (!modal.name) return null;
 
   return (
     <Transition.Root show={modal.isVisible} as={Fragment}>
       <Dialog
         as="div"
-        className="relative z-10"
-        onClose={() => dispatch(setModal({ ...modal, isVisible: false }))}
+        className="relative z-50"
+        onClose={() => {
+          if (modal.keepOpen) return;
+          dispatch(setModal({ ...modal, isVisible: false }));
+        }}
       >
         <Transition.Child
           as={Fragment}
@@ -44,7 +52,7 @@ export function Modal() {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 w-full sm:w-auto sm:max-w-lg sm:p-6">
-                {modals[modal.value]}
+                {modals[modal.name]}
               </Dialog.Panel>
             </Transition.Child>
           </div>

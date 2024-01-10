@@ -1,14 +1,16 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { AppState, AppThunk } from "./index";
+import { createSlice } from "@reduxjs/toolkit";
+import type { AppState } from "./index";
 
 export interface ModalState {
-  value: any | null;
+  name: string | null;
   isVisible: boolean;
+  keepOpen?: boolean;
 }
 
 const initialState: ModalState = {
-  value: null,
+  name: null,
   isVisible: false,
+  keepOpen: false,
 };
 
 export const modalSlice = createSlice({
@@ -16,8 +18,9 @@ export const modalSlice = createSlice({
   initialState,
   reducers: {
     setModal: (state, action) => {
-      state.value = action.payload.value;
-      state.isVisible = action.payload.isVisible;
+      for (const key in action.payload) {
+        state[key] = action.payload[key];
+      }
     },
   },
 });

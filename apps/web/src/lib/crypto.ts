@@ -1,5 +1,6 @@
 import { Session } from "next-auth";
 import { store } from "src/store";
+import { setModal } from "src/store/modal";
 import { cryptoStore, journalStore } from "src/lib/localForage";
 import { sync } from "src/store/journal";
 import { SettingsStatus } from "src/pages/settings";
@@ -20,11 +21,7 @@ export function clearKey() {
   key = null;
 }
 
-export async function handleKey(
-  user,
-  update: (data?: any) => Promise<Session | null>
-) {
-  if (key) return;
+export async function loadKey(user) {
   key = await cryptoStore.getItem(`key`);
   salt = await cryptoStore.getItem(`salt`);
 
@@ -43,10 +40,18 @@ export async function handleKey(
     }
   }
 
-  if (key && salt) {
-    return;
+  if (!key) {
+    store.dispatch(
+      setModal({ name: "PasswordInput", isVisible: true, keepOpen: true })
+    );
   }
+}
 
+export async function createKey(
+  password: string,
+  user,
+  updateSession: (data?: any) => Promise<Session | null>
+) {
   if (user.salt) {
     salt = new Uint8Array(user.salt.data);
   } else {
@@ -54,7 +59,7 @@ export async function handleKey(
   }
 
   // Derive a key from a password
-  const keyMaterial = await getKeyMaterial();
+  const keyMaterial = await getKeyMaterial(password);
   key = await deriveKey(keyMaterial, salt);
 
   // Persist salt to DB
@@ -67,7 +72,7 @@ export async function handleKey(
   await cryptoStore.setItem(`salt`, salt);
 
   // Update session and reload
-  await update();
+  await updateSession();
   window.location.reload();
 }
 
@@ -75,14 +80,7 @@ export async function handleKey(
   Get some key material to use as input to the deriveKey method.
   The key material is a password supplied by the user.
 */
-function getKeyMaterial(password?: string) {
-  if (!password) {
-    password =
-      window.prompt(
-        "Please enter your password.\nUse a strong password and store it in a safe place.\nIf you lose your password, your data cannot be recovered."
-      ) || undefined;
-  }
-
+async function getKeyMaterial(password: string) {
   if (!password) throw new Error("No password provided");
   const enc = new TextEncoder();
   return window.crypto.subtle.importKey(
@@ -148,13 +146,12 @@ export async function decrypt(
       ciphertext
     )
     .catch((err) => {
-      // TODO: prompt user about decryption error
       console.log("Error decrypting", err);
+      store.dispatch(setModal({ value: "DecryptionError", isVisible: true }));
       throw err;
     });
 
   let dec = new TextDecoder();
-
   return dec.decode(decrypted);
 }
 

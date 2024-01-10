@@ -1,8 +1,7 @@
 import "src/styles/globals.css";
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
-import { SessionProvider } from "next-auth/react";
-import { useSession } from "next-auth/react";
+import { SessionProvider, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { sync } from "src/store/journal";
 import { Provider as ReduxProvider } from "react-redux";
@@ -21,7 +20,7 @@ import { selectLoadingState, setLoading } from "src/store/loading";
 import { setNetworkStatus } from "src/store/network";
 import { AppShell } from "src/components/AppShell";
 import { LoadingScreen } from "src/components/LoadingScreen";
-import { handleKey } from "src/lib/crypto";
+import { loadKey } from "src/lib/crypto";
 
 import { Modal } from "src/components/modals/ModalWrapper";
 
@@ -51,7 +50,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 export default App;
 
 function PageAuth({ Component, pageProps }) {
-  const { data: session, status, update } = useSession();
+  const { data: session, status } = useSession();
   const user = useAppSelector(selectUser);
   const loading = useAppSelector(selectLoadingState);
   const dispatch = useAppDispatch();
@@ -63,9 +62,9 @@ function PageAuth({ Component, pageProps }) {
         dispatch(setLoading({ ...loading, user: true }));
         break;
       case "authenticated":
-        await handleKey(session.user, update);
         dispatch(setUser(session.user));
         dispatch(setLoading({ ...loading, user: false }));
+        await loadKey(session.user);
         break;
       case "unauthenticated":
         dispatch(clearUser());
