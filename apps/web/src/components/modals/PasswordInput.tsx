@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { Dialog, Transition } from "@headlessui/react";
 import { useSession } from "next-auth/react";
 import { useAppDispatch, useAppSelector } from "src/store";
+import { selectUser, setUser } from "src/store/user";
 import { setModal, selectModal } from "src/store/modal";
 import { DocumentIcon } from "@heroicons/react/20/solid";
 import { createKey } from "src/lib/crypto";
@@ -16,8 +17,11 @@ const inputClasses =
 export function PasswordInput() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { data: session, update } = useSession();
+  const { update } = useSession();
   const modal = useAppSelector(selectModal);
+  const user = useAppSelector(selectUser);
+
+  const hasPassword = !!user.salt;
 
   const { register, handleSubmit, formState, setError, setFocus, setValue } =
     useForm();
@@ -26,7 +30,7 @@ export function PasswordInput() {
   const onSubmit = async (values) => {
     console.log("values", values);
     const { password, confirm_password } = values;
-    if (password !== confirm_password) {
+    if (!hasPassword && password !== confirm_password) {
       console.log("passwords do not match");
       setError("confirm_password", {
         message: "Passwords do not match.",
@@ -34,6 +38,7 @@ export function PasswordInput() {
       setFocus("confirm_password");
       return;
     }
+    await createKey(password, user, update);
   };
 
   return (
@@ -55,27 +60,38 @@ export function PasswordInput() {
           className={inputClasses}
         />
       </div>
-      <label
-        htmlFor="confirm_password"
-        className="block text-md font-medium leading-6 text-gray-900"
-      >
-        Confirm Password
-      </label>
-      <div className="mt-2">
-        <input
-          id="confirm_password"
-          type="password"
-          {...register("confirm_password", {
-            required: "You must confirm your password.",
-          })}
-          className={inputClasses}
-        />
-      </div>
-      <Dialog.Description className="text-sm text-gray-500 my-2">
-        Use a strong password and store it in a safe place.
-        <br />
-        If you lose your password, your data cannot be recovered.
-      </Dialog.Description>
+      {!hasPassword && (
+        <>
+          <label
+            htmlFor="confirm_password"
+            className="block text-md font-medium leading-6 text-gray-900"
+          >
+            Confirm Password
+          </label>
+          <div className="mt-2">
+            <input
+              id="confirm_password"
+              type="password"
+              {...register("confirm_password", {
+                required: "You must confirm your password.",
+              })}
+              className={inputClasses}
+            />
+          </div>
+        </>
+      )}
+      {hasPassword ? (
+        <Dialog.Description className="text-sm text-gray-500 my-2">
+          Please enter your password to access your journal.
+        </Dialog.Description>
+      ) : (
+        <Dialog.Description className="text-sm text-gray-500 my-2">
+          Use a strong password and store it in a safe place.
+          <br />
+          If you lose your password, your data cannot be recovered.
+        </Dialog.Description>
+      )}
+
       <button type="submit" className={buttonClasses}>
         Submit
       </button>

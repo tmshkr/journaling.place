@@ -1,10 +1,12 @@
 import { Session } from "next-auth";
 import { store } from "src/store";
 import { setModal } from "src/store/modal";
+import { setUser } from "src/store/user";
 import { cryptoStore, journalStore } from "src/lib/localForage";
 import { sync } from "src/store/journal";
 import { SettingsStatus } from "src/pages/settings";
 import axios from "axios";
+import { queryClient } from "src/pages/_app";
 
 let key: CryptoKey | null;
 let salt: Uint8Array | null;
@@ -40,7 +42,10 @@ export async function loadKey(user) {
     }
   }
 
-  if (!key) {
+  if (key) {
+    store.dispatch(setUser({ ...user, keyIsSet: true }));
+    queryClient.fetchQuery({ queryKey: "journal" });
+  } else {
     store.dispatch(
       setModal({ name: "PasswordInput", isVisible: true, keepOpen: true })
     );

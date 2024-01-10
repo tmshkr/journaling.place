@@ -83,12 +83,6 @@ function PageAuth({ Component, pageProps }) {
   }, [status]);
 
   useEffect(() => {
-    if (user) {
-      queryClient.prefetchQuery({ queryKey: "journal", staleTime: 5000 });
-    }
-  }, [user]);
-
-  useEffect(() => {
     const { requestInterceptor, responseInterceptor } =
       registerInterceptors(dispatch);
     return () => {
