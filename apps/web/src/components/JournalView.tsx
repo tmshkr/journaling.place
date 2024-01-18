@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useAppDispatch, useAppSelector } from "src/store";
 import { selectLoadingState } from "src/store/loading";
 import { selectUser } from "src/store/user";
+import { selectModal } from "src/store/modal";
 
 const QuillEditor = dynamic(() => import("src/components/QuillEditor"), {
   ssr: false,
@@ -17,6 +18,7 @@ export function JournalView({ prompt, journal }) {
   const router = useRouter();
   const user = useAppSelector(selectUser);
   const loading = useAppSelector(selectLoadingState);
+  const modal = useAppSelector(selectModal);
 
   return (
     <div className={"container max-w-3xl py-3"}>
@@ -26,7 +28,7 @@ export function JournalView({ prompt, journal }) {
       <div className="my-6">
         {user ? (
           <QuillEditor
-            {...{ user, prompt, router, loading, dispatch, journal }}
+            {...{ user, prompt, router, loading, dispatch, journal, modal }}
           />
         ) : (
           <DemoEditor {...{ loading, dispatch }} />

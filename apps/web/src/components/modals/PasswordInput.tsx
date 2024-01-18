@@ -1,10 +1,10 @@
+import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog } from "@headlessui/react";
 import { useSession } from "next-auth/react";
 import { useAppDispatch, useAppSelector } from "src/store";
-import { selectUser, setUser } from "src/store/user";
-import { setModal, selectModal } from "src/store/modal";
-import { DocumentIcon } from "@heroicons/react/20/solid";
+import { selectUser } from "src/store/user";
+import { selectModal } from "src/store/modal";
 import { createKey } from "src/lib/crypto";
 import { useForm } from "react-hook-form";
 
@@ -15,17 +15,14 @@ const inputClasses =
   "block w-full rounded-md border-0 py-1.5 my-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6";
 
 export function PasswordInput() {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
   const { update } = useSession();
-  const modal = useAppSelector(selectModal);
   const user = useAppSelector(selectUser);
 
   const hasPassword = !!user.salt;
 
-  const { register, handleSubmit, formState, setError, setFocus, setValue } =
+  const { register, handleSubmit, formState, setError, setFocus } =
     useForm();
-  const { errors }: { errors: any } = formState;
+  const { errors }: { errors: any; } = formState;
 
   const onSubmit = async (values) => {
     console.log("values", values);
@@ -40,6 +37,10 @@ export function PasswordInput() {
     }
     await createKey(password, user, update);
   };
+
+  useEffect(() => {
+    setFocus("password");
+  }, []);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="text-center">
