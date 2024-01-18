@@ -1,9 +1,10 @@
 import { QueryFunctionContext, QueryKey } from "react-query";
 import { queryClient } from "src/pages/_app";
 import { JournalStatus } from "@prisma/client";
-import store from "src/store";
+import { store } from "src/store";
 import { setNetworkStatus, NetworkStatus } from "src/store/network";
 import { trpc } from "src/utils/trpc";
+import { setModal } from "src/store/modal";
 const { Index } = require("flexsearch");
 
 import { decrypt } from "src/lib/crypto";
@@ -67,7 +68,10 @@ async function processJournal(j: CachedJournal) {
     const decrypted = await decrypt(
       j.ciphertext as ArrayBuffer,
       j.iv as Uint8Array
-    );
+    ).catch((err) => {
+      store.dispatch(setModal({ name: "DecryptionError", isVisible: true, keepOpen: true }));
+      return "";
+    });
 
     try {
       quill.setContents(JSON.parse(decrypted));

@@ -149,11 +149,7 @@ export async function decrypt(
       },
       key,
       ciphertext
-    )
-    .catch((err) => {
-      console.log("Error decrypting", err);
-      store.dispatch(setModal({ name: "DecryptionError", isVisible: true, keepOpen: true }));
-    });
+    );
 
   if (!decrypted) return "";
   const dec = new TextDecoder();

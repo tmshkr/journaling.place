@@ -193,7 +193,10 @@ async function autosave(quillRef, journal, prompt, setJournal, dispatch) {
 
 async function loadSavedData(quillRef, journal) {
   if (journal?.id) {
-    const decrypted = await decrypt(journal.ciphertext, journal.iv);
+    const decrypted = await decrypt(journal.ciphertext, journal.iv).catch(err => {
+      console.error(err);
+      return "";
+    });
     try {
       quillRef.current.setContents(JSON.parse(decrypted));
     } catch (err) {
