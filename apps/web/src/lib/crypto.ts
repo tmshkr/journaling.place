@@ -65,7 +65,7 @@ export async function createKey(
 
   // Derive a key from a password
   const keyMaterial = await getKeyMaterial(password);
-  key = await deriveKey(keyMaterial, salt);
+  const key = await deriveKey(keyMaterial, salt);
 
   // Persist salt to DB
   if (!user.salt) {
@@ -152,11 +152,11 @@ export async function decrypt(
     )
     .catch((err) => {
       console.log("Error decrypting", err);
-      store.dispatch(setModal({ value: "DecryptionError", isVisible: true }));
-      throw err;
+      store.dispatch(setModal({ name: "DecryptionError", isVisible: true, keepOpen: true }));
     });
 
-  let dec = new TextDecoder();
+  if (!decrypted) return "";
+  const dec = new TextDecoder();
   return dec.decode(decrypted);
 }
 
