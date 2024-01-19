@@ -5,7 +5,6 @@ import { setUser } from "src/store/user";
 import { cryptoStore, journalStore } from "src/lib/localForage";
 import { sync } from "src/store/journal";
 import { SettingsStatus } from "src/pages/settings";
-import axios from "axios";
 import { trpc } from "src/utils/trpc";
 import { queryClient } from "src/pages/_app";
 
@@ -212,6 +211,9 @@ export async function changePassword(
       updatedAt: journal.updatedAt.toString(),
     });
   }
+
+  const { user } = store.getState();
+  store.dispatch(setUser({ ...user.value, updating: true }));
 
   await trpc.user.updatePassword.mutate({
     salt: Buffer.from(newSalt) as any,
