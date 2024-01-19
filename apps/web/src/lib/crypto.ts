@@ -227,5 +227,5 @@ export async function changePassword(
 
   // Update session
   await update();
-  window.location.href += `?status=${SettingsStatus.PASSWORD_UPDATED}`;
+  window.location.href = `/settings?status=${SettingsStatus.PASSWORD_UPDATED}`;
 }
