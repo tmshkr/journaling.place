@@ -6,6 +6,7 @@ import { cryptoStore, journalStore } from "src/lib/localForage";
 import { sync } from "src/store/journal";
 import { SettingsStatus } from "src/pages/settings";
 import axios from "axios";
+import { trpc } from "src/utils/trpc";
 import { queryClient } from "src/pages/_app";
 
 let key: CryptoKey | null;
@@ -151,7 +152,6 @@ export async function decrypt(
       ciphertext
     );
 
-  if (!decrypted) return "";
   const dec = new TextDecoder();
   return dec.decode(decrypted);
 }
@@ -208,13 +208,12 @@ export async function changePassword(
       id: journal.id,
       ciphertext: Buffer.from(ciphertext),
       iv: Buffer.from(iv),
-      updatedAt: journal.updatedAt,
+      updatedAt: journal.updatedAt.toString(),
     });
   }
 
-  // sync new encrypted data and salt with server
-  await axios.put("/api/me/password", {
-    salt: Buffer.from(newSalt),
+  await trpc.user.updatePassword.mutate({
+    salt: Buffer.from(newSalt) as any,
     journals: updatedJournals,
   });
 
