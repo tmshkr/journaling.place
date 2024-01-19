@@ -42,6 +42,7 @@ export const updatePassword = authorizedProcedure
           {
             $set: {
               salt: Buffer.from(salt.data),
+              updatedAt: new Date(),
             },
           }
         )
