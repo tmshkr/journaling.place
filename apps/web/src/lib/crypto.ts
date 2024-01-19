@@ -70,7 +70,9 @@ export async function createKey(
 
   // Persist salt to DB
   if (!user.salt) {
-    await axios.put("/api/me/password", { salt: Buffer.from(salt) });
+    await trpc.user.setSalt.mutate({
+      salt: Buffer.from(salt) as any,
+    });
   }
 
   // Persist key and salt to IndexedDB
@@ -142,15 +144,14 @@ export async function decrypt(
 ) {
   if (!key) throw new Error("No key provided");
 
-  const decrypted = await window.crypto.subtle
-    .decrypt(
-      {
-        name: "AES-GCM",
-        iv,
-      },
-      key,
-      ciphertext
-    );
+  const decrypted = await window.crypto.subtle.decrypt(
+    {
+      name: "AES-GCM",
+      iv,
+    },
+    key,
+    ciphertext
+  );
 
   const dec = new TextDecoder();
   return dec.decode(decrypted);
