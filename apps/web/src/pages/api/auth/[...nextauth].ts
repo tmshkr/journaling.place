@@ -48,13 +48,18 @@ export const authOptions: AuthOptions = {
         where: { id: token.sub },
       });
 
-      if (trigger === "signUp") {
-        sendWelcomeEmail(
-          (token as any).user.email,
-          path.resolve(process.cwd(), "../../packages/mailer")
-        );
-        // subscribeUserToPromptOfTheDay(token.user.email);
+      switch (trigger) {
+        case "signUp":
+          sendWelcomeEmail(
+            (token as any).user.email,
+            path.resolve(process.cwd(), "../../packages/mailer")
+          );
+          // subscribeUserToPromptOfTheDay(token.user.email);
+          break;
+        default:
+          break;
       }
+
       return token;
     },
   },
