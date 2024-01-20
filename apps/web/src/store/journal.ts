@@ -1,4 +1,3 @@
-import { QueryFunctionContext, QueryKey } from "react-query";
 import { queryClient } from "src/pages/_app";
 import { JournalStatus } from "@prisma/client";
 import { store } from "src/store";
@@ -101,11 +100,22 @@ async function processJournal(j: CachedJournal) {
   }
 }
 
-export async function sync() {
-  if (!isKeySet()) {
-    await queryClient.cancelQueries({ queryKey: "journal" });
+interface SyncParams {
+  reset: boolean;
+}
+
+export async function sync(params?: SyncParams) {
+  if (params?.reset) {
+    console.log("Resetting journal cache");
     cache = { journalsById: {}, journalsByPromptId: {}, ts: 0 };
-    return cache;
+    journalStore.clear();
+  }
+
+  console.log("Syncing journals");
+  if (!isKeySet()) {
+    console.log("No key set, returning empty cache");
+    await queryClient.cancelQueries({ queryKey: "journal" });
+    return { journalsById: {}, journalsByPromptId: {}, ts: 0 };
   }
 
   if (!quill) {

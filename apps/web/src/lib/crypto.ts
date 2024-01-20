@@ -1,7 +1,6 @@
 import { store } from "src/store";
 import { setModal } from "src/store/modal";
-import { setUser, selectUser } from "src/store/user";
-import { cryptoStore, journalStore } from "src/lib/localForage";
+import { cryptoStore } from "src/lib/localForage";
 import { sync } from "src/store/journal";
 import { trpc, resetTRPC } from "src/utils/trpc";
 import { authSession, queryClient } from "src/pages/_app";
@@ -22,7 +21,11 @@ export function clearKey() {
 }
 
 export async function setKey() {
-  const user = selectUser(store.getState());
+  if (!authSession.data) {
+    throw new Error("No session available");
+  }
+  const user: any = authSession.data.user;
+
   key = await cryptoStore.getItem(`key`);
   salt = await cryptoStore.getItem(`salt`);
 
@@ -42,7 +45,6 @@ export async function setKey() {
   }
 
   if (key) {
-    store.dispatch(setUser({ ...user, keyIsSet: true }));
     queryClient.fetchQuery({ queryKey: "journal" });
   } else {
     store.dispatch(
@@ -52,7 +54,10 @@ export async function setKey() {
 }
 
 export async function createKey(password: string) {
-  const user = selectUser(store.getState());
+  if (!authSession.data) {
+    throw new Error("No session available");
+  }
+  const user: any = authSession.data.user;
   const salt = user.salt
     ? new Uint8Array(user.salt.data)
     : window.crypto.getRandomValues(new Uint8Array(16));
@@ -79,16 +84,13 @@ export async function createKey(password: string) {
 }
 
 async function updateSession() {
-  const user = selectUser(store.getState());
   // Prevent session handler from running
-  store.dispatch(setUser({ ...user, updating: true }));
+  authSession.updating = true;
   // Update session
   await authSession.update();
   // Reconnect with new session
   await resetTRPC();
-  store.dispatch(
-    setUser({ ...user, ...authSession.data?.user, updating: false })
-  );
+  authSession.updating = false;
 }
 
 /*
@@ -189,7 +191,7 @@ export async function changePassword(oldPassword: string, newPassword: string) {
   }
 
   // sync with server
-  const { journalsById } = await sync();
+  const { journalsById } = await sync({ reset: true });
   const updatedJournals: any = [];
 
   // create new key from new password
@@ -220,8 +222,9 @@ export async function changePassword(oldPassword: string, newPassword: string) {
     journals: updatedJournals,
   });
 
-  // clear old journals from local store
-  await journalStore.clear();
+  // Clear old key and salt
+  key = null;
+  salt = null;
 
   // update local crypto store
   await cryptoStore.setItem("key", newKey);
@@ -229,6 +232,9 @@ export async function changePassword(oldPassword: string, newPassword: string) {
 
   // Update session
   await updateSession();
+
+  // Sync with server
+  await sync({ reset: true });
 
   await setKey();
 }
