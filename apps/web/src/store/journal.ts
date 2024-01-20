@@ -7,7 +7,7 @@ import { trpc } from "src/utils/trpc";
 import { setModal } from "src/store/modal";
 const { Index } = require("flexsearch");
 
-import { decrypt } from "src/lib/crypto";
+import { decrypt, isKeySet } from "src/lib/crypto";
 import { toArrayBuffer } from "src/utils/buffer";
 import { journalStore } from "src/lib/localForage";
 
@@ -69,7 +69,9 @@ async function processJournal(j: CachedJournal) {
       j.ciphertext as ArrayBuffer,
       j.iv as Uint8Array
     ).catch((err) => {
-      store.dispatch(setModal({ name: "DecryptionError", isVisible: true, keepOpen: true }));
+      store.dispatch(
+        setModal({ name: "DecryptionError", isVisible: true, keepOpen: true })
+      );
       return "";
     });
 
@@ -99,29 +101,19 @@ async function processJournal(j: CachedJournal) {
   }
 }
 
-export async function sync(
-  args?: QueryFunctionContext<QueryKey, any>,
-  fullSync?: boolean
-) {
-  const { user } = store.getState();
-  if (!user.value?.keyIsSet) {
-    queryClient.cancelQueries({ queryKey: args?.queryKey });
+export async function sync() {
+  if (!isKeySet()) {
+    await queryClient.cancelQueries({ queryKey: "journal" });
+    cache = { journalsById: {}, journalsByPromptId: {}, ts: 0 };
     return cache;
   }
+
   if (!quill) {
     const Quill = await import("quill").then((value) => value.default);
     quill = new Quill(document.createElement("div"));
   }
 
-  if (fullSync) {
-    cache = { journalsById: {}, journalsByPromptId: {}, ts: 0 };
-    await journalStore
-      .clear()
-      .then(() => {
-        console.log("Deleted local journal cache");
-      })
-      .catch(console.error);
-  } else if (cache.ts === 0) {
+  if (cache.ts === 0) {
     await loadCache();
   }
 

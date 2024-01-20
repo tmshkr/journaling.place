@@ -13,6 +13,10 @@ function getKey() {
   return key;
 }
 
+export function isKeySet() {
+  return !!key;
+}
+
 export function clearKey() {
   key = null;
 }
@@ -185,7 +189,7 @@ export async function changePassword(oldPassword: string, newPassword: string) {
   }
 
   // sync with server
-  const { journalsById } = await sync(undefined, true);
+  const { journalsById } = await sync();
   const updatedJournals: any = [];
 
   // create new key from new password

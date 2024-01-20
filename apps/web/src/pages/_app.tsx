@@ -27,7 +27,7 @@ import { Modal } from "src/components/modals/ModalWrapper";
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      queryFn: (args) => sync(args),
+      queryFn: (args) => sync(),
     },
   },
 });
