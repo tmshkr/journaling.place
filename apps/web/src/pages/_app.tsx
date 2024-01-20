@@ -20,7 +20,7 @@ import { selectLoadingState, setLoading } from "src/store/loading";
 import { setNetworkStatus } from "src/store/network";
 import { AppShell } from "src/components/AppShell";
 import { LoadingScreen } from "src/components/LoadingScreen";
-import { loadKey } from "src/lib/crypto";
+import { setKey } from "src/lib/crypto";
 
 import { Modal } from "src/components/modals/ModalWrapper";
 
@@ -32,25 +32,24 @@ export const queryClient = new QueryClient({
   },
 });
 
-function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+function App({ Component, pageProps: { ...pageProps } }: AppProps) {
   return (
-    <>
+    <SessionProvider>
       <DefaultSeo {...SEO} />
-      <SessionProvider session={session}>
-        <QueryClientProvider client={queryClient}>
-          <ReduxProvider store={store}>
-            <PageAuth {...{ Component, pageProps }} />
-          </ReduxProvider>
-        </QueryClientProvider>
-      </SessionProvider>
-    </>
+      <QueryClientProvider client={queryClient}>
+        <ReduxProvider store={store}>
+          <PageAuth {...{ Component, pageProps }} />
+        </ReduxProvider>
+      </QueryClientProvider>
+    </SessionProvider>
   );
 }
 
 export default App;
 
+export let authSession: ReturnType<typeof useSession>;
 function PageAuth({ Component, pageProps }) {
-  const { data: session, status } = useSession();
+  authSession = useSession();
   const user = useAppSelector(selectUser);
   const loading = useAppSelector(selectLoadingState);
   const dispatch = useAppDispatch();
@@ -58,15 +57,15 @@ function PageAuth({ Component, pageProps }) {
 
   const handleSession = async () => {
     if (user?.updating) return;
-    
-    switch (status) {
+
+    switch (authSession.status) {
       case "loading":
         dispatch(setLoading({ ...loading, user: true }));
         break;
       case "authenticated":
-        dispatch(setUser(session.user));
+        dispatch(setUser(authSession.data.user));
         dispatch(setLoading({ ...loading, user: false }));
-        await loadKey(session.user);
+        await setKey();
         break;
       case "unauthenticated":
         dispatch(clearUser());
@@ -82,7 +81,7 @@ function PageAuth({ Component, pageProps }) {
 
   useEffect(() => {
     handleSession();
-  }, [status]);
+  }, [authSession.status]);
 
   useEffect(() => {
     const { requestInterceptor, responseInterceptor } =

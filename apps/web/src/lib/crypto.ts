@@ -1,12 +1,10 @@
-import { Session } from "next-auth";
 import { store } from "src/store";
 import { setModal } from "src/store/modal";
-import { setUser } from "src/store/user";
+import { setUser, selectUser } from "src/store/user";
 import { cryptoStore, journalStore } from "src/lib/localForage";
 import { sync } from "src/store/journal";
-import { SettingsStatus } from "src/pages/settings";
-import { trpc } from "src/utils/trpc";
-import { queryClient } from "src/pages/_app";
+import { trpc, resetTRPC } from "src/utils/trpc";
+import { authSession, queryClient } from "src/pages/_app";
 
 let key: CryptoKey | null;
 let salt: Uint8Array | null;
@@ -15,15 +13,12 @@ function getKey() {
   return key;
 }
 
-function getSalt() {
-  return salt;
-}
-
 export function clearKey() {
   key = null;
 }
 
-export async function loadKey(user) {
+export async function setKey() {
+  const user = selectUser(store.getState());
   key = await cryptoStore.getItem(`key`);
   salt = await cryptoStore.getItem(`salt`);
 
@@ -52,16 +47,11 @@ export async function loadKey(user) {
   }
 }
 
-export async function createKey(
-  password: string,
-  user,
-  updateSession: (data?: any) => Promise<Session | null>
-) {
-  if (user.salt) {
-    salt = new Uint8Array(user.salt.data);
-  } else {
-    salt = window.crypto.getRandomValues(new Uint8Array(16));
-  }
+export async function createKey(password: string) {
+  const user = selectUser(store.getState());
+  const salt = user.salt
+    ? new Uint8Array(user.salt.data)
+    : window.crypto.getRandomValues(new Uint8Array(16));
 
   // Derive a key from a password
   const keyMaterial = await getKeyMaterial(password);
@@ -75,12 +65,26 @@ export async function createKey(
   }
 
   // Persist key and salt to IndexedDB
-  await cryptoStore.setItem(`key`, key);
-  await cryptoStore.setItem(`salt`, salt);
+  await cryptoStore.setItem("key", key);
+  await cryptoStore.setItem("salt", salt);
 
-  // Update session and reload
   await updateSession();
-  window.location.reload();
+
+  store.dispatch(setModal({ name: "PasswordInput", isVisible: false }));
+  await setKey();
+}
+
+async function updateSession() {
+  const user = selectUser(store.getState());
+  // Prevent session handler from running
+  store.dispatch(setUser({ ...user, updating: true }));
+  // Update session
+  await authSession.update();
+  // Reconnect with new session
+  await resetTRPC();
+  store.dispatch(
+    setUser({ ...user, ...authSession.data?.user, updating: false })
+  );
 }
 
 /*
@@ -174,11 +178,7 @@ export async function testPassword(password: string) {
   return testDecrypted === "test";
 }
 
-export async function changePassword(
-  oldPassword: string,
-  newPassword: string,
-  update: (data?: any) => Promise<Session | null>
-) {
+export async function changePassword(oldPassword: string, newPassword: string) {
   const oldPasswordIsCorrect = await testPassword(oldPassword);
   if (!oldPasswordIsCorrect) {
     throw new Error("Incorrect password");
@@ -208,12 +208,8 @@ export async function changePassword(
       id: journal.id,
       ciphertext: Buffer.from(ciphertext),
       iv: Buffer.from(iv),
-      updatedAt: journal.updatedAt.toString(),
     });
   }
-
-  const { user } = store.getState();
-  store.dispatch(setUser({ ...user.value, updating: true }));
 
   await trpc.user.updatePassword.mutate({
     salt: Buffer.from(newSalt) as any,
@@ -228,6 +224,7 @@ export async function changePassword(
   await cryptoStore.setItem("salt", newSalt);
 
   // Update session
-  await update();
-  window.location.href = `/settings?status=${SettingsStatus.PASSWORD_UPDATED}`;
+  await updateSession();
+
+  await setKey();
 }

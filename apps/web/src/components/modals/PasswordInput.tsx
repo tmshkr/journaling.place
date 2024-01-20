@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { Dialog } from "@headlessui/react";
-import { useSession } from "next-auth/react";
 import { useAppDispatch, useAppSelector } from "src/store";
 import { selectUser } from "src/store/user";
 import { selectModal } from "src/store/modal";
@@ -15,14 +14,12 @@ const inputClasses =
   "block w-full rounded-md border-0 py-1.5 my-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6";
 
 export function PasswordInput() {
-  const { update } = useSession();
   const user = useAppSelector(selectUser);
 
   const hasPassword = !!user.salt;
 
-  const { register, handleSubmit, formState, setError, setFocus } =
-    useForm();
-  const { errors }: { errors: any; } = formState;
+  const { register, handleSubmit, formState, setError, setFocus } = useForm();
+  const { errors }: { errors: any } = formState;
 
   const onSubmit = async (values) => {
     console.log("values", values);
@@ -35,7 +32,7 @@ export function PasswordInput() {
       setFocus("confirm_password");
       return;
     }
-    await createKey(password, user, update);
+    await createKey(password);
   };
 
   useEffect(() => {
@@ -93,7 +90,7 @@ export function PasswordInput() {
         </Dialog.Description>
       )}
 
-      <button type="submit" className={buttonClasses}>
+      <button id="password_submit" type="submit" className={buttonClasses}>
         Submit
       </button>
     </form>

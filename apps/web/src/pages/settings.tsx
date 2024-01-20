@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAppSelector } from "src/store";
 import { selectUser } from "src/store/user";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
@@ -17,17 +17,11 @@ export enum SettingsStatus {
 }
 
 export default function SettingsPage() {
-  const user = useAppSelector(selectUser);
   const router = useRouter();
-  const { update } = useSession();
-  const [status, setStatus] = useState(
-    router.query.status || SettingsStatus.READY
-  );
+  const [status, setStatus] = useState(SettingsStatus.READY);
   const { register, handleSubmit, formState, setError, setFocus, setValue } =
     useForm();
   const { errors }: { errors: any } = formState;
-
-  if (!user) return null;
 
   const onSubmit = async (values) => {
     const { current_password, new_password, confirm_new_password } = values;
@@ -41,8 +35,11 @@ export default function SettingsPage() {
 
     setStatus(SettingsStatus.UPDATING);
 
-    await changePassword(current_password, new_password, update).catch(
-      (err) => {
+    await changePassword(current_password, new_password)
+      .then(() => {
+        setStatus(SettingsStatus.PASSWORD_UPDATED);
+      })
+      .catch((err) => {
         if (err.message === "Incorrect password") {
           setError("current_password", {
             message: "Provided password is incorrect.",
@@ -50,9 +47,12 @@ export default function SettingsPage() {
           setStatus(SettingsStatus.READY);
           setFocus("current_password");
         } else throw err;
-      }
-    );
+      });
   };
+
+  useEffect(() => {
+    setStatus(SettingsStatus.READY);
+  }, [router.asPath]);
 
   if (status === SettingsStatus.PASSWORD_UPDATED) {
     return (
