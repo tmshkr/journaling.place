@@ -20,7 +20,6 @@ export const updatePassword = authorizedProcedure
             type: z.string().regex(/Buffer/),
             data: z.array(z.number()),
           }),
-          updatedAt: z.string().datetime(),
         })
       ),
     })
@@ -66,7 +65,6 @@ export const updatePassword = authorizedProcedure
                     $set: {
                       ciphertext: Buffer.from(journal.ciphertext.data),
                       iv: Buffer.from(journal.iv.data),
-                      updatedAt: new Date(journal.updatedAt),
                     },
                   },
                 },
