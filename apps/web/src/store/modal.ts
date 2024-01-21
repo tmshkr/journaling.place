@@ -4,7 +4,7 @@ import type { AppState } from "./index";
 export interface ModalState {
   name: string | null;
   isVisible: boolean;
-  keepOpen?: boolean;
+  keepOpen: boolean;
 }
 
 const initialState: ModalState = {
