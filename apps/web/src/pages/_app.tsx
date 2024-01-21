@@ -57,9 +57,6 @@ function PageAuth({ Component, pageProps }) {
 
   const handleSession = async () => {
     switch (authSession.status) {
-      case "loading":
-        dispatch(setLoading({ ...loading, user: true }));
-        break;
       case "authenticated":
         dispatch(setLoading({ ...loading, user: false }));
         await setKey();
