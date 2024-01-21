@@ -22,8 +22,8 @@ export function clearKey() {
 }
 
 export async function setKey() {
-  if (!authSession.data) {
-    throw new Error("No session available");
+  if (!authSession.data?.user) {
+    throw new Error("No user session available");
   }
   const user: any = authSession.data.user;
 
@@ -55,8 +55,8 @@ export async function setKey() {
 }
 
 export async function createKey(password: string) {
-  if (!authSession.data) {
-    throw new Error("No session available");
+  if (!authSession.data?.user) {
+    throw new Error("No user session available");
   }
   const user: any = authSession.data.user;
   const salt = user.salt
@@ -67,24 +67,25 @@ export async function createKey(password: string) {
   const keyMaterial = await getKeyMaterial(password);
   const key = await deriveKey(keyMaterial, salt);
 
-  const testJournal = await trpc.journal.getTestJournal.query();
-  if (testJournal) {
-    if (!testJournal.ciphertext || !testJournal.iv) {
-      throw new Error("No ciphertext or iv available");
+  if (user.salt) {
+    // If user has salt, test the key against a test journal
+    const testJournal = await trpc.journal.getTestJournal.query();
+    if (testJournal) {
+      if (!testJournal.ciphertext || !testJournal.iv) {
+        throw new Error("No ciphertext or iv available");
+      }
+      try {
+        await decrypt(
+          toArrayBuffer(testJournal.ciphertext.data),
+          new Uint8Array(testJournal.iv.data),
+          key
+        );
+      } catch (err) {
+        throw new Error("Decryption failed");
+      }
     }
-    try {
-      await decrypt(
-        toArrayBuffer(testJournal.ciphertext.data),
-        new Uint8Array(testJournal.iv.data),
-        key
-      );
-    } catch (err) {
-      throw new Error("Decryption failed");
-    }
-  }
-
-  // Persist salt to DB
-  if (!user.salt) {
+  } else {
+    // It's a new account, so persist salt to DB
     await trpc.user.setSalt.mutate({
       salt: Buffer.from(salt) as any,
     });
