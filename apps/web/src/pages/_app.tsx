@@ -15,7 +15,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 import store from "src/store";
 import { useAppDispatch, useAppSelector } from "src/store";
-import { selectUser, setUser, clearUser } from "src/store/user";
 import { selectLoadingState, setLoading } from "src/store/loading";
 import { setNetworkStatus } from "src/store/network";
 import { AppShell } from "src/components/AppShell";
@@ -51,7 +50,7 @@ export let authSession: ReturnType<typeof useSession>;
 function PageAuth({ Component, pageProps }) {
   authSession = useSession();
 
-  const user = useAppSelector(selectUser);
+  const user = authSession.data?.user;
   const loading = useAppSelector(selectLoadingState);
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -62,12 +61,10 @@ function PageAuth({ Component, pageProps }) {
         dispatch(setLoading({ ...loading, user: true }));
         break;
       case "authenticated":
-        dispatch(setUser(authSession.data.user));
         dispatch(setLoading({ ...loading, user: false }));
         await setKey();
         break;
       case "unauthenticated":
-        dispatch(clearUser());
         dispatch(setLoading({ ...loading, user: false }));
         if (Component.auth) {
           router.push("/");

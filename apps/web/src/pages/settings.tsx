@@ -1,12 +1,9 @@
 import { useState, useEffect } from "react";
-import { useAppSelector } from "src/store";
-import { selectUser } from "src/store/user";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { useForm } from "react-hook-form";
 import { clsx } from "clsx";
 import { Toggle } from "src/components/settings/Toggle";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 
 import { changePassword } from "src/lib/crypto";
 

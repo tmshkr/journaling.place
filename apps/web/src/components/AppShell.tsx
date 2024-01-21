@@ -10,13 +10,12 @@ import {
   LockClosedIcon,
   ExclamationCircleIcon,
   TrashIcon,
-  HandThumbUpIcon,
 } from "@heroicons/react/24/outline";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import { clsx } from "clsx";
 
 import { useAppSelector } from "src/store";
-import { selectUser } from "src/store/user";
+import { useSession } from "next-auth/react";
 import { getPathRoot } from "src/utils/path";
 import { selectNetworkStatus, NetworkStatus } from "src/store/network";
 
@@ -42,7 +41,7 @@ export function AppShell({ children }) {
   const [search, setSearch] = useState("");
 
   const router = useRouter();
-  const user = useAppSelector(selectUser);
+  const user = useSession().data?.user;
   const networkStatus = useAppSelector(selectNetworkStatus);
 
   useEffect(() => {

@@ -2,11 +2,10 @@ import { useEffect } from "react";
 import { signOut } from "next-auth/react";
 import { cryptoStore } from "src/lib/localForage";
 import { clearKey } from "src/lib/crypto";
-import { useAppSelector } from "src/store";
-import { selectUser } from "src/store/user";
+import { useSession } from "next-auth/react";
 
 export default function Logout() {
-  const user = useAppSelector(selectUser);
+  const user = useSession().data?.user;
 
   useEffect(() => {
     if (user) {

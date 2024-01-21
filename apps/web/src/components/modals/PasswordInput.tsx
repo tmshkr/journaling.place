@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Dialog } from "@headlessui/react";
-import { useAppSelector } from "src/store";
-import { selectUser } from "src/store/user";
+import { useSession } from "next-auth/react";
 import { createKey } from "src/lib/crypto";
 import { useForm } from "react-hook-form";
 
@@ -18,7 +17,7 @@ enum PasswordInputState {
 }
 
 export function PasswordInput() {
-  const user = useAppSelector(selectUser);
+  const user: any = useSession().data?.user;
   const [passwordInputState, setPasswordInputState] = useState(
     user.salt
       ? PasswordInputState.EnterPassword
@@ -182,6 +181,7 @@ function SubmitButton({
     case PasswordInputState.ConfirmPassword:
       return hasErrors ? (
         <button
+          id="password_submit"
           onClick={(e) => {
             e.preventDefault();
             setPasswordInputState(PasswordInputState.CreatePassword);
