@@ -38,7 +38,6 @@ export function PasswordInput() {
   const hasErrors = Object.keys(errors).length > 0;
 
   const onSubmit = async (values) => {
-    console.log("values", values);
     const { password, confirm_password } = values;
 
     switch (passwordInputState) {
@@ -49,7 +48,6 @@ export function PasswordInput() {
         return;
       case PasswordInputState.ConfirmPassword:
         if (password !== confirm_password) {
-          console.log("passwords do not match");
           setError("confirm_password", {
             message: "Passwords do not match.",
           });
