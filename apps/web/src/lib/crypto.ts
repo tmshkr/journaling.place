@@ -3,6 +3,7 @@ import { setModal } from "src/store/modal";
 import { cryptoStore } from "src/lib/localForage";
 import { sync } from "src/store/journal";
 import { trpc, resetTRPC } from "src/utils/trpc";
+import { toArrayBuffer } from "src/utils/buffer";
 import { authSession, queryClient } from "src/pages/_app";
 
 let key: CryptoKey | null;
@@ -65,6 +66,22 @@ export async function createKey(password: string) {
   // Derive a key from a password
   const keyMaterial = await getKeyMaterial(password);
   const key = await deriveKey(keyMaterial, salt);
+
+  const testJournal = await trpc.journal.getTestJournal.query();
+  if (testJournal) {
+    if (!testJournal.ciphertext || !testJournal.iv) {
+      throw new Error("No ciphertext or iv available");
+    }
+    try {
+      await decrypt(
+        toArrayBuffer(testJournal.ciphertext.data),
+        new Uint8Array(testJournal.iv.data),
+        key
+      );
+    } catch (err) {
+      throw new Error("Decryption failed");
+    }
+  }
 
   // Persist salt to DB
   if (!user.salt) {

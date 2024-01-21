@@ -56,9 +56,17 @@ export function PasswordInput() {
           setFocus("confirm_password");
           return;
         }
+        await createKey(password);
         break;
       case PasswordInputState.EnterPassword:
-        await createKey(password);
+        await createKey(password).catch((err) => {
+          if (err.message === "Decryption failed") {
+            setError("password", {
+              message: "Incorrect password.",
+            });
+            setFocus("password");
+          }
+        });
         break;
       default:
         throw new Error("Invalid password input state.");
@@ -123,7 +131,6 @@ export function PasswordInput() {
 }
 
 function InputDescription({ passwordInputState, errors, hasErrors }) {
-  console.log(errors);
   if (hasErrors) {
     return Object.keys(errors).map((key) => (
       <Dialog.Description key={key} className="text-sm text-red-500 my-2">
@@ -136,7 +143,7 @@ function InputDescription({ passwordInputState, errors, hasErrors }) {
     case PasswordInputState.CreatePassword:
       return (
         <Dialog.Description className="text-sm text-gray-500 my-2">
-          Please create a password to encrypt your journal.
+          Please enter a password to encrypt your journal.
           <br />
           Use a strong password and store it in a safe place.
           <br />
@@ -152,7 +159,7 @@ function InputDescription({ passwordInputState, errors, hasErrors }) {
     case PasswordInputState.EnterPassword:
       return (
         <Dialog.Description className="text-sm text-gray-500 my-2">
-          Please enter your password.
+          Please enter your password to access your journal.
         </Dialog.Description>
       );
     default:
