@@ -57,9 +57,9 @@ function PageAuth({ Component, pageProps }) {
   const router = useRouter();
 
   const handleSession = async () => {
-    if (authSession.updating) return;
     switch (authSession.status) {
       case "loading":
+        if (authSession.updating) return;
         dispatch(setLoading({ ...loading, user: true }));
         break;
       case "authenticated":
