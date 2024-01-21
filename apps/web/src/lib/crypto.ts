@@ -102,13 +102,13 @@ export async function createKey(password: string) {
 }
 
 async function updateSession() {
-  // Prevent session handler from running
-  authSession.updating = true;
+  // Clear old key and salt
+  key = null;
+  salt = null;
   // Update session
   await authSession.update();
   // Reconnect with new session
   await resetTRPC();
-  authSession.updating = false;
 }
 
 /*
@@ -239,10 +239,6 @@ export async function changePassword(oldPassword: string, newPassword: string) {
     salt: Buffer.from(newSalt) as any,
     journals: updatedJournals,
   });
-
-  // Clear old key and salt
-  key = null;
-  salt = null;
 
   // update local crypto store
   await cryptoStore.setItem("key", newKey);

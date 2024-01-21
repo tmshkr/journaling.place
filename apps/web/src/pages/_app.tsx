@@ -47,9 +47,9 @@ function App({ Component, pageProps: { ...pageProps } }: AppProps) {
 
 export default App;
 
-export let authSession: ReturnType<typeof useSession> & { updating?: boolean };
+export let authSession: ReturnType<typeof useSession>;
 function PageAuth({ Component, pageProps }) {
-  authSession = { ...authSession, ...useSession() };
+  authSession = useSession();
 
   const user = useAppSelector(selectUser);
   const loading = useAppSelector(selectLoadingState);
@@ -59,7 +59,6 @@ function PageAuth({ Component, pageProps }) {
   const handleSession = async () => {
     switch (authSession.status) {
       case "loading":
-        if (authSession.updating) return;
         dispatch(setLoading({ ...loading, user: true }));
         break;
       case "authenticated":
