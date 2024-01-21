@@ -4,9 +4,23 @@ test.describe.configure({ mode: "serial" });
 
 test.beforeEach(async ({ page }, testInfo) => {
   console.log(`Running ${testInfo.title}`);
-  page.on("dialog", async (dialog) => {
-    dialog.accept("testpassword");
-  });
+  await page.goto("/");
+  const passwordInput = await page.locator("#password");
+  await passwordInput.waitFor();
+  await passwordInput.fill("testpassword");
+  await page.click("#password_submit");
+
+  const createPasswordTitle = await page.getByText("Create Password");
+  const isCreatePasswordTitleVisible = await createPasswordTitle.isVisible();
+
+  if (isCreatePasswordTitleVisible) {
+    const confirmPasswordInput = await page.locator("#confirm_password");
+    await confirmPasswordInput.waitFor();
+    await confirmPasswordInput.fill("testpassword");
+    await page.click("#password_submit");
+  }
+
+  await page.locator("#password_submit").waitFor({ state: "detached" });
 });
 
 test("user can view AppShell", async ({ page }) => {
