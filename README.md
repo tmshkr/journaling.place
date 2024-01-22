@@ -1,7 +1,5 @@
 # journaling.place
 
-## What is this?
-
 Journaling Place is an end-to-end encrypted journaling app.
 
 You can use it at https://journaling.place or self-host.
