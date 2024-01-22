@@ -6,6 +6,8 @@ import { trpc, resetTRPC } from "src/utils/trpc";
 import { toArrayBuffer } from "src/utils/buffer";
 import { authSession, queryClient } from "src/pages/_app";
 
+import { User } from "@prisma/client";
+
 let key: CryptoKey | null;
 let salt: Uint8Array | null;
 
@@ -22,10 +24,10 @@ export function clearKey() {
 }
 
 export async function setKey() {
-  if (!authSession.data?.user) {
+  const user: any = authSession.data?.user;
+  if (!user) {
     throw new Error("No user session available");
   }
-  const user: any = authSession.data.user;
 
   key = await cryptoStore.getItem(`key`);
   salt = await cryptoStore.getItem(`salt`);
@@ -55,10 +57,11 @@ export async function setKey() {
 }
 
 export async function createKey(password: string) {
-  if (!authSession.data?.user) {
+  const user: any = authSession.data?.user;
+  if (!user) {
     throw new Error("No user session available");
   }
-  const user: any = authSession.data.user;
+
   const salt = user.salt
     ? new Uint8Array(user.salt.data)
     : window.crypto.getRandomValues(new Uint8Array(16));
