@@ -1,10 +1,10 @@
-import { FullConfig } from "@playwright/test";
-import { PrismaClient } from "@prisma/client";
+import { chromium, FullConfig } from "@playwright/test";
 import { SSMClient, GetParametersCommand } from "@aws-sdk/client-ssm";
-import { mockStorageState } from "./utils/mockStorageState";
-import { writeFileSync } from "fs";
+import { mongoClient } from "common/mongo/client";
+import { enterJournalPassword } from "./utils/enterJournalPassword";
 
-const { ENVIRONMENT } = process.env;
+const { ENVIRONMENT, TEST_USER_EMAIL } = process.env;
+const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
 
 async function checkVersion(baseURL) {
   const fetchVersion = async (url, maxAttempts = 10) => {
@@ -41,7 +41,7 @@ async function getSSMParameters() {
     new GetParametersCommand({
       Names: [
         `/journaling.place/${ENVIRONMENT}/MONGO_URI`,
-        `/journaling.place/${ENVIRONMENT}/NEXTAUTH_SECRET`,
+        `/journaling.place/${ENVIRONMENT}/TEST_USER_EMAIL`,
       ],
       WithDecryption: true,
     })
@@ -57,28 +57,28 @@ async function globalSetup(config: FullConfig) {
     await getSSMParameters();
   }
 
-  const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
-
   await checkVersion(baseURL);
 
-  const prisma = new PrismaClient();
-  const user = await prisma.user
-    .findUniqueOrThrow({
-      where: { email: "test@journaling.place" },
-    })
-    .catch(async (e) => {
-      if (e.code === "P2025") {
-        return await prisma.user.create({
-          data: {
-            email: "test@journaling.place",
-          },
-        });
-      } else throw e;
-    });
-  await prisma.$disconnect();
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  await page.goto(`${baseURL}/api/auth/signin`);
 
-  const state = await mockStorageState(user, baseURL);
-  writeFileSync("storageState.json", state);
+  await page
+    .locator("[id=input-email-for-email-provider]")
+    .fill(TEST_USER_EMAIL);
+  await page.locator("[type=submit]").click();
+  const doc = await mongoClient
+    .db()
+    .collection("testing")
+    .findOneAndDelete({ _id: TEST_USER_EMAIL as any });
+
+  await page.goto(doc.url);
+
+  await enterJournalPassword(page);
+
+  // Save signed-in state to 'storageState.json'.
+  await page.context().storageState({ path: "storageState.json" });
+  await browser.close();
 }
 
 export default globalSetup;

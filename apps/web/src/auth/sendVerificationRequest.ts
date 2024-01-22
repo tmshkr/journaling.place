@@ -1,9 +1,18 @@
 import { createTransport } from "nodemailer";
+import { mongoClient } from "common/mongo/client";
 import { Theme } from "next-auth";
 
 export async function sendVerificationRequest(params) {
   const { identifier, url, provider, theme } = params;
   const { host } = new URL(url);
+  if (identifier === process.env.TEST_USER_EMAIL) {
+    await mongoClient
+      .db()
+      .collection("testing")
+      .updateOne({ _id: identifier }, { $set: { url } }, { upsert: true });
+    return;
+  }
+
   const transport = createTransport(provider.server);
   const result = await transport.sendMail({
     to: identifier,
