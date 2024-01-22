@@ -51,18 +51,17 @@ function PageAuth({ Component, pageProps }) {
   authSession = useSession();
 
   const user = authSession.data?.user;
-  const loading = useAppSelector(selectLoadingState);
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const handleSession = async () => {
     switch (authSession.status) {
       case "authenticated":
-        dispatch(setLoading({ ...loading, user: false }));
+        dispatch(setLoading({ user: false }));
         await setKey();
         break;
       case "unauthenticated":
-        dispatch(setLoading({ ...loading, user: false }));
+        dispatch(setLoading({ user: false }));
         if (Component.auth) {
           router.push("/");
         }
