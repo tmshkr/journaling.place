@@ -2,8 +2,10 @@ import NextAuth, {
   AuthOptions,
   CallbacksOptions,
   SessionStrategy,
+  Session,
 } from "next-auth";
 import { prisma } from "src/lib/prisma";
+import { User } from "@prisma/client";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
 import { sendVerificationRequest } from "src/auth/sendVerificationRequest";
@@ -15,6 +17,10 @@ enum ColorScheme {
   light = "light",
   auto = "auto",
   dark = "dark",
+}
+
+export interface CustomSession extends Session {
+  user: User;
 }
 
 // For more information on each option (and a full list of options) go to
@@ -39,19 +45,21 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async session(params: Parameters<CallbacksOptions["session"]>[0]) {
       const { session, token } = params;
-      (session as any).user = token.user;
+      (session as CustomSession).user = token.user as User;
       return session;
     },
     async jwt(params: Parameters<CallbacksOptions["jwt"]>[0]) {
       const { token, trigger } = params;
-      token.user = await prisma.user.findUniqueOrThrow({
+      const user = await prisma.user.findUniqueOrThrow({
         where: { id: token.sub },
       });
+
+      token.user = user;
 
       switch (trigger) {
         case "signUp":
           sendWelcomeEmail(
-            (token as any).user.email,
+            user.email,
             path.resolve(process.cwd(), "../../packages/mailer")
           );
           // subscribeUserToPromptOfTheDay(token.user.email);
