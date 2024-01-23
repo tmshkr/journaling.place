@@ -15,16 +15,45 @@ generator erd {
 }
 
 model User {
-  id               String    @id @default(auto()) @map("_id") @db.ObjectId
-  name             String?
-  email            String    @unique
-  emailVerified    DateTime?
-  image            String?
-  isSubscribedPOTD Boolean   @default(true)
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
 
   salt Bytes?
 
-  journals Journal[]
+  journals      Journal[]
+  subscriptions Subscription[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Subscription {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId  String @db.ObjectId
+  topicId String @db.ObjectId
+
+  subscribed Boolean @default(true)
+
+  user  User  @relation(fields: [userId], references: [id])
+  topic Topic @relation(fields: [topicId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([userId, topicId])
+}
+
+model Topic {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  name        String @unique
+  description String
+
+  Subscription Subscription[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
