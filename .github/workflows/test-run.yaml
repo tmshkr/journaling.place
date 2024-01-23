@@ -65,5 +65,6 @@ jobs:
             MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}
             NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
             NEXTAUTH_URL=${{ steps.run-playwright.outputs.BASE_URL }}
+            TEST_USER_EMAIL=${{ vars.TEST_USER_EMAIL }}
       - name: Start docker compose
         run: docker compose -f docker-compose.test.yml up
