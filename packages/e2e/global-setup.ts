@@ -1,6 +1,6 @@
 import { chromium, FullConfig } from "@playwright/test";
 import { SSMClient, GetParametersCommand } from "@aws-sdk/client-ssm";
-import { mongoClient } from "common/mongo/client";
+import { mongoClient } from "./mongo";
 import { enterJournalPassword } from "./utils/enterJournalPassword";
 
 const { ENVIRONMENT, TEST_USER_EMAIL } = process.env;
