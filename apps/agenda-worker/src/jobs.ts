@@ -13,12 +13,20 @@ export function registerJobs(agenda) {
       select: { id: true, text: true },
       skip: Math.floor(Math.random() * count),
     });
-    const users = await prisma.user.findMany({
-      where: {
-        isSubscribedPOTD: true,
-      },
+
+    const potdTopic = await prisma.topic.findUniqueOrThrow({
+      where: { name: "Prompt of the Day" },
     });
-    for (const user of users) {
+
+    const subscriptions = await prisma.subscription.findMany({
+      where: {
+        topicId: potdTopic.id,
+        subscribed: true,
+      },
+      include: { user: true },
+    });
+
+    for (const { user } of subscriptions) {
       if (!user.email) continue;
       await sendPromptOfTheDay(user.email, randomPrompt, root);
     }
