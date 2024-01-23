@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
-import { useAppDispatch, useAppSelector } from "src/store";
-import { selectUser, setUser, clearUser } from "src/store/user";
+import { useSession } from "next-auth/react";
+import { useAppDispatch } from "src/store";
 import { Switch } from "@headlessui/react";
 
 function classNames(...classes) {
@@ -10,7 +10,7 @@ function classNames(...classes) {
 
 export function Toggle() {
   const dispatch = useAppDispatch();
-  const user = useAppSelector(selectUser);
+  const user: any = useSession().data?.user;
   const [enabled, setEnabled] = useState(user.isSubscribedPOTD);
 
   const toggle = (newValue) => {
@@ -20,7 +20,7 @@ export function Toggle() {
         isSubscribedPOTD: newValue,
       })
       .then(() => {
-        dispatch(setUser({ ...user, isSubscribedPOTD: newValue }));
+        // dispatch(setUser({ ...user, isSubscribedPOTD: newValue }));
       })
       .catch((err) => {
         setEnabled(!newValue);
