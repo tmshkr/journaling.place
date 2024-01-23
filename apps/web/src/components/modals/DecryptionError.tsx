@@ -1,4 +1,4 @@
-import { Dialog, } from "@headlessui/react";
+import { Dialog } from "@headlessui/react";
 import { cryptoStore, journalStore } from "src/lib/localForage";
 
 const buttonClasses =
@@ -26,20 +26,17 @@ export function DecryptionError() {
       <div className="my-5 text-center text-sm text-gray-500">
         <p className="my-2">
           There was an error decrypting your journal. This could be because
-          you've changed your password, or entered an incorrect password.
+          you&apos;ve changed your password, or entered an incorrect password.
         </p>
         <p className="my-2">
           You can try clearing your local data and re-syncing with the server.
         </p>
         <p className="my-2">
-          After clearing the local cache, you'll need to re-enter your password.
+          After clearing the local cache, you&apos;ll need to re-enter your
+          password.
         </p>
       </div>
-      <button
-        type="button"
-        onClick={clearLocalData}
-        className={buttonClasses}
-      >
+      <button type="button" onClick={clearLocalData} className={buttonClasses}>
         Clear Local Data
       </button>
     </>
