@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, NotificationTopic } from "@prisma/client";
 const prisma = new PrismaClient();
 import { sendPromptOfTheDay } from "mailer";
 
@@ -14,19 +14,15 @@ export function registerJobs(agenda) {
       skip: Math.floor(Math.random() * count),
     });
 
-    const potdTopic = await prisma.topic.findUniqueOrThrow({
-      where: { name: "Prompt of the Day" },
-    });
-
-    const subscriptions = await prisma.subscription.findMany({
+    const users = await prisma.user.findMany({
       where: {
-        topicId: potdTopic.id,
-        subscribed: true,
+        emailNotifications: {
+          has: NotificationTopic.prompt_of_the_day,
+        },
       },
-      include: { user: true },
     });
 
-    for (const { user } of subscriptions) {
+    for (const user of users) {
       if (!user.email) continue;
       await sendPromptOfTheDay(user.email, randomPrompt, root);
     }

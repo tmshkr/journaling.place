@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { clsx } from "clsx";
 import { Toggle } from "src/components/settings/Toggle";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 import { changePassword } from "src/lib/crypto";
 
@@ -13,7 +14,15 @@ export enum SettingsStatus {
   PASSWORD_UPDATED = "PASSWORD_UPDATED",
 }
 
+const notificationTopics = {
+  prompt_of_the_day: {
+    name: "Prompt of the Day",
+    description: "Subscribe to the daily prompt email.",
+  },
+};
+
 export default function SettingsPage() {
+  const session = useSession();
   const router = useRouter();
   const [status, setStatus] = useState(SettingsStatus.READY);
   const { register, handleSubmit, formState, setError, setFocus, setValue } =
@@ -81,10 +90,28 @@ export default function SettingsPage() {
     );
   }
 
+  const emailNotifications = new Set(
+    (session as any).data.user.emailNotifications
+  );
+
   return (
     <div className="m-12">
-      <h2 className="neuton text-xl mb-4">Email Preferences</h2>
-      <Toggle />
+      <h2 className="neuton text-xl mb-4">Email Notifications</h2>
+      {Object.keys(notificationTopics).map((key) => {
+        const topic = notificationTopics[key];
+        return (
+          <Toggle
+            key={key}
+            name={topic.name}
+            description={topic.description}
+            enabled={emailNotifications.has(key)}
+            onToggle={async (newValue) => {
+              console.log("toggling", key, newValue);
+            }}
+          />
+        );
+      })}
+
       <form onSubmit={handleSubmit(onSubmit)} className="md:w-5/12">
         <h2 className="neuton text-xl mb-4">Update Journal Password</h2>
         <label

@@ -63,16 +63,6 @@ export const authOptions: AuthOptions = {
             path.resolve(process.cwd(), "../../packages/mailer")
           );
 
-          const potdTopic = await prisma.topic.findUniqueOrThrow({
-            where: { name: "Prompt of the Day" },
-          });
-
-          await prisma.subscription.create({
-            data: {
-              userId: user.id,
-              topicId: potdTopic.id,
-            },
-          });
           break;
         default:
           break;
