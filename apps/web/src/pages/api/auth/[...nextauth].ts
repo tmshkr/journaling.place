@@ -2,7 +2,6 @@ import NextAuth, {
   AuthOptions,
   CallbacksOptions,
   SessionStrategy,
-  Session,
 } from "next-auth";
 import { prisma } from "src/lib/prisma";
 import { User } from "@prisma/client";
@@ -10,18 +9,9 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
 import { sendVerificationRequest } from "src/auth/sendVerificationRequest";
 import { sendWelcomeEmail } from "mailer";
+import { ColorScheme, CustomSession } from "src/types";
 
 const path = require("path");
-
-enum ColorScheme {
-  light = "light",
-  auto = "auto",
-  dark = "dark",
-}
-
-export interface CustomSession extends Session {
-  user: User;
-}
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options

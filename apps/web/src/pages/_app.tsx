@@ -14,8 +14,8 @@ import SEO from "../../next-seo.config";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import store from "src/store";
-import { useAppDispatch, useAppSelector } from "src/store";
-import { selectLoadingState, setLoading } from "src/store/loading";
+import { useAppDispatch } from "src/store";
+import { setLoading } from "src/store/loading";
 import { setNetworkStatus } from "src/store/network";
 import { AppShell } from "src/components/AppShell";
 import { LoadingScreen } from "src/components/LoadingScreen";
