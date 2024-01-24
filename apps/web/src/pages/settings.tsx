@@ -1,3 +1,4 @@
+import { NotificationTopic } from "@prisma/client";
 import { useState, useEffect } from "react";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { useForm } from "react-hook-form";
@@ -5,6 +6,8 @@ import { clsx } from "clsx";
 import { Toggle } from "src/components/settings/Toggle";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import { CustomSession } from "src/types";
+import { trpc } from "src/utils/trpc";
 
 import { changePassword } from "src/lib/crypto";
 
@@ -22,7 +25,7 @@ const notificationTopics = {
 };
 
 export default function SettingsPage() {
-  const session = useSession();
+  const authSession = useSession();
   const router = useRouter();
   const [status, setStatus] = useState(SettingsStatus.READY);
   const { register, handleSubmit, formState, setError, setFocus, setValue } =
@@ -90,8 +93,9 @@ export default function SettingsPage() {
     );
   }
 
-  const emailNotifications = new Set(
-    (session as any).data.user.emailNotifications
+  const session = authSession.data as CustomSession;
+  const emailNotifications = new Set<NotificationTopic>(
+    session.user.emailNotifications
   );
 
   return (
@@ -104,9 +108,20 @@ export default function SettingsPage() {
             key={key}
             name={topic.name}
             description={topic.description}
-            enabled={emailNotifications.has(key)}
+            enabled={emailNotifications.has(key as NotificationTopic)}
             onToggle={async (newValue) => {
               console.log("toggling", key, newValue);
+              await trpc.user.updateNotifications.mutate({
+                field: "emailNotifications",
+                topic: key as NotificationTopic,
+                subscribe: newValue,
+              });
+              if (newValue) {
+                emailNotifications.add(key as NotificationTopic);
+              } else {
+                emailNotifications.delete(key as NotificationTopic);
+              }
+              session.user.emailNotifications = Array.from(emailNotifications);
             }}
           />
         );
