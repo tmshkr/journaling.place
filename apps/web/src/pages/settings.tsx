@@ -17,15 +17,8 @@ export enum SettingsStatus {
   PASSWORD_UPDATED = "PASSWORD_UPDATED",
 }
 
-const notificationTopics = {
-  prompt_of_the_day: {
-    name: "Prompt of the Day",
-    description: "Subscribe to the daily prompt email.",
-  },
-};
-
 export default function SettingsPage() {
-  const authSession = useSession();
+  const session = useSession().data as CustomSession;
   const router = useRouter();
   const [status, setStatus] = useState(SettingsStatus.READY);
   const { register, handleSubmit, formState, setError, setFocus, setValue } =
@@ -93,7 +86,6 @@ export default function SettingsPage() {
     );
   }
 
-  const session = authSession.data as CustomSession;
   const emailNotifications = new Set<NotificationTopic>(
     session.user.emailNotifications
   );
@@ -101,8 +93,14 @@ export default function SettingsPage() {
   return (
     <div className="m-12">
       <h2 className="neuton text-xl mb-4">Email Notifications</h2>
-      {Object.keys(notificationTopics).map((key) => {
-        const topic = notificationTopics[key];
+      {Object.keys(NotificationTopic).map((key) => {
+        const topic = {
+          prompt_of_the_day: {
+            name: "Prompt of the Day",
+            description: "Subscribe to the daily prompt email.",
+          },
+        }[key];
+        if (!topic) throw new Error(`Unknown topic: ${key}`);
         return (
           <Toggle
             key={key}
@@ -110,7 +108,6 @@ export default function SettingsPage() {
             description={topic.description}
             enabled={emailNotifications.has(key as NotificationTopic)}
             onToggle={async (newValue) => {
-              console.log("toggling", key, newValue);
               await trpc.user.updateNotifications.mutate({
                 field: "emailNotifications",
                 topic: key as NotificationTopic,

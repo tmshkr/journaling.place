@@ -7,7 +7,7 @@ export const updateNotifications = authorizedProcedure
   .input(
     z.object({
       field: z.enum(["emailNotifications"]),
-      topic: z.enum([NotificationTopic.prompt_of_the_day]),
+      topic: z.enum(Object.keys(NotificationTopic) as any),
       subscribe: z.boolean(),
     })
   )
