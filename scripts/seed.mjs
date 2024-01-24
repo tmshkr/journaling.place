@@ -49,19 +49,6 @@ async function seed() {
 
   console.log(`Created ${newPrompts} new prompts`);
   console.log(`Updated ${updatedPrompts} prompts`);
-
-  await prisma.topic.create({
-    data: {
-      name: "Prompt of the Day",
-      description: "A new journal prompt every day!",
-    },
-  }).then(() => {
-    console.log("Created topic: Prompt of the Day");
-  }).catch((err) => {
-    if (err.code === "P2002") {
-      console.log("Prompt of the Day Topic already exists");
-    }
-  });
 }
 
 seed()
