@@ -1,4 +1,5 @@
 import Email from "email-templates";
+import { encode } from "next-auth/jwt";
 const path = require("path");
 const nodemailer = require("nodemailer");
 const transport = nodemailer.createTransport(process.env.EMAIL_SERVER);
@@ -44,9 +45,22 @@ export async function sendPromptOfTheDay(
   prompt,
   root: string = ""
 ) {
+  const token = await encode({
+    token: {
+      email: emailTo,
+      topic: "prompt_of_the_day",
+      list_name: "Prompt of the Day",
+    },
+    secret: process.env.EMAIL_SECRET!,
+  });
+
   const email = new Email({
     message: {
       from: "Journaling Place <hi@journaling.place>",
+      headers: {
+        "List-Unsubscribe": `<${process.env.NEXTAUTH_URL}/api/email/unsubscribe?token=${token}>`,
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+      },
     },
     send: true,
     transport,
@@ -75,6 +89,7 @@ export async function sendPromptOfTheDay(
       locals: {
         prompt,
         url: process.env.NEXTAUTH_URL,
+        token: token,
       },
     })
     .then(({ response, envelope, messageId }) => {
