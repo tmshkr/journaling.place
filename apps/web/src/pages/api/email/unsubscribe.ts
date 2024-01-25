@@ -8,6 +8,9 @@ import path from "path";
 const createError = require("http-errors");
 const pug = require("pug");
 
+const router = createRouter<NextApiRequest, NextApiResponse>();
+router.get(handleGet).post(handlePost);
+
 async function handleToken(token: string) {
   if (!token) {
     throw createError.BadRequest("No token provided");
@@ -30,32 +33,54 @@ async function handleToken(token: string) {
   }
 }
 
-const unsubscribePage = pug.compileFile(
-  path.resolve(process.cwd(), "src/pages/api/email/unsubscribe.pug")
-);
-const unsubscribedPage = pug.compileFile(
-  path.resolve(process.cwd(), "src/pages/api/email/unsubscribed.pug")
-);
-
-const router = createRouter<NextApiRequest, NextApiResponse>();
-router.get(handleGet).post(handlePost);
+const topicMeta = {
+  prompt_of_the_day: {
+    title: "Prompt of the Day",
+  },
+};
 
 async function handleGet(req: NextApiRequest, res: NextApiResponse) {
-  const { email, list_name } = await handleToken(req.query.token as string);
-  return res.send(unsubscribePage({ url: req.url, email, list_name }));
+  const { email, topic } = await handleToken(req.query.token as string);
+  const unsubscribePage = pug.compileFile(
+    path.resolve(process.cwd(), "src/pages/api/email/unsubscribe.pug")
+  );
+  return res.send(
+    unsubscribePage({
+      url: req.url,
+      email,
+      title: topicMeta[topic as string].title,
+    })
+  );
 }
 
 async function handlePost(req: NextApiRequest, res: NextApiResponse) {
-  const { email, topic, list_name } = await handleToken(
-    req.query.token as string
+  const { email, topic } = await handleToken(req.query.token as string);
+
+  const unsubscribedPage = pug.compileFile(
+    path.resolve(process.cwd(), "src/pages/api/email/unsubscribed.pug")
   );
 
-  await mongoClient
-    .db()
-    .collection("User")
-    .updateOne({ email }, { $pull: { emailNotifications: topic } });
+  const resubscribedPage = pug.compileFile(
+    path.resolve(process.cwd(), "src/pages/api/email/resubscribed.pug")
+  );
 
-  return res.send(unsubscribedPage({ email, list_name }));
+  if (req.body.resubscribe) {
+    await mongoClient
+      .db()
+      .collection("User")
+      .updateOne({ email }, { $addToSet: { emailNotifications: topic } });
+    return res.send(
+      resubscribedPage({ email, title: topicMeta[topic as string].title })
+    );
+  } else {
+    await mongoClient
+      .db()
+      .collection("User")
+      .updateOne({ email }, { $pull: { emailNotifications: topic } });
+    return res.send(
+      unsubscribedPage({ email, title: topicMeta[topic as string].title })
+    );
+  }
 }
 
 export default router.handler({

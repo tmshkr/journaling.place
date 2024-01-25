@@ -4,9 +4,9 @@ html(lang="en")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title Unsubscribe?
 body(style="font-family: sans-serif; text-align: center; margin-top: 15vh;")
-  h2 #{list_name}
+  h2 #{title}
   h3 #{email}
   p Are you sure you want to unsubscribe?
-  form(action=`${url}` method="POST")
+  form(method="POST")
     button(type="submit") Unsubscribe
 
