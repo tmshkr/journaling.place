@@ -49,7 +49,6 @@ export async function sendPromptOfTheDay(
     token: {
       email: emailTo,
       topic: "prompt_of_the_day",
-      list_name: "Prompt of the Day",
     },
     secret: process.env.EMAIL_SECRET!,
   });
