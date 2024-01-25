@@ -83,10 +83,12 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
   const { email } = await handleToken(req.query.token as string);
 
   if (req.body.resubscribe) {
-    await mongoClient
+    const { matchedCount } = await mongoClient
       .db()
       .collection("User")
       .updateOne({ email }, { $addToSet: { emailNotifications: topic.key } });
+
+    if (!matchedCount) throw createError.NotFound("User not found");
 
     return res.send(
       pug.renderFile(
@@ -95,10 +97,12 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       )
     );
   } else {
-    await mongoClient
+    const { matchedCount } = await mongoClient
       .db()
       .collection("User")
       .updateOne({ email }, { $pull: { emailNotifications: topic.key } });
+
+    if (!matchedCount) throw createError.NotFound("User not found");
 
     return res.send(
       pug.renderFile(
