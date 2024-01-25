@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { NotificationTopic } from "@prisma/client";
 import { mongoClient } from "src/lib/mongo";
 import { decode } from "next-auth/jwt";
@@ -6,24 +5,28 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { createRouter } from "next-connect";
 import { z } from "zod";
 import path from "path";
+const createError = require("http-errors");
 const pug = require("pug");
 
 async function handleToken(token: string) {
-  if (!token) throw new Error("Must provide token");
+  if (!token) {
+    throw createError.BadRequest("No token provided");
+  }
+
   try {
     const decodedToken = await decode({
       token: token as string,
       secret: process.env.EMAIL_SECRET!,
     });
-    if (!decodedToken) throw new Error("Invalid token");
+    if (!decodedToken) throw new Error("Token is not valid");
     z.object({
       email: z.string(),
       topic: z.enum(Object.keys(NotificationTopic) as any),
     }).parse(decodedToken);
 
     return decodedToken;
-  } catch (e) {
-    throw new Error("Incorrect token");
+  } catch (err) {
+    throw createError.BadRequest("Token is not valid");
   }
 }
 
@@ -39,7 +42,6 @@ router.get(handleGet).post(handlePost);
 
 async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   const { email, list_name } = await handleToken(req.query.token as string);
-
   return res.send(unsubscribePage({ url: req.url, email, list_name }));
 }
 
@@ -58,8 +60,12 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
 
 export default router.handler({
   onError: (err: any, req, res) => {
-    console.error(err.stack);
-    res.status(500).end("Something broke!");
+    console.error(err);
+    if (err.status && err.message) {
+      res.status(err.status).end(err.message);
+    } else {
+      res.status(500).end("Something broke!");
+    }
   },
   onNoMatch: (req, res) => {
     res.status(404).end("Page is not found");
