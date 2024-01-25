@@ -55,6 +55,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
 
 async function handlePost(req: NextApiRequest, res: NextApiResponse) {
   const { email, topic } = await handleToken(req.query.token as string);
+  const { title } = topicMeta[topic as string];
 
   const unsubscribedPage = pug.compileFile(
     path.resolve(process.cwd(), "src/pages/api/email/unsubscribed.pug")
@@ -69,17 +70,13 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       .db()
       .collection("User")
       .updateOne({ email }, { $addToSet: { emailNotifications: topic } });
-    return res.send(
-      resubscribedPage({ email, title: topicMeta[topic as string].title })
-    );
+    return res.send(resubscribedPage({ email, title }));
   } else {
     await mongoClient
       .db()
       .collection("User")
       .updateOne({ email }, { $pull: { emailNotifications: topic } });
-    return res.send(
-      unsubscribedPage({ email, title: topicMeta[topic as string].title })
-    );
+    return res.send(unsubscribedPage({ email, title }));
   }
 }
 
