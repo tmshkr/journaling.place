@@ -46,10 +46,7 @@ export async function sendPromptOfTheDay(
   root: string = ""
 ) {
   const token = await encode({
-    token: {
-      email: emailTo,
-      topic: "prompt_of_the_day",
-    },
+    token: { email: emailTo },
     secret: process.env.EMAIL_SECRET!,
   });
 
@@ -87,8 +84,8 @@ export async function sendPromptOfTheDay(
       },
       locals: {
         prompt,
+        token,
         url: process.env.NEXTAUTH_URL,
-        token: token,
       },
     })
     .then(({ response, envelope, messageId }) => {
