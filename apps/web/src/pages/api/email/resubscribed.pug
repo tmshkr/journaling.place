@@ -3,10 +3,14 @@ html(lang="en")
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title Resubscribed
-body(style="font-family: sans-serif; text-align: center; margin-top: 15vh;")
-  h2 #{title}
-  h3 #{email}
-  p You're now resubscribed.
-  p Woohoo!
-  form(method="POST")
-    button(type="submit") Unsubscribe
+    link(rel="stylesheet", href="/unsubscribe.css", data-inline)
+  body
+    a(href="https://journaling.place")
+      img(src="https://cdn.journaling.place/jp-logo-b.png", alt="journaling.place" style="max-width:360px; margin: 0 auto;")
+    div(class="inner")
+      h2 #{title}
+      h3 #{email}
+      p You're now resubscribed.
+      p Woohoo!
+      form(method="POST")
+        button(type="submit") Unsubscribe

@@ -1,0 +1,31 @@
+body {
+  background-color: #eee;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  font-family: sans-serif;
+  font-size: medium;
+}
+
+.inner {
+  background-color: #ffffff;
+  max-width: 360px;
+  margin: 0 auto;
+  margin-bottom: 24px;
+  padding: 18px;
+}
+
+button {
+  outline: none;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  color: #fff;
+  background-color: #5142e0;
+  text-decoration: none;
+}
+
+hr {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
