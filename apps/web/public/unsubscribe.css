@@ -19,6 +19,7 @@ button {
   outline: none;
   border: none;
   border-radius: 8px;
+  cursor: pointer;
   padding: 10px 20px;
   color: #fff;
   background-color: #5142e0;
