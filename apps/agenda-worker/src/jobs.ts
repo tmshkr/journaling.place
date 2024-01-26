@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, NotificationTopic } from "@prisma/client";
 const prisma = new PrismaClient();
 import { sendPromptOfTheDay } from "mailer";
 
@@ -13,11 +13,15 @@ export function registerJobs(agenda) {
       select: { id: true, text: true },
       skip: Math.floor(Math.random() * count),
     });
+
     const users = await prisma.user.findMany({
       where: {
-        isSubscribedPOTD: true,
+        emailNotifications: {
+          has: NotificationTopic.prompt_of_the_day,
+        },
       },
     });
+
     for (const user of users) {
       if (!user.email) continue;
       await sendPromptOfTheDay(user.email, randomPrompt, root);

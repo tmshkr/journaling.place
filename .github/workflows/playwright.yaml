@@ -42,6 +42,7 @@ jobs:
           APP_VERSION: test-${{ github.sha }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           MONGO_URI: ${{ inputs.MONGO_URI }}
+          TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
       - name: Stop test server
         if: always()
         run: ./scripts/stop-test-server.sh

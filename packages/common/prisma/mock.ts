@@ -33,8 +33,8 @@ prismaMock.user.create.mockImplementation((args): any => {
     image: null,
     emailVerified: new Date(),
     salt: null,
-    email: data!.email || null,
-    isSubscribedPOTD: data!.isSubscribedPOTD || true,
+    email: data!.email,
+    emailNotifications: ["prompt_of_the_day"],
     createdAt: new Date(),
     updatedAt: new Date(),
   };

@@ -10,13 +10,12 @@ import {
   LockClosedIcon,
   ExclamationCircleIcon,
   TrashIcon,
-  HandThumbUpIcon,
 } from "@heroicons/react/24/outline";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import { clsx } from "clsx";
 
 import { useAppSelector } from "src/store";
-import { selectUser } from "src/store/user";
+import { useSession } from "next-auth/react";
 import { getPathRoot } from "src/utils/path";
 import { selectNetworkStatus, NetworkStatus } from "src/store/network";
 
@@ -26,6 +25,7 @@ import { FloatingActionButton } from "src/components/FloatingActionButton";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { logout } from "src/services/auth";
 import journalIcon from "public/favicon-32x32.png";
 
 import styles from "./AppShell.module.css";
@@ -42,7 +42,7 @@ export function AppShell({ children }) {
   const [search, setSearch] = useState("");
 
   const router = useRouter();
-  const user = useAppSelector(selectUser);
+  const user = useSession().data?.user;
   const networkStatus = useAppSelector(selectNetworkStatus);
 
   useEffect(() => {
@@ -97,12 +97,6 @@ export function AppShell({ children }) {
       icon: FolderIcon,
       current: pathRoot === "/journal",
     },
-    // {
-    //   name: "Support",
-    //   href: "/Support",
-    //   icon: HandThumbUpIcon,
-    //   current: pathRoot === "/support",
-    // },
     {
       name: "Trash",
       href: "/trash",
@@ -117,10 +111,8 @@ export function AppShell({ children }) {
     },
     {
       name: "Log Out",
-      href: "/logout",
+      onClick: logout,
       icon: LockClosedIcon,
-      current: pathRoot === "/logout",
-      requiresAuth: true,
     },
   ];
 
@@ -192,8 +184,11 @@ export function AppShell({ children }) {
                     {navigation.map((item) => (
                       <Link
                         key={item.name}
-                        href={item.href}
-                        onClick={() => setSidebarOpen(false)}
+                        href={item.href ? item.href : "#"}
+                        onClick={() => {
+                          if (item.onClick) item.onClick();
+                          setSidebarOpen(false);
+                        }}
                         className={classNames(
                           item.current
                             ? "bg-gray-100 text-gray-900"
@@ -239,7 +234,10 @@ export function AppShell({ children }) {
               {navigation.map((item) => (
                 <Link
                   key={item.name}
-                  href={item.href}
+                  href={item.href ? item.href : "#"}
+                  onClick={() => {
+                    if (item.onClick) item.onClick();
+                  }}
                   className={classNames(
                     item.current
                       ? "bg-gray-100 text-gray-900"

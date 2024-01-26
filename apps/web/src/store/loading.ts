@@ -1,15 +1,14 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { AppState, AppThunk } from "./index";
+import { createSlice } from "@reduxjs/toolkit";
+import type { AppState } from "./index";
 
 export interface LoadingState {
-  value: any | null;
+  user: boolean;
+  editor: boolean;
 }
 
 const initialState: LoadingState = {
-  value: {
-    user: true,
-    editor: true,
-  },
+  user: true,
+  editor: true,
 };
 
 export const loadingSlice = createSlice({
@@ -17,11 +16,13 @@ export const loadingSlice = createSlice({
   initialState,
   reducers: {
     setLoading: (state, action) => {
-      state.value = action.payload;
+      for (const key in action.payload) {
+        state[key] = action.payload[key];
+      }
     },
   },
 });
 
 export const { setLoading } = loadingSlice.actions;
-export const selectLoadingState = (state: AppState) => state.loading.value;
+export const selectLoadingState = (state: AppState) => state.loading;
 export default loadingSlice.reducer;

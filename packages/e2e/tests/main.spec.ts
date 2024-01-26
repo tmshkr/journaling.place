@@ -1,12 +1,12 @@
 import { test, expect } from "@playwright/test";
+import { enterJournalPassword } from "../utils/enterJournalPassword";
 
 test.describe.configure({ mode: "serial" });
 
 test.beforeEach(async ({ page }, testInfo) => {
   console.log(`Running ${testInfo.title}`);
-  page.on("dialog", async (dialog) => {
-    dialog.accept("testpassword");
-  });
+  await page.goto("/");
+  await enterJournalPassword(page);
 });
 
 test("user can view AppShell", async ({ page }) => {

@@ -1,5 +1,5 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import { journalIndex } from "src/store/journal";
+import { journalIndex } from "src/services/journal";
 
 export function SearchBar({ search, setSearch, setSearchResults, user }) {
   const searchIndex = (e) => {

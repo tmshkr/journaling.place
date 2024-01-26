@@ -1,10 +1,10 @@
-import { FullConfig } from "@playwright/test";
-import { PrismaClient } from "@prisma/client";
-import { SSMClient, GetParametersCommand } from "@aws-sdk/client-ssm";
-import { mockStorageState } from "./utils/mockStorageState";
-import { writeFileSync } from "fs";
+import { chromium, FullConfig } from "@playwright/test";
+import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
+import { MongoClient } from "mongodb";
+import { enterJournalPassword } from "./utils/enterJournalPassword";
 
-const { ENVIRONMENT } = process.env;
+const { ENVIRONMENT, TEST_USER_EMAIL } = process.env;
+const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
 
 async function checkVersion(baseURL) {
   const fetchVersion = async (url, maxAttempts = 10) => {
@@ -34,51 +34,50 @@ async function checkVersion(baseURL) {
   }
 }
 
-async function getSSMParameters() {
-  console.log("Getting SSM parameters");
-  const client = new SSMClient();
-  const { Parameters } = await client.send(
-    new GetParametersCommand({
-      Names: [
-        `/journaling.place/${ENVIRONMENT}/MONGO_URI`,
-        `/journaling.place/${ENVIRONMENT}/NEXTAUTH_SECRET`,
-      ],
-      WithDecryption: true,
-    })
-  );
-  for (const { Name, Value } of Parameters) {
-    process.env[Name.split("/").pop()] = Value;
-    console.log(`::add-mask::${Value}`);
+async function getMongoClient() {
+  if (["main", "staging"].includes(ENVIRONMENT)) {
+    console.log("Getting SSM parameters");
+    const client = new SSMClient();
+    const { Parameter } = await client.send(
+      new GetParameterCommand({
+        Name: `/journaling.place/${ENVIRONMENT}/MONGO_URI`,
+        WithDecryption: true,
+      })
+    );
+    process.env.MONGO_URI = Parameter.Value;
+    console.log(`::add-mask::${Parameter.Value}`);
   }
+
+  const mongoClient = new MongoClient(process.env.MONGO_URI as string);
+  await mongoClient.connect().then(() => {
+    console.log("Connected to MongoDB");
+  });
+
+  return mongoClient;
 }
 
 async function globalSetup(config: FullConfig) {
-  if (["main", "staging"].includes(ENVIRONMENT)) {
-    await getSSMParameters();
-  }
-
-  const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
-
   await checkVersion(baseURL);
+  const mongoClient = await getMongoClient();
 
-  const prisma = new PrismaClient();
-  const user = await prisma.user
-    .findUniqueOrThrow({
-      where: { email: "test@journaling.place" },
-    })
-    .catch(async (e) => {
-      if (e.code === "P2025") {
-        return await prisma.user.create({
-          data: {
-            email: "test@journaling.place",
-          },
-        });
-      } else throw e;
-    });
-  await prisma.$disconnect();
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  await page.goto(`${baseURL}/api/auth/signin`);
 
-  const state = await mockStorageState(user, baseURL);
-  writeFileSync("storageState.json", state);
+  await page
+    .locator("[id=input-email-for-email-provider]")
+    .fill(TEST_USER_EMAIL);
+  await page.locator("[type=submit]").click();
+  const doc = await mongoClient
+    .db()
+    .collection("testing")
+    .findOneAndDelete({ _id: TEST_USER_EMAIL as any });
+
+  await page.goto(doc.url);
+
+  await enterJournalPassword(page);
+
+  await browser.close();
 }
 
 export default globalSetup;

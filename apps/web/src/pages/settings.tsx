@@ -1,33 +1,29 @@
-import { useState } from "react";
-import { useAppSelector } from "src/store";
-import { selectUser } from "src/store/user";
+import { NotificationTopic } from "@prisma/client";
+import { useState, useEffect } from "react";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { useForm } from "react-hook-form";
 import { clsx } from "clsx";
 import { Toggle } from "src/components/settings/Toggle";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import { CustomSession } from "src/types";
+import { trpc } from "src/services/trpc";
 
-import { changePassword } from "src/lib/crypto";
+import { changePassword } from "src/services/crypto";
 
-enum SettingsStatus {
+export enum SettingsStatus {
   READY = "READY",
   UPDATING = "UPDATING",
   PASSWORD_UPDATED = "PASSWORD_UPDATED",
 }
 
 export default function SettingsPage() {
-  const user = useAppSelector(selectUser);
+  const session = useSession().data as CustomSession;
   const router = useRouter();
-  const { update } = useSession();
-  const [status, setStatus] = useState(
-    router.query.status || SettingsStatus.READY
-  );
+  const [status, setStatus] = useState(SettingsStatus.READY);
   const { register, handleSubmit, formState, setError, setFocus, setValue } =
     useForm();
   const { errors }: { errors: any } = formState;
-
-  if (!user) return null;
 
   const onSubmit = async (values) => {
     const { current_password, new_password, confirm_new_password } = values;
@@ -41,21 +37,24 @@ export default function SettingsPage() {
 
     setStatus(SettingsStatus.UPDATING);
 
-    await changePassword(current_password, new_password, update)
+    await changePassword(current_password, new_password)
       .then(() => {
         setStatus(SettingsStatus.PASSWORD_UPDATED);
-        window.location.href += `?status=${SettingsStatus.PASSWORD_UPDATED}`;
       })
       .catch((err) => {
         if (err.message === "Incorrect password") {
           setError("current_password", {
-            message: "Current password is incorrect.",
+            message: "Provided password is incorrect.",
           });
           setStatus(SettingsStatus.READY);
           setFocus("current_password");
         } else throw err;
       });
   };
+
+  useEffect(() => {
+    setStatus(SettingsStatus.READY);
+  }, [router.asPath]);
 
   if (status === SettingsStatus.PASSWORD_UPDATED) {
     return (
@@ -87,10 +86,44 @@ export default function SettingsPage() {
     );
   }
 
+  const emailNotifications = new Set<NotificationTopic>(
+    session.user.emailNotifications
+  );
+
   return (
     <div className="m-12">
-      <h2 className="neuton text-xl mb-4">Email Preferences</h2>
-      <Toggle />
+      <h2 className="neuton text-xl mb-4">Email Notifications</h2>
+      {Object.keys(NotificationTopic).map((key) => {
+        const topic = {
+          prompt_of_the_day: {
+            name: "Prompt of the Day",
+            description: "Subscribe to the daily prompt email.",
+          },
+        }[key];
+        if (!topic) throw new Error(`Unknown topic: ${key}`);
+        return (
+          <Toggle
+            key={key}
+            name={topic.name}
+            description={topic.description}
+            enabled={emailNotifications.has(key as NotificationTopic)}
+            onToggle={async (newValue) => {
+              await trpc.user.updateNotifications.mutate({
+                field: "emailNotifications",
+                topic: key as NotificationTopic,
+                subscribe: newValue,
+              });
+              if (newValue) {
+                emailNotifications.add(key as NotificationTopic);
+              } else {
+                emailNotifications.delete(key as NotificationTopic);
+              }
+              session.user.emailNotifications = Array.from(emailNotifications);
+            }}
+          />
+        );
+      })}
+
       <form onSubmit={handleSubmit(onSubmit)} className="md:w-5/12">
         <h2 className="neuton text-xl mb-4">Update Journal Password</h2>
         <label
@@ -165,3 +198,5 @@ export default function SettingsPage() {
     </div>
   );
 }
+
+SettingsPage.auth = true;

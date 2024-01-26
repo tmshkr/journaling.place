@@ -5,7 +5,7 @@ import { PlusIcon } from "@heroicons/react/20/solid";
 export function FloatingActionButton() {
   const dispatch = useAppDispatch();
   const handleClick = () => {
-    dispatch(setModal({ value: "CreateNewEntryModal", isVisible: true }));
+    dispatch(setModal({ name: "CreateNewEntryModal", isVisible: true }));
   };
 
   return (

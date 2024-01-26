@@ -1,14 +1,14 @@
-import { QueryFunctionContext, QueryKey } from "react-query";
 import { queryClient } from "src/pages/_app";
 import { JournalStatus } from "@prisma/client";
-import store from "src/store";
+import { store } from "src/store";
 import { setNetworkStatus, NetworkStatus } from "src/store/network";
-import { trpc } from "src/utils/trpc";
+import { trpc } from "src/services/trpc";
+import { setModal } from "src/store/modal";
 const { Index } = require("flexsearch");
 
-import { decrypt } from "src/lib/crypto";
+import { decrypt, isKeySet } from "src/services/crypto";
 import { toArrayBuffer } from "src/utils/buffer";
-import { journalStore } from "src/lib/localForage";
+import { journalStore } from "src/services/localForage";
 
 export const journalIndex = new Index({
   preset: "default",
@@ -67,7 +67,12 @@ async function processJournal(j: CachedJournal) {
     const decrypted = await decrypt(
       j.ciphertext as ArrayBuffer,
       j.iv as Uint8Array
-    );
+    ).catch((err) => {
+      store.dispatch(
+        setModal({ name: "DecryptionError", isVisible: true, keepOpen: true })
+      );
+      return "";
+    });
 
     try {
       quill.setContents(JSON.parse(decrypted));
@@ -95,29 +100,31 @@ async function processJournal(j: CachedJournal) {
   }
 }
 
-export async function sync(
-  args?: QueryFunctionContext<QueryKey, any>,
-  fullSync?: boolean
-) {
-  const { user } = store.getState();
-  if (!user.value?.salt) {
-    queryClient.cancelQueries({ queryKey: args?.queryKey });
-    return cache;
+interface SyncParams {
+  reset: boolean;
+}
+
+export async function sync(params?: SyncParams) {
+  if (params?.reset) {
+    console.log("Resetting journal cache");
+    await journalStore.clear();
+    await journalStore.setItem("ts", 0);
+    cache = { journalsById: {}, journalsByPromptId: {}, ts: 0 };
   }
+
+  console.log("Syncing journals");
+  if (!isKeySet()) {
+    console.log("No key set, returning empty cache");
+    await queryClient.cancelQueries({ queryKey: "journal" });
+    return { journalsById: {}, journalsByPromptId: {}, ts: 0 };
+  }
+
   if (!quill) {
     const Quill = await import("quill").then((value) => value.default);
     quill = new Quill(document.createElement("div"));
   }
 
-  if (fullSync) {
-    cache = { journalsById: {}, journalsByPromptId: {}, ts: 0 };
-    await journalStore
-      .clear()
-      .then(() => {
-        console.log("Deleted local journal cache");
-      })
-      .catch(console.error);
-  } else if (cache.ts === 0) {
+  if (cache.ts === 0) {
     await loadCache();
   }
 
@@ -146,6 +153,6 @@ async function getJournals(cursor?: string) {
 
   cache.ts = ts;
   store.dispatch(setNetworkStatus(NetworkStatus.succeeded));
-  journalStore.setItem("ts", ts);
+  await journalStore.setItem("ts", ts);
   return cache;
 }

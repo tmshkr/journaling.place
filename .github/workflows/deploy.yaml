@@ -137,14 +137,14 @@ jobs:
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
+          terminate_unhealthy_environment: false
           update_listener_rules: true
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ env.TAG }}
       - name: Tag image
         run: ./scripts/tag-image.js
         env:
-          ENVIRONMENT: ${{ env.ENVIRONMENT }}
-          SHA: ${{ github.sha }}
+          TAG: ${{ env.ENVIRONMENT }}
 
   test:
     if: always() && needs.deploy.result == 'success'
@@ -169,6 +169,7 @@ jobs:
         env:
           APP_VERSION: ${{ github.ref_name}}-${{ env.TAG }}
           BASE_URL: https://staging.journaling.place
+          TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
       - uses: actions/upload-artifact@v3
         if: always()
         with:
@@ -201,3 +202,7 @@ jobs:
           staging_cname: ${{ vars.STAGING_CNAME }}
           swap_cnames: true
           update_listener_rules: true
+      - name: Tag image
+        run: ./scripts/tag-image.js
+        env:
+          TAG: "production"

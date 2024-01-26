@@ -1,16 +1,15 @@
 #!/usr/bin/env node
 const { execSync } = require("child_process");
-
-const { SHA, ENVIRONMENT } = process.env;
+const { GITHUB_SHA, TAG } = process.env;
 
 const { images } = JSON.parse(
   execSync(
-    `aws ecr batch-get-image --repository-name journaling.place --image-ids imageTag=${SHA} --output json`
+    `aws ecr batch-get-image --repository-name journaling.place --image-ids imageTag=${GITHUB_SHA} --output json`
   )
 );
 try {
   execSync(
-    `aws ecr put-image --repository-name journaling.place --image-tag ${ENVIRONMENT} --image-manifest '${images[0].imageManifest}'`,
+    `aws ecr put-image --repository-name journaling.place --image-tag ${TAG} --image-manifest '${images[0].imageManifest}'`,
     { stdio: "pipe" }
   );
 } catch (err) {

@@ -1,31 +1,17 @@
 import { useState } from "react";
-import axios from "axios";
-import { useAppDispatch, useAppSelector } from "src/store";
-import { selectUser, setUser, clearUser } from "src/store/user";
 import { Switch } from "@headlessui/react";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function Toggle() {
-  const dispatch = useAppDispatch();
-  const user = useAppSelector(selectUser);
-  const [enabled, setEnabled] = useState(user.isSubscribedPOTD);
+export function Toggle(props) {
+  const { name, description, onToggle } = props;
+  const [enabled, setEnabled] = useState(props.enabled);
 
   const toggle = (newValue) => {
     setEnabled(newValue);
-    axios
-      .put("/api/me/email", {
-        isSubscribedPOTD: newValue,
-      })
-      .then(() => {
-        dispatch(setUser({ ...user, isSubscribedPOTD: newValue }));
-      })
-      .catch((err) => {
-        setEnabled(!newValue);
-        console.log(err);
-      });
+    onToggle(newValue).catch(() => setEnabled(!newValue));
   };
 
   return (
@@ -39,10 +25,10 @@ export function Toggle() {
           className="text-sm font-medium leading-6 text-gray-900"
           passive
         >
-          Prompt of the Day
+          {name}
         </Switch.Label>
         <Switch.Description as="span" className="text-sm text-gray-500">
-          Subscribe to the daily prompt email.
+          {description}
         </Switch.Description>
       </span>
       <Switch

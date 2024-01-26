@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { User } from "@prisma/client";
 import { appRouter } from "../router";
 import { prismaMock, db as mockDB } from "common/prisma/mock";
+import { mongoMock } from "common/mongo/mock";
 
 let testUser: User;
 let caller;
@@ -18,6 +19,7 @@ beforeAll(async () => {
       user: { salt: { data: testUser.salt || null } },
     },
     prisma: prismaMock,
+    mongoClient: mongoMock,
   });
 });
 

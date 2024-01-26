@@ -15,9 +15,9 @@ import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 
 import { setLoading } from "src/store/loading";
-import { encrypt, decrypt } from "src/lib/crypto";
+import { encrypt, decrypt } from "src/services/crypto";
 import dayjs from "src/lib/dayjs";
-import { trpc } from "src/utils/trpc";
+import { trpc } from "src/services/trpc";
 
 import { setNetworkStatus, NetworkStatus } from "src/store/network";
 import { JournalStatus } from "@prisma/client";
@@ -26,7 +26,7 @@ import { OtherEntries } from "./OtherEntries";
 
 export default function QuillEditor(props) {
   const queryClient = useQueryClient();
-  const { user, prompt, router, loading, dispatch } = props;
+  const { user, prompt, router, loading, dispatch, modal } = props;
   const [journal, setJournal] = useState(props.journal);
 
   const quillRef: any = useRef(null);
@@ -49,7 +49,9 @@ export default function QuillEditor(props) {
       dispatch(setLoading({ ...loading, editor: false }));
     }
 
-    quillRef.current.focus();
+    if (!modal.isVisible) {
+      quillRef.current.focus();
+    }
     const changeHandler = () =>
       autosave(quillRef, journal, prompt, setJournal, dispatch);
     quillRef.current.on("text-change", changeHandler);
@@ -58,7 +60,7 @@ export default function QuillEditor(props) {
       clearTimeout(quillRef.current.__timeout);
       quillRef.current.off("text-change", changeHandler);
     };
-  }, [user, router, journal, prompt]);
+  }, [user, router, journal, prompt, modal]);
 
   useEffect(() => {
     quillRef.current.setText("");
@@ -191,7 +193,12 @@ async function autosave(quillRef, journal, prompt, setJournal, dispatch) {
 
 async function loadSavedData(quillRef, journal) {
   if (journal?.id) {
-    const decrypted = await decrypt(journal.ciphertext, journal.iv);
+    const decrypted = await decrypt(journal.ciphertext, journal.iv).catch(
+      (err) => {
+        console.error(err);
+        return "";
+      }
+    );
     try {
       quillRef.current.setContents(JSON.parse(decrypted));
     } catch (err) {

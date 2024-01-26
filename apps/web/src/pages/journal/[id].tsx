@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 
 import { currentPrompt } from "src/store/prompt";
 import { JournalView } from "src/components/JournalView";
-import { JournalCache } from "src/store/journal";
+import { JournalCache } from "src/services/journal";
 
 export default function JournalPage() {
   const router = useRouter();
@@ -26,3 +26,5 @@ export default function JournalPage() {
     <JournalView prompt={journal.prompt} journal={journal} />
   ) : null;
 }
+
+JournalPage.auth = true;
