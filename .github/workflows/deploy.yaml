@@ -143,6 +143,8 @@ jobs:
           version_label: ${{ github.ref_name }}-${{ env.TAG }}
       - name: Tag image
         run: ./scripts/tag-image.js
+        env:
+          TAG: ${{ env.ENVIRONMENT }}
 
   test:
     if: always() && needs.deploy.result == 'success'
