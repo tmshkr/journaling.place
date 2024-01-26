@@ -54,7 +54,7 @@ export async function sendPromptOfTheDay(
     message: {
       from: "Journaling Place <hi@journaling.place>",
       headers: {
-        "List-Unsubscribe": `<${process.env.NEXTAUTH_URL}/api/email/unsubscribe?token=${token}>`,
+        "List-Unsubscribe": `<${process.env.NEXTAUTH_URL}/api/email/unsubscribe?topic=prompt_of_the_day&token=${token}>`,
         "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
       },
     },
