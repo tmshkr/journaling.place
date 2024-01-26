@@ -200,3 +200,7 @@ jobs:
           staging_cname: ${{ vars.STAGING_CNAME }}
           swap_cnames: true
           update_listener_rules: true
+      - name: Tag image
+        run: ./scripts/tag-image.js
+        env:
+          TAG: "production"
