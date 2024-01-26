@@ -166,6 +166,7 @@ jobs:
         env:
           APP_VERSION: ${{ github.ref_name}}-${{ env.TAG }}
           BASE_URL: https://staging.journaling.place
+          TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
       - uses: actions/upload-artifact@v3
         if: always()
         with:
