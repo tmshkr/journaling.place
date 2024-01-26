@@ -1,12 +1,10 @@
 import { store } from "src/store";
 import { setModal } from "src/store/modal";
-import { cryptoStore } from "src/services/localForage";
+import { cryptoStore, journalStore } from "src/services/localForage";
 import { sync } from "src/services/journal";
 import { trpc, resetTRPC } from "src/services/trpc";
 import { toArrayBuffer } from "src/utils/buffer";
 import { authSession, queryClient } from "src/pages/_app";
-
-import { User } from "@prisma/client";
 
 let key: CryptoKey | null;
 let salt: Uint8Array | null;
@@ -247,15 +245,17 @@ export async function changePassword(oldPassword: string, newPassword: string) {
     journals: updatedJournals,
   });
 
-  // update local crypto store
+  // Update local crypto store
   await cryptoStore.setItem("key", newKey);
   await cryptoStore.setItem("salt", newSalt);
 
   // Update session
   await updateSession();
 
+  // Set new key and salt
+  key = newKey;
+  salt = newSalt;
+
   // Sync with server
   await sync({ reset: true });
-
-  await setKey();
 }

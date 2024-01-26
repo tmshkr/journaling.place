@@ -107,8 +107,9 @@ interface SyncParams {
 export async function sync(params?: SyncParams) {
   if (params?.reset) {
     console.log("Resetting journal cache");
+    await journalStore.clear();
+    await journalStore.setItem("ts", 0);
     cache = { journalsById: {}, journalsByPromptId: {}, ts: 0 };
-    journalStore.clear();
   }
 
   console.log("Syncing journals");
@@ -152,6 +153,6 @@ async function getJournals(cursor?: string) {
 
   cache.ts = ts;
   store.dispatch(setNetworkStatus(NetworkStatus.succeeded));
-  journalStore.setItem("ts", ts);
+  await journalStore.setItem("ts", ts);
   return cache;
 }
