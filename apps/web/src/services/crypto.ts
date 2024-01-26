@@ -44,6 +44,10 @@ export async function setKey() {
       console.error(err);
       key = null;
       salt = null;
+      store.dispatch(
+        setModal({ name: "DecryptionError", isVisible: true, keepOpen: true })
+      );
+      return;
     }
   }
 
