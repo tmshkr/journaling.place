@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 const { execSync } = require("child_process");
-
-const { SHA, ENVIRONMENT } = process.env;
+const { TAG, ENVIRONMENT } = process.env;
 
 const { images } = JSON.parse(
   execSync(
-    `aws ecr batch-get-image --repository-name journaling.place --image-ids imageTag=${SHA} --output json`
+    `aws ecr batch-get-image --repository-name journaling.place --image-ids imageTag=${TAG} --output json`
   )
 );
 try {

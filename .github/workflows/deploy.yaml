@@ -125,7 +125,6 @@ jobs:
         env:
           DOMAIN_NAME: staging.journaling.place
       - name: Deploy
-        id: deploy
         uses: tmshkr/blue-green-beanstalk@v4
         with:
           app_name: "journaling.place"
@@ -142,6 +141,8 @@ jobs:
           update_listener_rules: true
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ env.TAG }}
+      - name: Tag image
+        run: ./scripts/tag-image.js
 
   test:
     if: always() && needs.deploy.result == 'success'
