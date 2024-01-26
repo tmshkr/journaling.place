@@ -1,6 +1,6 @@
 import { chromium, FullConfig } from "@playwright/test";
-import { SSMClient, GetParametersCommand } from "@aws-sdk/client-ssm";
-import { mongoClient } from "./mongo";
+import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
+import { MongoClient } from "mongodb";
 import { enterJournalPassword } from "./utils/enterJournalPassword";
 
 const { ENVIRONMENT, TEST_USER_EMAIL } = process.env;
@@ -34,30 +34,31 @@ async function checkVersion(baseURL) {
   }
 }
 
-async function getSSMParameters() {
-  console.log("Getting SSM parameters");
-  const client = new SSMClient();
-  const { Parameters } = await client.send(
-    new GetParametersCommand({
-      Names: [
-        `/journaling.place/${ENVIRONMENT}/MONGO_URI`,
-        `/journaling.place/${ENVIRONMENT}/TEST_USER_EMAIL`,
-      ],
-      WithDecryption: true,
-    })
-  );
-  for (const { Name, Value } of Parameters) {
-    process.env[Name.split("/").pop()] = Value;
-    console.log(`::add-mask::${Value}`);
+async function getMongoClient() {
+  if (["main", "staging"].includes(ENVIRONMENT)) {
+    console.log("Getting SSM parameters");
+    const client = new SSMClient();
+    const { Parameter } = await client.send(
+      new GetParameterCommand({
+        Name: `/journaling.place/${ENVIRONMENT}/MONGO_URI`,
+        WithDecryption: true,
+      })
+    );
+    process.env.MONGO_URI = Parameter.Value;
+    console.log(`::add-mask::${Parameter.Value}`);
   }
+
+  const mongoClient = new MongoClient(process.env.MONGO_URI as string);
+  await mongoClient.connect().then(() => {
+    console.log("Connected to MongoDB");
+  });
+
+  return mongoClient;
 }
 
 async function globalSetup(config: FullConfig) {
-  if (["main", "staging"].includes(ENVIRONMENT)) {
-    await getSSMParameters();
-  }
-
   await checkVersion(baseURL);
+  const mongoClient = await getMongoClient();
 
   const browser = await chromium.launch();
   const page = await browser.newPage();
