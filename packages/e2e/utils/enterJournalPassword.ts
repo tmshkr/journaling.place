@@ -19,4 +19,7 @@ export async function enterJournalPassword(page: Page) {
   }
 
   await submitButton.waitFor({ state: "detached" });
+
+  // Save signed-in state to 'storageState.json'.
+  await page.context().storageState({ path: "storageState.json" });
 }

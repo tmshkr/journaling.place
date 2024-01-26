@@ -77,8 +77,6 @@ async function globalSetup(config: FullConfig) {
 
   await enterJournalPassword(page);
 
-  // Save signed-in state to 'storageState.json'.
-  await page.context().storageState({ path: "storageState.json" });
   await browser.close();
 }
 
