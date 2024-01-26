@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { signOut } from "next-auth/react";
-import { cryptoStore } from "src/lib/localForage";
-import { clearKey } from "src/lib/crypto";
+import { cryptoStore } from "src/services/localForage";
+import { clearKey } from "src/services/crypto";
 import { useSession } from "next-auth/react";
 
 export default function Logout() {

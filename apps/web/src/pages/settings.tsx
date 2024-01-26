@@ -7,9 +7,9 @@ import { Toggle } from "src/components/settings/Toggle";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { CustomSession } from "src/types";
-import { trpc } from "src/utils/trpc";
+import { trpc } from "src/services/trpc";
 
-import { changePassword } from "src/lib/crypto";
+import { changePassword } from "src/services/crypto";
 
 export enum SettingsStatus {
   READY = "READY",

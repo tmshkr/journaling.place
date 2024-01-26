@@ -2,13 +2,13 @@ import { queryClient } from "src/pages/_app";
 import { JournalStatus } from "@prisma/client";
 import { store } from "src/store";
 import { setNetworkStatus, NetworkStatus } from "src/store/network";
-import { trpc } from "src/utils/trpc";
+import { trpc } from "src/services/trpc";
 import { setModal } from "src/store/modal";
 const { Index } = require("flexsearch");
 
-import { decrypt, isKeySet } from "src/lib/crypto";
+import { decrypt, isKeySet } from "src/services/crypto";
 import { toArrayBuffer } from "src/utils/buffer";
-import { journalStore } from "src/lib/localForage";
+import { journalStore } from "src/services/localForage";
 
 export const journalIndex = new Index({
   preset: "default",

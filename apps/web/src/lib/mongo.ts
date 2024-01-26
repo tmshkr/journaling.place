@@ -5,9 +5,9 @@ const globalWithMongo = global as typeof globalThis & {
   _mongoClient: MongoClient;
 };
 
-export const mongoClient = await getMongoClient();
+export const mongoClient = getMongoClient();
 
-async function getMongoClient() {
+function getMongoClient() {
   if (globalWithMongo._mongoClient) {
     return globalWithMongo._mongoClient;
   }

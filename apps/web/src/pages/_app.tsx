@@ -3,7 +3,7 @@ import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import { SessionProvider, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { sync } from "src/store/journal";
+import { sync } from "src/services/journal";
 import { Provider as ReduxProvider } from "react-redux";
 import axios from "axios";
 
@@ -19,7 +19,7 @@ import { setLoading } from "src/store/loading";
 import { setNetworkStatus } from "src/store/network";
 import { AppShell } from "src/components/AppShell";
 import { LoadingScreen } from "src/components/LoadingScreen";
-import { setKey } from "src/lib/crypto";
+import { setKey } from "src/services/crypto";
 
 import { Modal } from "src/components/modals/ModalWrapper";
 

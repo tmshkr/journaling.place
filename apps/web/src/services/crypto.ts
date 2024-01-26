@@ -1,8 +1,8 @@
 import { store } from "src/store";
 import { setModal } from "src/store/modal";
-import { cryptoStore } from "src/lib/localForage";
-import { sync } from "src/store/journal";
-import { trpc, resetTRPC } from "src/utils/trpc";
+import { cryptoStore } from "src/services/localForage";
+import { sync } from "src/services/journal";
+import { trpc, resetTRPC } from "src/services/trpc";
 import { toArrayBuffer } from "src/utils/buffer";
 import { authSession, queryClient } from "src/pages/_app";
 

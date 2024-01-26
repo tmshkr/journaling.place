@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useQueryClient } from "react-query";
-import { JournalCache, CachedJournal } from "src/store/journal";
+import { JournalCache, CachedJournal } from "src/services/journal";
 
 import dayjs from "src/lib/dayjs";
 

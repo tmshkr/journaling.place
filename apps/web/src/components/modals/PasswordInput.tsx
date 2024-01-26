@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { useSession } from "next-auth/react";
-import { createKey } from "src/lib/crypto";
+import { createKey } from "src/services/crypto";
 import { useForm } from "react-hook-form";
 
 const buttonClasses =
