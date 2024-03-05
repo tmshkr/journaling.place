@@ -8,9 +8,9 @@ server {
     server_name ${SERVER_NAME};
 
     # Load the certificate files.
-    ssl_certificate         /etc/letsencrypt/live/journaling.place/fullchain.pem;
-    ssl_certificate_key     /etc/letsencrypt/live/journaling.place/privkey.pem;
-    ssl_trusted_certificate /etc/letsencrypt/live/journaling.place/chain.pem;
+    ssl_certificate         /etc/letsencrypt/live/${ENVIRONMENT}/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/${ENVIRONMENT}/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/${ENVIRONMENT}/chain.pem;
 
     # Load the Diffie-Hellman parameter.
     ssl_dhparam /etc/letsencrypt/dhparams/dhparam.pem;
