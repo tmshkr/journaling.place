@@ -61,7 +61,6 @@ jobs:
           source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
           update_environment: false
-          update_listener_rules: true
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ env.TAG }}
           wait_for_deployment: false
@@ -138,7 +137,6 @@ jobs:
           source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
           terminate_unhealthy_environment: false
-          update_listener_rules: true
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ env.TAG }}
       - name: Tag image
@@ -201,7 +199,6 @@ jobs:
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           staging_cname: ${{ vars.STAGING_CNAME }}
           swap_cnames: true
-          update_listener_rules: true
       - name: Tag image
         run: ./scripts/tag-image.js
         env:

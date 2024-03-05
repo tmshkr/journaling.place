@@ -22,12 +22,17 @@
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
     "OptionName": "SSHSourceRestriction",
-    "Value": "tcp,22,22,default"
+    "Value": "tcp, 22, 22, 127.0.0.1/32"
   },
   {
     "Namespace": "aws:ec2:instances",
     "OptionName": "InstanceTypes",
     "Value": "t3.micro,t2.micro"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "DOMAIN_NAME",
+    "Value": "$DOMAIN_NAME"
   },
   {
     "Namespace": "aws:elasticbeanstalk:application:environment",
@@ -42,26 +47,11 @@
   {
     "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "EnvironmentType",
-    "Value": "LoadBalanced"
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:environment",
-    "OptionName": "LoadBalancerIsShared",
-    "Value": true
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:environment",
-    "OptionName": "LoadBalancerType",
-    "Value": "application"
+    "Value": "SingleInstance"
   },
   {
     "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "ServiceRole",
     "Value": "service-role/aws-elasticbeanstalk-service-role"
-  },
-  {
-    "Namespace": "aws:elbv2:loadbalancer",
-    "OptionName": "SharedLoadBalancer",
-    "Value": "$SHARED_LOAD_BALANCER_ARN"
   }
 ]
