@@ -26,10 +26,12 @@ export class EfsStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, "EfsFileSystemId", {
       value: fileSystem.fileSystemId,
+      exportName: "EfsFileSystemId",
     });
 
     new cdk.CfnOutput(this, "EfsSecurityGroupId", {
       value: defaultSecurityGroup.securityGroupId,
+      exportName: "EfsSecurityGroupId",
     });
   }
 }
