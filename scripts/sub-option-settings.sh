@@ -9,11 +9,6 @@ if [ -z "$DOMAIN_NAME" ]; then
   failed=true
 fi
 
-if [ -z "$SECURITY_GROUP_ID" ]; then
-  echo "SECURITY_GROUP_ID is not set"
-  failed=true
-fi
-
 if [ "$failed" == true ]; then
   exit 1
 fi
