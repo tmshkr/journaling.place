@@ -15,6 +15,7 @@ services:
     restart: unless-stopped
     environment:
       CERTBOT_EMAIL:
+      DOMAIN_NAME:
       SERVER_NAME:
     depends_on:
       - app
