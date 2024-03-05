@@ -10,7 +10,7 @@ services:
     volumes:
       - /app/node_modules
   nginx:
-    image: jonasal/nginx-certbot:latest
+    image: jonasal/nginx-certbot:5-alpine
     container_name: nginx
     restart: unless-stopped
     environment:
