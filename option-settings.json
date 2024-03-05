@@ -42,26 +42,11 @@
   {
     "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "EnvironmentType",
-    "Value": "LoadBalanced"
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:environment",
-    "OptionName": "LoadBalancerIsShared",
-    "Value": true
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:environment",
-    "OptionName": "LoadBalancerType",
-    "Value": "application"
+    "Value": "SingleInstance"
   },
   {
     "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "ServiceRole",
     "Value": "service-role/aws-elasticbeanstalk-service-role"
-  },
-  {
-    "Namespace": "aws:elbv2:loadbalancer",
-    "OptionName": "SharedLoadBalancer",
-    "Value": "$SHARED_LOAD_BALANCER_ARN"
   }
 ]
