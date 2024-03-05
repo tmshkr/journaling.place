@@ -47,6 +47,7 @@ jobs:
         env:
           DOMAIN_NAME: staging.journaling.place
           PREP: true
+          SECURITY_GROUP_ID: ${{ vars.SECURITY_GROUP_ID }}
       - name: Prep target env
         uses: tmshkr/blue-green-beanstalk@v4
         with:
@@ -123,6 +124,7 @@ jobs:
       - run: ./scripts/generate-deployment-package.sh
         env:
           DOMAIN_NAME: staging.journaling.place
+          SECURITY_GROUP_ID: ${{ vars.SECURITY_GROUP_ID }}
       - name: Deploy
         uses: tmshkr/blue-green-beanstalk@v4
         with:
@@ -188,6 +190,7 @@ jobs:
       - run: ./scripts/sub-option-settings.sh
         env:
           DOMAIN_NAME: journaling.place
+          SECURITY_GROUP_ID: ${{ vars.SECURITY_GROUP_ID }}
       - name: Promote
         uses: tmshkr/blue-green-beanstalk@v4
         with:
