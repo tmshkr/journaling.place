@@ -19,4 +19,3 @@ if [ "$failed" == true ]; then
 fi
 
 echo $(envsubst <option-settings.json) >option-settings.json
-echo $(envsubst <./.ebextensions/00_efs_ingress.config ) >./.ebextensions/00_efs_ingress.config 
