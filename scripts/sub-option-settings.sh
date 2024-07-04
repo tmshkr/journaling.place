@@ -9,6 +9,11 @@ if [ -z "$DOMAIN_NAME" ]; then
   failed=true
 fi
 
+if [ -z "$SHARED_LOAD_BALANCER_ARN" ]; then
+  echo "SHARED_LOAD_BALANCER_ARN is not set"
+  failed=true
+fi
+
 if [ "$failed" == true ]; then
   exit 1
 fi
