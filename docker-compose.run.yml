@@ -10,21 +10,15 @@ services:
     volumes:
       - /app/node_modules
   nginx:
-    image: jonasal/nginx-certbot:5-alpine
+    image: nginx:alpine
     container_name: nginx
     restart: unless-stopped
-    environment:
-      CERTBOT_EMAIL:
-      DOMAIN_NAME:
-      SERVER_NAME:
     depends_on:
       - app
     ports:
       - "80:80"
-      - "443:443"
     volumes:
-      - /efs/letsencrypt:/etc/letsencrypt
-      - ./nginx:/etc/nginx/templates
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
   mongo-backup:
     image: "tmshkr/mongodump"
     environment:
