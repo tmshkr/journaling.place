@@ -3,10 +3,11 @@
   "main": "index.ts",
   "scripts": {
     "cdk-bootstrap": "cdk bootstrap",
-    "cdk-deploy": "cdk deploy"
+    "cdk-deploy": "dotenvx run -f ../../../.env -- cdk deploy"
   },
   "dependencies": {
-    "aws-cdk-lib": "^2.103.1"
+    "aws-cdk": "^2.147.3",
+    "aws-cdk-lib": "^2.147.3"
   },
   "devDependencies": {
     "ts-node": "^10.9.1"
