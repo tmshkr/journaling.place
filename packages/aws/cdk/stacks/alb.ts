@@ -2,51 +2,56 @@ import * as cdk from "aws-cdk-lib";
 import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as acm from "aws-cdk-lib/aws-certificatemanager";
-import * as route53 from "aws-cdk-lib/aws-route53";
-import * as route53Targets from "aws-cdk-lib/aws-route53-targets";
+
+async function fetchCloudflareIpV6Cidrs() {
+  const cidrs = await fetch(`https://www.cloudflare.com/ips-v6/`).then(
+    async (response) => {
+      const text = await response.text();
+      return text.split("\n");
+    }
+  );
+  return cidrs;
+}
 
 export class ALBStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const zone = route53.HostedZone.fromLookup(this, "Zone", {
-      domainName: "journaling.place",
+    const cert = acm.Certificate.fromCertificateArn(
+      this,
+      "AlbCert",
+      process.env.ALB_CERT_ARN as string
+    );
+
+    const vpc = ec2.Vpc.fromLookup(this, "DefaultVPC", { isDefault: true });
+    const sg = new ec2.SecurityGroup(this, "ALBSecurityGroup", {
+      securityGroupName: "jp-alb-sg",
+      allowAllOutbound: false,
+      vpc: vpc,
     });
-    const cert = new acm.Certificate(this, "Certificate", {
-      domainName: "journaling.place",
-      certificateName: "journaling.place",
-      subjectAlternativeNames: ["*.journaling.place"],
-      validation: acm.CertificateValidation.fromDns(zone),
+
+    fetchCloudflareIpV6Cidrs().then((cidrs) => {
+      cidrs.forEach((cidr) => {
+        sg.addIngressRule(
+          ec2.Peer.ipv6(cidr),
+          ec2.Port.tcp(443),
+          "Allow traffic from Cloudflare"
+        );
+      });
     });
 
     const alb = new elbv2.ApplicationLoadBalancer(this, "ALB", {
       deletionProtection: true,
       internetFacing: true,
-      ipAddressType: elbv2.IpAddressType.IPV4,
+      ipAddressType: "dualstack-without-public-ipv4" as elbv2.IpAddressType,
       loadBalancerName: "jp-alb",
-      vpc: ec2.Vpc.fromLookup(this, "DefaultVPC", { isDefault: true }),
-    });
-
-    new route53.ARecord(this, "StagingAliasRecord", {
-      zone,
-      recordName: "staging.journaling.place",
-      target: route53.RecordTarget.fromAlias(
-        new route53Targets.LoadBalancerTarget(alb)
-      ),
-    });
-
-    const httpListener = alb.addListener("HttpListener", {
-      port: 80,
-      open: true,
-      defaultAction: elbv2.ListenerAction.fixedResponse(200, {
-        contentType: "text/plain",
-        messageBody: alb.loadBalancerDnsName,
-      }),
+      securityGroup: sg,
+      vpc: vpc,
     });
 
     const httpsListener = alb.addListener("HttpsListener", {
       port: 443,
-      open: true,
+      open: false,
       defaultAction: elbv2.ListenerAction.fixedResponse(200, {
         contentType: "text/plain",
         messageBody: alb.loadBalancerDnsName,
@@ -55,20 +60,6 @@ export class ALBStack extends cdk.Stack {
       protocol: elbv2.ApplicationProtocol.HTTPS,
       sslPolicy: elbv2.SslPolicy.RECOMMENDED,
     });
-
-    const prodHttpListenerRule = new elbv2.ApplicationListenerRule(
-      this,
-      "http://journaling.place",
-      {
-        listener: httpListener,
-        priority: 1,
-        conditions: [elbv2.ListenerCondition.hostHeaders(["journaling.place"])],
-        action: elbv2.ListenerAction.fixedResponse(200, {
-          contentType: "text/plain",
-          messageBody: "journaling.place",
-        }),
-      }
-    );
 
     const prodHttpsListenerRule = new elbv2.ApplicationListenerRule(
       this,
@@ -80,22 +71,6 @@ export class ALBStack extends cdk.Stack {
         action: elbv2.ListenerAction.fixedResponse(200, {
           contentType: "text/plain",
           messageBody: "journaling.place",
-        }),
-      }
-    );
-
-    const stagingHttpListenerRule = new elbv2.ApplicationListenerRule(
-      this,
-      "http://staging.journaling.place",
-      {
-        listener: httpListener,
-        priority: 2,
-        conditions: [
-          elbv2.ListenerCondition.hostHeaders(["staging.journaling.place"]),
-        ],
-        action: elbv2.ListenerAction.fixedResponse(200, {
-          contentType: "text/plain",
-          messageBody: "staging.journaling.place",
         }),
       }
     );
@@ -126,19 +101,9 @@ export class ALBStack extends cdk.Stack {
       exportName: "SharedLoadBalancerArn",
     });
 
-    new cdk.CfnOutput(this, "ProdHttpListenerRuleArn", {
-      value: prodHttpListenerRule.listenerRuleArn,
-      exportName: "ProdHttpListenerRuleArn",
-    });
-
     new cdk.CfnOutput(this, "ProdHttpsListenerRuleArn", {
       value: prodHttpsListenerRule.listenerRuleArn,
       exportName: "ProdHttpsListenerRuleArn",
-    });
-
-    new cdk.CfnOutput(this, "StagingHttpListenerRuleArn", {
-      value: stagingHttpListenerRule.listenerRuleArn,
-      exportName: "StagingHttpListenerRuleArn",
     });
 
     new cdk.CfnOutput(this, "StagingHttpsListenerRuleArn", {
