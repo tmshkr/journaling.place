@@ -60,6 +60,11 @@
     "Value": "$SHARED_LOAD_BALANCER_ARN"
   },
   {
+    "Namespace": "aws:elbv2:listener:443",
+    "OptionName": "Rules",
+    "Value": "default"
+  },
+  {
     "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "LoadBalancerType",
     "Value": "application"
