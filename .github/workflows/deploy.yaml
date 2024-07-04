@@ -47,6 +47,7 @@ jobs:
         env:
           DOMAIN_NAME: staging.journaling.place
           PREP: true
+          SHARED_LOAD_BALANCER_ARN: ${{ vars.SHARED_LOAD_BALANCER_ARN }}
       - name: Prep target env
         uses: tmshkr/blue-green-beanstalk@v4
         with:
@@ -61,6 +62,7 @@ jobs:
           source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
           update_environment: false
+          update_listener_rules: true
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ env.TAG }}
           wait_for_deployment: false
@@ -123,6 +125,7 @@ jobs:
       - run: ./scripts/generate-deployment-package.sh
         env:
           DOMAIN_NAME: staging.journaling.place
+          SHARED_LOAD_BALANCER_ARN: ${{ vars.SHARED_LOAD_BALANCER_ARN }}
       - name: Deploy
         uses: tmshkr/blue-green-beanstalk@v4
         with:
@@ -137,6 +140,7 @@ jobs:
           source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
           terminate_unhealthy_environment: false
+          update_listener_rules: true
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ github.ref_name }}-${{ env.TAG }}
       - name: Tag image
@@ -188,6 +192,7 @@ jobs:
       - run: ./scripts/sub-option-settings.sh
         env:
           DOMAIN_NAME: journaling.place
+          SHARED_LOAD_BALANCER_ARN: ${{ vars.SHARED_LOAD_BALANCER_ARN }}
       - name: Promote
         uses: tmshkr/blue-green-beanstalk@v4
         with:
@@ -200,6 +205,7 @@ jobs:
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           staging_cname: ${{ vars.STAGING_CNAME }}
           swap_cnames: true
+          update_listener_rules: true
       - name: Tag image
         run: ./scripts/tag-image.js
         env:
