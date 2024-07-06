@@ -91,19 +91,24 @@ export class ALBStack extends cdk.Stack {
       }
     );
 
+    new cdk.CfnOutput(this, "ALBSecurityGroupId", {
+      value: sg.securityGroupId,
+      exportName: "ALBSecurityGroupId",
+    });
+
     new cdk.CfnOutput(this, "HttpsCertificateArn", {
       value: cert.certificateArn,
       exportName: "HttpsCertificateArn",
     });
 
-    new cdk.CfnOutput(this, "SharedLoadBalancerArn", {
-      value: alb.loadBalancerArn,
-      exportName: "SharedLoadBalancerArn",
-    });
-
     new cdk.CfnOutput(this, "ProdHttpsListenerRuleArn", {
       value: prodHttpsListenerRule.listenerRuleArn,
       exportName: "ProdHttpsListenerRuleArn",
+    });
+
+    new cdk.CfnOutput(this, "SharedLoadBalancerArn", {
+      value: alb.loadBalancerArn,
+      exportName: "SharedLoadBalancerArn",
     });
 
     new cdk.CfnOutput(this, "StagingHttpsListenerRuleArn", {
