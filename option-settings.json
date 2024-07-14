@@ -40,21 +40,6 @@
     "Value": "t3.micro,t2.micro"
   },
   {
-    "Namespace": "aws:elasticbeanstalk:application:environment",
-    "OptionName": "DOMAIN_NAME",
-    "Value": "$DOMAIN_NAME"
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:application:environment",
-    "OptionName": "NEXTAUTH_URL",
-    "Value": "https://$DOMAIN_NAME"
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:application:environment",
-    "OptionName": "PREP",
-    "Value": "$PREP"
-  },
-  {
     "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "EnvironmentType",
     "Value": "LoadBalanced"
