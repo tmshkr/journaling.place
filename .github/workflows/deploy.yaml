@@ -40,7 +40,6 @@ jobs:
           blue_env: ${{ vars.BLUE_ENV }}
           deploy: true
           disable_termination_protection: true
-          enable_termination_protection: true
           green_env: ${{ vars.GREEN_ENV }}
           option_settings: option-settings.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
@@ -145,6 +144,7 @@ jobs:
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
+          enable_termination_protection: true
           green_env: ${{ vars.GREEN_ENV }}
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           send_command: ./scripts/promote.sh
