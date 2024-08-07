@@ -30,4 +30,4 @@ services:
       CRON_SCHEDULE: "0 10 * * *"
       MONGO_URI:
       TARGET_FOLDER: "/backup"
-      TARGET_S3_FOLDER: "s3://${BACKUP_BUCKET_NAME}/${ENVIRONMENT}"
+      TARGET_S3_FOLDER: "s3://${BACKUP_BUCKET_NAME}/${STAGE}"
