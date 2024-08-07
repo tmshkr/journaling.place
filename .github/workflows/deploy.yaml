@@ -98,8 +98,8 @@ jobs:
           aws s3 cp --recursive export s3://${{ vars.CDN_BUCKET}}/_next/
 
   test:
-    if: always() && needs.deploy.result == 'success'
-    needs: deploy
+    if: always() && needs.deploy.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
+    needs: [deploy, build]
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.40.0-jammy
