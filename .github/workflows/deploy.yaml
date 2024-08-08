@@ -78,7 +78,7 @@ jobs:
           platforms: linux/amd64
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
-      - name: Build and load image
+      - name: Build and push image
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -110,7 +110,7 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.GH_ACTIONS_ROLE }}
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           cache: "npm"
           node-version: 20
@@ -175,7 +175,7 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.GH_ACTIONS_ROLE }}
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           cache: "npm"
           node-version: 20
