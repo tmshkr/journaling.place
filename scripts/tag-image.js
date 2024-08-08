@@ -1,22 +1,32 @@
 #!/usr/bin/env node
 const { execSync } = require("child_process");
-const { TAG } = process.env;
-const newTag = process.argv[2];
+const { CURRENT_TAG, NEW_TAG } = process.env;
+if (!CURRENT_TAG || !NEW_TAG) {
+  throw new Error("CURRENT_TAG and NEW_TAG must be set");
+}
 
-const { images } = JSON.parse(
+const { images, failures } = JSON.parse(
   execSync(
-    `aws ecr batch-get-image --repository-name journaling.place --image-ids imageTag=${TAG} --output json`
+    `aws ecr batch-get-image --repository-name journaling.place --image-ids imageTag=${CURRENT_TAG} --output json`
   )
 );
-try {
-  execSync(
-    `aws ecr put-image --repository-name journaling.place --image-tag ${newTag} --image-manifest '${images[0].imageManifest}'`,
-    { stdio: "pipe" }
-  );
-} catch (err) {
-  if (err.toString().includes("ImageAlreadyExistsException")) {
-    console.log("Image already exists");
-  } else {
-    throw err.toString();
+
+for (const fail of failures) {
+  console.log(fail);
+}
+
+for (const image of images) {
+  try {
+    execSync(
+      `aws ecr put-image --repository-name journaling.place --image-tag ${NEW_TAG} --image-manifest '${image.imageManifest}'`,
+      { stdio: "pipe" }
+    );
+    console.log("Image tagged", image.imageId);
+  } catch (err) {
+    if (err.toString().includes("ImageAlreadyExistsException")) {
+      console.log("Image already exists");
+    } else {
+      throw err.toString();
+    }
   }
 }

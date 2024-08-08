@@ -8,16 +8,11 @@ on:
       - main
       - staging
   workflow_dispatch:
-    inputs:
-      tag:
-        type: string
-        description: "Tag to deploy"
-        required: false
 env:
   APP_VERSION: ${{ github.ref_name }}-${{ github.sha }}
   DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place
   STAGE: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
-  TAG: ${{ inputs.tag || github.sha }}
+  TAG: ${{ github.sha }}
 
 jobs:
   deploy:
@@ -108,7 +103,10 @@ jobs:
           docker run -v ./export:/app/export "${{ env.DOCKER_IMAGE }}:${{ env.TAG }}" sh /app/scripts/export-static-assets.sh
           aws s3 cp --recursive export s3://${{ vars.CDN_BUCKET}}/_next/
       - name: Tag image
-        run: ./scripts/tag-image.js staging
+        run: ./scripts/tag-image.js
+        env:
+          CURRENT_TAG: ${{ env.TAG }}
+          NEW_TAG: staging
 
   test:
     if: always() && needs.deploy.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
@@ -200,7 +198,10 @@ jobs:
           BASE_URL: https://journaling.place
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
       - name: Tag image
-        run: ./scripts/tag-image.js production
+        run: ./scripts/tag-image.js
+        env:
+          CURRENT_TAG: ${{ env.TAG }}
+          NEW_TAG: production
       - name: Rollback
         if: ${{ failure() && steps.test.conclusion == 'failure' }}
         uses: tmshkr/blue-green-beanstalk@send-command
