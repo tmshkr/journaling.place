@@ -1,6 +1,7 @@
-FROM node:21-alpine as base
-RUN apk add git
-RUN apk add --no-cache libc6-compat
+FROM node:22-alpine as base
+RUN apk update
+RUN apk add git curl bash
+RUN apk add --no-cache libc6-compat 
 WORKDIR /app
 
 FROM base as deps
