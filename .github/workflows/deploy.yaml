@@ -36,11 +36,14 @@ jobs:
           since_last_remote_commit: true
       - name: List all changed files
         env:
+          ANY_CHANGED: ${{ steps.changed-files.outputs.any_changed }}
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
+          echo "Any changed: $ANY_CHANGED"
           for file in ${ALL_CHANGED_FILES}; do
             echo "$file was changed"
           done
+      - run: exit 1
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
