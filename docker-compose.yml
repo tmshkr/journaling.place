@@ -8,7 +8,7 @@ services:
     env_file: .env
     restart: always
     healthcheck:
-      test: "curl -f http://app:3000/api/info || exit 1"
+      test: "curl -f http://app:3000 || exit 1"
       interval: 30s
       timeout: 10s
       retries: 5

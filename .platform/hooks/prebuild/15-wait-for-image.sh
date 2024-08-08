@@ -5,7 +5,6 @@ source .env
 while output=$(./scripts/check-image-exists.sh $TAG); do
   if [ "$output" == "true" ]; then
     echo "Image with tag $TAG is ready. Proceeding..."
-    cp docker-compose.run.yml docker-compose.yml
     exit 0
   fi
   echo "Image not ready yet. Retrying in 10 seconds..."
