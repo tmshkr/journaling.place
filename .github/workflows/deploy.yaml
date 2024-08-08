@@ -132,7 +132,7 @@ jobs:
         env:
           BASE_URL: https://staging.journaling.place
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
@@ -201,7 +201,7 @@ jobs:
           staging_cname: ${{ vars.STAGING_CNAME }}
           swap_cnames: true
           update_listener_rules: true
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
