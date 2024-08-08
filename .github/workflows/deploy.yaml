@@ -16,6 +16,7 @@ on:
 env:
   APP_VERSION: ${{ github.ref_name }}-${{ github.sha }}
   DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place
+  STAGE: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
   TAG: ${{ inputs.tag || github.sha }}
 
 jobs:
@@ -23,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image_exists: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS }}
+      target_env_id: ${{ steps.deploy.outputs.target_env_id }}
     steps:
       - uses: actions/checkout@v4
       - uses: aws-actions/configure-aws-credentials@v4
@@ -33,7 +35,8 @@ jobs:
         name: Check if image exists in ECR
         run: ./scripts/check-image-exists.sh ${{ env.TAG }}
       - run: ./scripts/generate-deployment-package.sh
-      - name: Deploy
+      - id: deploy
+        name: Deploy
         uses: tmshkr/blue-green-beanstalk@send-command
         with:
           app_name: "journaling.place"
@@ -114,6 +117,17 @@ jobs:
           node-version: 20
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
+      - name: Wait for environment and update listener rules
+        uses: tmshkr/blue-green-beanstalk@send-command
+        with:
+          app_name: "journaling.place"
+          blue_env: ${{ vars.BLUE_ENV }}
+          green_env: ${{ vars.GREEN_ENV }}
+          minimum_health_color: Yellow
+          production_cname: ${{ vars.PRODUCTION_CNAME }}
+          staging_cname: ${{ vars.STAGING_CNAME }}
+          terminate_unhealthy_environment: false
+          update_listener_rules: true
       - name: Run e2e tests
         run: npm run test --workspace=e2e
         env:
