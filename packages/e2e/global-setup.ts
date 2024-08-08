@@ -3,7 +3,7 @@ import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
 import { MongoClient } from "mongodb";
 import { enterJournalPassword } from "./utils/enterJournalPassword";
 
-const { ENVIRONMENT, TEST_USER_EMAIL } = process.env;
+const { STAGE, TEST_USER_EMAIL } = process.env;
 const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
 
 async function checkVersion(baseURL) {
@@ -35,12 +35,12 @@ async function checkVersion(baseURL) {
 }
 
 async function getMongoClient() {
-  if (["main", "staging"].includes(ENVIRONMENT)) {
+  if (["production", "staging"].includes(STAGE)) {
     console.log("Getting SSM parameters");
     const client = new SSMClient();
     const { Parameter } = await client.send(
       new GetParameterCommand({
-        Name: `/journaling.place/${ENVIRONMENT}/MONGO_URI`,
+        Name: `/journaling.place/${STAGE}/MONGO_URI`,
         WithDecryption: true,
       })
     );
