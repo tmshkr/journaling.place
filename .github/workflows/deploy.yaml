@@ -27,6 +27,20 @@ jobs:
       target_env_id: ${{ steps.deploy.outputs.target_env_id }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - id: changed-files
+        name: Get changed files
+        uses: tj-actions/changed-files@v44
+        with:
+          since_last_remote_commit: true
+      - name: List all changed files
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        run: |
+          for file in ${ALL_CHANGED_FILES}; do
+            echo "$file was changed"
+          done
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
