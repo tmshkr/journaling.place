@@ -71,33 +71,32 @@ jobs:
           key: ${{ runner.os }}-turbo-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-turbo-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          install: true
-          platforms: linux/amd64
+              - name: Setup Docker Buildx
+              uses: docker/setup-buildx-action@v3
+              with:
+                install: true
+                platforms: linux/amd64
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
       - name: Build and load image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
-          load: true
-          push: false
+          push: true
           build-args: |
             CDN_PREFIX=https://cdn.journaling.place
           tags: "${{ env.DOCKER_IMAGE }}:${{ github.sha }}"
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
-      - run: |
-          aws ecr get-login-password | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
-          docker push --all-tags ${{ env.DOCKER_IMAGE }}
-          docker logout ${{ vars.DOCKER_REGISTRY }}
       - name: Export turbo cache
         run: ./scripts/turbo-cache.sh export
       - name: Export static assets to S3
         run: |
           docker run -v ./export:/app/export "${{ env.DOCKER_IMAGE }}:${{ env.TAG }}" sh /app/scripts/export-static-assets.sh
           aws s3 cp --recursive export s3://${{ vars.CDN_BUCKET}}/_next/
+      - name: Tag image
+        run: ./scripts/tag-image.js staging
 
   test:
     if: always() && needs.deploy.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
@@ -133,8 +132,6 @@ jobs:
         env:
           BASE_URL: https://staging.journaling.place
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
-      - name: Tag image
-        run: ./scripts/tag-image.js staging
       - uses: actions/upload-artifact@v3
         if: always()
         with:
