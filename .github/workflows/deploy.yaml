@@ -33,7 +33,6 @@ jobs:
         with:
           since_last_remote_commit: true
       - name: Update image tag
-        if: ${{ steps.changed-files.outputs.any_changed == 'false' }}
         env:
           ANY_CHANGED: ${{ steps.changed-files.outputs.any_changed }}
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
