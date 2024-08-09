@@ -9,7 +9,7 @@ on:
       - main
       - staging
 env:
-  APP_VERSION: ${{ github.base_ref || github.ref_name }}-${{ github.sha }}
+  APP_VERSION: ${{ github.ref_name }}-${{ github.sha }}
   DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place
   STAGE: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
   TAG: ${{ github.sha }}
@@ -18,29 +18,21 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     outputs:
-      image_exists: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS }}
-      target_env_id: ${{ steps.deploy.outputs.target_env_id }}
+      image_exists: ${{ steps.prep.outputs.IMAGE_EXISTS }}
+      label_ref_name: ${{ steps.prep.outputs.LABEL_REF_NAME }}
+      version_label: ${{ steps.prep.outputs.VERSION_LABEL }}
     steps:
       - uses: actions/checkout@v4
-      - id: changed-files
-        name: Get changed files
-        uses: tj-actions/changed-files@v44
-        with:
-          since_last_remote_commit: true
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.GH_ACTIONS_ROLE }}
-      - name: Check for changed files
-        run: ./scripts/handle-changed-files.sh
+      - id: prep
+        name: Deployment prep
+        run: ./scripts/deployment-prep.sh
         env:
-          ANY_CHANGED: ${{ steps.changed-files.outputs.any_changed }}
-          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_EVENT: ${{ toJson(github.event) }}
-      - id: check-image-exists
-        name: Check if image exists in ECR
-        run: ./scripts/check-image-exists.sh ${{ env.TAG }}
-      - run: ./scripts/generate-deployment-package.sh
       - id: deploy
         name: Deploy
         uses: tmshkr/blue-green-beanstalk@send-command
@@ -57,7 +49,7 @@ jobs:
           staging_cname: ${{ vars.STAGING_CNAME }}
           update_listener_rules: true
           version_description: ${{ github.event.head_commit.message }}
-          version_label: ${{ env.APP_VERSION }}
+          version_label: ${{ steps.prep.outputs.VERSION_LABEL }}
           wait_for_deployment: false
 
   build:
@@ -91,7 +83,10 @@ jobs:
           push: true
           build-args: |
             CDN_PREFIX=https://cdn.journaling.place
-          tags: "${{ env.DOCKER_IMAGE }}:${{ github.sha }}"
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.version_label }}
+            ${{ env.DOCKER_IMAGE }}:${{ env.TAG }}
+            ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.label_ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
@@ -100,12 +95,7 @@ jobs:
       - name: Export static assets to S3
         run: |
           docker run -v ./export:/app/export "${{ env.DOCKER_IMAGE }}:${{ env.TAG }}" sh /app/scripts/export-static-assets.sh
-          aws s3 cp --recursive export s3://${{ vars.CDN_BUCKET}}/_next/
-      - name: Tag image
-        run: ./scripts/tag-image.js
-        env:
-          CURRENT_TAG: ${{ env.TAG }}
-          NEW_TAG: staging
+          aws s3 cp --recursive export s3://${{ vars.CDN_BUCKET }}/_next/
 
   test:
     if: always() && needs.deploy.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
@@ -196,11 +186,6 @@ jobs:
         env:
           BASE_URL: https://journaling.place
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
-      - name: Tag image
-        run: ./scripts/tag-image.js
-        env:
-          CURRENT_TAG: ${{ env.TAG }}
-          NEW_TAG: production
       - name: Rollback
         if: ${{ failure() && steps.test.conclusion == 'failure' }}
         uses: tmshkr/blue-green-beanstalk@send-command
