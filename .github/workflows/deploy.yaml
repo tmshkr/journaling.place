@@ -3,11 +3,11 @@ permissions:
   id-token: write
   contents: read
 on:
-  push:
+  workflow_dispatch:
+  pull_request:
     branches:
       - main
       - staging
-  workflow_dispatch:
 env:
   APP_VERSION: ${{ github.ref_name }}-${{ github.sha }}
   DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place
@@ -22,12 +22,21 @@ jobs:
       target_env_id: ${{ steps.deploy.outputs.target_env_id }}
     steps:
       - uses: actions/checkout@v4
+      - id: changed-files
+        name: Get changed files
+        uses: tj-actions/changed-files@v44
+        with:
+          since_last_remote_commit: true
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.GH_ACTIONS_ROLE }}
       - name: Check for changed files
         run: ./scripts/handle-changed-files.sh
+        env:
+          ANY_CHANGED: ${{ steps.changed-files.outputs.any_changed }}
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          GH_EVENT: ${{ toJson(github.event) }}
       - id: check-image-exists
         name: Check if image exists in ECR
         run: ./scripts/check-image-exists.sh ${{ env.TAG }}
