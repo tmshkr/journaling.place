@@ -31,7 +31,6 @@ jobs:
         name: Deployment prep
         run: ./scripts/deployment-prep.sh
         env:
-          GH_EVENT: ${{ toJson(github.event) }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: deploy
         name: Deploy
