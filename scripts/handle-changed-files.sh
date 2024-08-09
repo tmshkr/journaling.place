@@ -3,7 +3,7 @@
 set -e
 
 if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
-    base_sha=$(echo $GH_EVENT | jq -r '.pull_request.base.head.sha')
+    base_sha=$(echo $GH_EVENT | jq -r '.pull_request.base.sha')
     head_sha=$(echo $GH_EVENT | jq -r '.pull_request.head.sha')
 else
     commits=$(git rev-list -n 2 HEAD)
