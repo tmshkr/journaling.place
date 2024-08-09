@@ -29,6 +29,7 @@ jobs:
         run: ./scripts/handle-changed-files.sh
         env:
           GH_EVENT: ${{ toJson(github.event) }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: check-image-exists
         name: Check if image exists in ECR
         run: ./scripts/check-image-exists.sh ${{ env.TAG }}
