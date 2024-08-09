@@ -8,6 +8,10 @@ on:
     branches:
       - main
       - staging
+  push:
+    branches:
+      - main
+      - staging
 env:
   APP_VERSION: ${{ github.ref_name }}-${{ github.sha }}
   DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place
