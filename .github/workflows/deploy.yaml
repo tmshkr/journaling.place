@@ -32,6 +32,7 @@ jobs:
         run: ./scripts/deployment-prep.sh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_EVENT: ${{ toJson(github.event) }}
       - id: deploy
         name: Deploy
         uses: tmshkr/blue-green-beanstalk@send-command

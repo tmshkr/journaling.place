@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -eo pipefail
-
+echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
 ref_name="${GITHUB_REF_NAME//\//_}"
 
 if images=$(aws ecr describe-images --repository-name "${GITHUB_REPOSITORY#*/}" --image-ids imageTag=$ref_name 2>&1); then
