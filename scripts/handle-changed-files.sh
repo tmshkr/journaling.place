@@ -1,5 +1,5 @@
 #!/bin/bash -e
-
+echo $GH_EVENT
 if [[$GITHUB_EVENT_NAME == "pull_request"]]; then
     echo "TODO: Implement logic for pull requests."
     exit 0
