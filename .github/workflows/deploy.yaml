@@ -9,7 +9,7 @@ on:
       - main
       - staging
 env:
-  APP_VERSION: ${{ github.ref_name }}-${{ github.sha }}
+  APP_VERSION: ${{ github.head_ref || github.ref_name }}-${{ github.sha }}
   DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place
   STAGE: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
   TAG: ${{ github.sha }}
