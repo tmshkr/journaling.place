@@ -1,15 +1,22 @@
-#!/bin/bash -e
+#!/bin/bash
 
-if [[$GITHUB_EVENT_NAME == "pull_request"]]; then
-    echo "TODO: Implement logic for pull requests."
-    exit 0
+set -e
+
+if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+    base_sha=$(echo $GH_EVENT | jq -r '.pull_request.base.sha')
+    head_sha=$(echo $GH_EVENT | jq -r '.pull_request.head.sha')
 else
     commits=$(git rev-list -n 2 HEAD)
-    read -r curr prev <<<$commits
+    read -r head_sha base_sha <<<$commits
 fi
 
 if [ "$ANY_CHANGED" == "false" ]; then
-    echo "No files have changed between $prev and $curr."
+    echo "No files have changed between $base_sha and $head_sha."
     echo "Attempting to tag the existing image with the new tag."
-    CURRENT_TAG=$prev NEW_TAG=$curr scripts/tag-image.js
+    CURRENT_TAG=$base_sha NEW_TAG=$head_sha scripts/tag-image.js
+else
+    echo "Files that have changed between $base_sha and $head_sha:"
+    for file in ${ALL_CHANGED_FILES}; do
+        echo "$file"
+    done
 fi
