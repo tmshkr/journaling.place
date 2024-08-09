@@ -18,22 +18,21 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     outputs:
-      image_exists: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS }}
+      image_exists: ${{ steps.prep.outputs.IMAGE_EXISTS }}
+      label_ref_name: ${{ steps.prep.outputs.LABEL_REF_NAME }}
+      version_label: ${{ steps.prep.outputs.VERSION_LABEL }}
     steps:
       - uses: actions/checkout@v4
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.GH_ACTIONS_ROLE }}
-      - name: Check for changed files
-        run: ./scripts/handle-changed-files.sh
+      - id: prep
+        name: Deployment prep
+        run: ./scripts/deployment-prep.sh
         env:
           GH_EVENT: ${{ toJson(github.event) }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - id: check-image-exists
-        name: Check if image exists in ECR
-        run: ./scripts/check-image-exists.sh ${{ env.TAG }}
-      - run: ./scripts/generate-deployment-package.sh
       - id: deploy
         name: Deploy
         uses: tmshkr/blue-green-beanstalk@send-command
@@ -50,7 +49,7 @@ jobs:
           staging_cname: ${{ vars.STAGING_CNAME }}
           update_listener_rules: true
           version_description: ${{ github.event.head_commit.message }}
-          version_label: ${{ env.APP_VERSION }}
+          version_label: ${{ steps.prep.outputs.VERSION_LABEL }}
           wait_for_deployment: false
 
   build:
@@ -85,9 +84,9 @@ jobs:
           build-args: |
             CDN_PREFIX=https://cdn.journaling.place
           tags: |
-            ${{ env.DOCKER_IMAGE }}:${{ env.APP_VERSION }}
+            ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.version_label }}
             ${{ env.DOCKER_IMAGE }}:${{ env.TAG }}
-            ${{ env.DOCKER_IMAGE }}:${{ github.ref_name }}
+            ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.label_ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
