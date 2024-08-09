@@ -9,7 +9,7 @@ on:
       - main
       - staging
 env:
-  APP_VERSION: ${{ github.base_ref || github.ref_name }}-${{ github.sha }}
+  APP_VERSION: ${{ github.ref_name }}-${{ github.sha }}
   DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place
   STAGE: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
   TAG: ${{ github.sha }}
@@ -19,14 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image_exists: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS }}
-      target_env_id: ${{ steps.deploy.outputs.target_env_id }}
     steps:
       - uses: actions/checkout@v4
-      - id: changed-files
-        name: Get changed files
-        uses: tj-actions/changed-files@v44
-        with:
-          since_last_remote_commit: true
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
@@ -34,8 +28,6 @@ jobs:
       - name: Check for changed files
         run: ./scripts/handle-changed-files.sh
         env:
-          ANY_CHANGED: ${{ steps.changed-files.outputs.any_changed }}
-          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
           GH_EVENT: ${{ toJson(github.event) }}
       - id: check-image-exists
         name: Check if image exists in ECR
@@ -91,7 +83,10 @@ jobs:
           push: true
           build-args: |
             CDN_PREFIX=https://cdn.journaling.place
-          tags: "${{ env.DOCKER_IMAGE }}:${{ env.TAG }}"
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:${{ env.APP_VERSION }}
+            ${{ env.DOCKER_IMAGE }}:${{ env.TAG }}
+            ${{ env.DOCKER_IMAGE }}:${{ github.ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
@@ -136,11 +131,6 @@ jobs:
         env:
           BASE_URL: https://staging.journaling.place
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
-      - name: Tag image
-        run: ./scripts/tag-image.js
-        env:
-          CURRENT_TAG: ${{ env.TAG }}
-          NEW_TAG: staging
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -196,11 +186,6 @@ jobs:
         env:
           BASE_URL: https://journaling.place
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
-      - name: Tag image
-        run: ./scripts/tag-image.js
-        env:
-          CURRENT_TAG: ${{ env.TAG }}
-          NEW_TAG: production
       - name: Rollback
         if: ${{ failure() && steps.test.conclusion == 'failure' }}
         uses: tmshkr/blue-green-beanstalk@send-command
