@@ -91,7 +91,7 @@ jobs:
           push: true
           build-args: |
             CDN_PREFIX=https://cdn.journaling.place
-          tags: "${{ env.DOCKER_IMAGE }}:${{ github.sha }}"
+          tags: "${{ env.DOCKER_IMAGE }}:${{ env.TAG }}"
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
@@ -100,12 +100,7 @@ jobs:
       - name: Export static assets to S3
         run: |
           docker run -v ./export:/app/export "${{ env.DOCKER_IMAGE }}:${{ env.TAG }}" sh /app/scripts/export-static-assets.sh
-          aws s3 cp --recursive export s3://${{ vars.CDN_BUCKET}}/_next/
-      - name: Tag image
-        run: ./scripts/tag-image.js
-        env:
-          CURRENT_TAG: ${{ env.TAG }}
-          NEW_TAG: staging
+          aws s3 cp --recursive export s3://${{ vars.CDN_BUCKET }}/_next/
 
   test:
     if: always() && needs.deploy.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
@@ -141,6 +136,11 @@ jobs:
         env:
           BASE_URL: https://staging.journaling.place
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
+      - name: Tag image
+        run: ./scripts/tag-image.js
+        env:
+          CURRENT_TAG: ${{ env.TAG }}
+          NEW_TAG: staging
       - uses: actions/upload-artifact@v4
         if: always()
         with:
