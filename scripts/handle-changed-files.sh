@@ -16,7 +16,6 @@ if images=$(aws ecr describe-images --repository-name "${GITHUB_REPOSITORY#*/}" 
 else
     if [[ "$images" == *"ImageNotFoundException"* ]]; then
         echo "No images found with tag $ref_name."
-        exit 0
     else
         echo "There was an error while trying to describe images."
         echo $images
@@ -29,6 +28,7 @@ if [[ -z "$before" ]]; then
     exit 0
 fi
 
+echo "Comparing $before with $GITHUB_SHA."
 changes=$(gh api \
     -H "Accept: application/vnd.github+json" \
     -H "X-GitHub-Api-Version: 2022-11-28" \
@@ -36,11 +36,11 @@ changes=$(gh api \
 changed_files=$(echo $changes | jq -r '.files[].filename')
 
 if [[ -z "$changed_files" ]]; then
-    echo "No files have changed between $before and $GITHUB_SHA."
+    echo "No files have changed."
     echo "Attempting to tag the existing image with the new tag."
     CURRENT_TAG=$before NEW_TAG=$GITHUB_SHA scripts/tag-image.js
 else
-    echo "Files that have changed between $before and $GITHUB_SHA:"
+    echo "Files that have changed:"
     for file in $changed_files; do
         echo "$file"
     done
