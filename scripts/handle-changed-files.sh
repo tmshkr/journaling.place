@@ -14,4 +14,9 @@ if [ "$ANY_CHANGED" == "false" ]; then
     echo "No files have changed between $base_sha and $head_sha."
     echo "Attempting to tag the existing image with the new tag."
     CURRENT_TAG=$base_sha NEW_TAG=$head_sha scripts/tag-image.js
+else
+    echo "Files that have changed between $base_sha and $head_sha:"
+    for file in ${ALL_CHANGED_FILES}; do
+        echo "$file"
+    done
 fi
