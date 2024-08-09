@@ -89,8 +89,10 @@ jobs:
             CDN_PREFIX=https://cdn.journaling.place
           tags: |
             ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.version_label }}
+            ${{ env.DOCKER_IMAGE }}:build_sha.${{ github.sha }}
             ${{ env.DOCKER_IMAGE }}:${{ env.TAG }}
             ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.label_ref_name }}
+            ${{ env.DOCKER_IMAGE }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
