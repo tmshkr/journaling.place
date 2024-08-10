@@ -16,14 +16,15 @@ env:
   APP_VERSION: ${{ github.ref_name }}-${{ github.sha }}
   DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place
   STAGE: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
-  TAG: ${{ github.sha }}
+  TAG: "github.${{ github.sha }}"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     outputs:
-      image_exists: ${{ steps.prep.outputs.IMAGE_EXISTS }}
       label_ref_name: ${{ steps.prep.outputs.LABEL_REF_NAME }}
+      skip_build: ${{ steps.prep.outputs.SKIP_BUILD }}
+      turbo_sha: ${{ steps.prep.outputs.TURBO_SHA }}
       version_label: ${{ steps.prep.outputs.VERSION_LABEL }}
     steps:
       - uses: actions/checkout@v4
@@ -58,7 +59,7 @@ jobs:
 
   build:
     needs: deploy
-    if: needs.deploy.outputs.image_exists == 'false'
+    if: needs.deploy.outputs.skip_build == 'false'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -89,7 +90,8 @@ jobs:
             CDN_PREFIX=https://cdn.journaling.place
           tags: |
             ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.version_label }}
-            ${{ env.DOCKER_IMAGE }}:build_sha.${{ github.sha }}
+            ${{ env.DOCKER_IMAGE }}:build.github.${{ github.sha }}
+            ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.turbo_sha }}
             ${{ env.DOCKER_IMAGE }}:${{ env.TAG }}
             ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.label_ref_name }}
             ${{ env.DOCKER_IMAGE }}:latest
