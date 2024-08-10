@@ -70,7 +70,7 @@ else
     fi
 fi
 
-if [[ -z "$branch_name" ]]; then
+if [[ -z "$branch_sha" ]]; then
     echo "No image tagged with [$branch_name] found."
 else
     echo "Comparing [$branch_name] with GITHUB_SHA."
