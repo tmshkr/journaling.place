@@ -9,27 +9,22 @@ find_build_sha() {
 
         for tag in $tags; do
             if [[ $tag == "build_sha."* ]]; then
-                before="${tag#"build_sha."}"
-                break
+                echo "${tag#"build_sha."}"
+                return 0
             fi
         done
-        if [[ -z "$before" ]]; then
-            echo "No build_sha found for tag $1."
-        fi
     else
-        if [[ "$images" == *"ImageNotFoundException"* ]]; then
-            echo "No images found with tag $1."
-        else
-            echo "There was an error while trying to describe images."
+        if [[ "$images" != *"ImageNotFoundException"* ]]; then
+            echo "There was an error while trying to find the image."
             echo $images
-            exit 1
+            return 1
         fi
     fi
 }
 
 compare_shas() {
     if [[ -z "$1" || -z "$2" ]]; then
-        echo "No SHAs provided."
+        echo "Both SHAs must be provided."
         return 1
     fi
 
@@ -38,7 +33,7 @@ compare_shas() {
         return 0
     fi
 
-    echo "Comparing $1 with $2."
+    echo "Checking https://github.com/$GITHUB_REPOSITORY/compare/$1...$2"
     changes=$(gh api \
         -H "Accept: application/vnd.github+json" \
         -H "X-GitHub-Api-Version: 2022-11-28" \
@@ -49,6 +44,7 @@ compare_shas() {
         echo "No files have changed."
         echo "Attempting to tag the existing image with the new tag."
         CURRENT_TAG=$1 NEW_TAG=$2 scripts/tag-image.js
+        exit 0
     else
         echo "Files that have changed:"
         for file in $changed_files; do
@@ -59,16 +55,19 @@ compare_shas() {
 
 echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
 
-after=$GITHUB_SHA
-find_build_sha "${GITHUB_REF_NAME//\//_}"
-
-if [[ -z "$before" ]]; then
-    find_build_sha "latest"
+latest_sha=$(find_build_sha "latest")
+if [[ -z "$latest_sha" ]]; then
+    echo "No image tagged with [latest] found."
+else
+    echo "Comparing [latest] with GITHUB_SHA."
+    compare_shas $latest_sha $GITHUB_SHA
 fi
 
-if [[ -z "$before" ]]; then
-    echo "No previous commit to compare."
-    exit 0
+branch_name="${GITHUB_REF_NAME//\//_}"
+branch_sha=$(find_build_sha $branch_name)
+if [[ -z "$branch_name" ]]; then
+    echo "No image tagged with [$branch_name] found."
+else
+    echo "Comparing [$branch_name] with GITHUB_SHA."
+    compare_shas $branch_sha $GITHUB_SHA
 fi
-
-compare_shas $before $after
