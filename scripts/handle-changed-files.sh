@@ -3,7 +3,7 @@
 set -eo pipefail
 
 find_build_sha() {
-    echo "Finding build_sha of image tagged with $1."
+
     if images=$(aws ecr describe-images --repository-name "${GITHUB_REPOSITORY#*/}" --image-ids imageTag=$1 2>&1); then
         tags=$(echo $images | jq -r '.imageDetails[0].imageTags[]')
 
