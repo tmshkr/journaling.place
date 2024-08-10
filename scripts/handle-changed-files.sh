@@ -55,16 +55,21 @@ compare_shas() {
 
 echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
 
+branch_name="${GITHUB_REF_NAME//\//_}"
+branch_sha=$(find_build_sha $branch_name)
 latest_sha=$(find_build_sha "latest")
+
 if [[ -z "$latest_sha" ]]; then
     echo "No image tagged with [latest] found."
 else
     echo "Comparing [latest] with GITHUB_SHA."
     compare_shas $latest_sha $GITHUB_SHA
+    if [[ "$branch_sha" == "$latest_sha" ]]; then
+        echo "[latest] and [$branch_name] are even."
+        exit 0
+    fi
 fi
 
-branch_name="${GITHUB_REF_NAME//\//_}"
-branch_sha=$(find_build_sha $branch_name)
 if [[ -z "$branch_name" ]]; then
     echo "No image tagged with [$branch_name] found."
 else
