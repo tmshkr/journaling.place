@@ -43,7 +43,7 @@ compare_shas() {
     if [[ -z "$changed_files" ]]; then
         echo "No files have changed."
         echo "Attempting to tag the existing image with the new tag."
-        CURRENT_TAG=$1 NEW_TAG=$2 scripts/tag-image.js
+        CURRENT_TAG=$1 NEW_TAGS="$2,$branch_name.$2" scripts/tag-image.js
         exit 0
     else
         echo "Files that have changed:"

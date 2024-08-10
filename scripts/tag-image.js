@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 const { execSync } = require("child_process");
-const { CURRENT_TAG, NEW_TAG } = process.env;
-if (!CURRENT_TAG || !NEW_TAG) {
-  throw new Error("CURRENT_TAG and NEW_TAG must be set");
+const { CURRENT_TAG, NEW_TAGS } = process.env;
+if (!CURRENT_TAG || !NEW_TAGS) {
+  throw new Error("CURRENT_TAG and NEW_TAGS must be set");
 }
 
-console.log("Tagging image", { CURRENT_TAG, NEW_TAG });
+console.log("Tagging image", { CURRENT_TAG, NEW_TAGS });
 
 const { images, failures } = JSON.parse(
   execSync(
@@ -17,16 +17,17 @@ for (const fail of failures) {
   console.log(fail);
 }
 
-for (const image of images) {
+const image = images[0];
+for (const tag of NEW_TAGS.split(",")) {
   try {
     execSync(
-      `aws ecr put-image --repository-name journaling.place --image-tag ${NEW_TAG} --image-manifest '${image.imageManifest}'`,
+      `aws ecr put-image --repository-name journaling.place --image-tag ${tag} --image-manifest '${image.imageManifest}'`,
       { stdio: "pipe" }
     );
     console.log("Image tagged", image.imageId);
   } catch (err) {
     if (err.toString().includes("ImageAlreadyExistsException")) {
-      console.log("Image already exists");
+      console.log(`Image already tagged with ${tag}`);
     } else {
       throw err.toString();
     }
