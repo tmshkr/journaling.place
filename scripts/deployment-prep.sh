@@ -17,7 +17,7 @@ if [ -z "$SHARED_LOAD_BALANCER_ARN" ]; then
     exit 1
 fi
 
-echo $(envsubst <deploy-meta.json) >deploy-meta.json
+echo $(envsubst <deploy-vars.json) >deploy-vars.json
 echo $(envsubst <option-settings.json) >option-settings.json
 
 echo "Creating bundle.zip"

@@ -27,9 +27,9 @@ async function checkVersion(baseURL) {
   };
 
   const version = await fetchVersion(`${baseURL}api/info`);
-  if (version !== process.env.APP_VERSION) {
+  if (version !== process.env.VERSION_LABEL) {
     throw new Error(
-      `Version mismatch: ${version} (server) !== ${process.env.APP_VERSION} (client)`
+      `Version mismatch: ${version} (server) !== ${process.env.VERSION_LABEL} (client)`
     );
   }
 }

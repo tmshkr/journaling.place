@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   app:
-    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/journaling.place:${TAG}
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/journaling.place:${VERSION_LABEL}
     command: npm run start
     container_name: app
     env_file: .env

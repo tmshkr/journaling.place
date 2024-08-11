@@ -13,10 +13,8 @@ on:
       - main
       - staging
 env:
-  APP_VERSION: ${{ github.ref_name }}-${{ github.sha }}
   DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place
   STAGE: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
-  TAG: "github.${{ github.sha }}"
 
 jobs:
   deploy:
@@ -90,9 +88,7 @@ jobs:
             CDN_PREFIX=https://cdn.journaling.place
           tags: |
             ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.version_label }}
-            ${{ env.DOCKER_IMAGE }}:build.github.${{ github.sha }}
             ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.turbo_sha }}
-            ${{ env.DOCKER_IMAGE }}:${{ env.TAG }}
             ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.label_ref_name }}
             ${{ env.DOCKER_IMAGE }}:latest
           cache-from: type=gha
