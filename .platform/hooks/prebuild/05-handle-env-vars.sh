@@ -1,13 +1,13 @@
-#!/bin/bash -eo pipefail
+#!/bin/bash -e
 
-get-config() {
+get_config() {
     /opt/elasticbeanstalk/bin/get-config "$@"
 }
 
-environment_name=$(get-config container | jq -r '.environment_name')
+environment_name=$(get_config container | jq -r '.environment_name')
 echo "EB_ENVIRONMENT_NAME=$environment_name" >>.env
 
-get-config environment | jq -r '. | to_entries[] | "\(.key)=\(.value)"' | while read line; do
+get_config environment | jq -r '. | to_entries[] | "\(.key)=\(.value)"' | while read line; do
     echo $line >>.env
 done
 
@@ -22,7 +22,7 @@ else
     exit 1
 fi
 
-echo deploy-meta.json | jq -r '. | to_entries[] | "\(.key)=\(.value)"' | while read line; do
+cat deploy-meta.json | jq -r '. | to_entries[] | "\(.key)=\(.value)"' | while read line; do
     echo $line >>.env
 done
 
