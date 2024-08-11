@@ -2,28 +2,27 @@
 import { execSync } from "child_process";
 import { appendFileSync } from "fs";
 import crypto from "crypto";
-import { tagEcrImage } from "./tag-image";
+import { tagEcrImage } from "./tag-image.mjs";
 
-const { GITHUB_ENV, GITHUB_REPOSITORY, GITHUB_SHA } = process.env;
+const { GITHUB_OUTPUT, GITHUB_REPOSITORY, GITHUB_SHA } = process.env;
 
 main();
 function main() {
   const repo = GITHUB_REPOSITORY.split("/")[1];
   const githubSha = `github.${GITHUB_SHA}`;
   const turboSha = getTurboHashTag();
-  appendFileSync(GITHUB_ENV, `TURBO_SHA=${turboSha}\n`);
+  appendFileSync(GITHUB_OUTPUT, `TURBO_SHA=${turboSha}\n`);
   const imageDetails = getImageDetails(repo, turboSha);
   if (!imageDetails) {
     console.log(`Image with tag [${turboSha}] not found.`);
     console.log(`Proceeding with build...`);
     return;
   }
-  console.log(imageDetails);
-  console.log(`Image found with tag [${turboSha}]`);
+  console.log(`Image found with tag [${turboSha}]`, imageDetails);
   console.log(`Adding GITHUB_SHA tag [${githubSha}]`);
   tagEcrImage(turboSha, githubSha);
   console.log(`Skipping build...`);
-  appendFileSync(GITHUB_ENV, "SKIP_BUILD=true\n");
+  appendFileSync(GITHUB_OUTPUT, "SKIP_BUILD=true\n");
 }
 
 function getTurboHashTag() {

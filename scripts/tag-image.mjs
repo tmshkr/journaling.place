@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { execSync } = require("child_process");
+import { execSync } from "child_process";
 const { CURRENT_TAG, NEW_TAGS } = process.env;
 
 if (CURRENT_TAG && NEW_TAGS) {
