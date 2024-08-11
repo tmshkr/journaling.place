@@ -18,6 +18,7 @@
     "e2e:report": "turbo run report --filter=e2e",
     "jest": "turbo run jest --filter=trpc-server"
   },
+  "packageManager": "npm@10.8.2",
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^6.4.2",
     "@headlessui/react": "^1.7.17",
@@ -83,7 +84,7 @@
   "dependencies": {
     "http-errors": "^2.0.0",
     "prisma": "^5.5.2",
-    "turbo": "1.10.16"
+    "turbo": "^2.0.12"
   },
   "prisma": {
     "seed": "node scripts/seed.mjs"

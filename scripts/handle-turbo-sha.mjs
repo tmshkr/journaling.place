@@ -33,13 +33,23 @@ function getTurboHashTag() {
     throw new Error(err.toString());
   }
 
-  const globalHash = build.globalCacheInputs.hashOfExternalDependencies;
+  const externalHash = build.globalCacheInputs.hashOfExternalDependencies;
+  const internalHash = build.globalCacheInputs.hashOfInternalDependencies;
   const taskHashes = [];
   for (const { taskId, hash } of build.tasks) {
     taskHashes.push({ taskId, hash });
   }
 
-  const data = JSON.stringify({ globalHash, taskHashes });
+  const data = JSON.stringify(
+    {
+      external: externalHash,
+      internalHash,
+      taskHashes,
+    },
+    null,
+    2
+  );
+  console.log(`Turbo hash data:`, data);
   const tag = `build.turbo.${crypto
     .createHash("sha256")
     .update(data)
