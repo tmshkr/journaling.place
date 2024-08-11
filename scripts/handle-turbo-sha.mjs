@@ -26,8 +26,13 @@ function main() {
 }
 
 function getTurboHashTag() {
-  execSync(`npx turbo --version`, { stdio: "inherit" }); // Install turbo
-  const build = JSON.parse(execSync(`npx turbo run build --dry=json`));
+  try {
+    execSync(`npx turbo --version`, { stdio: "inherit" }); // Install turbo
+    var build = JSON.parse(execSync(`npx turbo run build --dry=json`));
+  } catch (err) {
+    throw new Error(err.toString());
+  }
+
   const globalHash = build.globalCacheInputs.hashOfExternalDependencies;
   const taskHashes = [];
   for (const { taskId, hash } of build.tasks) {
