@@ -6,10 +6,19 @@ WORKDIR /app
 
 FROM base AS deps
 COPY package*.json ./
-COPY apps apps/
-COPY packages packages/
-RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs rm -rf
-RUN find apps \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs rm -rf
+
+#START subdirs
+COPY apps/agenda-worker/package.json apps/agenda-worker/package.json
+COPY apps/trpc-server/package.json apps/trpc-server/package.json
+COPY apps/web/package.json apps/web/package.json
+COPY packages/aws/package.json packages/aws/package.json
+COPY packages/common/package.json packages/common/package.json
+COPY packages/e2e/package.json packages/e2e/package.json
+COPY packages/eslint-config-custom/package.json packages/eslint-config-custom/package.json
+COPY packages/mailer/package.json packages/mailer/package.json
+COPY packages/tsconfig/package.json packages/tsconfig/package.json
+#END subdirs
+
 RUN PUPPETEER_SKIP_DOWNLOAD=true npm ci omit=optional
 
 FROM base AS builder
