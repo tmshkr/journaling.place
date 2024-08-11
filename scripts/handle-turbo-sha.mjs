@@ -26,6 +26,7 @@ function main() {
 }
 
 function getTurboHashTag() {
+  execSync(`npx turbo --version`, { stdio: "inherit" }); // Install turbo
   const build = JSON.parse(execSync(`npx turbo run build --dry=json`));
   const globalHash = build.globalCacheInputs.hashOfExternalDependencies;
   const taskHashes = [];
