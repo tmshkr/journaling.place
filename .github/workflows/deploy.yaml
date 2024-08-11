@@ -59,7 +59,7 @@ jobs:
 
   build:
     needs: deploy
-    if: needs.deploy.outputs.skip_build == 'false'
+    if: needs.deploy.outputs.skip_build != 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
