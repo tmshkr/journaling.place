@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-export VERSION_LABEL="$${GITHUB_REF_NAME//\//_}.$GITHUB_SHA"
+export VERSION_LABEL="${GITHUB_REF_NAME//\//_}.$GITHUB_SHA"
 echo "VERSION_LABEL=$VERSION_LABEL" >>$GITHUB_OUTPUT
 
 scripts/handle-turbo-sha.mjs
