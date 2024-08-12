@@ -22,7 +22,7 @@ else
     exit 1
 fi
 
-cat deploy-meta.json | jq -r '. | to_entries[] | "\(.key)=\(.value)"' | while read line; do
+cat deploy-vars.json | jq -r '. | to_entries[] | "\(.key)=\(.value)"' | while read line; do
     echo $line >>.env
 done
 
