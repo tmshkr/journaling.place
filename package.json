@@ -16,7 +16,8 @@
     "start": "prisma db push && prisma db seed && turbo run start --parallel",
     "e2e:test": "npm run test --workspace e2e",
     "e2e:report": "turbo run report --filter=e2e",
-    "jest": "turbo run jest --filter=trpc-server"
+    "jest": "turbo run jest --filter=trpc-server",
+    "update-dockerfiles": "./scripts/update-dockerfiles.mjs Dockerfile Dockerfile.dev"
   },
   "packageManager": "npm@10.8.2",
   "devDependencies": {
