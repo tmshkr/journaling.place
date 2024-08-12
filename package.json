@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build --cache-dir=.turbo",
+    "build": "turbo run build --filter='./apps/*' --cache-dir=.turbo",
     "dev": "prisma db push && prisma db seed && turbo run dev --parallel",
     "dev:web": "turbo run dev --filter=web --filter=trpc-server",
     "docker:dev": "docker compose -f docker-compose.dev.yml up",

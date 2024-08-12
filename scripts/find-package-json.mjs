@@ -5,7 +5,10 @@ import { readFileSync, writeFileSync } from "fs";
 
 const build = getTurboBuild();
 
-const instructions = [];
+const instructions = [
+  `COPY package.json package.json`,
+  `COPY package-lock.json package-lock.json`,
+];
 for (const { directory } of build.tasks) {
   instructions.push(`COPY ${directory}/package.json ${directory}/package.json`);
 }
@@ -15,8 +18,8 @@ const dockerfile = readFileSync("Dockerfile", "utf8");
 writeFileSync(
   "Dockerfile",
   dockerfile.replace(
-    /#START subdirs([\s\S])*#END subdirs/g,
-    `#START subdirs\n${instructions.join("\n")}\n#END subdirs`
+    /#START npm deps.*#END npm deps/s,
+    `#START npm deps\n${instructions.join("\n")}\n#END npm deps`
   )
 );
 
@@ -25,7 +28,9 @@ function getTurboBuild() {
     const version = JSON.parse(readFileSync("package.json")).dependencies.turbo;
     const turbo = `turbo@${version}`;
     execSync(`npx ${turbo} --version`, { stdio: "inherit" });
-    return JSON.parse(execSync(`npx ${turbo} run build --dry=json`));
+    return JSON.parse(
+      execSync(`npx ${turbo} run build --filter='./apps/*' --dry=json`)
+    );
   } catch (err) {
     throw new Error(err.toString());
   }
