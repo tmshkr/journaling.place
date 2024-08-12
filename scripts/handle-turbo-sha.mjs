@@ -33,13 +33,24 @@ function getTurboHash() {
     const version = JSON.parse(readFileSync("package.json")).dependencies.turbo;
     const turbo = `turbo@${version}`;
     execSync(`npx ${turbo} --version`, { stdio: "inherit" });
-    var build = JSON.parse(execSync(`npx ${turbo} run build --dry=json`));
+    var build = JSON.parse(
+      execSync(`npx ${turbo} run build --filter='./apps/*' --dry=json`)
+    );
   } catch (err) {
     throw new Error(err.toString());
   }
 
   console.log(`Turbo build:`, build);
-  const { externalHash, internalHash } = build;
+  const { hashOfExternalDependencies, hashOfInternalDependencies } =
+    build.globalCacheInputs;
+  if (!hashOfExternalDependencies || !hashOfInternalDependencies) {
+    throw new Error(
+      `Missing data: ${{
+        hashOfExternalDependencies,
+        hashOfInternalDependencies,
+      }}`
+    );
+  }
   const tasks = [];
   for (const { taskId, hash, hashOfExternalDependencies } of build.tasks) {
     if (!taskId || !hash || !hashOfExternalDependencies) {
@@ -52,7 +63,11 @@ function getTurboHash() {
   if (!tasks.length) {
     throw new Error(`No tasks found`);
   }
-  const data = { externalHash, internalHash, tasks };
+  const data = {
+    hashOfExternalDependencies,
+    hashOfInternalDependencies,
+    tasks,
+  };
   console.log(`Turbo hash data:`, data);
   return crypto.createHash("sha256").update(JSON.stringify(data)).digest("hex");
 }
