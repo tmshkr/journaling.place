@@ -13,7 +13,7 @@
     "docker:test": "docker compose -f docker-compose.test.yml up",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "start": "prisma db push && prisma db seed && turbo run start --parallel",
+    "start": "prisma db push && prisma db seed && turbo run start --parallel --env-mode=loose",
     "e2e:test": "npm run test --workspace e2e",
     "e2e:report": "turbo run report --filter=e2e",
     "jest": "turbo run jest --filter=trpc-server",
