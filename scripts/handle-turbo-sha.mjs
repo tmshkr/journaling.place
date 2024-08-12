@@ -1,60 +1,60 @@
 #!/usr/bin/env node
 import { execSync } from "child_process";
-import { appendFileSync } from "fs";
+import { appendFileSync, readFileSync } from "fs";
 import crypto from "crypto";
 import { tagEcrImage } from "./tag-image.mjs";
 
-const { GITHUB_OUTPUT, GITHUB_REPOSITORY, GITHUB_SHA } = process.env;
+const { GITHUB_OUTPUT, GITHUB_REF_NAME, GITHUB_REPOSITORY, GITHUB_SHA } =
+  process.env;
 
 main();
 function main() {
   const repo = GITHUB_REPOSITORY.split("/")[1];
-  const githubSha = `github.${GITHUB_SHA}`;
-  const turboSha = getTurboHashTag();
-  appendFileSync(GITHUB_OUTPUT, `TURBO_SHA=${turboSha}\n`);
-  const imageDetails = getImageDetails(repo, turboSha);
+  const versionLabel = `${GITHUB_REF_NAME.replaceAll("/", "_")}.${GITHUB_SHA}`;
+  const turboTag = `build.turbo.${getTurboHash()}`;
+  appendFileSync(GITHUB_OUTPUT, `TURBO_TAG=${turboTag}\n`);
+
+  const imageDetails = getImageDetails(repo, turboTag);
   if (!imageDetails) {
-    console.log(`Image with tag [${turboSha}] not found.`);
+    console.log(`Image with tag [${turboTag}] not found.`);
     console.log(`Proceeding with build...`);
     return;
   }
-  console.log(`Image found with tag [${turboSha}]`, imageDetails);
-  console.log(`Adding GITHUB_SHA tag [${githubSha}]`);
-  tagEcrImage(turboSha, githubSha);
+
+  console.log(`Image found with tag [${turboTag}]`, imageDetails);
+  console.log(`Adding version label tag [${versionLabel}]`);
+  tagEcrImage(repo, turboTag, versionLabel);
   console.log(`Skipping build...`);
   appendFileSync(GITHUB_OUTPUT, "SKIP_BUILD=true\n");
 }
 
-function getTurboHashTag() {
+function getTurboHash() {
   try {
-    execSync(`npx turbo --version`, { stdio: "inherit" }); // Install turbo
-    var build = JSON.parse(execSync(`npx turbo run build --dry=json`));
+    const version = JSON.parse(readFileSync("package.json")).dependencies.turbo;
+    const turbo = `turbo@${version}`;
+    execSync(`npx ${turbo} --version`, { stdio: "inherit" });
+    var build = JSON.parse(execSync(`npx ${turbo} run build --dry=json`));
   } catch (err) {
     throw new Error(err.toString());
   }
 
-  const externalHash = build.globalCacheInputs.hashOfExternalDependencies;
-  const internalHash = build.globalCacheInputs.hashOfInternalDependencies;
-  const taskHashes = [];
-  for (const { taskId, hash } of build.tasks) {
-    taskHashes.push({ taskId, hash });
+  console.log(`Turbo build:`, build);
+  const { externalHash, internalHash } = build;
+  const tasks = [];
+  for (const { taskId, hash, hashOfExternalDependencies } of build.tasks) {
+    if (!taskId || !hash || !hashOfExternalDependencies) {
+      throw new Error(
+        `Missing data: ${{ taskId, hash, hashOfExternalDependencies }}`
+      );
+    }
+    tasks.push({ taskId, hash, hashOfExternalDependencies });
   }
-
-  const data = JSON.stringify(
-    {
-      external: externalHash,
-      internalHash,
-      taskHashes,
-    },
-    null,
-    2
-  );
+  if (!tasks.length) {
+    throw new Error(`No tasks found`);
+  }
+  const data = { externalHash, internalHash, tasks };
   console.log(`Turbo hash data:`, data);
-  const tag = `build.turbo.${crypto
-    .createHash("sha256")
-    .update(data)
-    .digest("hex")}`;
-  return tag;
+  return crypto.createHash("sha256").update(JSON.stringify(data)).digest("hex");
 }
 
 function getImageDetails(repo, tag) {
@@ -70,5 +70,6 @@ function getImageDetails(repo, tag) {
     if (!err.toString().includes("ImageNotFoundException")) {
       throw err.toString();
     }
+    return false;
   }
 }

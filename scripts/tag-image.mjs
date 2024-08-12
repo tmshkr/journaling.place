@@ -1,16 +1,11 @@
 #!/usr/bin/env node
 import { execSync } from "child_process";
-const { CURRENT_TAG, NEW_TAGS } = process.env;
 
-if (CURRENT_TAG && NEW_TAGS) {
-  tagEcrImage(CURRENT_TAG, NEW_TAGS);
-}
-
-export function tagEcrImage(CURRENT_TAG, NEW_TAGS) {
-  console.log("Tagging image", { CURRENT_TAG, NEW_TAGS });
+export function tagEcrImage(repo, currentTag, newTags) {
+  console.log("Tagging image", { currentTag, newTags });
   const { images, failures } = JSON.parse(
     execSync(
-      `aws ecr batch-get-image --repository-name journaling.place --image-ids imageTag=${CURRENT_TAG} --output json`
+      `aws ecr batch-get-image --repository-name ${repo} --image-ids imageTag=${currentTag} --output json`
     )
   );
 
@@ -19,7 +14,7 @@ export function tagEcrImage(CURRENT_TAG, NEW_TAGS) {
   }
 
   const image = images[0];
-  for (const tag of NEW_TAGS.split(",")) {
+  for (const tag of newTags.split(",")) {
     try {
       execSync(
         `aws ecr put-image --repository-name journaling.place --image-tag ${tag} --image-manifest '${image.imageManifest}'`,
