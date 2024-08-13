@@ -3,15 +3,20 @@ import { execSync } from "child_process";
 import { appendFileSync, readFileSync } from "fs";
 import crypto from "crypto";
 import { tagEcrImage } from "./tag-image.mjs";
-
-const { GITHUB_OUTPUT, GITHUB_REF_NAME, GITHUB_REPOSITORY, GITHUB_SHA } =
-  process.env;
+const {
+  GITHUB_ENV,
+  GITHUB_OUTPUT,
+  GITHUB_REF_NAME,
+  GITHUB_REPOSITORY,
+  GITHUB_SHA,
+} = process.env;
 
 main();
 function main() {
   const repo = GITHUB_REPOSITORY.split("/")[1];
   const versionLabel = `${GITHUB_REF_NAME.replaceAll("/", "_")}.${GITHUB_SHA}`;
-  const turboTag = `build.turbo.${getTurboHash()}`;
+  const turboTag = `turbo.${getTurboHash()}`;
+  appendFileSync(GITHUB_ENV, `TURBO_TAG=${turboTag}\n`);
   appendFileSync(GITHUB_OUTPUT, `TURBO_TAG=${turboTag}\n`);
 
   const imageDetails = getImageDetails(repo, turboTag);
