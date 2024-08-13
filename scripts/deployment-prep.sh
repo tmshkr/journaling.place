@@ -14,7 +14,9 @@ export VERSION_LABEL="${GITHUB_REF_NAME//\//_}.$GITHUB_SHA"
 echo "VERSION_LABEL=$VERSION_LABEL" >>$GITHUB_OUTPUT
 
 scripts/turbo-sha.mjs
+cat $GITHUB_ENV
 source $GITHUB_ENV
+export $TURBO_TAG
 
 alb_stack=$(aws cloudformation describe-stacks --stack-name ALBStack)
 export SHARED_LOAD_BALANCER_ARN=$(echo $alb_stack | jq -r '.Stacks[0].Outputs[] | select(.ExportName=="SharedLoadBalancerArn") | .OutputValue')
