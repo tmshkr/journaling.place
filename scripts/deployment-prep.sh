@@ -15,13 +15,13 @@ export SHARED_LOAD_BALANCER_ARN=$(echo $alb_stack | jq -r '.Stacks[0].Outputs[] 
 echo $(envsubst <deploy-vars.json) >deploy-vars.json
 echo $(envsubst <option-settings.json) >option-settings.json
 
-if jq 'any(. == "")' deploy-vars.json; then
+if $(jq 'any(. == "")' deploy-vars.json); then
     echo "Empty value detected in deploy-vars.json"
-    jq 'to_entries | map(select(.value == "")) | from_entries' deploy-vars.json
+    jq 'with_entries(select(.value == ""))' deploy-vars.json
     exit 1
 fi
 
-if jq 'any(.Value == "")' option-settings.json; then
+if $(jq 'any(.Value == "")' option-settings.json); then
     echo "Empty value detected in option-settings.json"
     jq '.[] | select(.Value == "")' option-settings.json
     exit 1
