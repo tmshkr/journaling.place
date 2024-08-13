@@ -28,7 +28,7 @@ function main() {
 
   console.log(`Image found with tag [${turboTag}]`, imageDetails);
   console.log(`Adding version label tag [${versionLabel}]`);
-  tagEcrImage(repo, turboTag, versionLabel);
+  tagEcrImage(turboTag, versionLabel);
   console.log(`Skipping build...`);
   appendFileSync(GITHUB_OUTPUT, "SKIP_BUILD=true\n");
 }

@@ -1,7 +1,19 @@
 #!/usr/bin/env node
 import { execSync } from "child_process";
 
-export function tagEcrImage(repo, currentTag, newTags) {
+const { GITHUB_REPOSITORY, CURRENT_TAG, NEW_TAGS, TAGS_TO_REMOVE } =
+  process.env;
+const repo = GITHUB_REPOSITORY.split("/")[1];
+
+if (CURRENT_TAG && NEW_TAGS) {
+  tagEcrImage(CURRENT_TAG, NEW_TAGS);
+}
+
+if (TAGS_TO_REMOVE) {
+  untagImage(TAGS_TO_REMOVE);
+}
+
+export function tagEcrImage(currentTag, newTags) {
   console.log("Tagging image", { currentTag, newTags });
   const { images, failures } = JSON.parse(
     execSync(
@@ -24,6 +36,24 @@ export function tagEcrImage(repo, currentTag, newTags) {
     } catch (err) {
       if (err.toString().includes("ImageAlreadyExistsException")) {
         console.log(`Image already tagged with ${tag}`);
+      } else {
+        throw err.toString();
+      }
+    }
+  }
+}
+
+export function untagImage(tagsToRemove) {
+  for (const tag of tagsToRemove.split(",")) {
+    console.log("Untagging image", { tag });
+    try {
+      execSync(
+        `aws ecr batch-delete-image --repository-name ${repo} --image-ids imageTag=${tag}`
+      );
+      console.log(`Image untagged`);
+    } catch (err) {
+      if (err.toString().includes("ImageNotFoundException")) {
+        console.log(`Image not found`);
       } else {
         throw err.toString();
       }
