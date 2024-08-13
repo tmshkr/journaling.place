@@ -134,6 +134,7 @@ jobs:
         env:
           BASE_URL: https://staging.journaling.place
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
+          VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -167,7 +168,7 @@ jobs:
 
   verify:
     if: always() && needs.promote.result == 'success'
-    needs: promote
+    needs: [deploy, promote]
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.40.0-jammy
@@ -189,6 +190,7 @@ jobs:
         env:
           BASE_URL: https://journaling.place
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
+          VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
       - name: Rollback
         if: ${{ failure() && steps.test.conclusion == 'failure' }}
         uses: tmshkr/blue-green-beanstalk@send-command
