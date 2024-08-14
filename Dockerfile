@@ -21,16 +21,16 @@ COPY packages/tsconfig/package.json packages/tsconfig/package.json
 RUN PUPPETEER_SKIP_DOWNLOAD=true npm ci omit=optional
 
 FROM base AS builder
-COPY --from=deps /app/node_modules ./node_modules
+
+COPY --from=deps /app/ ./
 COPY ./ ./
-RUN sed -i '/generator erd/,/}/d' ./prisma/schema.prisma
 RUN npx prisma generate
 
 ARG CDN_PREFIX
 
 RUN npm run jest
 RUN npm run build
-RUN sh scripts/prune-modules.sh
+RUN ./scripts/export-build-output.sh
 
 FROM base AS runner
-COPY --from=builder /app ./
+COPY --from=builder /app/build_output/ ./

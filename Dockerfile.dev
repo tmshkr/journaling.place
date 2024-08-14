@@ -21,7 +21,6 @@ COPY packages/tsconfig/package.json packages/tsconfig/package.json
 RUN PUPPETEER_SKIP_DOWNLOAD=true npm ci omit=optional
 
 FROM base AS dev
-COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/ ./
 COPY ./ ./
-RUN sed -i '/generator erd/,/}/d' ./prisma/schema.prisma
 RUN npx prisma generate
