@@ -9,9 +9,10 @@
     "dev": "nodemon src/index.ts"
   },
   "dependencies": {
+    "agenda": "^5.0.0",
     "eslint-config-custom": "*",
-    "tsconfig": "*",
-    "mailer": "*"
+    "mailer": "*",
+    "tsconfig": "*"
   },
   "keywords": [],
   "author": "",
