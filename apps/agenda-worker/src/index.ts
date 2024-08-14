@@ -1,7 +1,3 @@
-if (process.env.NODE_ENV === "development") {
-  require("dotenv").config({ path: "../../.env" });
-}
-
 import { Agenda } from "agenda";
 import { registerJobs, scheduleJobs } from "./jobs";
 
