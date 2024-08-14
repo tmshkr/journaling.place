@@ -58,6 +58,8 @@ jobs:
     needs: deploy
     if: needs.deploy.outputs.skip_build != 'true'
     runs-on: ubuntu-latest
+    env:
+      TAG: ${{ needs.deploy.outputs.version_label }}
     steps:
       - uses: actions/checkout@v4
       - uses: aws-actions/configure-aws-credentials@v4
@@ -82,6 +84,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          load: true
           push: true
           build-args: |
             CDN_PREFIX=https://cdn.journaling.place
@@ -89,6 +92,7 @@ jobs:
             ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.turbo_tag }}
             ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.version_label }}
             ${{ env.DOCKER_IMAGE }}:build.${{ needs.deploy.outputs.version_label }}
+            ${{ env.DOCKER_IMAGE }}:expire.${{ needs.deploy.outputs.version_label }}
             ${{ env.DOCKER_IMAGE }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -97,7 +101,7 @@ jobs:
         run: ./scripts/turbo-cache.sh export
       - name: Export static assets to S3
         run: |
-          docker run -v ./export:/app/export "${{ env.DOCKER_IMAGE }}:latest" sh /app/scripts/export-static-assets.sh
+          docker run -v ./export:/app/export "${{ env.DOCKER_IMAGE }}:${{ env.TAG }}" sh /app/scripts/export-static-assets.sh
           aws s3 cp --recursive export s3://${{ vars.CDN_BUCKET }}/_next/
 
   test:
@@ -144,7 +148,7 @@ jobs:
 
   promote:
     if: always() && needs.test.result == 'success' && github.ref_name == 'main'
-    needs: test
+    needs: [deploy, test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -152,7 +156,6 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.GH_ACTIONS_ROLE }}
-      - run: ./scripts/promote.sh
       - name: Promote
         uses: tmshkr/blue-green-beanstalk@send-command
         with:
@@ -165,6 +168,11 @@ jobs:
           staging_cname: ${{ vars.STAGING_CNAME }}
           swap_cnames: true
           update_listener_rules: true
+      - run: ./scripts/tag-image.mjs
+        env:
+          CURRENT_TAG: ${{ needs.deploy.outputs.version_label }}
+          NEW_TAGS: production
+          TAGS_TO_REMOVE: expire.${{ needs.deploy.outputs.version_label }}
 
   verify:
     if: always() && needs.promote.result == 'success'
