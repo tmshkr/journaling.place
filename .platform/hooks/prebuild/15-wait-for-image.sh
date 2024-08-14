@@ -2,7 +2,7 @@
 
 source .env
 check_image_exists() {
-  if out=$(aws ecr describe-images --repository-name="${GITHUB_REPOSITORY#*/}" --image-ids imageTag=$TAG 2>&1); then
+  if out=$(aws ecr describe-images --repository-name="${GITHUB_REPOSITORY#*/}" --image-ids imageTag=$VERSION_LABEL 2>&1); then
     echo "true"
   else
     if [[ $out == *"ImageNotFoundException"* ]]; then
@@ -17,7 +17,7 @@ check_image_exists() {
 # wait for the image to be ready
 while out=$(check_image_exists); do
   if [[ $out == "true" ]]; then
-    echo "Image with tag [$TAG] is ready. Proceeding..."
+    echo "Image with tag [$VERSION_LABEL] is ready. Proceeding..."
     exit 0
   fi
   echo "Image not ready yet. Retrying in 10 seconds..."
