@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   app:
     image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/journaling.place:${VERSION_LABEL}
