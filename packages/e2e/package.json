@@ -6,9 +6,8 @@
   "scripts": {
     "test": "playwright test",
     "report": "playwright show-report",
-    "install:ci": "npm run remove-generator && npm install",
-    "install:playwright": "playwright install --with-deps chromium",
-    "remove-generator": "sed -i '/generator erd/,/}/d' ../../prisma/schema.prisma"
+    "install:ci": "npm install",
+    "install:playwright": "playwright install --with-deps chromium"
   },
   "keywords": [],
   "author": "",
@@ -18,8 +17,7 @@
     "mongodb": "^6.2.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.40.0",
-    "@types/node": "^20.8.10",
-    "dotenv": "^16.3.1"
+    "@playwright/test": "^1.46.0",
+    "@types/node": "^20.8.10"
   }
 }
