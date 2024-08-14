@@ -38,6 +38,9 @@ export_build_output() {
     cp -vR .prisma *prisma turbo* ../build_output/node_modules/
     cd ..
 
+    print_heading "*" "Copying .turbo cache"
+    cp -vR .turbo build_output/
+
     print_heading "*" "Copying other files"
 
     cp -vR data build_output/
