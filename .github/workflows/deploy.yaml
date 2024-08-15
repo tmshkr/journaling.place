@@ -137,6 +137,11 @@ jobs:
           staging_cname: ${{ vars.STAGING_CNAME }}
           terminate_unhealthy_environment: false
           update_listener_rules: true
+      - uses: tmshkr/ngrok-ssh@latest
+        with:
+          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+          NGROK_CONFIG_FILE: "ngrok.yml"
+          WAIT_FOR_CONNECTION: true
       - name: Run e2e tests
         run: npm run test --workspace=e2e
         env:
