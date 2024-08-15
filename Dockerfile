@@ -30,7 +30,7 @@ ARG CDN_PREFIX
 
 RUN npm run jest
 RUN npm run build
-RUN ./scripts/export-build-output.sh
+RUN ./scripts/copy-build-output.sh
 
 FROM base AS runner
 COPY --from=builder /app/build_output/ ./

@@ -10,8 +10,8 @@ print_heading() {
     echo
 }
 
-export_build_output() {
-    print_heading "=" "Exporting build output to $(pwd)/build_output"
+copy_build_output() {
+    print_heading "=" "Copying build output to $(pwd)/build_output"
 
     mkdir -p build_output/node_modules/.bin
     mkdir -p build_output/apps/agenda-worker/
@@ -38,9 +38,6 @@ export_build_output() {
     cp -vR .prisma *prisma turbo* ../build_output/node_modules/
     cd ..
 
-    print_heading "*" "Copying .turbo cache"
-    cp -vR .turbo build_output/
-
     print_heading "*" "Copying other files"
 
     cp -vR data build_output/
@@ -52,4 +49,4 @@ export_build_output() {
 }
 
 mkdir -p build_output
-export_build_output >build_output/export-build-output.log 2>&1
+copy_build_output >build_output/export-build-output.log 2>&1
