@@ -124,10 +124,6 @@ jobs:
         with:
           cache: "npm"
           node-version: 20
-      - uses: tmshkr/ngrok-ssh@latest
-        with:
-          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
-          WAIT_FOR_CONNECTION: true
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
       - name: Wait for environment and update listener rules
@@ -142,9 +138,10 @@ jobs:
           terminate_unhealthy_environment: false
           update_listener_rules: true
       - name: Run e2e tests
-        run: tmux new -d && npm run test --workspace=e2e
+        run: npm run test --workspace=e2e
         env:
           BASE_URL: https://staging.journaling.place
+          CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
           VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
       - uses: actions/upload-artifact@v4
@@ -205,6 +202,7 @@ jobs:
         run: npm run test --workspace=e2e
         env:
           BASE_URL: https://journaling.place
+          CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
           VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
       - name: Rollback
