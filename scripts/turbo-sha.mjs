@@ -21,7 +21,7 @@ function main() {
 
   const imageDetails = getImageDetails(repo, turboTag);
   if (!imageDetails) {
-    console.log(`Image with tag [${turboTag}] not found.`);
+    console.log(`No image with tag [${turboTag}]`);
     console.log(`Proceeding with build...`);
     return;
   }
@@ -46,33 +46,31 @@ function getTurboHash() {
   }
 
   console.log(`Turbo build:`, build);
-  const { hashOfExternalDependencies, hashOfInternalDependencies } =
+  const { hashOfExternalDependencies, hashOfInternalDependencies, files } =
     build.globalCacheInputs;
-  if (!hashOfExternalDependencies || !hashOfInternalDependencies) {
-    throw new Error(
-      `Missing data: ${{
-        hashOfExternalDependencies,
-        hashOfInternalDependencies,
-      }}`
-    );
-  }
-  const tasks = [];
-  for (const { taskId, hash, hashOfExternalDependencies } of build.tasks) {
-    if (!taskId || !hash || !hashOfExternalDependencies) {
-      throw new Error(
-        `Missing data: ${{ taskId, hash, hashOfExternalDependencies }}`
-      );
-    }
-    tasks.push({ taskId, hash, hashOfExternalDependencies });
-  }
-  if (!tasks.length) {
-    throw new Error(`No tasks found`);
-  }
   const data = {
     hashOfExternalDependencies,
     hashOfInternalDependencies,
-    tasks,
+    files,
+    tasks: [],
   };
+
+  for (const key in data) {
+    if (!data[key]) {
+      console.log("Missing data:", { [key]: data[key] });
+    }
+  }
+
+  for (const { taskId, hash, hashOfExternalDependencies } of build.tasks) {
+    const task = { taskId, hash, hashOfExternalDependencies };
+    for (const key in task) {
+      if (!task[key]) {
+        throw new Error("Missing data:", { [key]: task[key] });
+      }
+    }
+    data.tasks.push(task);
+  }
+
   console.log(`Turbo hash data:`, data);
   return crypto.createHash("sha256").update(JSON.stringify(data)).digest("hex");
 }
