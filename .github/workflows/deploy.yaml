@@ -80,14 +80,23 @@ jobs:
           platforms: linux/amd64
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
-      - name: Build and push image
+      - name: Build
         uses: docker/build-push-action@v6
         with:
-          context: .
           load: true
+          target: builder
+          build-args: CDN_PREFIX=https://cdn.journaling.place
+          tags: ${{ env.DOCKER_IMAGE }}:builder
+          provenance: false
+      - name: Export turbo cache and static assets
+        run: ./scripts/docker-export.sh
+        env:
+          CDN_BUCKET: ${{ vars.CDN_BUCKET }}
+          DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
+      - name: Push runner image
+        uses: docker/build-push-action@v6
+        with:
           push: true
-          build-args: |
-            CDN_PREFIX=https://cdn.journaling.place
           tags: |
             ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.turbo_tag }}
             ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.version_label }}
@@ -97,12 +106,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
-      - name: Export turbo cache
-        run: ./scripts/turbo-cache.sh export
-      - name: Export static assets to S3
-        run: |
-          docker run -v ./export:/app/export "${{ env.DOCKER_IMAGE }}:${{ env.TAG }}" sh /app/scripts/export-static-assets.sh
-          aws s3 cp --recursive export s3://${{ vars.CDN_BUCKET }}/_next/
 
   test:
     if: always() && needs.deploy.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
