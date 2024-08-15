@@ -116,7 +116,8 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.46.0-jammy
     steps:
       - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v4
+      - id: creds
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.GH_ACTIONS_ROLE }}
@@ -137,10 +138,19 @@ jobs:
           staging_cname: ${{ vars.STAGING_CNAME }}
           terminate_unhealthy_environment: false
           update_listener_rules: true
+      - uses: tmshkr/handle-env@v1.2
+        with:
+          env: |
+            AWS_REGION=${{ vars.AWS_REGION }}
+            AWS_ACCESS_KEY_ID=${{ steps.creds.outputs.aws-access-key-id }}
+            AWS_SECRET_ACCESS_KEY=${{ steps.creds.outputs.aws-secret-access-key }}
+            AWS_SESSION_TOKEN=${{ steps.creds.outputs.aws-session-token }}
+            BASE_URL=https://staging.journaling.place
+            TEST_USER_EMAIL=${{ vars.TEST_USER_EMAIL }}
+            VERSION_LABEL=${{ needs.deploy.outputs.version_label }}
       - uses: tmshkr/ngrok-ssh@latest
         with:
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
-          NGROK_CONFIG_FILE: "ngrok.yml"
           WAIT_FOR_CONNECTION: true
       - name: Run e2e tests
         run: npm run test --workspace=e2e
