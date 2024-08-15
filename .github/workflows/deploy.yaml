@@ -58,8 +58,6 @@ jobs:
     needs: deploy
     if: needs.deploy.outputs.skip_build != 'true'
     runs-on: ubuntu-latest
-    env:
-      TAG: ${{ needs.deploy.outputs.version_label }}
     steps:
       - uses: actions/checkout@v4
       - uses: aws-actions/configure-aws-credentials@v4
@@ -83,11 +81,12 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v6
         with:
-          load: true
-          target: builder
+          cache-from: type=gha
           build-args: CDN_PREFIX=https://cdn.journaling.place
-          tags: ${{ env.DOCKER_IMAGE }}:builder
+          load: true
           provenance: false
+          tags: ${{ env.DOCKER_IMAGE }}:builder
+          target: builder
       - name: Export turbo cache and static assets
         run: ./scripts/docker-export.sh
         env:
@@ -96,6 +95,9 @@ jobs:
       - name: Push runner image
         uses: docker/build-push-action@v6
         with:
+          build-args: CDN_PREFIX=https://cdn.journaling.place
+          cache-to: type=gha,mode=max
+          provenance: false
           push: true
           tags: |
             ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.turbo_tag }}
@@ -103,9 +105,6 @@ jobs:
             ${{ env.DOCKER_IMAGE }}:build.${{ needs.deploy.outputs.version_label }}
             ${{ env.DOCKER_IMAGE }}:expire.${{ needs.deploy.outputs.version_label }}
             ${{ env.DOCKER_IMAGE }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          provenance: false
 
   test:
     if: always() && needs.deploy.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
