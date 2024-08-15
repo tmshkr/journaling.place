@@ -26,6 +26,9 @@ export function tagEcrImage(currentTag, newTags) {
   }
 
   const image = images[0];
+  if (!image) {
+    throw new Error("Image not available");
+  }
   for (const tag of newTags.split(",")) {
     try {
       execSync(
