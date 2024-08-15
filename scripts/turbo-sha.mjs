@@ -57,7 +57,7 @@ function getTurboHash() {
 
   for (const key in data) {
     if (!data[key]) {
-      console.log("Missing data:", { [key]: data[key] });
+      throw new Error("Missing data:", { [key]: data[key] });
     }
   }
 
@@ -69,6 +69,10 @@ function getTurboHash() {
       }
     }
     data.tasks.push(task);
+  }
+
+  if (!data.tasks.length) {
+    throw new Error("No tasks found");
   }
 
   console.log(`Turbo hash data:`, data);
