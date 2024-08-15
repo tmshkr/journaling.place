@@ -121,6 +121,7 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.GH_ACTIONS_ROLE }}
+          output-credentials: true
       - uses: actions/setup-node@v4
         with:
           cache: "npm"
