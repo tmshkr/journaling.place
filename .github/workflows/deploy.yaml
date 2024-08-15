@@ -81,8 +81,9 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v6
         with:
-          cache-from: type=gha
           build-args: CDN_PREFIX=https://cdn.journaling.place
+          cache-from: type=gha
+          context: .
           load: true
           provenance: false
           tags: ${{ env.DOCKER_IMAGE }}:builder
@@ -97,6 +98,7 @@ jobs:
         with:
           build-args: CDN_PREFIX=https://cdn.journaling.place
           cache-to: type=gha,mode=max
+          context: .
           provenance: false
           push: true
           tags: |
