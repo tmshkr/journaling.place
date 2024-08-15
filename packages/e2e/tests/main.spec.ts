@@ -1,10 +1,19 @@
 import { test, expect } from "@playwright/test";
 import { enterJournalPassword } from "../utils/enterJournalPassword";
+const { CF_SKIP_TOKEN } = process.env;
 
 test.describe.configure({ mode: "serial" });
-
 test.beforeEach(async ({ page }, testInfo) => {
   console.log(`Running ${testInfo.title}`);
+  await page.route("**", (route) => {
+    route.continue({
+      headers: {
+        ...route.request().headers(),
+        "x-cf-skip-token": CF_SKIP_TOKEN,
+      },
+    });
+  });
+
   await page.goto("/");
   await enterJournalPassword(page);
 });

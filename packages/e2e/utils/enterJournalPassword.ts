@@ -1,15 +1,6 @@
 import { Page } from "playwright";
-const { CF_SKIP_TOKEN } = process.env;
-export async function enterJournalPassword(page: Page) {
-  await page.route("**", (route) => {
-    route.continue({
-      headers: {
-        ...route.request().headers(),
-        "x-cf-skip-token": CF_SKIP_TOKEN,
-      },
-    });
-  });
 
+export async function enterJournalPassword(page: Page) {
   const passwordInput = await page.locator("#password");
   const submitButton = await page.locator("#password_submit");
   await submitButton.waitFor();
