@@ -1,6 +1,7 @@
 {
   "name": "scripts",
   "scripts": {
+    "install:ci": "npm install",
     "update-listener-rules": "tsx --env-file=../.env update-listener-rules.mts"
   },
   "dependencies": {
