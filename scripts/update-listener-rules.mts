@@ -24,10 +24,15 @@ const elbv2Client = new ElasticLoadBalancingV2Client();
 
 export async function updateListenerRules() {
   const { EB_ENVIRONMENT_NAME, AWS_REGION } = process.env;
+  if (!EB_ENVIRONMENT_NAME || !AWS_REGION) {
+    throw new Error(
+      "Environment variables EB_ENVIRONMENT_NAME and AWS_REGION must be set"
+    );
+  }
   const { Environments } = await ebClient.send(
     new DescribeEnvironmentsCommand({
       ApplicationName: "journaling.place",
-      EnvironmentNames: [EB_ENVIRONMENT_NAME!],
+      EnvironmentNames: [EB_ENVIRONMENT_NAME],
       IncludeDeleted: false,
     })
   );
