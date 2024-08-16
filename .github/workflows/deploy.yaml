@@ -136,7 +136,6 @@ jobs:
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           staging_cname: ${{ vars.STAGING_CNAME }}
           terminate_unhealthy_environment: false
-          update_listener_rules: true
       - name: Run e2e tests
         run: npm run test --workspace=e2e
         env:
