@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "scripts"
   ],
   "scripts": {
     "build": "turbo run build --filter='./apps/*' --cache-dir=.turbo --env-mode=loose",
