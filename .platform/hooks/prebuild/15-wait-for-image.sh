@@ -26,3 +26,4 @@ done
 
 echo "There was an error checking the image:"
 echo $out
+exit 1
