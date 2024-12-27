@@ -9,11 +9,6 @@ scripts/turbo-sha.mjs
 source $GITHUB_ENV
 export TURBO_TAG
 
-alb_stack=$(aws cloudformation describe-stacks --stack-name ALBStack)
-export SHARED_LOAD_BALANCER_ARN=$(echo $alb_stack | jq -r '.Stacks[0].Outputs[] | select(.ExportName=="SharedLoadBalancerArn") | .OutputValue')
-export VPC_ID=$(echo $alb_stack | jq -r '.Stacks[0].Outputs[] | select(.ExportName=="VpcId") | .OutputValue')
-export PUBLIC_SUBNET_IDS=$(echo $alb_stack | jq -r '.Stacks[0].Outputs[] | select(.ExportName=="PublicSubnets") | .OutputValue')
-
 echo $(envsubst <deploy-vars.json) >deploy-vars.json
 echo $(envsubst <option-settings.json) >option-settings.json
 
