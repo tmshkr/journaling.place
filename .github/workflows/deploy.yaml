@@ -36,6 +36,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_EVENT: ${{ toJson(github.event) }}
+          PUBLIC_SUBNET_IDS: ${{ vars.PUBLIC_SUBNET_IDS }}
+          SHARED_LOAD_BALANCER_ARN: ${{ vars.SHARED_LOAD_BALANCER_ARN }}
+          VPC_ID: ${{ vars.VPC_ID }}
       - id: deploy
         name: Deploy
         uses: tmshkr/blue-green-beanstalk@v5
