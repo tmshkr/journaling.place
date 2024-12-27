@@ -42,8 +42,16 @@ Resources:
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
         - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
-        - "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
+        - "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
       RoleName: "aws-elasticbeanstalk-ec2-role"
+      Policies:
+        - PolicyName: "BlueGreenBeanstalkInstancePolicy"
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Resource: "*"
+                Action:
+                  - "elasticbeanstalk:DescribeEnvironments"
   InstanceProfile:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
@@ -55,9 +63,7 @@ Resources:
     Properties:
       ClientIdList: !Ref AudienceList
       ThumbprintList:
-        - 6938fd4d98bab03faadb97b34396831e3780aea1
-        - 1c58a3a8518e8759bf075b76b750d4f2df264fcd
-        - 1b511abead59c6ce207077c0bf0e0043b1382612
+        - ffffffffffffffffffffffffffffffffffffffff
       Url: https://token.actions.githubusercontent.com
   GitHubActionsRole:
     Type: AWS::IAM::Role
@@ -83,12 +89,14 @@ Resources:
         - "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
         - "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
       Policies:
-        - PolicyName: "AllowUpdateTerminationProtection"
+        - PolicyName: "BlueGreenBeanstalkDeploymentPolicy"
           PolicyDocument:
             Statement:
               - Effect: Allow
                 Resource: "*"
                 Action:
+                  - "ssm:ListCommands"
+                  - "ssm:SendCommand"
                   - "cloudformation:UpdateTerminationProtection"
 
   ServiceRole:
