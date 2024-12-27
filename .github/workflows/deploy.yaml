@@ -29,7 +29,7 @@ jobs:
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.GH_ACTIONS_ROLE }}
+          role-to-assume: ${{ env.GH_ACTIONS_ROLE }}
       - id: prep
         name: Deployment prep
         run: ./scripts/deployment-prep.sh
@@ -64,7 +64,7 @@ jobs:
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.GH_ACTIONS_ROLE }}
+          role-to-assume: ${{ env.GH_ACTIONS_ROLE }}
       - name: Setup turbo cache
         uses: actions/cache@v4
         with:
@@ -120,7 +120,7 @@ jobs:
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.GH_ACTIONS_ROLE }}
+          role-to-assume: ${{ env.GH_ACTIONS_ROLE }}
       - uses: actions/setup-node@v4
         with:
           cache: "npm"
@@ -160,7 +160,7 @@ jobs:
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.GH_ACTIONS_ROLE }}
+          role-to-assume: ${{ env.GH_ACTIONS_ROLE }}
       - name: Promote
         uses: tmshkr/blue-green-beanstalk@v5
         with:
@@ -190,7 +190,7 @@ jobs:
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.GH_ACTIONS_ROLE }}
+          role-to-assume: ${{ env.GH_ACTIONS_ROLE }}
       - uses: actions/setup-node@v4
         with:
           cache: "npm"
