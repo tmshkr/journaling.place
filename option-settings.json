@@ -45,6 +45,21 @@
     "Value": "t3.micro,t2.micro"
   },
   {
+    "Namespace": "aws:ec2:vpc",
+    "OptionName": "VPCId",
+    "Value": "$VPC_ID"
+  },
+  {
+    "Namespace": "aws:ec2:vpc",
+    "OptionName": "Subnets",
+    "Value": "$PUBLIC_SUBNET_IDS"
+  },
+  {
+    "Namespace": "aws:ec2:vpc",
+    "OptionName": "AssociatePublicIpAddress",
+    "Value": true
+  },
+  {
     "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "EnvironmentType",
     "Value": "LoadBalanced"
