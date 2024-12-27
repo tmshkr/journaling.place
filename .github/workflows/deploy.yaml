@@ -13,7 +13,8 @@ on:
       - main
       - staging
 env:
-  DOCKER_IMAGE: ${{ vars.DOCKER_REGISTRY }}/journaling.place
+  DOCKER_IMAGE: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/journaling.place
+  GH_ACTIONS_ROLE: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/GitHubActions
   STAGE: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
 
 jobs:
@@ -37,7 +38,7 @@ jobs:
           GH_EVENT: ${{ toJson(github.event) }}
       - id: deploy
         name: Deploy
-        uses: tmshkr/blue-green-beanstalk@send-command
+        uses: tmshkr/blue-green-beanstalk@v5
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
@@ -123,11 +124,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           cache: "npm"
-          node-version: 20
+          node-version: 22
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
-      - name: Wait for environment and update listener rules
-        uses: tmshkr/blue-green-beanstalk@send-command
+      - name: Wait for environment
+        uses: tmshkr/blue-green-beanstalk@v5
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
@@ -161,7 +162,7 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.GH_ACTIONS_ROLE }}
       - name: Promote
-        uses: tmshkr/blue-green-beanstalk@send-command
+        uses: tmshkr/blue-green-beanstalk@v5
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
@@ -193,7 +194,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           cache: "npm"
-          node-version: 20
+          node-version: 22
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
       - id: test
@@ -206,7 +207,7 @@ jobs:
           VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
       - name: Rollback
         if: ${{ failure() && steps.test.conclusion == 'failure' }}
-        uses: tmshkr/blue-green-beanstalk@send-command
+        uses: tmshkr/blue-green-beanstalk@v5
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
