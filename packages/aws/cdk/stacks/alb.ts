@@ -13,7 +13,7 @@ async function fetchCloudflareIpV6Cidrs() {
   return cidrs;
 }
 
-export class ALBStack extends cdk.Stack {
+export class AlbStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
