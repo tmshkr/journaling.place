@@ -30,6 +30,7 @@ ARG CDN_PREFIX
 RUN npm run jest
 RUN npm run build
 RUN ./scripts/copy-build-output.sh
+RUN mkdir -p build_output/.turbo/cache
 
 FROM base AS runner
 COPY --from=builder --chown=docker:docker /app/build_output/ ./
