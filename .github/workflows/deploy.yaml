@@ -7,15 +7,12 @@ on:
   pull_request:
     branches:
       - main
-      - staging
   push:
     branches:
       - main
-      - staging
 env:
   DOCKER_IMAGE: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/journaling.place
   GH_ACTIONS_ROLE: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/GitHubActionsRole
-  STAGE: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
 
 jobs:
   deploy:
@@ -53,6 +50,7 @@ jobs:
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
+          terminate_unhealthy_environment: true
           update_listener_rules: true
           version_description: ${{ github.event.head_commit.message }}
           version_label: ${{ steps.prep.outputs.VERSION_LABEL }}
@@ -143,8 +141,9 @@ jobs:
       - name: Run e2e tests
         run: npm run test --workspace=e2e
         env:
-          BASE_URL: https://staging.journaling.place
+          BASE_URL: ${{ vars.STAGING_URL }}
           CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
+          STAGE: "staging"
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
           VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
       - uses: actions/upload-artifact@v4
@@ -157,34 +156,6 @@ jobs:
   promote:
     if: always() && needs.test.result == 'success' && github.ref_name == 'main'
     needs: [deploy, test]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ env.GH_ACTIONS_ROLE }}
-      - name: Promote
-        uses: tmshkr/blue-green-beanstalk@v5
-        with:
-          app_name: "journaling.place"
-          blue_env: ${{ vars.BLUE_ENV }}
-          enable_termination_protection: true
-          green_env: ${{ vars.GREEN_ENV }}
-          production_cname: ${{ vars.PRODUCTION_CNAME }}
-          send_command: ./scripts/promote.sh
-          staging_cname: ${{ vars.STAGING_CNAME }}
-          swap_cnames: true
-          update_listener_rules: true
-      - run: ./scripts/tag-image.mjs
-        env:
-          CURRENT_TAG: ${{ needs.deploy.outputs.version_label }}
-          NEW_TAGS: production
-          TAGS_TO_REMOVE: expire.${{ needs.deploy.outputs.version_label }}
-
-  verify:
-    if: always() && needs.promote.result == 'success'
-    needs: [deploy, promote]
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.46.0-jammy
@@ -200,26 +171,26 @@ jobs:
           node-version: 22
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
-      - id: test
-        name: Run e2e tests
-        run: npm run test --workspace=e2e
-        env:
-          BASE_URL: https://journaling.place
-          CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
-          TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
-          VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
-      - name: Rollback
-        if: ${{ failure() && steps.test.conclusion == 'failure' }}
+      - name: Promote
         uses: tmshkr/blue-green-beanstalk@v5
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
+          enable_termination_protection: true
           green_env: ${{ vars.GREEN_ENV }}
-          minimum_health_color: Yellow
           production_cname: ${{ vars.PRODUCTION_CNAME }}
+          send_command: ./scripts/promote.sh
           staging_cname: ${{ vars.STAGING_CNAME }}
           swap_cnames: true
           update_listener_rules: true
+      - name: Run e2e tests
+        run: npm run test --workspace=e2e
+        env:
+          BASE_URL: ${{ vars.PRODUCTION_URL }}
+          CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
+          STAGE: "production"
+          TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
+          VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
