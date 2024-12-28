@@ -135,7 +135,7 @@ export class IamStack extends cdk.Stack {
               Sid: "AllowEC2ToPutObject",
               Effect: "Allow",
               Action: ["s3:PutObject"],
-              Resource: ["*"],
+              Resource: [props.backupBucket.bucketArn + "/*"],
             },
           ],
         }),
