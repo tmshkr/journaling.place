@@ -1,5 +1,5 @@
 FROM node:22-slim AS base
-RUN apt-get update -y && apt-get install -y openssl
+RUN apt-get update -y && apt-get install -y openssl curl jq git
 RUN groupadd -r docker && useradd -m -r -g docker docker
 WORKDIR /app
 
