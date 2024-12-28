@@ -42,16 +42,21 @@ Resources:
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
         - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
+        - "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
         - "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
       RoleName: "aws-elasticbeanstalk-ec2-role"
       Policies:
         - PolicyName: "BlueGreenBeanstalkInstancePolicy"
+          Version: "2012-10-17"
           PolicyDocument:
             Statement:
               - Effect: Allow
                 Resource: "*"
                 Action:
+                  - "autoscaling:DescribeAutoScalingGroups"
                   - "elasticbeanstalk:DescribeEnvironments"
+                  - "elasticbeanstalk:DescribeEnvironmentResources"
+                  - "ssm:GetParametersByPath"
   InstanceProfile:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
