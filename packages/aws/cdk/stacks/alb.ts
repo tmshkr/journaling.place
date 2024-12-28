@@ -13,7 +13,7 @@ async function fetchCloudflareIpV6Cidrs() {
   return cidrs;
 }
 
-export class ALBStack extends cdk.Stack {
+export class AlbStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -23,7 +23,31 @@ export class ALBStack extends cdk.Stack {
       process.env.ALB_CERT_ARN as string
     );
 
-    const vpc = ec2.Vpc.fromLookup(this, "DefaultVPC", { isDefault: true });
+    const vpc = new ec2.Vpc(this, "Vpc", {
+      ipProtocol: ec2.IpProtocol.DUAL_STACK,
+      natGateways: 0,
+      availabilityZones: [
+        "us-west-2a",
+        "us-west-2b",
+        "us-west-2c",
+        "us-west-2d",
+      ],
+      subnetConfiguration: [
+        {
+          name: "PublicSubnet",
+          subnetType: ec2.SubnetType.PUBLIC,
+        },
+      ],
+    });
+
+    this.exportValue(vpc.vpcId, { name: "VpcId" });
+    this.exportValue(
+      vpc.publicSubnets.map(({ subnetId }) => subnetId).join(","),
+      {
+        name: "PublicSubnets",
+      }
+    );
+
     const sg = new ec2.SecurityGroup(this, "ALBSecurityGroup", {
       securityGroupName: "jp-alb-sg",
       allowAllOutbound: false,

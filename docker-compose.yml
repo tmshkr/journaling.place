@@ -1,12 +1,15 @@
-version: "3.8"
-
 services:
   app:
-    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/journaling.place:${TAG}
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/journaling.place:${VERSION_LABEL}
     command: npm run start
     container_name: app
     env_file: .env
     restart: always
+    healthcheck:
+      test: "curl -f http://app:3000 || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 5
     volumes:
       - /app/node_modules
   nginx:
@@ -25,4 +28,4 @@ services:
       CRON_SCHEDULE: "0 10 * * *"
       MONGO_URI:
       TARGET_FOLDER: "/backup"
-      TARGET_S3_FOLDER: "s3://${BACKUP_BUCKET_NAME}/${ENVIRONMENT}"
+      TARGET_S3_FOLDER: "s3://${BACKUP_BUCKET_NAME}/${STAGE}"

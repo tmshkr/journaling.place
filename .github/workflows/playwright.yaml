@@ -39,7 +39,7 @@ jobs:
         run: npm run test --workspace=e2e
         env:
           BASE_URL: ${{ inputs.BASE_URL }}
-          APP_VERSION: test-${{ github.sha }}
+          VERSION_LABEL: test-${{ github.sha }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           MONGO_URI: ${{ inputs.MONGO_URI }}
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}

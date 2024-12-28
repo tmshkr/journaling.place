@@ -2,8 +2,8 @@
   "name": "cdk",
   "main": "index.ts",
   "scripts": {
-    "cdk-bootstrap": "cdk bootstrap",
-    "cdk-deploy": "dotenvx run -f ../../../.env -- cdk deploy"
+    "cdk:bootstrap": "cdk bootstrap",
+    "cdk:deploy": "dotenvx run -- cdk deploy"
   },
   "dependencies": {
     "aws-cdk": "^2.147.3",

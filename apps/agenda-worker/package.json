@@ -9,9 +9,13 @@
     "dev": "nodemon src/index.ts"
   },
   "dependencies": {
+    "agenda": "^5.0.0",
     "eslint-config-custom": "*",
-    "tsconfig": "*",
-    "mailer": "*"
+    "mailer": "*",
+    "tsconfig": "*"
+  },
+  "prisma": {
+    "schema": "../../prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",

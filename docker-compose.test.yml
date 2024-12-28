@@ -1,29 +1,27 @@
-version: "3.8"
-
 services:
   app:
     image: app
     build:
-      dockerfile: Dockerfile
+      context: .
     pull_policy: never
     command: npm run start
     container_name: app
     depends_on:
       - db
-    env_file: .env
+    env_file: test.env
     environment:
-      MONGO_URI: mongodb://$MONGO_USER:$MONGO_PASSWORD@db/jp-test?authSource=admin&tls=false
+      MONGO_URI: mongodb://root:root@db/jp-test?authSource=admin&tls=false
     restart: always
     volumes:
       - /app/node_modules
   db:
+    attach: false
     build:
       context: ./mongo/
     container_name: db
-    attach: false
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
-      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
     ports:
       - "27018:27017"
     volumes:
@@ -31,7 +29,7 @@ services:
     restart: always
     healthcheck:
       test: |
-        test $$(mongosh --quiet -u $MONGO_USER -p $MONGO_PASSWORD --eval "try { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'db' }] }).ok } catch (_) { rs.status().ok }") -eq 1
+        test $$(mongosh --quiet -u root -p root --eval "try { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'db' }] }).ok } catch (_) { rs.status().ok }") -eq 1
       interval: 10s
       start_period: 30s
   nginx:

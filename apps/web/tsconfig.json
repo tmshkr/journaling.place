@@ -15,7 +15,11 @@
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "paths": {
+      "@/*": ["./*"],
+      "@/src/*": ["./src/*"]
+    }
   },
   "extends": "tsconfig/nextjs.json",
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],

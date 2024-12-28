@@ -3,53 +3,42 @@ permissions:
   id-token: write
   contents: read
 on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
-      - staging
-  workflow_dispatch:
-    inputs:
-      environment:
-        type: choice
-        description: "Environment to deploy to"
-        required: true
-        default: staging
-        options:
-          - staging
-          - main
-      tag:
-        type: string
-        description: "Tag to deploy"
-        required: false
 env:
-  AWS_REGION: ${{ vars.AWS_REGION }}
-  AWS_ROLE: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/GitHubActions
   DOCKER_IMAGE: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/journaling.place
-  DOCKER_REGISTRY: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
-  ENVIRONMENT: ${{ inputs.environment || github.ref_name }}
-  TAG: ${{ inputs.tag || github.sha }}
+  GH_ACTIONS_ROLE: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/GitHubActionsRole
 
 jobs:
-  prep:
+  deploy:
     runs-on: ubuntu-latest
     outputs:
-      image_exists: ${{ steps.check-image-exists.outputs.IMAGE_EXISTS }}
+      skip_build: ${{ steps.prep.outputs.SKIP_BUILD }}
+      turbo_tag: ${{ steps.prep.outputs.TURBO_TAG }}
+      version_label: ${{ steps.prep.outputs.VERSION_LABEL }}
     steps:
       - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v3
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ env.AWS_ROLE }}
-      - name: Check if image exists in ECR
-        id: check-image-exists
-        run: ./scripts/check-image-exists.js ${{ env.TAG }}
-      - run: ./scripts/generate-deployment-package.sh
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ env.GH_ACTIONS_ROLE }}
+      - id: prep
+        name: Deployment prep
+        run: ./scripts/deployment-prep.sh
         env:
-          DOMAIN_NAME: staging.journaling.place
-          PREP: true
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_EVENT: ${{ toJson(github.event) }}
+          PUBLIC_SUBNET_IDS: ${{ vars.PUBLIC_SUBNET_IDS }}
           SHARED_LOAD_BALANCER_ARN: ${{ vars.SHARED_LOAD_BALANCER_ARN }}
-      - name: Prep target env
-        uses: tmshkr/blue-green-beanstalk@v4
+          VPC_ID: ${{ vars.VPC_ID }}
+      - id: deploy
+        name: Deploy
+        uses: tmshkr/blue-green-beanstalk@v5
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
@@ -61,24 +50,24 @@ jobs:
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
-          update_environment: false
+          terminate_unhealthy_environment: true
           update_listener_rules: true
           version_description: ${{ github.event.head_commit.message }}
-          version_label: ${{ github.ref_name }}-${{ env.TAG }}
+          version_label: ${{ steps.prep.outputs.VERSION_LABEL }}
           wait_for_deployment: false
 
   build:
-    needs: prep
-    if: needs.prep.outputs.image_exists == 'false'
+    needs: deploy
+    if: needs.deploy.outputs.skip_build != 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v3
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ env.AWS_ROLE }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ env.GH_ACTIONS_ROLE }}
       - name: Setup turbo cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ github.sha }}
@@ -89,91 +78,75 @@ jobs:
         with:
           install: true
           platforms: linux/amd64
-      - name: Build and load image
-        uses: docker/build-push-action@v5
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build
+        uses: docker/build-push-action@v6
         with:
+          build-args: CDN_PREFIX=https://cdn.journaling.place
+          cache-from: type=gha
           context: .
           load: true
-          push: false
-          build-args: |
-            CDN_PREFIX=https://cdn.journaling.place
-          tags: "${{ env.DOCKER_IMAGE }}:${{ env.TAG }}"
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           provenance: false
-      - run: |
-          aws ecr get-login-password | docker login --username AWS --password-stdin ${{ env.DOCKER_REGISTRY }}
-          docker push --all-tags ${{ env.DOCKER_IMAGE }}
-          docker logout ${{ env.DOCKER_REGISTRY }}
-      - name: Export turbo cache
-        run: ./scripts/turbo-cache.sh export
-      - name: Export static assets to S3
-        run: |
-          docker run -v ./export:/app/export "${{ env.DOCKER_IMAGE }}:${{ env.TAG }}" sh /app/scripts/export-static-assets.sh
-          aws s3 cp --recursive export s3://${{ vars.CDN_BUCKET}}/_next/
+          tags: ${{ env.DOCKER_IMAGE }}:builder
+          target: builder
+      - name: Export turbo cache and static assets
+        run: ./scripts/docker-export.sh
+        env:
+          CDN_BUCKET: ${{ vars.CDN_BUCKET }}
+          DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
+      - name: Push runner image
+        uses: docker/build-push-action@v6
+        with:
+          build-args: CDN_PREFIX=https://cdn.journaling.place
+          cache-to: type=gha,mode=max
+          context: .
+          provenance: false
+          push: true
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.turbo_tag }}
+            ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.version_label }}
+            ${{ env.DOCKER_IMAGE }}:build.${{ needs.deploy.outputs.version_label }}
+            ${{ env.DOCKER_IMAGE }}:expire.${{ needs.deploy.outputs.version_label }}
+            ${{ env.DOCKER_IMAGE }}:latest
 
-  deploy:
-    needs: [prep, build]
-    if: always() && needs.prep.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
+  test:
+    if: always() && needs.deploy.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
+    needs: [deploy, build]
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.46.0-jammy
     steps:
       - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v3
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ env.AWS_ROLE }}
-      - run: ./scripts/generate-deployment-package.sh
-        env:
-          DOMAIN_NAME: staging.journaling.place
-          SHARED_LOAD_BALANCER_ARN: ${{ vars.SHARED_LOAD_BALANCER_ARN }}
-      - name: Deploy
-        uses: tmshkr/blue-green-beanstalk@v4
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ env.GH_ACTIONS_ROLE }}
+      - uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          node-version: 22
+      - name: Install e2e deps
+        run: npm run install:ci --workspace=e2e
+      - name: Wait for environment
+        uses: tmshkr/blue-green-beanstalk@v5
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
-          deploy: true
-          enable_termination_protection: true
           green_env: ${{ vars.GREEN_ENV }}
-          option_settings: option-settings.json
-          minimum_health_color: Yellow
-          platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
+          update_listener_rules: true
           production_cname: ${{ vars.PRODUCTION_CNAME }}
-          source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
           terminate_unhealthy_environment: false
-          update_listener_rules: true
-          version_description: ${{ github.event.head_commit.message }}
-          version_label: ${{ github.ref_name }}-${{ env.TAG }}
-      - name: Tag image
-        run: ./scripts/tag-image.js
-        env:
-          TAG: ${{ env.ENVIRONMENT }}
-
-  test:
-    if: always() && needs.deploy.result == 'success'
-    needs: deploy
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.40.0-jammy
-    steps:
-      - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v3
-        with:
-          aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ env.AWS_ROLE }}
-      - uses: actions/setup-node@v3
-        with:
-          cache: "npm"
-          node-version: 21
-      - name: Install e2e deps
-        run: npm run install:ci --workspace=e2e
       - name: Run e2e tests
         run: npm run test --workspace=e2e
         env:
-          APP_VERSION: ${{ github.ref_name}}-${{ env.TAG }}
-          BASE_URL: https://staging.journaling.place
+          BASE_URL: ${{ vars.STAGING_URL }}
+          CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
+          STAGE: "staging"
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
-      - uses: actions/upload-artifact@v3
+          VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
@@ -181,33 +154,46 @@ jobs:
           retention-days: 30
 
   promote:
-    if: always() && needs.test.result == 'success' && (inputs.environment == 'main' || github.ref_name == 'main')
-    needs: test
+    if: always() && needs.test.result == 'success' && github.ref_name == 'main'
+    needs: [deploy, test]
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.46.0-jammy
     steps:
       - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v3
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ env.AWS_ROLE }}
-      - run: ./scripts/sub-option-settings.sh
-        env:
-          DOMAIN_NAME: journaling.place
-          SHARED_LOAD_BALANCER_ARN: ${{ vars.SHARED_LOAD_BALANCER_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ env.GH_ACTIONS_ROLE }}
+      - uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          node-version: 22
+      - name: Install e2e deps
+        run: npm run install:ci --workspace=e2e
       - name: Promote
-        uses: tmshkr/blue-green-beanstalk@v4
+        uses: tmshkr/blue-green-beanstalk@v5
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
-          deploy: true
+          enable_termination_protection: true
           green_env: ${{ vars.GREEN_ENV }}
-          option_settings: option-settings.json
-          minimum_health_color: Yellow
           production_cname: ${{ vars.PRODUCTION_CNAME }}
+          send_command: ./scripts/promote.sh
           staging_cname: ${{ vars.STAGING_CNAME }}
           swap_cnames: true
           update_listener_rules: true
-      - name: Tag image
-        run: ./scripts/tag-image.js
+      - name: Run e2e tests
+        run: npm run test --workspace=e2e
         env:
-          TAG: "production"
+          BASE_URL: ${{ vars.PRODUCTION_URL }}
+          CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
+          STAGE: "production"
+          TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
+          VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: packages/e2e/playwright-report/
+          retention-days: 30

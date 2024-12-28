@@ -1,8 +1,13 @@
 {
   "name": "scripts",
-  "version": "1.0.0",
-  "description": "",
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "scripts": {
+    "install:ci": "npm install",
+    "update-listener-rules": "tsx --env-file=../.env update-listener-rules.mts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-auto-scaling": "^3.632.0",
+    "@aws-sdk/client-elastic-beanstalk": "^3.632.0",
+    "@aws-sdk/client-elastic-load-balancing-v2": "^3.632.0",
+    "tsx": "^4.17.0"
+  }
 }

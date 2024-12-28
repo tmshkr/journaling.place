@@ -16,6 +16,11 @@
   },
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "DisableIMDSv1",
+    "Value": true
+  },
+  {
+    "Namespace": "aws:autoscaling:launchconfiguration",
     "OptionName": "IamInstanceProfile",
     "Value": "aws-elasticbeanstalk-ec2-role"
   },
@@ -40,19 +45,19 @@
     "Value": "t3.micro,t2.micro"
   },
   {
-    "Namespace": "aws:elasticbeanstalk:application:environment",
-    "OptionName": "DOMAIN_NAME",
-    "Value": "$DOMAIN_NAME"
+    "Namespace": "aws:ec2:vpc",
+    "OptionName": "VPCId",
+    "Value": "$VPC_ID"
   },
   {
-    "Namespace": "aws:elasticbeanstalk:application:environment",
-    "OptionName": "NEXTAUTH_URL",
-    "Value": "https://$DOMAIN_NAME"
+    "Namespace": "aws:ec2:vpc",
+    "OptionName": "Subnets",
+    "Value": "$PUBLIC_SUBNET_IDS"
   },
   {
-    "Namespace": "aws:elasticbeanstalk:application:environment",
-    "OptionName": "PREP",
-    "Value": "$PREP"
+    "Namespace": "aws:ec2:vpc",
+    "OptionName": "AssociatePublicIpAddress",
+    "Value": true
   },
   {
     "Namespace": "aws:elasticbeanstalk:environment",

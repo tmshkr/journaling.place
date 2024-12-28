@@ -58,7 +58,6 @@ jobs:
       - uses: tmshkr/handle-env@v1.2
         with:
           env: |
-            APP_VERSION=test-${{ github.sha }}
             EMAIL_FROM=${{ vars.EMAIL_FROM }}
             EMAIL_SECRET=${{ secrets.EMAIL_SECRET }}
             EMAIL_SERVER=${{ secrets.EMAIL_SERVER }}
@@ -67,5 +66,6 @@ jobs:
             NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
             NEXTAUTH_URL=${{ steps.run-playwright.outputs.BASE_URL }}
             TEST_USER_EMAIL=${{ vars.TEST_USER_EMAIL }}
+            VERSION_LABEL=test-${{ github.sha }}
       - name: Start docker compose
         run: docker compose -f docker-compose.test.yml up
