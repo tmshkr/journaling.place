@@ -1,7 +1,6 @@
-FROM node:22-alpine AS base
-RUN apk update
-RUN apk add git curl bash
-RUN apk add --no-cache libc6-compat 
+FROM node:22-slim AS base
+RUN apt-get update -y && apt-get install -y openssl
+RUN groupadd -r docker && useradd -m -r -g docker docker
 WORKDIR /app
 
 FROM base AS deps
@@ -33,4 +32,5 @@ RUN npm run build
 RUN ./scripts/copy-build-output.sh
 
 FROM base AS runner
-COPY --from=builder /app/build_output/ ./
+COPY --from=builder --chown=docker:docker /app/build_output/ ./
+USER docker
