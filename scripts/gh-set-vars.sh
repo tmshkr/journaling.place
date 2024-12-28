@@ -2,7 +2,7 @@
 
 key=$(openssl rand -hex 3)
 
-alb_stack=$(aws cloudformation describe-stacks --stack-name ALBStack)
+alb_stack=$(aws cloudformation describe-stacks --stack-name AlbStack)
 PublicSubnets=$(echo $alb_stack | jq -r '.Stacks[0].Outputs[] | select(.ExportName=="PublicSubnets") | .OutputValue')
 ProdHttpsListenerRuleArn=$(echo $alb_stack | jq -r '.Stacks[0].Outputs[] | select(.ExportName=="ProdHttpsListenerRuleArn") | .OutputValue')
 SharedLoadBalancerArn=$(echo $alb_stack | jq -r '.Stacks[0].Outputs[] | select(.ExportName=="SharedLoadBalancerArn") | .OutputValue')
@@ -19,7 +19,7 @@ gh variable set VPC_ID --body $VpcId
 
 echo "Updated GitHub Actions environment variables"
 
-aws elbv2 add-tags --resource-arns $ProdHttpsListenerRuleArn --tags Key=bluegreenbeanstalk:target_cname,Value=jp-main-$key
+aws elbv2 add-tags --resource-arns $ProdHttpsListenerRuleArn --tags Key=bluegreenbeanstalk:target_cname,Value=jp-production-$key
 aws elbv2 add-tags --resource-arns $StagingHttpsListenerRuleArn --tags Key=bluegreenbeanstalk:target_cname,Value=jp-staging-$key
 
 echo "Updated listener rule tags"
