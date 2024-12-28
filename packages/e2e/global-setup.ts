@@ -7,30 +7,27 @@ const { STAGE, TEST_USER_EMAIL } = process.env;
 const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
 
 async function checkVersion(baseURL) {
-  const fetchVersion = async (url, maxAttempts = 10) => {
-    let attempts = 0;
-    while (true) {
-      try {
-        attempts++;
-        const { version } = await fetch(url).then((res) => res.json());
-        return version;
-      } catch (err) {
-        console.error(err.message);
-        for (const key in err) {
-          console.error(key, err[key]);
-        }
-        if (attempts >= maxAttempts) throw err;
-        console.log(`Attempt ${attempts}: Retrying in 5 seconds...`);
-        await new Promise((r) => setTimeout(r, 5000));
+  const maxAttempts = 15;
+  let attempts = 0;
+  while (true) {
+    try {
+      attempts++;
+      const { version } = await fetch(baseURL).then((res) => res.json());
+      if (version !== process.env.VERSION_LABEL) {
+        throw new Error(
+          `Version mismatch: ${version} (server) !== ${process.env.VERSION_LABEL} (client)`
+        );
       }
+      return version;
+    } catch (err) {
+      console.error(err.message);
+      for (const key in err) {
+        console.error(key, err[key]);
+      }
+      if (attempts >= maxAttempts) throw err;
+      console.log(`Attempt ${attempts}: Retrying in 5 seconds...`);
+      await new Promise((r) => setTimeout(r, 5000));
     }
-  };
-
-  const version = await fetchVersion(`${baseURL}api/info`);
-  if (version !== process.env.VERSION_LABEL) {
-    throw new Error(
-      `Version mismatch: ${version} (server) !== ${process.env.VERSION_LABEL} (client)`
-    );
   }
 }
 
