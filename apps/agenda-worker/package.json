@@ -14,6 +14,9 @@
     "mailer": "*",
     "tsconfig": "*"
   },
+  "prisma": {
+    "schema": "../../prisma/schema.prisma"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC"

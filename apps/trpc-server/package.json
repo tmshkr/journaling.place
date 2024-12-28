@@ -19,6 +19,9 @@
     "tsconfig": "*",
     "ws": "^8.14.2"
   },
+  "prisma": {
+    "schema": "../../prisma/schema.prisma"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC"
