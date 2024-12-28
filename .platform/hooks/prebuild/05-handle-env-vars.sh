@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/bin/bash
+
+set -eo xtrace
 
 get_config() {
     /opt/elasticbeanstalk/bin/get-config "$@"
