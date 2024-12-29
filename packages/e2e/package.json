@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
+    "test:dev": "dotenvx run -- playwright test",
     "report": "playwright show-report",
     "install:ci": "npm install",
     "install:playwright": "playwright install --with-deps chromium"
