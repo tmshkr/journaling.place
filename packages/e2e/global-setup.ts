@@ -6,13 +6,14 @@ import { enterJournalPassword } from "./utils/enterJournalPassword";
 const { STAGE, TEST_USER_EMAIL } = process.env;
 const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
 
-async function checkVersion(baseURL) {
+async function checkVersion(baseURL: URL) {
   const maxAttempts = 15;
+  const url = new URL("/api/info", baseURL);
   let attempts = 0;
   while (true) {
     try {
       attempts++;
-      const { version } = await fetch(baseURL).then((res) => res.json());
+      const { version } = await fetch(url).then((res) => res.json());
       if (version !== process.env.VERSION_LABEL) {
         throw new Error(
           `Version mismatch: ${version} (server) !== ${process.env.VERSION_LABEL} (client)`
