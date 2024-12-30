@@ -12,6 +12,8 @@ import { sendWelcomeEmail } from "mailer";
 import { ColorScheme, CustomSession } from "src/types";
 
 const path = require("path");
+const rootDir = process.env.ROOT_DIR;
+if (!rootDir) throw new Error("ROOT_DIR env var not set");
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
@@ -50,7 +52,7 @@ export const authOptions: AuthOptions = {
         case "signUp":
           sendWelcomeEmail(
             user.email,
-            path.resolve(process.cwd(), "../../packages/mailer")
+            path.resolve(rootDir, "packages/mailer")
           );
 
           break;

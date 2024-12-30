@@ -3,7 +3,8 @@ const prisma = new PrismaClient();
 import { sendPromptOfTheDay } from "mailer";
 
 const path = require("path");
-const root = path.resolve(process.cwd(), "../../packages/mailer");
+const rootDir = process.env.ROOT_DIR;
+if (!rootDir) throw new Error("ROOT_DIR env var not set");
 
 export function registerJobs(agenda) {
   agenda.define("sendEmailPOTD", async () => {
@@ -24,7 +25,11 @@ export function registerJobs(agenda) {
 
     for (const user of users) {
       if (!user.email) continue;
-      await sendPromptOfTheDay(user.email, randomPrompt, root);
+      await sendPromptOfTheDay(
+        user.email,
+        randomPrompt,
+        path.resolve(rootDir, "packages/mailer")
+      );
     }
   });
 
