@@ -31,7 +31,7 @@ copy_build_output() {
     cp -vR apps/agenda-worker/dist build_output/apps/agenda-worker/
     cp -vR apps/trpc-server/dist build_output/apps/trpc-server/
     cp -vR apps/web/.next build_output/apps/web/
-    cp -vR packages/mailer build_output/packages/mailer
+    cp -vR packages/mailer build_output/packages/
 
     print_heading "*" "Copying node_modules"
 
