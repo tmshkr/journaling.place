@@ -13,8 +13,6 @@ get_config environment | jq -r '. | to_entries[] | "\(.key)=\(.value)"' | while 
     echo $line >>.env
 done
 
-echo "ROOT_DIR=$(pwd)" >>.env
-
 CNAME=$(aws elasticbeanstalk describe-environments --environment-names $environment_name --no-include-deleted | jq -r '.Environments[0].CNAME')
 echo "CNAME=$CNAME" >>.env
 if [[ "$CNAME" == *production* ]]; then

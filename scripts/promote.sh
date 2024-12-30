@@ -11,8 +11,6 @@ get_config environment | jq -r '. | to_entries[] | "\(.key)=\(.value)"' | while 
     echo $line >>.env
 done
 
-echo "ROOT_DIR=$(pwd)" >>.env
-
 echo "STAGE=production" >>.env
 
 cat deploy-vars.json | jq -r '. | to_entries[] | "\(.key)=\(.value)"' | while read line; do

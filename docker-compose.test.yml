@@ -11,6 +11,7 @@ services:
     env_file: test.env
     environment:
       MONGO_URI: mongodb://root:root@db/jp-test?authSource=admin&tls=false
+      ROOT_DIR: /app
     restart: always
     volumes:
       - /app/node_modules
