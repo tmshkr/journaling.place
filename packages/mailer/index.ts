@@ -1,10 +1,15 @@
 import Email from "email-templates";
 import { encode } from "next-auth/jwt";
-const path = require("path");
-const nodemailer = require("nodemailer");
-const transport = nodemailer.createTransport(process.env.EMAIL_SERVER);
+import { resolve } from "path";
+import { createTransport } from "nodemailer";
+const transport = createTransport(process.env.EMAIL_SERVER);
 
-export async function sendWelcomeEmail(emailTo: string, root: string = "") {
+const rootDir = process.env.ROOT_DIR!;
+if (!rootDir) throw new Error("ROOT_DIR env var not set");
+const emailDir = resolve(rootDir, "packages", "mailer", "emails");
+const assetsDir = resolve(rootDir, "packages", "mailer", "assets");
+
+export async function sendWelcomeEmail(emailTo: string) {
   const email = new Email({
     message: {
       from: "Journaling Place <hi@journaling.place>",
@@ -14,7 +19,7 @@ export async function sendWelcomeEmail(emailTo: string, root: string = "") {
     preview: {
       openSimulator: false,
     },
-    views: { root: path.join(root, "emails") },
+    views: { root: emailDir },
     juice: true,
     juiceSettings: {
       tableElements: ["TABLE"],
@@ -22,7 +27,7 @@ export async function sendWelcomeEmail(emailTo: string, root: string = "") {
     juiceResources: {
       applyStyleTags: true,
       webResources: {
-        relativeTo: path.join(root, "assets"),
+        relativeTo: assetsDir,
       },
     },
   });
@@ -40,11 +45,7 @@ export async function sendWelcomeEmail(emailTo: string, root: string = "") {
     .catch(console.error);
 }
 
-export async function sendPromptOfTheDay(
-  emailTo: string,
-  prompt,
-  root: string = ""
-) {
+export async function sendPromptOfTheDay(emailTo: string, prompt) {
   const token = await encode({
     token: { email: emailTo },
     secret: process.env.EMAIL_SECRET!,
@@ -63,7 +64,7 @@ export async function sendPromptOfTheDay(
     preview: {
       openSimulator: false,
     },
-    views: { root: path.join(root, "emails") },
+    views: { root: emailDir },
     juice: true,
     juiceSettings: {
       tableElements: ["TABLE"],
@@ -71,7 +72,7 @@ export async function sendPromptOfTheDay(
     juiceResources: {
       applyStyleTags: true,
       webResources: {
-        relativeTo: path.join(root, "assets"),
+        relativeTo: assetsDir,
       },
     },
   });

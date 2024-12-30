@@ -11,8 +11,6 @@ import { sendVerificationRequest } from "src/auth/sendVerificationRequest";
 import { sendWelcomeEmail } from "mailer";
 import { ColorScheme, CustomSession } from "src/types";
 
-const path = require("path");
-
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 export const authOptions: AuthOptions = {
@@ -48,10 +46,7 @@ export const authOptions: AuthOptions = {
 
       switch (trigger) {
         case "signUp":
-          sendWelcomeEmail(
-            user.email,
-            path.resolve(process.cwd(), "../../packages/mailer")
-          );
+          sendWelcomeEmail(user.email);
 
           break;
         default:

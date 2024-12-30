@@ -8,13 +8,13 @@
   ],
   "scripts": {
     "build": "turbo run build --filter='./apps/*' --cache-dir=.turbo --env-mode=loose",
-    "dev": "prisma db push && prisma db seed && turbo run dev --parallel --env-mode=loose",
+    "dev": "prisma db push && prisma db seed && turbo run dev --env-mode=loose",
     "dev:web": "turbo run dev --filter=web --filter=trpc-server",
     "docker:dev": "docker compose -f docker-compose.dev.yml up",
     "docker:test": "docker compose -f docker-compose.test.yml up",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "start": "prisma db push && prisma db seed && turbo run start --parallel --env-mode=loose",
+    "start": "prisma db push && prisma db seed && turbo run start --env-mode=loose",
     "e2e:test": "dotenvx run -f test.env -- npm run test --workspace e2e",
     "e2e:report": "turbo run report --filter=e2e",
     "jest": "turbo run jest --filter=trpc-server",
@@ -35,16 +35,16 @@
     "eslint-config-next": "14.0.1",
     "express": "^4.18.2",
     "http-errors": "^2.0.0",
-    "prisma": "^5.5.2",
-    "turbo": "^2.0.12",
     "jest-mock-extended": "^3.0.5",
     "mongodb": "^6.2.0",
     "next-auth": "^4.24.7",
     "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1",
     "prettier": "latest",
+    "prisma": "^5.5.2",
     "pug": "^3.0.2",
     "ts-jest": "^29.1.1",
+    "turbo": "^2.0.12",
     "typescript": "5.2.2",
     "zod": "^3.22.4"
   },
@@ -53,5 +53,8 @@
   },
   "prisma": {
     "seed": "node scripts/seed.mjs"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.7"
   }
 }

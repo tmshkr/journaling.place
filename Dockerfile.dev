@@ -1,5 +1,5 @@
 FROM node:22-slim AS base
-RUN apt-get update -y && apt-get install -y openssl
+RUN apt-get update -y && apt-get install -y openssl curl jq git htop
 RUN groupadd -r docker && useradd -m -r -g docker docker
 WORKDIR /app
 
@@ -25,3 +25,4 @@ COPY --from=deps --chown=docker:docker /app/ ./
 COPY ./ ./
 RUN npx prisma generate
 USER docker
+ENV ROOT_DIR=/app

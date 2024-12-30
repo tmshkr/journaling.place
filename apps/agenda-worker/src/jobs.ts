@@ -2,9 +2,6 @@ import { PrismaClient, NotificationTopic } from "@prisma/client";
 const prisma = new PrismaClient();
 import { sendPromptOfTheDay } from "mailer";
 
-const path = require("path");
-const root = path.resolve(process.cwd(), "../../packages/mailer");
-
 export function registerJobs(agenda) {
   agenda.define("sendEmailPOTD", async () => {
     const count = await prisma.prompt.count();
@@ -24,7 +21,7 @@ export function registerJobs(agenda) {
 
     for (const user of users) {
       if (!user.email) continue;
-      await sendPromptOfTheDay(user.email, randomPrompt, root);
+      await sendPromptOfTheDay(user.email, randomPrompt);
     }
   });
 
