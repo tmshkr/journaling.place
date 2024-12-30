@@ -16,7 +16,6 @@ services:
     environment:
       NEXTAUTH_URL: http://localhost
       MONGO_URI: mongodb://root:root@db/jp-dev?authSource=admin&tls=false
-      ROOT_DIR: /app
     restart: always
     volumes:
       - /app/node_modules

@@ -35,3 +35,4 @@ RUN mkdir -p build_output/.turbo/cache
 FROM base AS runner
 COPY --from=builder --chown=docker:docker /app/build_output/ ./
 USER docker
+ENV ROOT_DIR=/app

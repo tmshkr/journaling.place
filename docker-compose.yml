@@ -4,8 +4,6 @@ services:
     command: npm run start
     container_name: app
     env_file: .env
-    environment:
-      ROOT_DIR: /app
     restart: always
     healthcheck:
       test: "curl -f http://app:3000 || exit 1"

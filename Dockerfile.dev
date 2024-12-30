@@ -25,3 +25,4 @@ COPY --from=deps --chown=docker:docker /app/ ./
 COPY ./ ./
 RUN npx prisma generate
 USER docker
+ENV ROOT_DIR=/app
