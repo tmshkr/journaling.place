@@ -11,10 +11,6 @@ import { sendVerificationRequest } from "src/auth/sendVerificationRequest";
 import { sendWelcomeEmail } from "mailer";
 import { ColorScheme, CustomSession } from "src/types";
 
-const path = require("path");
-const rootDir = process.env.ROOT_DIR;
-if (!rootDir) throw new Error("ROOT_DIR env var not set");
-
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 export const authOptions: AuthOptions = {
@@ -50,10 +46,7 @@ export const authOptions: AuthOptions = {
 
       switch (trigger) {
         case "signUp":
-          sendWelcomeEmail(
-            user.email,
-            path.resolve(rootDir, "packages/mailer")
-          );
+          sendWelcomeEmail(user.email);
 
           break;
         default:

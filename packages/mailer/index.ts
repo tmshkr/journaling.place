@@ -1,10 +1,13 @@
 import Email from "email-templates";
 import { encode } from "next-auth/jwt";
-const path = require("path");
+import { resolve } from "path";
 const nodemailer = require("nodemailer");
 const transport = nodemailer.createTransport(process.env.EMAIL_SERVER);
 
-export async function sendWelcomeEmail(emailTo: string, root: string = "") {
+const rootDir = process.env.ROOT_DIR!;
+if (!rootDir) throw new Error("ROOT_DIR env var not set");
+
+export async function sendWelcomeEmail(emailTo: string) {
   const email = new Email({
     message: {
       from: "Journaling Place <hi@journaling.place>",
@@ -14,7 +17,7 @@ export async function sendWelcomeEmail(emailTo: string, root: string = "") {
     preview: {
       openSimulator: false,
     },
-    views: { root: path.join(root, "emails") },
+    views: { root: resolve(rootDir, "emails") },
     juice: true,
     juiceSettings: {
       tableElements: ["TABLE"],
@@ -22,7 +25,7 @@ export async function sendWelcomeEmail(emailTo: string, root: string = "") {
     juiceResources: {
       applyStyleTags: true,
       webResources: {
-        relativeTo: path.join(root, "assets"),
+        relativeTo: resolve(rootDir, "assets"),
       },
     },
   });
@@ -40,11 +43,7 @@ export async function sendWelcomeEmail(emailTo: string, root: string = "") {
     .catch(console.error);
 }
 
-export async function sendPromptOfTheDay(
-  emailTo: string,
-  prompt,
-  root: string = ""
-) {
+export async function sendPromptOfTheDay(emailTo: string, prompt) {
   const token = await encode({
     token: { email: emailTo },
     secret: process.env.EMAIL_SECRET!,
@@ -63,7 +62,7 @@ export async function sendPromptOfTheDay(
     preview: {
       openSimulator: false,
     },
-    views: { root: path.join(root, "emails") },
+    views: { root: resolve(rootDir, "emails") },
     juice: true,
     juiceSettings: {
       tableElements: ["TABLE"],
@@ -71,7 +70,7 @@ export async function sendPromptOfTheDay(
     juiceResources: {
       applyStyleTags: true,
       webResources: {
-        relativeTo: path.join(root, "assets"),
+        relativeTo: resolve(rootDir, "assets"),
       },
     },
   });

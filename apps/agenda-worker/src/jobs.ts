@@ -2,10 +2,6 @@ import { PrismaClient, NotificationTopic } from "@prisma/client";
 const prisma = new PrismaClient();
 import { sendPromptOfTheDay } from "mailer";
 
-const path = require("path");
-const rootDir = process.env.ROOT_DIR;
-if (!rootDir) throw new Error("ROOT_DIR env var not set");
-
 export function registerJobs(agenda) {
   agenda.define("sendEmailPOTD", async () => {
     const count = await prisma.prompt.count();
@@ -25,11 +21,7 @@ export function registerJobs(agenda) {
 
     for (const user of users) {
       if (!user.email) continue;
-      await sendPromptOfTheDay(
-        user.email,
-        randomPrompt,
-        path.resolve(rootDir, "packages/mailer")
-      );
+      await sendPromptOfTheDay(user.email, randomPrompt);
     }
   });
 
