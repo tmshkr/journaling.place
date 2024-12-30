@@ -1,11 +1,13 @@
 import Email from "email-templates";
 import { encode } from "next-auth/jwt";
 import { resolve } from "path";
-const nodemailer = require("nodemailer");
-const transport = nodemailer.createTransport(process.env.EMAIL_SERVER);
+import { createTransport } from "nodemailer";
+const transport = createTransport(process.env.EMAIL_SERVER);
 
 const rootDir = process.env.ROOT_DIR!;
 if (!rootDir) throw new Error("ROOT_DIR env var not set");
+const emailDir = resolve(rootDir, "packages", "mailer", "emails");
+const assetsDir = resolve(rootDir, "packages", "mailer", "assets");
 
 export async function sendWelcomeEmail(emailTo: string) {
   const email = new Email({
@@ -17,7 +19,7 @@ export async function sendWelcomeEmail(emailTo: string) {
     preview: {
       openSimulator: false,
     },
-    views: { root: resolve(rootDir, "emails") },
+    views: { root: emailDir },
     juice: true,
     juiceSettings: {
       tableElements: ["TABLE"],
@@ -25,7 +27,7 @@ export async function sendWelcomeEmail(emailTo: string) {
     juiceResources: {
       applyStyleTags: true,
       webResources: {
-        relativeTo: resolve(rootDir, "assets"),
+        relativeTo: assetsDir,
       },
     },
   });
@@ -62,7 +64,7 @@ export async function sendPromptOfTheDay(emailTo: string, prompt) {
     preview: {
       openSimulator: false,
     },
-    views: { root: resolve(rootDir, "emails") },
+    views: { root: emailDir },
     juice: true,
     juiceSettings: {
       tableElements: ["TABLE"],
@@ -70,7 +72,7 @@ export async function sendPromptOfTheDay(emailTo: string, prompt) {
     juiceResources: {
       applyStyleTags: true,
       webResources: {
-        relativeTo: resolve(rootDir, "assets"),
+        relativeTo: assetsDir,
       },
     },
   });
