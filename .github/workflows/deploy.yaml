@@ -4,9 +4,7 @@ permissions:
   contents: read
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+
 env:
   DOCKER_IMAGE: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/journaling.place
   GH_ACTIONS_ROLE: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/GitHubActionsRole
