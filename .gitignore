@@ -55,3 +55,10 @@ docker-build.log
 cdk.out
 cdk.context.json
 cdn
+
+.tfbackend
+*.tfvars
+*.tfstate
+.terraform
+
+*.pub

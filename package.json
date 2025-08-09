@@ -14,11 +14,14 @@
     "docker:test": "docker compose -f docker-compose.test.yml up",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "gha:deploy": "./scripts/gh-workflow-run.js deploy.yaml",
+    "gha:promote": "./scripts/gh-workflow-run.js promote.yaml",
     "start": "prisma db push && prisma db seed && turbo run start --env-mode=loose",
     "e2e:test": "dotenvx run -f test.env -- npm run test --workspace e2e",
     "e2e:report": "turbo run report --filter=e2e",
     "jest": "turbo run jest --filter=trpc-server",
-    "update-dockerfiles": "./scripts/update-dockerfiles.mjs Dockerfile Dockerfile.dev"
+    "update-dockerfiles": "./scripts/update-dockerfiles.mjs Dockerfile Dockerfile.dev",
+    "tf:compute:destroy": "./scripts/terraform/select-staging-workspace.sh && cd terraform/compute && terraform destroy"
   },
   "packageManager": "npm@10.8.2",
   "dependencies": {
