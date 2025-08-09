@@ -42,7 +42,7 @@ terraform apply -auto-approve \
     -var "origin_cert=$ORIGIN_CERT" \
     -var "origin_key=$ORIGIN_KEY" \
     -var "state_bucket=$TF_STATE_BUCKET" \
-    -var "wp_domain=$WP_DOMAIN" \
+    -var "target_domain=$STAGING_DOMAIN" \
     -var "zone=$GCP_ZONE"
 
 staging_ip=$(terraform state pull | jq -r '.outputs.instance_ip_address.value')
