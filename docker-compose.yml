@@ -21,4 +21,6 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./cf-cert.pem:/etc/nginx/certs/cf-cert.pem
+      - ./cf-key.pem:/etc/nginx/certs/cf-key.pem
+      - ./nginx.conf:/etc/nginx/templates/nginx.conf.template

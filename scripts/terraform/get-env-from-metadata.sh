@@ -18,5 +18,5 @@ done
 
 source .env
 
-echo "$ORIGIN_CERT" | base64 -d >./caddy/cert.pem
-echo "$ORIGIN_KEY" | base64 -d >./caddy/key.pem
+echo "$ORIGIN_CERT" | base64 -d >./cf-cert.pem
+echo "$ORIGIN_KEY" | base64 -d >./cf-key.pem
