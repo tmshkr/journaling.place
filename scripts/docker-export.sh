@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 if [ "$GITHUB_ACTIONS" == "true" ]; then
-    docker run --rm -v ./export:/app/export "$DOCKER_IMAGE:builder" scripts/docker-export.sh
+    docker run --rm -v ./export:/app/export "tmshkr/journaling.place:builder" scripts/docker-export.sh
     echo "On host machine..."
     echo "Deleting existing .turbo directory"
     rm -rvf .turbo
