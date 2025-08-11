@@ -53,4 +53,6 @@ if [[ -z "$target_workspace" ]]; then
     exit 1
 fi
 
-gcloud compute start-iap-tunnel $target_workspace 22 --listen-on-stdin --project=noumenal-dev --zone="$GCP_ZONE" --verbosity=warning
+echo "Starting IAP tunnel to $target_workspace in $GCP_PROJECT_ID..."
+
+gcloud compute start-iap-tunnel $target_workspace 22 --listen-on-stdin --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --verbosity=warning
