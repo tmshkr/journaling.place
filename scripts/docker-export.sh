@@ -7,8 +7,8 @@ if [ "$GITHUB_ACTIONS" == "true" ]; then
     rm -rvf .turbo
     echo "Copying exported .turbo directory to $(pwd)/.turbo"
     cp -vR export/.turbo .
-    echo "Copying exported .next/static directory to S3..."
-    aws s3 cp --recursive export/.next/static s3://$CDN_BUCKET/_next/static/
+    # echo "Copying exported .next/static directory to S3..."
+    # aws s3 cp --recursive export/.next/static s3://$CDN_BUCKET/_next/static/
 else
     echo "Inside Docker container..."
     mkdir -pv export/.turbo export/.next
