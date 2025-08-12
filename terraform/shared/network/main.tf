@@ -1,5 +1,5 @@
 resource "google_compute_network" "vpc" {
-  name                    = "wordpress-vpc-${var.resource_name_key}"
+  name                    = "journaling-place-vpc-${var.resource_name_key}"
   auto_create_subnetworks = true
 }
 
