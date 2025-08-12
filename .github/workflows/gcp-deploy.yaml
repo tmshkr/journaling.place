@@ -41,4 +41,5 @@ jobs:
           NEXTAUTH_URL: https://${{ vars.STAGING_DOMAIN }}
           PRODUCTION_DOMAIN: ${{ vars.PRODUCTION_DOMAIN }}
           STAGING_DOMAIN: ${{ vars.STAGING_DOMAIN }}
+          TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
           TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
