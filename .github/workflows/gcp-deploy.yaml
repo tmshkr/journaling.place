@@ -25,6 +25,9 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          EMAIL_FROM: ${{ vars.EMAIL_FROM }}
+          EMAIL_SECRET: ${{ secrets.EMAIL_SECRET }}
+          EMAIL_SERVER: ${{ secrets.EMAIL_SERVER }}
           GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
           GCP_ZONE: ${{ vars.GCP_ZONE }}
           GREEN_ENV: ${{ vars.GREEN_ENV }}
@@ -34,6 +37,8 @@ jobs:
           ORIGIN_CERT: ${{ secrets.ORIGIN_CERT }}
           ORIGIN_KEY: ${{ secrets.ORIGIN_KEY }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: https://${{ vars.STAGING_DOMAIN }}
           PRODUCTION_DOMAIN: ${{ vars.PRODUCTION_DOMAIN }}
           STAGING_DOMAIN: ${{ vars.STAGING_DOMAIN }}
           TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}

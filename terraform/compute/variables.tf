@@ -17,6 +17,22 @@ variable "disk_image" {
   default = "ubuntu-2504-plucky-amd64-v20250701"
 }
 
+variable "email_from" {
+  description = "Email address to use as the sender for login emails"
+  type        = string
+}
+
+variable "email_secret" {
+  description = "Email JWT secret"
+  type        = string
+  sensitive   = true
+}
+
+variable "email_server" {
+  description = "SMTP connection string to send emails"
+  type        = string
+}
+
 variable "state_bucket" {
   description = "The GCS bucket for storing Terraform state files"
   type        = string
@@ -37,10 +53,27 @@ variable "github_sha" {
   type        = string
 }
 
+variable "mongo_uri" {
+  description = "MongoDB connection string"
+  type        = string
+  sensitive   = true
+}
+
 variable "deploy_key" {
   description = "Base64-encoded GitHub deploy key for the repository"
   type        = string
   sensitive   = true
+}
+
+variable "nextauth_secret" {
+  description = "NextAuth.js secret"
+  type        = string
+  sensitive   = true
+}
+
+variable "nextauth_url" {
+  description = "NextAuth.js URL"
+  type        = string
 }
 
 variable "origin_cert" {
@@ -57,5 +90,10 @@ variable "origin_key" {
 
 variable "target_domain" {
   description = "FQDN for the target domain, e.g., example.com"
+  type        = string
+}
+
+variable "test_user_email" {
+  description = "Email address for the test user"
   type        = string
 }

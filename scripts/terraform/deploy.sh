@@ -11,16 +11,23 @@ required_env_vars=(
     "CLOUDFLARE_API_TOKEN"
     "CLOUDFLARE_ZONE_ID"
     "DEPLOY_KEY"
+    "EMAIL_FROM"
+    "EMAIL_SECRET"
+    "EMAIL_SERVER"
     "GCP_PROJECT_ID"
     "GCP_ZONE"
     "GREEN_ENV"
     "GITHUB_ACTOR"
     "GITHUB_REPOSITORY"
     "GITHUB_SHA"
+    "MONGO_URI"
+    "NEXTAUTH_SECRET"
+    "NEXTAUTH_URL"
     "ORIGIN_CERT"
     "ORIGIN_KEY"
     "PRODUCTION_DOMAIN"
     "STAGING_DOMAIN"
+    "TEST_USER_EMAIL"
     "TF_STATE_BUCKET"
 )
 
@@ -35,14 +42,21 @@ sh -c "scripts/terraform/select-staging-workspace.sh"
 cd terraform/compute
 terraform apply -auto-approve \
     -var "deploy_key=$DEPLOY_KEY" \
+    -var "email_from=$EMAIL_FROM" \
+    -var "email_secret=$EMAIL_SECRET" \
+    -var "email_server=$EMAIL_SERVER" \
     -var "github_actor=$GITHUB_ACTOR" \
     -var "github_repository=$GITHUB_REPOSITORY" \
     -var "github_sha=$GITHUB_SHA" \
+    -var "mongo_uri=$MONGO_URI" \
+    -var "nextauth_secret=$NEXTAUTH_SECRET" \
+    -var "nextauth_url=$NEXTAUTH_URL" \
     -var "project_id=$GCP_PROJECT_ID" \
     -var "origin_cert=$ORIGIN_CERT" \
     -var "origin_key=$ORIGIN_KEY" \
     -var "state_bucket=$TF_STATE_BUCKET" \
     -var "target_domain=$STAGING_DOMAIN" \
+    -var "test_user_email=$TEST_USER_EMAIL" \
     -var "zone=$GCP_ZONE"
 
 staging_ip=$(terraform state pull | jq -r '.outputs.instance_ip_address.value')

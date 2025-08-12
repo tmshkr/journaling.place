@@ -32,12 +32,19 @@ resource "google_compute_instance" "vm" {
   metadata = {
     "BACKUP_BUCKET_NAME" = data.terraform_remote_state.main_module.outputs.backup_bucket_name
     "DEPLOY_KEY"         = var.deploy_key,
+    "EMAIL_FROM"         = var.email_from,
+    "EMAIL_SECRET"       = var.email_secret,
+    "EMAIL_SERVER"       = var.email_server,
     "GITHUB_ACTOR"       = var.github_actor,
     "GITHUB_REPOSITORY"  = var.github_repository,
     "GITHUB_SHA"         = var.github_sha,
+    "MONGO_URI"          = var.mongo_uri,
+    "NEXTAUTH_SECRET"    = var.nextauth_secret,
+    "NEXTAUTH_URL"       = var.nextauth_url,
     "ORIGIN_CERT"        = var.origin_cert,
     "ORIGIN_KEY"         = var.origin_key,
     "TARGET_DOMAIN"      = var.target_domain,
+    "TEST_USER_EMAIL"    = var.test_user_email
   }
 
   metadata_startup_script = file("../../scripts/terraform/init.sh")
