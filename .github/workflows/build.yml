@@ -1,0 +1,48 @@
+name: Build and Push to Docker Hub
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+          platforms: linux/amd64
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          cache-from: type=gha
+          context: .
+          load: true
+          tags: tmshkr/journaling.place:builder
+          target: builder
+      - name: Export turbo cache and static assets
+        run: ./scripts/docker-export.sh
+        env:
+          CDN_BUCKET: ${{ vars.CDN_BUCKET }}
+          DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
+      - name: Push runner image
+        uses: docker/build-push-action@v6
+        with:
+          cache-to: type=gha,mode=max
+          context: .
+          push: true
+          tags: |
+            tmshkr/journaling.place:latest
+            tmshkr/journaling.place:${{ github.sha }}
