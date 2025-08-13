@@ -1,6 +1,6 @@
 services:
   app:
-    image: tmshkr/journaling.place:${GITHUB_SHA}
+    image: tmshkr/journaling.place:${DOCKER_TAG}
     command: npm run start
     container_name: app
     env_file: .env
