@@ -10,8 +10,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      VERSION_LABEL: ${{ github.ref_name }}.${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup turbo cache
@@ -90,3 +88,30 @@ jobs:
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
           TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
           VERSION_LABEL: ${{ github.ref_name}}.${{ github.sha }}
+  test:
+    needs: [deploy, build]
+    environment: staging
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.46.0-jammy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          node-version: 22
+      - name: Install e2e deps
+        run: npm run install:ci --workspace=e2e
+      - name: Run e2e tests
+        run: npm run test --workspace=e2e
+        env:
+          BASE_URL: ${{ vars.NEXTAUTH_URL }}
+          CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
+          TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
+          VERSION_LABEL: ${{ env.VERSION_LABEL }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-test
+          path: packages/e2e/playwright-report/
+          retention-days: 30
