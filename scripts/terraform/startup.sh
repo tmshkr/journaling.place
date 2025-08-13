@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -eox pipefail
-
+APP_DIR=$(pwd)
 ./scripts/terraform/get-env-from-metadata.sh
 
 source .env
@@ -26,8 +26,10 @@ sudo apt-get install -y zip unzip
 
 if ! command -v docker &>/dev/null; then
     echo "Docker not found, installing..."
+    cd $(mktemp -d)
     curl -fsSL https://get.docker.com -o get-docker.sh
     sudo sh ./get-docker.sh
+    cd "$APP_DIR"
 else
     echo "Docker is already installed."
 fi
@@ -37,7 +39,7 @@ if [[ -f /etc/cron.d/backup ]]; then
     echo "Backup cron job already exists, skipping creation."
 else
     echo "Creating backup cron job..."
-    echo "0 5 * * * root cd /srv/${GITHUB_REPOSITORY} && ./scripts/backup.sh" | tee /etc/cron.d/backup
+    echo "0 5 * * * root cd $APP_DIR && ./scripts/backup.sh" | tee /etc/cron.d/backup
     chmod 644 /etc/cron.d/backup
     systemctl restart cron
     systemctl daemon-reload
