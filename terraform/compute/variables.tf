@@ -97,3 +97,8 @@ variable "test_user_email" {
   description = "Email address for the test user"
   type        = string
 }
+
+variable "version_label" {
+  description = "Version label for the deployment, e.g., main.30cc3f51a9a6e885d885e376d249717c95d4cb72"
+  type        = string
+}

@@ -1,9 +1,8 @@
 import { chromium, FullConfig } from "@playwright/test";
-import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
 import { MongoClient } from "mongodb";
 import { enterJournalPassword } from "./utils/enterJournalPassword";
 
-const { STAGE, TEST_USER_EMAIL } = process.env;
+const { TEST_USER_EMAIL } = process.env;
 const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
 
 async function checkVersion(baseURL: URL) {
@@ -33,17 +32,8 @@ async function checkVersion(baseURL: URL) {
 }
 
 async function getMongoClient() {
-  if (["production", "staging"].includes(STAGE)) {
-    console.log("Getting SSM parameters");
-    const client = new SSMClient();
-    const { Parameter } = await client.send(
-      new GetParameterCommand({
-        Name: `/journaling.place/${STAGE}/MONGO_URI`,
-        WithDecryption: true,
-      })
-    );
-    process.env.MONGO_URI = Parameter.Value;
-    console.log(`::add-mask::${Parameter.Value}`);
+  if (!process.env.MONGO_URI) {
+    throw new Error("MONGO_URI is not defined");
   }
 
   const mongoClient = new MongoClient(process.env.MONGO_URI as string);

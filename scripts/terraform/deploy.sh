@@ -29,6 +29,7 @@ required_env_vars=(
     "STAGING_DOMAIN"
     "TEST_USER_EMAIL"
     "TF_STATE_BUCKET"
+    "VERSION_LABEL"
 )
 
 for env_var in "${required_env_vars[@]}"; do
@@ -57,6 +58,7 @@ terraform apply -auto-approve \
     -var "state_bucket=$TF_STATE_BUCKET" \
     -var "target_domain=$STAGING_DOMAIN" \
     -var "test_user_email=$TEST_USER_EMAIL" \
+    -var "version_label=$VERSION_LABEL" \
     -var "zone=$GCP_ZONE"
 
 staging_ip=$(terraform state pull | jq -r '.outputs.instance_ip_address.value')

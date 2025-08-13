@@ -44,7 +44,8 @@ resource "google_compute_instance" "vm" {
     "ORIGIN_CERT"        = var.origin_cert,
     "ORIGIN_KEY"         = var.origin_key,
     "TARGET_DOMAIN"      = var.target_domain,
-    "TEST_USER_EMAIL"    = var.test_user_email
+    "TEST_USER_EMAIL"    = var.test_user_email,
+    "VERSION_LABEL"      = var.version_label
   }
 
   metadata_startup_script = file("../../scripts/terraform/init.sh")

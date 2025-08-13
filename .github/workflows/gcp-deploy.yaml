@@ -38,8 +38,9 @@ jobs:
           ORIGIN_KEY: ${{ secrets.ORIGIN_KEY }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          NEXTAUTH_URL: https://${{ vars.STAGING_DOMAIN }}
+          NEXTAUTH_URL: ${{ vars.NEXTAUTH_URL }}
           PRODUCTION_DOMAIN: ${{ vars.PRODUCTION_DOMAIN }}
           STAGING_DOMAIN: ${{ vars.STAGING_DOMAIN }}
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
           TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
+          VERSION_LABEL: ${{ github.ref_name}}.${{ github.sha }}
