@@ -4,6 +4,8 @@ permissions:
   contents: read
 on:
   workflow_dispatch:
+env:
+  VERSION_LABEL: ${{ github.ref_name }}.${{ github.sha }}
 
 jobs:
   build:
@@ -41,7 +43,6 @@ jobs:
         run: ./scripts/docker-export.sh
         env:
           CDN_BUCKET: ${{ vars.CDN_BUCKET }}
-          DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
       - name: Push runner image
         uses: docker/build-push-action@v6
         with:
@@ -69,7 +70,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-          DOCKER_TAG: ${{ vars.DOCKER_TAG }}
+          DOCKER_TAG: ${{ env.VERSION_LABEL }}
           EMAIL_FROM: ${{ vars.EMAIL_FROM }}
           EMAIL_SECRET: ${{ secrets.EMAIL_SECRET }}
           EMAIL_SERVER: ${{ secrets.EMAIL_SERVER }}
