@@ -32,6 +32,7 @@ resource "google_compute_instance" "vm" {
   metadata = {
     "BACKUP_BUCKET_NAME" = data.terraform_remote_state.main_module.outputs.backup_bucket_name
     "DEPLOY_KEY"         = var.deploy_key,
+    "DOCKER_TAG"         = var.docker_tag,
     "EMAIL_FROM"         = var.email_from,
     "EMAIL_SECRET"       = var.email_secret,
     "EMAIL_SERVER"       = var.email_server,

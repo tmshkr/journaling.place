@@ -17,6 +17,11 @@ variable "disk_image" {
   default = "ubuntu-2504-plucky-amd64-v20250701"
 }
 
+variable "docker_tag" {
+  description = "Docker image tag to use for the deployment"
+  type        = string
+}
+
 variable "email_from" {
   description = "Email address to use as the sender for login emails"
   type        = string

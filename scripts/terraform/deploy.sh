@@ -11,6 +11,7 @@ required_env_vars=(
     "CLOUDFLARE_API_TOKEN"
     "CLOUDFLARE_ZONE_ID"
     "DEPLOY_KEY"
+    "DOCKER_TAG"
     "EMAIL_FROM"
     "EMAIL_SECRET"
     "EMAIL_SERVER"
@@ -43,6 +44,7 @@ sh -c "scripts/terraform/select-staging-workspace.sh"
 cd terraform/compute
 terraform apply -auto-approve \
     -var "deploy_key=$DEPLOY_KEY" \
+    -var "docker_tag=$DOCKER_TAG" \
     -var "email_from=$EMAIL_FROM" \
     -var "email_secret=$EMAIL_SECRET" \
     -var "email_server=$EMAIL_SERVER" \
