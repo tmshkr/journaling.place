@@ -67,7 +67,7 @@ terraform plan -out=tfplan.binary \
 terraform show -json tfplan.binary >tfplan.json
 IS_UPDATE=$(jq -e '.resource_changes[] | select(.address == "google_compute_instance.vm") | .change.actions[] | select(. == "update")' tfplan.json >/dev/null && echo true || echo false)
 
-terraform apply -auto-approve
+terraform apply tfplan.binary -auto-approve
 
 if [[ $IS_UPDATE == true ]]; then
     echo "Running startup script..."
