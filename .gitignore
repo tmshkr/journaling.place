@@ -64,3 +64,4 @@ tfplan.binary
 tfplan.json
 
 *.pub
+backup
