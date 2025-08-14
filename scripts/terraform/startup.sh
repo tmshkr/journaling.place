@@ -52,5 +52,8 @@ while ! docker pull tmshkr/journaling.place:$DOCKER_TAG; do
     sleep 10
 done
 
+# Stop server
+docker compose -f docker-compose.yml -f docker-compose.gcp.yml stop
+
 # Start server
 docker compose -f docker-compose.yml -f docker-compose.gcp.yml up -d
