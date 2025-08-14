@@ -107,6 +107,7 @@ jobs:
         env:
           BASE_URL: ${{ vars.NEXTAUTH_URL }}
           CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
           VERSION_LABEL: ${{ env.VERSION_LABEL }}
       - uses: actions/upload-artifact@v4
