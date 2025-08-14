@@ -60,5 +60,7 @@ cdn
 *.tfvars
 *.tfstate
 .terraform
+tfplan.binary
+tfplan.json
 
 *.pub
