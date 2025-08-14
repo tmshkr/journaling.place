@@ -10,11 +10,27 @@ required_env_vars=(
     "BLUE_ENV"
     "CLOUDFLARE_API_TOKEN"
     "CLOUDFLARE_ZONE_ID"
-    "GREEN_ENV"
+    "DEPLOY_KEY"
+    "DOCKER_TAG"
+    "EMAIL_FROM"
+    "EMAIL_SECRET"
+    "EMAIL_SERVER"
+    "GCP_PROJECT_ID"
     "GCP_ZONE"
+    "GREEN_ENV"
+    "GITHUB_ACTOR"
+    "GITHUB_REPOSITORY"
+    "GITHUB_SHA"
+    "MONGO_URI"
+    "NEXTAUTH_SECRET"
+    "NEXTAUTH_URL"
+    "ORIGIN_CERT"
+    "ORIGIN_KEY"
     "PRODUCTION_DOMAIN"
     "STAGING_DOMAIN"
-    "WP_DOMAIN"
+    "TEST_USER_EMAIL"
+    "TF_STATE_BUCKET"
+    "VERSION_LABEL"
 )
 
 for env_var in "${required_env_vars[@]}"; do
@@ -35,10 +51,27 @@ if [[ -z "$staging_ip" ]]; then
     exit 1
 fi
 
-# Update metadata for the staging instance
-gcloud compute instances add-metadata "$staging_workspace" \
-    --zone "$GCP_ZONE" \
-    --metadata "WP_DOMAIN=$WP_DOMAIN"
+# Update metadata with production domain
+terraform apply -auto-approve \
+    -var "deploy_key=$DEPLOY_KEY" \
+    -var "docker_tag=$DOCKER_TAG" \
+    -var "email_from=$EMAIL_FROM" \
+    -var "email_secret=$EMAIL_SECRET" \
+    -var "email_server=$EMAIL_SERVER" \
+    -var "github_actor=$GITHUB_ACTOR" \
+    -var "github_repository=$GITHUB_REPOSITORY" \
+    -var "github_sha=$GITHUB_SHA" \
+    -var "mongo_uri=$MONGO_URI" \
+    -var "nextauth_secret=$NEXTAUTH_SECRET" \
+    -var "nextauth_url=$NEXTAUTH_URL" \
+    -var "project_id=$GCP_PROJECT_ID" \
+    -var "origin_cert=$ORIGIN_CERT" \
+    -var "origin_key=$ORIGIN_KEY" \
+    -var "state_bucket=$TF_STATE_BUCKET" \
+    -var "target_domain=$PRODUCTION_DOMAIN" \
+    -var "test_user_email=$TEST_USER_EMAIL" \
+    -var "version_label=$VERSION_LABEL" \
+    -var "zone=$GCP_ZONE"
 
 gcloud compute ssh --tunnel-through-iap --zone "$GCP_ZONE" "$staging_workspace" --command "cd /srv/$GITHUB_REPOSITORY && sudo sh -c './scripts/get-env-from-metadata.sh && docker compose stop && docker compose -f docker-compose.yml -f docker-compose.gcp.yml up -d'"
 
