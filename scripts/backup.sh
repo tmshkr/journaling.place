@@ -19,7 +19,7 @@ done
 docker run --rm \
     -v ./backup:/backup \
     mongo:8.0.12 \
-    mongodump --uri "$MONGO_URI" --gzip --archive="/backup/backup.tar.gz"
+    sh -c "mongodump --uri \"$MONGO_URI\" --gzip --archive=\"/backup/backup.tar.gz\""
 
 # Upload the backup to GCS
-gcloud storage cp backup.zip gs://$BACKUP_BUCKET_NAME/$TARGET_DOMAIN/backup.zip
+gcloud storage cp ./backup/backup.tar.gz gs://$BACKUP_BUCKET_NAME/$TARGET_DOMAIN/backup.tar.gz
