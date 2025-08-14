@@ -1,3 +1,7 @@
+data "http" "cloudflare_ipv4_ranges" {
+  url = "https://www.cloudflare.com/ips-v4/"
+}
+
 resource "google_compute_network" "vpc" {
   name                    = "journaling-place-vpc-${var.resource_name_key}"
   auto_create_subnetworks = true
@@ -12,7 +16,7 @@ resource "google_compute_firewall" "allow-http" {
     ports    = ["80"]
   }
 
-  source_ranges = ["0.0.0.0/0"]
+  source_ranges = split("\n", data.http.cloudflare_ipv4_ranges.response_body)
   target_tags   = ["http-server"]
 }
 
@@ -25,7 +29,7 @@ resource "google_compute_firewall" "allow-https" {
     ports    = ["443"]
   }
 
-  source_ranges = ["0.0.0.0/0"]
+  source_ranges = split("\n", data.http.cloudflare_ipv4_ranges.response_body)
   target_tags   = ["https-server"]
 }
 

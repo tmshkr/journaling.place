@@ -56,7 +56,7 @@ resource "google_compute_instance" "vm" {
     scopes = ["cloud-platform"]
   }
 
-  tags = ["http-server", "https-server", "allow-ssh", "allow-http-8080"]
+  tags = ["http-server", "https-server", "allow-ssh"]
 }
 
 
