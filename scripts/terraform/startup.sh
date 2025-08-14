@@ -46,5 +46,11 @@ else
     echo "Backup cron job created."
 fi
 
+# Pull image from Docker Hub
+while ! docker pull tmshkr/journaling.place:$DOCKER_TAG; do
+    echo "Retrying Docker pull..."
+    sleep 10
+done
+
 # Start server
 docker compose -f docker-compose.yml -f docker-compose.gcp.yml up -d

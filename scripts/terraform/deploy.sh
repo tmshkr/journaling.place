@@ -42,6 +42,10 @@ done
 
 sh -c "scripts/terraform/select-staging-workspace.sh"
 cd terraform/compute
+staging_workspace=$(terraform workspace show)
+terraform plan -out=tfplan.binary
+terraform show -json tfplan.binary >tfplan.json
+IS_UPDATE=$(jq -e '.resource_changes[] | select(.address == "google_compute_instance.vm") | .change.actions[] | select(. == "update")' tfplan.json >/dev/null && echo true || echo false)
 terraform apply -auto-approve \
     -var "deploy_key=$DEPLOY_KEY" \
     -var "docker_tag=$DOCKER_TAG" \
@@ -62,6 +66,11 @@ terraform apply -auto-approve \
     -var "test_user_email=$TEST_USER_EMAIL" \
     -var "version_label=$VERSION_LABEL" \
     -var "zone=$GCP_ZONE"
+
+if [[ $IS_UPDATE == true ]]; then
+    echo "Running startup script..."
+    gcloud compute ssh --tunnel-through-iap --zone "$GCP_ZONE" "$staging_workspace" --command "sudo google_metadata_script_runner startup"
+fi
 
 staging_ip=$(terraform state pull | jq -r '.outputs.instance_ip_address.value')
 staging_workspace=$(terraform workspace show)
