@@ -135,6 +135,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.46.0-jammy
     steps:
       - uses: "actions/checkout@v4"
+      - run: sudo apt-get update && sudo apt-get install -y unzip
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.12.2"
