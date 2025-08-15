@@ -98,7 +98,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-          DOCKER_TAG: ${{ env.VERSION_LABEL }}
+          DOCKER_TAG: ${{ needs.prep.outputs.version_label }}
           EMAIL_FROM: ${{ vars.EMAIL_FROM }}
           EMAIL_SECRET: ${{ secrets.EMAIL_SECRET }}
           EMAIL_SERVER: ${{ secrets.EMAIL_SERVER }}
