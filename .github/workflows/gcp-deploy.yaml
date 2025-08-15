@@ -1,5 +1,6 @@
 name: GCP Blue/Green Deployment
 permissions:
+  actions: write
   id-token: write
   contents: read
 on:
