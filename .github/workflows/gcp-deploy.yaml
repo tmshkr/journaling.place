@@ -13,8 +13,9 @@ on:
           - "production"
 
 jobs:
-  prep:
+  deploy:
     runs-on: ubuntu-latest
+    environment: staging
     outputs:
       skip_build: ${{ steps.turbo_tag.outputs.SKIP_BUILD }}
       turbo_tag: ${{ steps.turbo_tag.outputs.TURBO_TAG }}
@@ -33,57 +34,11 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - id: turbo_tag
         run: ./scripts/turbo-sha.mjs
-  build:
-    if: needs.prep.outputs.skip_build != 'true'
-    runs-on: ubuntu-latest
-    needs: [prep]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup turbo cache
-        uses: actions/cache@v4
+      - if: steps.turbo_tag.outputs.SKIP_BUILD != 'true'
+        uses: ./.github/workflows/build.yml
         with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          install: true
-          platforms: linux/amd64
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ vars.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build
-        uses: docker/build-push-action@v6
-        with:
-          cache-from: type=gha
-          context: .
-          load: true
-          tags: tmshkr/journaling.place:builder
-          target: builder
-      - name: Export turbo cache and static assets
-        run: ./scripts/docker-export.sh
-        env:
-          CDN_BUCKET: ${{ vars.CDN_BUCKET }}
-      - name: Push runner image
-        uses: docker/build-push-action@v6
-        with:
-          cache-to: type=gha,mode=max
-          context: .
-          push: true
-          tags: |
-            tmshkr/journaling.place:${{ needs.prep.outputs.turbo_tag }}
-            tmshkr/journaling.place:${{ needs.prep.outputs.version_label }}
-
-  deploy:
-    needs: [prep]
-    runs-on: ubuntu-latest
-    environment: staging
-    steps:
-      - uses: "actions/checkout@v4"
+          turbo_tag: ${{ steps.turbo_tag.outputs.TURBO_TAG }}
+          version_label: ${{ steps.turbo_tag.outputs.VERSION_LABEL }}
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.12.2"
@@ -98,7 +53,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-          DOCKER_TAG: ${{ needs.prep.outputs.version_label }}
+          DOCKER_TAG: ${{ steps.turbo_tag.outputs.version_label }}
           EMAIL_FROM: ${{ vars.EMAIL_FROM }}
           EMAIL_SECRET: ${{ secrets.EMAIL_SECRET }}
           EMAIL_SERVER: ${{ secrets.EMAIL_SERVER }}
@@ -117,11 +72,10 @@ jobs:
           STAGING_DOMAIN: ${{ vars.STAGING_DOMAIN }}
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
           TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
-          VERSION_LABEL: ${{ needs.prep.outputs.version_label }}
+          VERSION_LABEL: ${{ steps.turbo_tag.outputs.version_label }}
 
   test:
-    if: always() && needs.deploy.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
-    needs: [prep, build, deploy]
+    needs: [deploy]
     environment: staging
     runs-on: ubuntu-latest
     container:
@@ -141,7 +95,7 @@ jobs:
           CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
-          VERSION_LABEL: ${{ needs.prep.outputs.version_label }}
+          VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -152,7 +106,7 @@ jobs:
   promote:
     if: inputs.environment == 'production'
     environment: production
-    needs: [prep, test]
+    needs: [deploy, test]
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.46.0-jammy
@@ -180,7 +134,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-          DOCKER_TAG: ${{ env.VERSION_LABEL }}
+          DOCKER_TAG: ${{ needs.deploy.outputs.version_label }}
           EMAIL_FROM: ${{ vars.EMAIL_FROM }}
           EMAIL_SECRET: ${{ secrets.EMAIL_SECRET }}
           EMAIL_SERVER: ${{ secrets.EMAIL_SERVER }}
@@ -199,7 +153,7 @@ jobs:
           STAGING_DOMAIN: ${{ vars.STAGING_DOMAIN }}
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
           TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
-          VERSION_LABEL: ${{ needs.prep.outputs.version_label }}
+          VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
       - name: Run e2e tests
         run: npm run test --workspace=e2e
         env:
@@ -207,7 +161,7 @@ jobs:
           CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
-          VERSION_LABEL: ${{ needs.prep.outputs.version_label }}
+          VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:

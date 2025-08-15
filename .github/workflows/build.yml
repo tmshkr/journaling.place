@@ -1,6 +1,21 @@
 name: Build and Push to Docker Hub
 on:
+  workflow_call:
+    inputs:
+      turbo_tag:
+        required: true
+        type: string
+      version_label:
+        required: true
+        type: string
   workflow_dispatch:
+    inputs:
+      turbo_tag:
+        required: true
+        type: string
+      version_label:
+        required: true
+        type: string
 
 jobs:
   build:
@@ -34,9 +49,6 @@ jobs:
           target: builder
       - name: Export turbo cache and static assets
         run: ./scripts/docker-export.sh
-        env:
-          CDN_BUCKET: ${{ vars.CDN_BUCKET }}
-          DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
       - name: Push runner image
         uses: docker/build-push-action@v6
         with:
@@ -44,5 +56,5 @@ jobs:
           context: .
           push: true
           tags: |
-            tmshkr/journaling.place:latest
-            tmshkr/journaling.place:${{ github.sha }}
+            tmshkr/journaling.place:${{ inputs.turbo_tag }}
+            tmshkr/journaling.place:${{ inputs.version_label }}
