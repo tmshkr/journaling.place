@@ -35,6 +35,8 @@ jobs:
       - id: turbo_tag
         run: ./scripts/turbo-sha.mjs
       - if: steps.turbo_tag.outputs.SKIP_BUILD != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh workflow run build.yml --ref ${{ github.ref_name }} \
           -f turbo_tag=${{ steps.turbo_tag.outputs.TURBO_TAG }} \
