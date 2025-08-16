@@ -1,6 +1,9 @@
 name: Build and Push to Docker Hub
 on:
   workflow_call:
+    secrets:
+      dockerhub_token:
+        required: true
   workflow_dispatch:
 
 jobs:
@@ -47,5 +50,5 @@ jobs:
           context: .
           push: true
           tags: |
-            tmshkr/journaling.place:${{ inputs.turbo_tag }}
-            tmshkr/journaling.place:${{ inputs.version_label }}
+            tmshkr/journaling.place:${{ steps.turbo_tag.outputs.TURBO_TAG }}
+            tmshkr/journaling.place:${{ steps.turbo_tag.outputs.VERSION_LABEL }}
