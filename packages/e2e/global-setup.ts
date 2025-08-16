@@ -6,7 +6,7 @@ const { TEST_USER_EMAIL } = process.env;
 const baseURL = new URL(process.env.BASE_URL || process.env.NEXTAUTH_URL);
 
 async function checkVersion(baseURL: URL) {
-  const maxAttempts = 15;
+  const maxAttempts = 100;
   const url = new URL("/api/info", baseURL);
   let attempts = 0;
   while (true) {
@@ -25,8 +25,8 @@ async function checkVersion(baseURL: URL) {
         console.error(key, err[key]);
       }
       if (attempts >= maxAttempts) throw err;
-      console.log(`Attempt ${attempts}: Retrying in 5 seconds...`);
-      await new Promise((r) => setTimeout(r, 5000));
+      console.log(`Attempt ${attempts}: Retrying in 10 seconds...`);
+      await new Promise((r) => setTimeout(r, 10000));
     }
   }
 }
