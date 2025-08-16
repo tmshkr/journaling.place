@@ -1,21 +1,7 @@
 name: Build and Push to Docker Hub
 on:
   workflow_call:
-    inputs:
-      turbo_tag:
-        required: true
-        type: string
-      version_label:
-        required: true
-        type: string
   workflow_dispatch:
-    inputs:
-      turbo_tag:
-        required: true
-        type: string
-      version_label:
-        required: true
-        type: string
 
 jobs:
   build:
@@ -39,7 +25,10 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - id: turbo_tag
+        run: ./scripts/turbo-sha.mjs
       - name: Build
+        if: steps.turbo_tag.outputs.SKIP_BUILD != 'true'
         uses: docker/build-push-action@v6
         with:
           cache-from: type=gha
@@ -48,8 +37,10 @@ jobs:
           tags: tmshkr/journaling.place:builder
           target: builder
       - name: Export turbo cache and static assets
+        if: steps.turbo_tag.outputs.SKIP_BUILD != 'true'
         run: ./scripts/docker-export.sh
       - name: Push runner image
+        if: steps.turbo_tag.outputs.SKIP_BUILD != 'true'
         uses: docker/build-push-action@v6
         with:
           cache-to: type=gha,mode=max

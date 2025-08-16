@@ -6,6 +6,11 @@ if [[ -f .env ]]; then
     source .env
 fi
 
+VERSION_LABEL="${GITHUB_REF_NAME//\//_}.${GITHUB_SHA}"
+echo "VERSION_LABEL=$VERSION_LABEL" >>$GITHUB_OUTPUT
+
+DOCKER_TAG=$VERSION_LABEL
+
 required_env_vars=(
     "BLUE_ENV"
     "CLOUDFLARE_API_TOKEN"
