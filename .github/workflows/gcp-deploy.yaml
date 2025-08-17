@@ -14,9 +14,50 @@ on:
 
 jobs:
   build:
-    uses: ./.github/workflows/build.yml
-    secrets:
-      dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+          platforms: linux/amd64
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - id: turbo_tag
+        run: ./scripts/turbo-sha.mjs
+      - name: Build
+        if: !steps.turbo_tag.outputs.SKIP_BUILD
+        uses: docker/build-push-action@v6
+        with:
+          cache-from: type=gha
+          context: .
+          load: true
+          tags: tmshkr/journaling.place:builder
+          target: builder
+      - name: Export turbo cache and static assets
+        if: !steps.turbo_tag.outputs.SKIP_BUILD
+        run: ./scripts/docker-export.sh
+      - name: Push runner image
+        if: !steps.turbo_tag.outputs.SKIP_BUILD
+        uses: docker/build-push-action@v6
+        with:
+          cache-to: type=gha,mode=max
+          context: .
+          push: true
+          tags: |
+            tmshkr/journaling.place:${{ steps.turbo_tag.outputs.TURBO_TAG }}
+            tmshkr/journaling.place:${{ steps.turbo_tag.outputs.VERSION_LABEL }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -60,7 +101,7 @@ jobs:
           TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
 
   test:
-    needs: [deploy]
+    needs: [build, deploy]
     environment: staging
     runs-on: ubuntu-latest
     container:
