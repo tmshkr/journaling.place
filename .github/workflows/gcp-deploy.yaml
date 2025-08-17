@@ -37,7 +37,7 @@ jobs:
       - id: turbo_tag
         run: ./scripts/turbo-sha.mjs
       - name: Build
-        if: !steps.turbo_tag.outputs.SKIP_BUILD
+        if: steps.turbo_tag.outputs.SKIP_BUILD == 'false'
         uses: docker/build-push-action@v6
         with:
           cache-from: type=gha
@@ -46,10 +46,10 @@ jobs:
           tags: tmshkr/journaling.place:builder
           target: builder
       - name: Export turbo cache and static assets
-        if: !steps.turbo_tag.outputs.SKIP_BUILD
+        if: steps.turbo_tag.outputs.SKIP_BUILD == 'false'
         run: ./scripts/docker-export.sh
       - name: Push runner image
-        if: !steps.turbo_tag.outputs.SKIP_BUILD
+        if: steps.turbo_tag.outputs.SKIP_BUILD == 'false'
         uses: docker/build-push-action@v6
         with:
           cache-to: type=gha,mode=max
