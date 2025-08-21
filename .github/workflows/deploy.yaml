@@ -83,6 +83,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_EVENT: ${{ toJson(github.event) }}
           PUBLIC_SUBNET_IDS: ${{ vars.PUBLIC_SUBNET_IDS }}
+          SECURITY_GROUP_IDS: ${{ vars.SECURITY_GROUP_IDS }}
           VPC_ID: ${{ vars.VPC_ID }}
       - id: deploy
         name: Deploy
@@ -123,7 +124,6 @@ jobs:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
           green_env: ${{ vars.GREEN_ENV }}
-          update_listener_rules: true
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           staging_cname: ${{ vars.STAGING_CNAME }}
           terminate_unhealthy_environment: false
