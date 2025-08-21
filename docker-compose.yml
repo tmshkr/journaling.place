@@ -1,9 +1,6 @@
 services:
   app:
     image: tmshkr/journaling.place:${DOCKER_TAG}
-    build:
-      context: .
-      dockerfile: Dockerfile
     command: npm run start
     container_name: app
     environment:
