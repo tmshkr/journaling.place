@@ -58,7 +58,7 @@ jobs:
         with:
           cache-to: type=gha,mode=max
           context: .
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/arm64
           push: true
           tags: |
             tmshkr/journaling.place:${{ steps.turbo_tag.outputs.TURBO_TAG }}
