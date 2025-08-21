@@ -19,7 +19,7 @@ server {
     }
 
     location /trpc {
-      proxy_pass http://app:2222;
+      proxy_pass http://app:3333;
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
