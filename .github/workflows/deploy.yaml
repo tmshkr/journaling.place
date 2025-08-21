@@ -6,10 +6,63 @@ on:
   workflow_dispatch:
 
 env:
-  DOCKER_IMAGE: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/journaling.place
   GH_ACTIONS_ROLE: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/GitHubActionsRole
 
 jobs:
+  build:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ env.GH_ACTIONS_ROLE }}
+      - name: Setup turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+          platforms: linux/amd64, linux/arm64
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - id: turbo_tag
+        run: ./scripts/turbo-sha.mjs
+      - name: Build
+        if: steps.turbo_tag.outputs.SKIP_BUILD == 'false'
+        uses: docker/build-push-action@v6
+        with:
+          cache-from: type=gha
+          context: .
+          load: true
+          tags: tmshkr/journaling.place:builder
+          target: builder
+      - name: Export turbo cache and static assets
+        if: steps.turbo_tag.outputs.SKIP_BUILD == 'false'
+        run: ./scripts/docker-export.sh
+        env:
+          CDN_BUCKET: ${{ vars.CDN_BUCKET }}
+          DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
+      - name: Push runner image
+        if: steps.turbo_tag.outputs.SKIP_BUILD == 'false'
+        uses: docker/build-push-action@v6
+        with:
+          cache-to: type=gha,mode=max
+          context: .
+          push: true
+          tags: |
+            tmshkr/journaling.place:${{ steps.turbo_tag.outputs.TURBO_TAG }}
+            tmshkr/journaling.place:${{ steps.turbo_tag.outputs.VERSION_LABEL }}
+
   deploy:
     runs-on: ubuntu-latest
     outputs:
@@ -29,7 +82,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_EVENT: ${{ toJson(github.event) }}
           PUBLIC_SUBNET_IDS: ${{ vars.PUBLIC_SUBNET_IDS }}
-          SHARED_LOAD_BALANCER_ARN: ${{ vars.SHARED_LOAD_BALANCER_ARN }}
           VPC_ID: ${{ vars.VPC_ID }}
       - id: deploy
         name: Deploy
@@ -38,7 +90,6 @@ jobs:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
           deploy: true
-          disable_termination_protection: true
           green_env: ${{ vars.GREEN_ENV }}
           option_settings: option-settings.json
           platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
@@ -46,66 +97,9 @@ jobs:
           source_bundle: bundle.zip
           staging_cname: ${{ vars.STAGING_CNAME }}
           terminate_unhealthy_environment: true
-          update_listener_rules: true
           version_label: ${{ steps.prep.outputs.VERSION_LABEL }}
-          wait_for_deployment: false
-
-  build:
-    needs: deploy
-    if: needs.deploy.outputs.skip_build != 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ env.GH_ACTIONS_ROLE }}
-      - name: Setup turbo cache
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          install: true
-          platforms: linux/amd64
-      - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
-      - name: Build
-        uses: docker/build-push-action@v6
-        with:
-          build-args: CDN_PREFIX=https://cdn.journaling.place
-          cache-from: type=gha
-          context: .
-          load: true
-          provenance: false
-          tags: ${{ env.DOCKER_IMAGE }}:builder
-          target: builder
-      - name: Export turbo cache and static assets
-        run: ./scripts/docker-export.sh
-        env:
-          CDN_BUCKET: ${{ vars.CDN_BUCKET }}
-          DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
-      - name: Push runner image
-        uses: docker/build-push-action@v6
-        with:
-          build-args: CDN_PREFIX=https://cdn.journaling.place
-          cache-to: type=gha,mode=max
-          context: .
-          provenance: false
-          push: true
-          tags: |
-            ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.turbo_tag }}
-            ${{ env.DOCKER_IMAGE }}:${{ needs.deploy.outputs.version_label }}
-            ${{ env.DOCKER_IMAGE }}:build.${{ needs.deploy.outputs.version_label }}
-            ${{ env.DOCKER_IMAGE }}:expire.${{ needs.deploy.outputs.version_label }}
-            ${{ env.DOCKER_IMAGE }}:latest
 
   test:
-    if: always() && needs.deploy.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
     needs: [deploy, build]
     runs-on: ubuntu-latest
     container:
@@ -148,7 +142,6 @@ jobs:
           retention-days: 30
 
   promote:
-    if: always() && needs.test.result == 'success' && github.ref_name == 'main'
     needs: [deploy, test]
     runs-on: ubuntu-latest
     container:

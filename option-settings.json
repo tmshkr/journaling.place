@@ -42,7 +42,7 @@
   {
     "Namespace": "aws:ec2:instances",
     "OptionName": "InstanceTypes",
-    "Value": "t3.micro,t2.micro"
+    "Value": "t4g.small"
   },
   {
     "Namespace": "aws:ec2:vpc",
@@ -62,17 +62,7 @@
   {
     "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "EnvironmentType",
-    "Value": "LoadBalanced"
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:environment",
-    "OptionName": "LoadBalancerIsShared",
-    "Value": true
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:environment",
-    "OptionName": "LoadBalancerType",
-    "Value": "application"
+    "Value": "SingleInstance"
   },
   {
     "Namespace": "aws:elasticbeanstalk:environment",
@@ -83,15 +73,5 @@
     "Namespace": "aws:elasticbeanstalk:environment:proxy",
     "OptionName": "ProxyServer",
     "Value": "none"
-  },
-  {
-    "Namespace": "aws:elbv2:listener:443",
-    "OptionName": "Rules",
-    "Value": "default"
-  },
-  {
-    "Namespace": "aws:elbv2:loadbalancer",
-    "OptionName": "SharedLoadBalancer",
-    "Value": "$SHARED_LOAD_BALANCER_ARN"
   }
 ]

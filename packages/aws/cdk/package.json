@@ -3,7 +3,7 @@
   "main": "index.ts",
   "scripts": {
     "cdk:bootstrap": "cdk bootstrap",
-    "cdk:deploy": "dotenvx run -- cdk deploy"
+    "cdk:deploy": "dotenvx run -- cdk deploy --all"
   },
   "dependencies": {
     "aws-cdk": "^2.147.3",
