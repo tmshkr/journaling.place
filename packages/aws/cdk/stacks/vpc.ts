@@ -1,8 +1,8 @@
 import * as cdk from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 
-async function fetchCloudflareIpV6Cidrs() {
-    const cidrs = await fetch(`https://www.cloudflare.com/ips-v6/`).then(
+async function fetchCloudflareIpV4Cidrs() {
+    const cidrs = await fetch(`https://www.cloudflare.com/ips-v4/`).then(
         async (response) => {
             const text = await response.text();
             return text.split("\n");
@@ -49,11 +49,16 @@ export class VpcStack extends cdk.Stack {
         sg.addIngressRule(ec2.PrefixList.fromPrefixListId(this, "Ec2InstanceConnectIngressRule",
             "pl-047d464325e7bf465"), ec2.Port.tcp(22), "Allow SSH traffic from EC2 Instance Connect");
 
-        fetchCloudflareIpV6Cidrs().then((cidrs) => {
+        fetchCloudflareIpV4Cidrs().then((cidrs) => {
             cidrs.forEach((cidr) => {
                 sg.addIngressRule(
-                    ec2.Peer.ipv6(cidr),
+                    ec2.Peer.ipv4(cidr),
                     ec2.Port.tcp(443),
+                    "Allow traffic from Cloudflare"
+                );
+                sg.addIngressRule(
+                    ec2.Peer.ipv4(cidr),
+                    ec2.Port.tcp(80),
                     "Allow traffic from Cloudflare"
                 );
             });
