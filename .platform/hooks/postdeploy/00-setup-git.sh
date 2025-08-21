@@ -33,3 +33,6 @@ git checkout -b deploy_$GITHUB_SHA $GITHUB_SHA
 echo "Copying files from $temp_dir to $app_dir"
 cp -r $temp_dir/. $app_dir
 cd $app_dir
+
+git config --global user.name "$GITHUB_ACTOR"
+git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
