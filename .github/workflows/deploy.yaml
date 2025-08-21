@@ -45,6 +45,7 @@ jobs:
           cache-from: type=gha
           context: .
           load: true
+          platforms: linux/amd64, linux/arm64
           tags: tmshkr/journaling.place:builder
           target: builder
       - name: Export turbo cache and static assets
@@ -59,6 +60,7 @@ jobs:
         with:
           cache-to: type=gha,mode=max
           context: .
+          platforms: linux/amd64, linux/arm64
           push: true
           tags: |
             tmshkr/journaling.place:${{ steps.turbo_tag.outputs.TURBO_TAG }}
