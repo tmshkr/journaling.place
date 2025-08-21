@@ -1,0 +1,34 @@
+server {
+    # Listen to port 443 on both IPv4 and IPv6.
+    listen 443 ssl default_server reuseport;
+    listen [::]:443 ssl default_server reuseport;
+
+    # Domain names this server should respond to.
+    server_name ${SERVER_NAME};
+
+    # Load the certificate files.
+    ssl_certificate         /etc/letsencrypt/live/journaling.place/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/journaling.place/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/journaling.place/chain.pem;
+
+    # Load the Diffie-Hellman parameter.
+    ssl_dhparam /etc/letsencrypt/dhparams/dhparam.pem;
+
+    location / {
+      proxy_pass http://app:3000;
+    }
+
+    location /trpc {
+      proxy_pass http://app:2222;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+    }
+
+    location /_next/webpack-hmr {
+      proxy_pass http://app:3000/_next/webpack-hmr;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+    }
+}

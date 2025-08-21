@@ -37,9 +37,3 @@ aws ssm get-parameters-by-path --path "/$repo/$STAGE/" \
     key=$(echo $name | sed "s/\/$repo\/$STAGE\///")
     echo "$key=$value" >>.env
 done
-
-aws ssm get-parameter --name "/$repo/ORIGIN_CERT" \
-    --with-decryption --query "Parameter.Value" --output text >./cf-cert.pem
-
-aws ssm get-parameter --name "/$repo/ORIGIN_KEY" \
-    --with-decryption --query "Parameter.Value" --output text >./cf-key.pem

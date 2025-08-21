@@ -1,6 +1,9 @@
 services:
   app:
     image: tmshkr/journaling.place:${DOCKER_TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile
     command: npm run start
     container_name: app
     environment:
@@ -21,16 +24,16 @@ services:
     volumes:
       - /app/node_modules
   nginx:
-    image: nginx:alpine
+    image: jonasal/nginx-certbot:latest
     container_name: nginx
     environment:
-      TARGET_DOMAIN:
+      CERTBOT_EMAIL:
+      SERVER_NAME: "${TARGET_DOMAIN} ${CNAME}"
     restart: unless-stopped
     depends_on:
       - app
     ports:
-      - "443:443"
+      - 80:80
+      - 443:443
     volumes:
-      - ./cf-cert.pem:/etc/nginx/certs/cf-cert.pem
-      - ./cf-key.pem:/etc/nginx/certs/cf-key.pem
-      - ./nginx.conf:/etc/nginx/templates/nginx.conf.template
+      - ./nginx:/etc/nginx/templates
