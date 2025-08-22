@@ -39,17 +39,20 @@ services:
         test $$(mongosh --quiet -u root -p root --eval "try { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'jpdb' }] }).ok } catch (_) { rs.status().ok }") -eq 1
       interval: 10s
       start_period: 30s
-  nginx:
-    image: nginx:alpine
-    container_name: nginx
+  caddy:
+    image: caddy
+    container_name: caddy
+    environment:
+      TLS_AUTO_EMAIL: "${TLS_AUTO_EMAIL:-internal}"
+      SERVER_NAME:
+    restart: unless-stopped
     depends_on:
       - app
     ports:
-      - "443:443"
+      - 80:80
+      - 443:443
     volumes:
-      - ./cf-cert.pem:/etc/nginx/certs/cf-cert.pem
-      - ./cf-key.pem:/etc/nginx/certs/cf-key.pem
-      - ./nginx.conf:/etc/nginx/templates/nginx.conf.template
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
 
 volumes:
   mongodb_data:
