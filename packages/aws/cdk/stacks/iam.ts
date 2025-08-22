@@ -6,6 +6,7 @@ import { aws_iam as iam } from "aws-cdk-lib";
 export interface IamStackProps extends cdk.StackProps {
   readonly repositoryConfig: { owner: string; repo: string; filter?: string }[];
   readonly backupBucket: s3.Bucket;
+  readonly configBucket: s3.Bucket;
 }
 
 export class IamStack extends cdk.Stack {
@@ -141,6 +142,8 @@ export class IamStack extends cdk.Stack {
         }),
       },
     });
+
+    props.configBucket.grantReadWrite(instanceRole);
 
     this.exportValue(instanceRole.roleArn, {
       name: "BeanstalkInstanceRoleARN",

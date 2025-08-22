@@ -11,10 +11,11 @@ const env: cdk.Environment = {
 const vars = getEnvVars();
 
 const app = new cdk.App();
-const { backupBucket } = new StorageStack(app, "StorageStack", { env });
+const { backupBucket, configBucket } = new StorageStack(app, "StorageStack", { env });
 new IamStack(app, "IamStack", {
   env,
   backupBucket,
+  configBucket,
   repositoryConfig: [vars.repositoryConfig],
 });
 new VpcStack(app, "VpcStack", { env });
