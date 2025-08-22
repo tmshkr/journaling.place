@@ -20,11 +20,11 @@ services:
       retries: 5
     volumes:
       - /app/node_modules
-  nginx:
-    image: jonasal/nginx-certbot:latest
-    container_name: nginx
+  caddy:
+    image: caddy
+    container_name: caddy
     environment:
-      CERTBOT_EMAIL:
+      TLS_AUTO_EMAIL: "${TLS_AUTO_EMAIL:-internal}"
       SERVER_NAME: "${TARGET_DOMAIN} ${CNAME}"
     restart: unless-stopped
     depends_on:
@@ -33,4 +33,4 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./nginx:/etc/nginx/templates
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
