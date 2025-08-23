@@ -27,5 +27,5 @@ aws ssm get-parameters-by-path --path "/$repo/$STAGE/" \
     echo "$key=$value" >>.env
 done
 
-sudo docker compose down
-sudo docker compose up --wait
+sudo docker compose stop
+sudo ./scripts/elasticbeanstalk/start.sh

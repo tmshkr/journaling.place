@@ -165,13 +165,11 @@ jobs:
         with:
           app_name: "journaling.place"
           blue_env: ${{ vars.BLUE_ENV }}
-          enable_termination_protection: true
           green_env: ${{ vars.GREEN_ENV }}
           production_cname: ${{ vars.PRODUCTION_CNAME }}
-          send_command: ./scripts/promote.sh
+          send_command: ./scripts/elasticbeanstalk/promote.sh
           staging_cname: ${{ vars.STAGING_CNAME }}
           swap_cnames: true
-          update_listener_rules: true
       - name: Run e2e tests
         run: npm run test --workspace=e2e
         env:
