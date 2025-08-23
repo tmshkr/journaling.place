@@ -104,6 +104,7 @@ jobs:
   test:
     needs: [deploy, build]
     runs-on: ubuntu-latest
+    environment: staging
     container:
       image: mcr.microsoft.com/playwright:v1.46.0-jammy
     steps:
@@ -130,7 +131,7 @@ jobs:
       - name: Run e2e tests
         run: npm run test --workspace=e2e
         env:
-          BASE_URL: ${{ vars.STAGING_URL }}
+          BASE_URL: ${{ vars.NEXTAUTH_URL }}
           CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
           STAGE: "staging"
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
@@ -145,6 +146,7 @@ jobs:
   promote:
     needs: [deploy, test]
     runs-on: ubuntu-latest
+    environment: production
     container:
       image: mcr.microsoft.com/playwright:v1.46.0-jammy
     steps:
