@@ -12,10 +12,13 @@ async function fetchCloudflareIpV4Cidrs() {
 }
 
 export class VpcStack extends cdk.Stack {
+    securityGroup: ec2.SecurityGroup;
+    vpc: ec2.IVpc;
+
     constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
-        const vpc = new ec2.Vpc(this, "Vpc", {
+        this.vpc = new ec2.Vpc(this, "Vpc", {
             ipProtocol: ec2.IpProtocol.DUAL_STACK,
             natGateways: 0,
             availabilityZones: [
@@ -27,36 +30,50 @@ export class VpcStack extends cdk.Stack {
             subnetConfiguration: [
                 {
                     name: "PublicSubnet",
+                    cidrMask: 26,
                     subnetType: ec2.SubnetType.PUBLIC,
+                },
+                {
+                    name: "PrivateSubnet",
+                    cidrMask: 26,
+                    subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
                 },
             ],
         });
 
-        this.exportValue(vpc.vpcId, { name: "JpVpcId" });
+        this.exportValue(this.vpc.vpcId, { name: "JpVpcId" });
         this.exportValue(
-            vpc.publicSubnets.map(({ subnetId }) => subnetId).join(","),
+            this.vpc.publicSubnets.map(({ subnetId }) => subnetId).join(","),
             {
                 name: "JpPublicSubnets",
             }
         );
 
-        const sg = new ec2.SecurityGroup(this, "JpSecurityGroup", {
+        this.securityGroup = new ec2.SecurityGroup(this, "JpSecurityGroup", {
             securityGroupName: "JpSecurityGroup",
             allowAllOutbound: true,
-            vpc,
+            allowAllIpv6Outbound: true,
+            vpc: this.vpc,
         });
 
-        sg.addIngressRule(ec2.PrefixList.fromPrefixListId(this, "Ec2InstanceConnectIngressRule",
-            "pl-047d464325e7bf465"), ec2.Port.tcp(22), "Allow SSH traffic from EC2 Instance Connect");
+        this.securityGroup.addIngressRule(this.securityGroup,
+            ec2.Port.allTraffic(),
+            "Allow all traffic within the security group");
+
+        this.securityGroup.addIngressRule(ec2.PrefixList.fromPrefixListId(this,
+            "Ec2InstanceConnectIngressRule",
+            "pl-047d464325e7bf465"),
+            ec2.Port.tcp(22),
+            "Allow SSH traffic from EC2 Instance Connect");
 
         fetchCloudflareIpV4Cidrs().then((cidrs) => {
             cidrs.forEach((cidr) => {
-                sg.addIngressRule(
+                this.securityGroup.addIngressRule(
                     ec2.Peer.ipv4(cidr),
                     ec2.Port.tcp(443),
                     "Allow traffic from Cloudflare"
                 );
-                sg.addIngressRule(
+                this.securityGroup.addIngressRule(
                     ec2.Peer.ipv4(cidr),
                     ec2.Port.tcp(80),
                     "Allow traffic from Cloudflare"
@@ -66,7 +83,7 @@ export class VpcStack extends cdk.Stack {
 
 
         new cdk.CfnOutput(this, "JpSecurityGroupId", {
-            value: sg.securityGroupId,
+            value: this.securityGroup.securityGroupId,
             exportName: "JpSecurityGroupId",
         });
     }
