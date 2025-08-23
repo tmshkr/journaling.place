@@ -11,6 +11,7 @@ services:
       NEXTAUTH_SECRET:
       NEXTAUTH_URL: https://${TARGET_DOMAIN}
       PRISMA_QUERY_ENGINE_LIBRARY: /app/node_modules/@prisma/engines/libquery_engine-linux-arm64-openssl-3.0.x.so.node
+      TEST_USER_EMAIL:
       VERSION_LABEL:
     restart: always
     healthcheck:
