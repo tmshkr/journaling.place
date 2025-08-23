@@ -37,7 +37,7 @@
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
     "OptionName": "DisableDefaultEC2SecurityGroup",
-    "Value": true
+    "Value": false
   },
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
