@@ -4,6 +4,13 @@ permissions:
   contents: read
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        default: "staging"
+        options:
+          - "staging"
+          - "production"
 
 env:
   GH_ACTIONS_ROLE: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/GitHubActionsRole
@@ -119,21 +126,12 @@ jobs:
           node-version: 22
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
-      - name: Wait for environment
-        uses: tmshkr/blue-green-beanstalk@v5
-        with:
-          app_name: "journaling.place"
-          blue_env: ${{ vars.BLUE_ENV }}
-          green_env: ${{ vars.GREEN_ENV }}
-          production_cname: ${{ vars.PRODUCTION_CNAME }}
-          staging_cname: ${{ vars.STAGING_CNAME }}
-          terminate_unhealthy_environment: false
       - name: Run e2e tests
         run: npm run test --workspace=e2e
         env:
           BASE_URL: ${{ vars.NEXTAUTH_URL }}
           CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
-          STAGE: "staging"
+          MONGO_URI: ${{ secrets.MONGO_URI }}
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
           VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
       - uses: actions/upload-artifact@v4
@@ -144,6 +142,7 @@ jobs:
           retention-days: 30
 
   promote:
+    if: inputs.environment == 'production'
     needs: [deploy, test]
     runs-on: ubuntu-latest
     environment: production
@@ -176,9 +175,9 @@ jobs:
       - name: Run e2e tests
         run: npm run test --workspace=e2e
         env:
-          BASE_URL: ${{ vars.PRODUCTION_URL }}
+          BASE_URL: ${{ vars.NEXTAUTH_URL }}
           CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
-          STAGE: "production"
+          MONGO_URI: ${{ secrets.MONGO_URI }}
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
           VERSION_LABEL: ${{ needs.deploy.outputs.version_label }}
       - uses: actions/upload-artifact@v4
