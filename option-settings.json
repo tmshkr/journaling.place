@@ -71,6 +71,36 @@
   },
   {
     "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "DOCKER_TAG",
+    "Value": "$DOCKER_TAG"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "GITHUB_ACTOR",
+    "Value": "$GITHUB_ACTOR"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "GITHUB_REF",
+    "Value": "$GITHUB_REF"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "GITHUB_REF_NAME",
+    "Value": "$GITHUB_REF_NAME"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "GITHUB_SHA",
+    "Value": "$GITHUB_SHA"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "GITHUB_REPOSITORY",
+    "Value": "$GITHUB_REPOSITORY"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "EnvironmentType",
     "Value": "SingleInstance"
   },
