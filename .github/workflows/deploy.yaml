@@ -75,6 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       skip_build: ${{ steps.prep.outputs.SKIP_BUILD }}
+      target_env_id: ${{ steps.deploy.outputs.target_env_id }}
       turbo_tag: ${{ steps.prep.outputs.TURBO_TAG }}
       version_label: ${{ steps.prep.outputs.VERSION_LABEL }}
     steps:
@@ -160,6 +161,15 @@ jobs:
           node-version: 22
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
+      - id: get-target-env
+        name: Get target env
+        uses: tmshkr/blue-green-beanstalk@v5
+        with:
+          app_name: "journaling.place"
+          blue_env: ${{ vars.BLUE_ENV }}
+          green_env: ${{ vars.GREEN_ENV }}
+          production_cname: ${{ vars.PRODUCTION_CNAME }}
+          staging_cname: ${{ vars.STAGING_CNAME }}
       - name: Promote
         uses: tmshkr/blue-green-beanstalk@v5
         with:
@@ -169,7 +179,7 @@ jobs:
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           send_command: ./scripts/elasticbeanstalk/promote.sh
           staging_cname: ${{ vars.STAGING_CNAME }}
-          swap_cnames: true
+          swap_cnames: ${{ steps.get-target-env.outputs.target_env_id != needs.deploy.outputs.target_env_id }}
       - name: Run e2e tests
         run: npm run test --workspace=e2e
         env:
