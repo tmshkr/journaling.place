@@ -73,7 +73,6 @@ jobs:
         with:
           project_id: ${{ vars.GCP_PROJECT_ID }}
           workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-      - run: terraform -chdir=terraform/compute init -backend-config="bucket=${{ vars.TF_STATE_BUCKET }}"
       - id: deploy
         run: ./scripts/terraform/deploy.sh
         env:

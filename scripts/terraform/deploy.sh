@@ -45,6 +45,7 @@ for env_var in "${required_env_vars[@]}"; do
     fi
 done
 
+terraform -chdir=terraform/compute init -backend-config="bucket=$TF_STATE_BUCKET"
 sh -c "scripts/terraform/select-staging-workspace.sh"
 cd terraform/compute
 staging_workspace=$(terraform workspace show)
