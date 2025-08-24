@@ -101,6 +101,11 @@
   },
   {
     "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "STAGE",
+    "Value": "$STAGE"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
     "OptionName": "VERSION_LABEL",
     "Value": "$VERSION_LABEL"
   },

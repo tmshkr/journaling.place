@@ -25,8 +25,8 @@ services:
     image: caddy
     container_name: caddy
     environment:
-      TLS_AUTO_EMAIL: "${TLS_AUTO_EMAIL:-internal}"
-      SERVER_NAME: "${TARGET_DOMAIN} ${CNAME}"
+      TLS_AUTO_EMAIL: ${TLS_AUTO_EMAIL:-internal}
+      SERVER_NAME: ${TARGET_DOMAIN}
     restart: unless-stopped
     depends_on:
       - app

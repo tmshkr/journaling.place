@@ -13,20 +13,6 @@ get_config environment | jq -r '. | to_entries[] | "\(.key)=\"\(.value)\""' | wh
     echo $line >>.env
 done
 
-eb_env=$(aws elasticbeanstalk describe-environments --environment-names $environment_name --no-include-deleted)
-CNAME=$(echo $eb_env | jq -r '.Environments[0].CNAME')
-
-echo "CNAME=\"$CNAME\"" >>.env
-
-if [[ "$CNAME" == *production* ]]; then
-    echo "STAGE=\"production\"" >>.env
-elif [[ "$CNAME" == *staging* ]]; then
-    echo "STAGE=\"staging\"" >>.env
-else
-    echo "There was an error determining the environment stage"
-    exit 1
-fi
-
 source .env
 # Retrieve parameters from AWS SSM
 repo="${GITHUB_REPOSITORY#*/}"
