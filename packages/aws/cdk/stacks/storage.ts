@@ -25,11 +25,9 @@ export class StorageStack extends cdk.Stack {
       versioned: true,
       lifecycleRules: [
         {
-          id: "Delete after 365 days",
-          expiration: cdk.Duration.days(365),
-          noncurrentVersionExpiration: cdk.Duration.days(3),
-        },
-        { id: "Remove delete markers", expiredObjectDeleteMarker: true },
+          id: "Expire noncurrent versions after 365 days",
+          noncurrentVersionExpiration: cdk.Duration.days(365),
+        }
       ],
     });
 
