@@ -170,6 +170,11 @@ jobs:
           green_env: ${{ vars.GREEN_ENV }}
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           staging_cname: ${{ vars.STAGING_CNAME }}
+      - run: |
+          if [[ ${{ steps.get-target-env.outputs.target_env_id }} != ${{ needs.deploy.outputs.target_env_id }} ]]; then
+            echo "Target environment has changed";
+            exit 1;
+          fi
       - name: Promote
         uses: tmshkr/blue-green-beanstalk@v5
         with:
@@ -179,7 +184,7 @@ jobs:
           production_cname: ${{ vars.PRODUCTION_CNAME }}
           send_command: ./scripts/elasticbeanstalk/promote.sh
           staging_cname: ${{ vars.STAGING_CNAME }}
-          swap_cnames: ${{ steps.get-target-env.outputs.target_env_id != needs.deploy.outputs.target_env_id }}
+          swap_cnames: true
       - name: Run e2e tests
         run: npm run test --workspace=e2e
         env:
