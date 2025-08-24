@@ -74,8 +74,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    container:
-      image: mcr.microsoft.com/playwright:v1.46.0-jammy
     steps:
       - uses: actions/checkout@v4
       - uses: aws-actions/configure-aws-credentials@v4
@@ -112,6 +110,8 @@ jobs:
         with:
           cache: "npm"
           node-version: 22
+      - name: Install Playwright
+        run: npm run install:playwright --workspace=e2e
       - name: Install e2e deps
         run: npm run install:ci --workspace=e2e
       - name: Run e2e tests
