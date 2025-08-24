@@ -6,22 +6,36 @@ if [[ -f .env ]]; then
     source .env
 fi
 
+VERSION_LABEL="${GITHUB_REF_NAME//\//_}.${GITHUB_SHA}"
+echo "VERSION_LABEL=$VERSION_LABEL" >>$GITHUB_OUTPUT
+
+DOCKER_TAG=$VERSION_LABEL
+
 required_env_vars=(
     "BLUE_ENV"
     "CLOUDFLARE_API_TOKEN"
     "CLOUDFLARE_ZONE_ID"
     "DEPLOY_KEY"
+    "DOCKER_TAG"
+    "EMAIL_FROM"
+    "EMAIL_SECRET"
+    "EMAIL_SERVER"
     "GCP_PROJECT_ID"
     "GCP_ZONE"
     "GREEN_ENV"
     "GITHUB_ACTOR"
     "GITHUB_REPOSITORY"
     "GITHUB_SHA"
+    "MONGO_URI"
+    "NEXTAUTH_SECRET"
+    "NEXTAUTH_URL"
     "ORIGIN_CERT"
     "ORIGIN_KEY"
     "PRODUCTION_DOMAIN"
     "STAGING_DOMAIN"
+    "TEST_USER_EMAIL"
     "TF_STATE_BUCKET"
+    "VERSION_LABEL"
 )
 
 for env_var in "${required_env_vars[@]}"; do
@@ -31,19 +45,40 @@ for env_var in "${required_env_vars[@]}"; do
     fi
 done
 
+terraform -chdir=terraform/compute init -backend-config="bucket=$TF_STATE_BUCKET"
 sh -c "scripts/terraform/select-staging-workspace.sh"
 cd terraform/compute
-terraform apply -auto-approve \
+staging_workspace=$(terraform workspace show)
+terraform plan -out=tfplan.binary \
     -var "deploy_key=$DEPLOY_KEY" \
+    -var "docker_tag=$DOCKER_TAG" \
+    -var "email_from=$EMAIL_FROM" \
+    -var "email_secret=$EMAIL_SECRET" \
+    -var "email_server=$EMAIL_SERVER" \
     -var "github_actor=$GITHUB_ACTOR" \
     -var "github_repository=$GITHUB_REPOSITORY" \
     -var "github_sha=$GITHUB_SHA" \
+    -var "mongo_uri=$MONGO_URI" \
+    -var "nextauth_secret=$NEXTAUTH_SECRET" \
+    -var "nextauth_url=$NEXTAUTH_URL" \
     -var "project_id=$GCP_PROJECT_ID" \
     -var "origin_cert=$ORIGIN_CERT" \
     -var "origin_key=$ORIGIN_KEY" \
     -var "state_bucket=$TF_STATE_BUCKET" \
     -var "target_domain=$STAGING_DOMAIN" \
+    -var "test_user_email=$TEST_USER_EMAIL" \
+    -var "version_label=$VERSION_LABEL" \
     -var "zone=$GCP_ZONE"
+
+terraform show -json tfplan.binary >tfplan.json
+IS_UPDATE=$(jq -e '.resource_changes[] | select(.address == "google_compute_instance.vm") | .change.actions[] | select(. == "update")' tfplan.json >/dev/null && echo true || echo false)
+
+terraform apply -auto-approve tfplan.binary
+
+if [[ $IS_UPDATE == true ]]; then
+    echo "Running startup script..."
+    gcloud compute ssh --tunnel-through-iap --zone "$GCP_ZONE" "$staging_workspace" --command "sudo google_metadata_script_runner startup"
+fi
 
 staging_ip=$(terraform state pull | jq -r '.outputs.instance_ip_address.value')
 staging_workspace=$(terraform workspace show)

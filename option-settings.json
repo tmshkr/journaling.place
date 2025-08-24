@@ -36,13 +36,23 @@
   },
   {
     "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "DisableDefaultEC2SecurityGroup",
+    "Value": false
+  },
+  {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "SecurityGroups",
+    "Value": "$SECURITY_GROUP_IDS"
+  },
+  {
+    "Namespace": "aws:autoscaling:launchconfiguration",
     "OptionName": "SSHSourceRestriction",
     "Value": "tcp, 22, 22, 127.0.0.1/32"
   },
   {
     "Namespace": "aws:ec2:instances",
     "OptionName": "InstanceTypes",
-    "Value": "t3.micro,t2.micro"
+    "Value": "t4g.small"
   },
   {
     "Namespace": "aws:ec2:vpc",
@@ -60,19 +70,49 @@
     "Value": true
   },
   {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "DOCKER_TAG",
+    "Value": "$DOCKER_TAG"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "GITHUB_ACTOR",
+    "Value": "$GITHUB_ACTOR"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "GITHUB_REF",
+    "Value": "$GITHUB_REF"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "GITHUB_REF_NAME",
+    "Value": "$GITHUB_REF_NAME"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "GITHUB_SHA",
+    "Value": "$GITHUB_SHA"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "GITHUB_REPOSITORY",
+    "Value": "$GITHUB_REPOSITORY"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "STAGE",
+    "Value": "$STAGE"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "VERSION_LABEL",
+    "Value": "$VERSION_LABEL"
+  },
+  {
     "Namespace": "aws:elasticbeanstalk:environment",
     "OptionName": "EnvironmentType",
-    "Value": "LoadBalanced"
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:environment",
-    "OptionName": "LoadBalancerIsShared",
-    "Value": true
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:environment",
-    "OptionName": "LoadBalancerType",
-    "Value": "application"
+    "Value": "SingleInstance"
   },
   {
     "Namespace": "aws:elasticbeanstalk:environment",
@@ -83,15 +123,5 @@
     "Namespace": "aws:elasticbeanstalk:environment:proxy",
     "OptionName": "ProxyServer",
     "Value": "none"
-  },
-  {
-    "Namespace": "aws:elbv2:listener:443",
-    "OptionName": "Rules",
-    "Value": "default"
-  },
-  {
-    "Namespace": "aws:elbv2:loadbalancer",
-    "OptionName": "SharedLoadBalancer",
-    "Value": "$SHARED_LOAD_BALANCER_ARN"
   }
 ]

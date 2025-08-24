@@ -1,0 +1,9 @@
+{$SERVER_NAME} {
+  tls {$TLS_AUTO_EMAIL}
+  encode zstd gzip
+
+  @trpc path /trpc
+  reverse_proxy @trpc app:3333
+
+  reverse_proxy app:3000
+}

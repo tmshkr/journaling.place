@@ -1,0 +1,7 @@
+services:
+  app:
+    logging:
+      driver: gcplogs
+  nginx:
+    logging:
+      driver: gcplogs

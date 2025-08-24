@@ -1,10 +1,9 @@
 import * as cdk from "aws-cdk-lib";
-import { AlbStack } from "./stacks/alb";
-import { EC2Stack } from "./stacks/ec2";
 import { IamStack } from "./stacks/iam";
 import { StorageStack } from "./stacks/storage";
+import { VpcStack } from "./stacks/vpc";
 
-const env = {
+const env: cdk.Environment = {
   region: process.env.CDK_DEFAULT_REGION,
   account: process.env.CDK_DEFAULT_ACCOUNT,
 };
@@ -12,14 +11,14 @@ const env = {
 const vars = getEnvVars();
 
 const app = new cdk.App();
-const { backupBucket } = new StorageStack(app, "StorageStack", { env });
-new IamStack(app, "IamStack", {
+const { instanceRole } = new IamStack(app, "IamStack", {
   env,
-  backupBucket,
   repositoryConfig: [vars.repositoryConfig],
 });
-new AlbStack(app, "AlbStack", { env });
-new EC2Stack(app, "EC2Stack", { env });
+
+const { securityGroup, vpc } = new VpcStack(app, "VpcStack", { env });
+new StorageStack(app, "StorageStack", { env, securityGroup, vpc, instanceRole });
+
 
 function getEnvVars() {
   const vars = {

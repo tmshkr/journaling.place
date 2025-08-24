@@ -1,14 +1,14 @@
 import * as cdk from "aws-cdk-lib";
-import * as s3 from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
 import { aws_iam as iam } from "aws-cdk-lib";
 
 export interface IamStackProps extends cdk.StackProps {
   readonly repositoryConfig: { owner: string; repo: string; filter?: string }[];
-  readonly backupBucket: s3.Bucket;
 }
 
 export class IamStack extends cdk.Stack {
+  instanceRole: iam.Role;
+
   constructor(scope: Construct, id: string, props: IamStackProps) {
     super(scope, id, props);
 
@@ -86,7 +86,7 @@ export class IamStack extends cdk.Stack {
       description: "ARN of IAM role for use with GitHub Actions",
     });
 
-    const instanceRole = new iam.Role(this, "InstanceRole", {
+    this.instanceRole = new iam.Role(this, "InstanceRole", {
       assumedBy: new iam.ServicePrincipal("ec2.amazonaws.com"),
       roleName: "aws-elasticbeanstalk-ec2-role",
       managedPolicies: [
@@ -127,28 +127,17 @@ export class IamStack extends cdk.Stack {
               ],
             },
           ],
-        }),
-        AllowEC2ToPutObject: iam.PolicyDocument.fromJson({
-          Version: "2012-10-17",
-          Statement: [
-            {
-              Sid: "AllowEC2ToPutObject",
-              Effect: "Allow",
-              Action: ["s3:PutObject"],
-              Resource: [props.backupBucket.bucketArn + "/*"],
-            },
-          ],
-        }),
+        })
       },
     });
 
-    this.exportValue(instanceRole.roleArn, {
+    this.exportValue(this.instanceRole.roleArn, {
       name: "BeanstalkInstanceRoleARN",
     });
 
     const instanceProfile = new iam.InstanceProfile(this, "InstanceProfile", {
       instanceProfileName: "aws-elasticbeanstalk-ec2-role",
-      role: instanceRole,
+      role: this.instanceRole,
     });
 
     const serviceRole = new iam.Role(this, "EbServiceRole", {

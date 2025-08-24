@@ -1,36 +1,39 @@
 #!/usr/bin/env node
 import { execSync } from "child_process";
-import { appendFileSync, readFileSync } from "fs";
+import { appendFileSync, readFileSync, writeFileSync } from "fs";
 import crypto from "crypto";
-import { tagEcrImage } from "./tag-image.mjs";
-const {
-  GITHUB_ENV,
-  GITHUB_OUTPUT,
-  GITHUB_REF_NAME,
-  GITHUB_REPOSITORY,
-  GITHUB_SHA,
-} = process.env;
+
+const { GITHUB_OUTPUT, GITHUB_REF_NAME, GITHUB_REPOSITORY, GITHUB_SHA } =
+  process.env;
 
 main();
-function main() {
-  const repo = GITHUB_REPOSITORY.split("/")[1];
+async function main() {
   const versionLabel = `${GITHUB_REF_NAME.replaceAll("/", "_")}.${GITHUB_SHA}`;
   const turboTag = `turbo.${getTurboHash()}`;
-  appendFileSync(GITHUB_ENV, `TURBO_TAG=${turboTag}\n`);
   appendFileSync(GITHUB_OUTPUT, `TURBO_TAG=${turboTag}\n`);
+  appendFileSync(GITHUB_OUTPUT, `VERSION_LABEL=${versionLabel}\n`);
 
-  const imageDetails = getImageDetails(repo, turboTag);
-  if (!imageDetails) {
+  const imageExists = await fetch(
+    `https://hub.docker.com/v2/repositories/${GITHUB_REPOSITORY}/tags/${turboTag}`
+  ).then((res) => {
+    return res.ok ? true : false;
+  });
+
+  if (imageExists) {
+    console.log(
+      `Adding tag ${versionLabel} to ${GITHUB_REPOSITORY}:${turboTag}`
+    );
+    execSync(
+      `docker buildx imagetools create ${GITHUB_REPOSITORY}:${turboTag} --tag ${GITHUB_REPOSITORY}:${versionLabel}`,
+      { stdio: "inherit" }
+    );
+    console.log(`Skipping build...`);
+    appendFileSync(GITHUB_OUTPUT, "SKIP_BUILD=true\n");
+  } else {
     console.log(`No image with tag [${turboTag}]`);
     console.log(`Proceeding with build...`);
-    return;
+    appendFileSync(GITHUB_OUTPUT, "SKIP_BUILD=false\n");
   }
-
-  console.log(`Image found with tag [${turboTag}]`, imageDetails);
-  console.log(`Adding version label tag [${versionLabel}]`);
-  tagEcrImage(turboTag, versionLabel);
-  console.log(`Skipping build...`);
-  appendFileSync(GITHUB_OUTPUT, "SKIP_BUILD=true\n");
 }
 
 function getTurboHash() {
@@ -45,7 +48,7 @@ function getTurboHash() {
     throw new Error(err.toString());
   }
 
-  console.log(`Turbo build:`, build);
+  // console.log(`Turbo build:`, build);
   const { hashOfExternalDependencies, hashOfInternalDependencies, files } =
     build.globalCacheInputs;
   const data = {
@@ -75,23 +78,6 @@ function getTurboHash() {
     throw new Error("No tasks found");
   }
 
-  console.log(`Turbo hash data:`, data);
+  // console.log(`Turbo hash data:`, data);
   return crypto.createHash("sha256").update(JSON.stringify(data)).digest("hex");
-}
-
-function getImageDetails(repo, tag) {
-  console.log(`Checking ECR for image with tag [${tag}]`);
-  try {
-    return JSON.parse(
-      execSync(
-        `aws ecr describe-images --repository-name ${repo} --image-ids imageTag=${tag}`,
-        { stdio: "pipe" }
-      )
-    ).imageDetails[0];
-  } catch (err) {
-    if (!err.toString().includes("ImageNotFoundException")) {
-      throw err.toString();
-    }
-    return false;
-  }
 }

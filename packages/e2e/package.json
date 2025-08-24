@@ -8,7 +8,7 @@
     "test:dev": "dotenvx run -- playwright test",
     "report": "playwright show-report",
     "install:ci": "npm install",
-    "install:playwright": "playwright install --with-deps chromium"
+    "install:playwright": "npx playwright install --with-deps chromium"
   },
   "keywords": [],
   "author": "",

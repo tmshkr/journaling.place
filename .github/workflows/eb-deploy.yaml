@@ -1,0 +1,128 @@
+name: Elastic Beanstalk Blue/Green Deployment
+permissions:
+  id-token: write
+  contents: read
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        default: "staging"
+        options:
+          - "staging"
+          - "production"
+
+env:
+  GH_ACTIONS_ROLE: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/GitHubActionsRole
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ env.GH_ACTIONS_ROLE }}
+      - name: Setup turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+          platforms: linux/amd64, linux/arm64
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - id: turbo_tag
+        run: ./scripts/turbo-sha.mjs
+      - name: Build
+        if: steps.turbo_tag.outputs.SKIP_BUILD == 'false'
+        uses: docker/build-push-action@v6
+        with:
+          cache-from: type=gha
+          context: .
+          load: true
+          platforms: linux/arm64
+          tags: tmshkr/journaling.place:builder
+          target: builder
+      - name: Export turbo cache and static assets
+        if: steps.turbo_tag.outputs.SKIP_BUILD == 'false'
+        run: ./scripts/docker-export.sh
+        env:
+          CDN_BUCKET: ${{ vars.CDN_BUCKET }}
+          DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
+      - name: Push runner image
+        if: steps.turbo_tag.outputs.SKIP_BUILD == 'false'
+        uses: docker/build-push-action@v6
+        with:
+          cache-to: type=gha,mode=max
+          context: .
+          platforms: linux/arm64
+          push: true
+          tags: |
+            tmshkr/journaling.place:${{ steps.turbo_tag.outputs.TURBO_TAG }}
+            tmshkr/journaling.place:${{ steps.turbo_tag.outputs.VERSION_LABEL }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ env.GH_ACTIONS_ROLE }}
+      - id: prep
+        name: Deployment prep
+        run: ./scripts/deployment-prep.sh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_EVENT: ${{ toJson(github.event) }}
+          PUBLIC_SUBNET_IDS: ${{ vars.PUBLIC_SUBNET_IDS }}
+          SECURITY_GROUP_IDS: ${{ vars.SECURITY_GROUP_IDS }}
+          STAGE: ${{ inputs.environment}}
+          VPC_ID: ${{ vars.VPC_ID }}
+      - id: deploy
+        name: Deploy
+        uses: tmshkr/blue-green-beanstalk@v5
+        with:
+          app_name: "journaling.place"
+          blue_env: ${{ vars.BLUE_ENV }}
+          deploy: true
+          green_env: ${{ vars.GREEN_ENV }}
+          option_settings: option-settings.json
+          platform_branch_name: "Docker running on 64bit Amazon Linux 2023"
+          production_cname: ${{ vars.PRODUCTION_CNAME }}
+          source_bundle: bundle.zip
+          staging_cname: ${{ vars.STAGING_CNAME }}
+          swap_cnames: ${{ inputs.environment == 'production' }}
+          terminate_unhealthy_environment: true
+          version_label: ${{ steps.prep.outputs.VERSION_LABEL }}
+      - uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          node-version: 22
+      - name: Install e2e deps
+        run: npm run install:ci --workspace=e2e && npm run install:playwright --workspace=e2e
+      - name: Run e2e tests
+        run: npm run test --workspace=e2e
+        env:
+          BASE_URL: ${{ vars.NEXTAUTH_URL }}
+          CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
+          VERSION_LABEL: ${{ steps.prep.outputs.version_label }}
+      - uses: actions/upload-artifact@v4
+        if: always() && ${{ steps.deploy.outcome == 'success' }}
+        with:
+          name: playwright-report-test
+          path: packages/e2e/playwright-report/
+          retention-days: 30
