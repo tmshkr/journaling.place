@@ -15,10 +15,8 @@ done
 
 eb_env=$(aws elasticbeanstalk describe-environments --environment-names $environment_name --no-include-deleted)
 CNAME=$(echo $eb_env | jq -r '.Environments[0].CNAME')
-VERSION_LABEL=$(echo $eb_env | jq -r '.Environments[0].VersionLabel')
 
 echo "CNAME=\"$CNAME\"" >>.env
-echo "VERSION_LABEL=\"$VERSION_LABEL\"" >>.env
 
 if [[ "$CNAME" == *production* ]]; then
     echo "STAGE=\"production\"" >>.env
