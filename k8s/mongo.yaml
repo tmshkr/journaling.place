@@ -16,11 +16,28 @@ stringData:
   keyfile: ${MONGO_KEYFILE}
 ---
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-initdb-scripts
+data:
+  create-keyfile.sh: |
+    #!/bin/bash
+
+    echo "Creating MongoDB keyfile..."
+    mkdir -p /tmp
+    echo "${MONGO_KEYFILE}" > /tmp/keyfile
+    chmod 400 /tmp/keyfile
+    chown mongodb:mongodb /tmp/keyfile
+    echo "MongoDB keyfile created."
+
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: mongodb
+  annotations:
+    tailscale.com/expose: "true"
 spec:
-  clusterIP: None # headless service for stable DNS
   selector:
     app: mongodb
   ports:
@@ -45,8 +62,9 @@ spec:
     spec:
       terminationGracePeriodSeconds: 30
       volumes:
-        - name: keyfile-tmp
-          emptyDir: {}
+        - name: mongo-initdb-scripts
+          configMap:
+            name: mongo-initdb-scripts
       containers:
         - name: mongod
           image: mongo:7
@@ -69,24 +87,23 @@ spec:
                 secretKeyRef:
                   name: mongo-keyfile
                   key: keyfile
-          command: ["/bin/bash", "-lc"]
           args:
-            - |
-              set -euo pipefail
-              umask 077
-              printf '%s' "$MONGO_KEYFILE" > /tmp/keyfile
-              chmod 0400 /tmp/keyfile
-              exec mongod --replSet rs0 --bind_ip_all --dbpath /data/db --keyFile /tmp/keyfile
+            - "--dbpath=/data/db"
+            - "--bind_ip_all"
+            - "--replSet=rs0"
+            - "--keyFile=/tmp/keyfile"
           volumeMounts:
             - name: data
               mountPath: /data/db
+            - name: mongo-initdb-scripts
+              mountPath: /docker-entrypoint-initdb.d
           readinessProbe:
             exec:
               command:
                 - /bin/bash
                 - -lc
                 - |
-                  mongosh --quiet --eval "db.adminCommand('ping').ok" >/dev/null
+                  mongosh --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --quiet --eval "db.adminCommand('ping').ok" >/dev/null
             initialDelaySeconds: 10
             periodSeconds: 5
           livenessProbe:
@@ -103,18 +120,18 @@ spec:
                   - |
                     set -euo pipefail
                     echo "postStart: waiting for mongod..."
-                    until mongosh --quiet --eval "db.adminCommand('ping')" >/dev/null 2>&1; do
+                    until mongosh --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --quiet --eval "db.adminCommand('ping')" >/dev/null 2>&1; do
                       sleep 2
                     done
 
                     # If already initialized, do nothing
-                    if mongosh --quiet --eval "rs.status().ok" >/dev/null 2>&1; then
+                    if mongosh --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --quiet --eval "rs.status().ok" >/dev/null 2>&1; then
                       echo "postStart: replica set already initialized."
                       exit 0
                     fi
 
                     echo "postStart: initiating replica set..."
-                    mongosh --quiet --eval '
+                    mongosh --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --quiet --eval '
                       rs.initiate({
                         _id: "rs0",
                         members: [
