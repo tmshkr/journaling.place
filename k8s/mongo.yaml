@@ -47,30 +47,6 @@ spec:
       volumes:
         - name: keyfile-tmp
           emptyDir: {}
-      initContainers:
-        - name: write-keyfile
-          image: busybox:1.36
-          env:
-            - name: MONGO_KEYFILE
-              valueFrom:
-                secretKeyRef:
-                  name: mongo-keyfile
-                  key: keyfile
-          command: ["/bin/sh", "-lc"]
-          args:
-            - |
-              set -eu
-              umask 077
-              mkdir -p /work
-              printf '%s' "$MONGO_KEYFILE" > /work/keyfile
-              chmod 0400 /work/keyfile
-              # sanity checks
-              test -s /work/keyfile
-              echo "keyfile written, perms:"
-              ls -l /work/keyfile
-          volumeMounts:
-            - name: keyfile-tmp
-              mountPath: /work
       containers:
         - name: mongod
           image: mongo:7
@@ -104,9 +80,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data/db
-            - name: keyfile-tmp
-              mountPath: /work
-              readOnly: true
           readinessProbe:
             exec:
               command:
