@@ -1,0 +1,160 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongo-root
+type: Opaque
+stringData:
+  username: ${MONGO_INITDB_ROOT_USERNAME}
+  password: ${MONGO_INITDB_ROOT_PASSWORD}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongo-keyfile
+type: Opaque
+stringData:
+  keyfile: ${MONGO_KEYFILE}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+spec:
+  clusterIP: None # headless service for stable DNS
+  selector:
+    app: mongodb
+  ports:
+    - name: mongo
+      port: 27017
+      targetPort: 27017
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb
+spec:
+  serviceName: mongodb
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: keyfile-tmp
+          emptyDir: {}
+      initContainers:
+        - name: write-keyfile
+          image: busybox:1.36
+          env:
+            - name: MONGO_KEYFILE
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-keyfile
+                  key: keyfile
+          command: ["/bin/sh", "-lc"]
+          args:
+            - |
+              set -eu
+              umask 077
+              mkdir -p /work
+              printf '%s' "$MONGO_KEYFILE" > /work/keyfile
+              chmod 0400 /work/keyfile
+              # sanity checks
+              test -s /work/keyfile
+              echo "keyfile written, perms:"
+              ls -l /work/keyfile
+          volumeMounts:
+            - name: keyfile-tmp
+              mountPath: /work
+      containers:
+        - name: mongod
+          image: mongo:7
+          ports:
+            - name: mongo
+              containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-root
+                  key: username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-root
+                  key: password
+            - name: MONGO_KEYFILE
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-keyfile
+                  key: keyfile
+          command: ["/bin/bash", "-lc"]
+          args:
+            - |
+              set -euo pipefail
+              umask 077
+              printf '%s' "$MONGO_KEYFILE" > /tmp/keyfile
+              chmod 0400 /tmp/keyfile
+              exec mongod --replSet rs0 --bind_ip_all --dbpath /data/db --keyFile /tmp/keyfile
+          volumeMounts:
+            - name: data
+              mountPath: /data/db
+            - name: keyfile-tmp
+              mountPath: /work
+              readOnly: true
+          readinessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -lc
+                - |
+                  mongosh --quiet --eval "db.adminCommand('ping').ok" >/dev/null
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/bash
+                  - -lc
+                  - |
+                    set -euo pipefail
+                    echo "postStart: waiting for mongod..."
+                    until mongosh --quiet --eval "db.adminCommand('ping')" >/dev/null 2>&1; do
+                      sleep 2
+                    done
+
+                    # If already initialized, do nothing
+                    if mongosh --quiet --eval "rs.status().ok" >/dev/null 2>&1; then
+                      echo "postStart: replica set already initialized."
+                      exit 0
+                    fi
+
+                    echo "postStart: initiating replica set..."
+                    mongosh --quiet --eval '
+                      rs.initiate({
+                        _id: "rs0",
+                        members: [
+                          { _id: 0, host: "mongodb-0.mongodb.default.svc.cluster.local:27017" }
+                        ]
+                      })
+                    '
+                    echo "postStart: done."
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi
