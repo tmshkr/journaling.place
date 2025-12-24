@@ -1,0 +1,14 @@
+apiVersion: skaffold/v4beta13
+kind: Config
+metadata:
+  name: journaling.place
+build:
+  artifacts:
+    - image: localhost:5000/mongo
+      context: dockerfiles/mongo
+      docker:
+        dockerfile: Dockerfile
+        
+manifests:
+  rawYaml:
+    - k8s/mongo.yaml

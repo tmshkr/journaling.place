@@ -1,21 +1,4 @@
 apiVersion: v1
-kind: Secret
-metadata:
-  name: mongo-root
-type: Opaque
-stringData:
-  username: ${MONGO_INITDB_ROOT_USERNAME}
-  password: ${MONGO_INITDB_ROOT_PASSWORD}
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: mongo-keyfile
-type: Opaque
-stringData:
-  keyfile: ${MONGO_KEYFILE}
----
-apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mongo-initdb-scripts
@@ -30,20 +13,6 @@ data:
     chown mongodb:mongodb /tmp/keyfile
     echo "MongoDB keyfile created."
 
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongodb
-  annotations:
-    tailscale.com/expose: "true"
-spec:
-  selector:
-    app: mongodb
-  ports:
-    - name: mongo
-      port: 27017
-      targetPort: 27017
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -67,7 +36,7 @@ spec:
             name: mongo-initdb-scripts
       containers:
         - name: mongod
-          image: mongo:7
+          image: localhost:5000/mongo
           ports:
             - name: mongo
               containerPort: 27017
