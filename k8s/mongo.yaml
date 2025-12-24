@@ -1,19 +1,3 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mongo-initdb-scripts
-data:
-  create-keyfile.sh: |
-    #!/bin/bash
-
-    echo "Creating MongoDB keyfile..."
-    mkdir -p /tmp
-    echo "${MONGO_KEYFILE}" > /tmp/keyfile
-    chmod 400 /tmp/keyfile
-    chown mongodb:mongodb /tmp/keyfile
-    echo "MongoDB keyfile created."
-
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -30,10 +14,6 @@ spec:
         app: mongodb
     spec:
       terminationGracePeriodSeconds: 30
-      volumes:
-        - name: mongo-initdb-scripts
-          configMap:
-            name: mongo-initdb-scripts
       containers:
         - name: mongod
           image: localhost:5000/mongo
@@ -64,8 +44,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data/db
-            - name: mongo-initdb-scripts
-              mountPath: /docker-entrypoint-initdb.d
           readinessProbe:
             exec:
               command:
