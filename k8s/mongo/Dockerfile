@@ -6,5 +6,6 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv
 RUN unzip awscliv2.zip
 RUN sudo ./aws/install
 
+COPY backup.sh /usr/local/bin/
 COPY wrapper.sh /usr/local/bin/
 ENTRYPOINT ["wrapper.sh"]

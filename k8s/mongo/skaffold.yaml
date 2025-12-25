@@ -10,5 +10,6 @@ build:
         dockerfile: Dockerfile
         
 manifests:
-  rawYaml:
-    - db.yaml
+   kustomize:
+      paths:
+        - .

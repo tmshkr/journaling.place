@@ -20,22 +20,11 @@ spec:
           ports:
             - name: mongo
               containerPort: 27017
-          env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: mongo-root
-                  key: username
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mongo-root
-                  key: password
-            - name: MONGO_KEYFILE
-              valueFrom:
-                secretKeyRef:
-                  name: mongo-keyfile
-                  key: keyfile
+          envFrom:
+                - configMapRef:
+                    name: mongo-config
+                - secretRef:
+                    name: mongo-secrets
           args:
             - "--dbpath=/data/db"
             - "--bind_ip_all"
