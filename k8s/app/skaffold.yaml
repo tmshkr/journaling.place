@@ -15,4 +15,4 @@ build:
 manifests:
   kustomize:
     paths:
-      - .
+      - "{{.ENVIRONMENT}}"
