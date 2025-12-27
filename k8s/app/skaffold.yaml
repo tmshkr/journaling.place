@@ -4,15 +4,15 @@ metadata:
   name: jp-app
 build:
   tagPolicy:
-      envTemplate:
-        template: "{{.IMAGE_TAG}}"
+    envTemplate:
+      template: "{{.IMAGE_TAG}}"
   artifacts:
-    - image: localhost:5000/journaling.place
+    - image: tmshkr/journaling.place
       context: ../../
       docker:
         dockerfile: ./Dockerfile
-        
+
 manifests:
-   kustomize:
-      paths:
-        - .
+  kustomize:
+    paths:
+      - .
