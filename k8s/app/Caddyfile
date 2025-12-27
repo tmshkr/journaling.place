@@ -1,0 +1,8 @@
+:8080 {
+	encode zstd gzip
+
+	@trpc path /trpc
+	reverse_proxy @trpc localhost:3333
+
+	reverse_proxy localhost:3000
+}

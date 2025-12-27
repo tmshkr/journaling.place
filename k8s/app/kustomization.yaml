@@ -1,0 +1,14 @@
+configMapGenerator:
+  - name: jp-app-config
+    envs:
+      - config.env
+  - name: jp-caddy-config
+    files:
+      - ./Caddyfile
+  
+secretGenerator:
+  - name: jp-app-secrets
+    envs:
+      - secrets.env
+resources:
+  - app.yaml
