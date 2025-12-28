@@ -1,6 +1,0 @@
-configMapGenerator:
-  - name: jp-caddy-config
-    files:
-      - ./Caddyfile
-resources:
-  - app.yaml
