@@ -13,6 +13,19 @@ build:
         dockerfile: ./Dockerfile
 
 manifests:
-  kustomize:
-    paths:
-      - "{{.ENVIRONMENT}}"
+  helm:
+    releases:
+      - name: "jp-{{.ENVIRONMENT}}" # name of the Helm release. It accepts environment variables via the go template syntax.
+        chartPath: "helm" # local path to a packaged Helm chart or an unpacked Helm chart directory.
+        setValueTemplates:
+          image.tag: "{{.IMAGE_TAG}}"
+          image.repository: "{{.IMAGE_REPO_tmshkr_journaling_place}}"
+          command: ["npm", "run", "start"]
+          config.EMAIL_FROM: "{{.EMAIL_FROM}}"
+          config.TEST_USER_EMAIL: "{{.TEST_USER_EMAIL}}"
+          config.NEXTAUTH_URL: "{{.NEXTAUTH_URL}}"
+          config.PRISMA_QUERY_ENGINE_LIBRARY: "{{.PRISMA_QUERY_ENGINE_LIBRARY}}"
+          secrets.EMAIL_SECRET: "{{.EMAIL_SECRET}}"
+          secrets.EMAIL_SERVER: "{{.EMAIL_SERVER}}"
+          secrets.MONGO_URI: "{{.MONGO_URI}}"
+          secrets.NEXTAUTH_SECRET: "{{.NEXTAUTH_SECRET}}"

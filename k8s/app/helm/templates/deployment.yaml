@@ -32,18 +32,61 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: {{ include "helm.fullname" . }}-config
+          configMap:
+            name: {{ include "helm.fullname" . }}-config
       containers:
-        - name: {{ .Chart.Name }}
+        - name: caddy
+          image: caddy:2
+          ports:
+            - name: caddy-http
+              containerPort: 8080
+              protocol: TCP
+          args:
+            [
+              "caddy",
+              "run",
+              "--config",
+              "/etc/caddy/Caddyfile",
+              "--adapter",
+              "caddyfile",
+            ]
+          volumeMounts:
+            - name: {{ include "helm.fullname" . }}-config
+              mountPath: /etc/caddy/Caddyfile
+              subPath: Caddyfile
+              readOnly: true
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+        - name: nextjs
           {{- with .Values.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: {{ toJson .Values.command }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
+            - name: nextjs
+              containerPort: 3000
               protocol: TCP
+            - name: trpc
+              containerPort: 3333
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "helm.fullname" . }}-config
+            - secretRef:
+                name: {{ include "helm.fullname" . }}-secrets
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
