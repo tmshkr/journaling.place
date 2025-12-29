@@ -15,9 +15,10 @@ build:
 manifests:
   helm:
     releases:
-      - name: "jp-{{.ENVIRONMENT}}" # name of the Helm release. It accepts environment variables via the go template syntax.
+      - name: "jp-{{.IMAGE_TAG}}" # name of the Helm release. It accepts environment variables via the go template syntax.
         chartPath: "helm" # local path to a packaged Helm chart or an unpacked Helm chart directory.
         setValueTemplates:
+          fullnameOverride: "jp-{{.IMAGE_TAG}}"
           image.tag: "{{.IMAGE_TAG}}"
           image.repository: "{{.IMAGE_REPO_tmshkr_journaling_place}}"
           command: ["npm", "run", "start"]
