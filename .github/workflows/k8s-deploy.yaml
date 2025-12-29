@@ -1,0 +1,119 @@
+name: Kubernetes Deployment
+permissions:
+  id-token: write
+  contents: read
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: The environment to deploy to
+        default: "staging"
+        options:
+          - "staging"
+          - "production"
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm
+    outputs:
+      turbo_tag: ${{ steps.turbo_tag.outputs.TURBO_TAG }}
+      version_label: ${{ steps.turbo_tag.outputs.VERSION_LABEL }}
+      skip_build: ${{ steps.turbo_tag.outputs.SKIP_BUILD }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: linux/amd64, linux/arm64
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - id: turbo_tag
+        run: ./scripts/turbo-sha.mjs
+      - name: Build
+        if: steps.turbo_tag.outputs.SKIP_BUILD == 'false'
+        uses: docker/build-push-action@v6
+        with:
+          cache-from: type=gha
+          context: .
+          load: true
+          platforms: linux/arm64
+          tags: tmshkr/journaling.place:builder
+          target: builder
+      - name: Export turbo cache and static assets
+        if: steps.turbo_tag.outputs.SKIP_BUILD == 'false'
+        run: ./scripts/docker-export.sh
+        env:
+          DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
+      - name: Push runner image
+        if: steps.turbo_tag.outputs.SKIP_BUILD == 'false'
+        uses: docker/build-push-action@v6
+        with:
+          cache-to: type=gha,mode=max
+          context: .
+          platforms: linux/arm64
+          push: true
+          tags: |
+            tmshkr/journaling.place:${{ steps.turbo_tag.outputs.TURBO_TAG }}
+            tmshkr/journaling.place:${{ steps.turbo_tag.outputs.VERSION_LABEL }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+      - name: Set up kubectl
+        run: |
+          mkdir -p $HOME/.kube  
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+      - id: deploy
+        name: Deploy to Kubernetes
+        run: cd ./k8s/app && ./deploy.sh
+        env:
+          EMAIL_FROM: ${{ vars.EMAIL_FROM }}
+          EMAIL_SECRET: ${{ secrets.EMAIL_SECRET }}
+          EMAIL_SERVER: ${{ secrets.EMAIL_SERVER }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ vars.NEXTAUTH_URL }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          PRISMA_QUERY_ENGINE_LIBRARY: "/app/node_modules/@prisma/engines/libquery_engine-linux-arm64-openssl-3.0.x.so.node"
+          TARGET_DOMAIN: ${{ vars.TARGET_DOMAIN }}
+          TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
+          VERSION_LABEL: ${{ needs.build.outputs.version_label }}
+      - uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          node-version: 22
+      - name: Install e2e deps
+        run: npm run install:ci --workspace=e2e && npm run install:playwright --workspace=e2e
+      - name: Run e2e tests
+        run: npm run test --workspace=e2e
+        env:
+          BASE_URL: ${{ vars.NEXTAUTH_URL }}
+          CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
+          VERSION_LABEL: ${{ needs.build.outputs.version_label }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-test
+          path: packages/e2e/playwright-report/
+          retention-days: 30
