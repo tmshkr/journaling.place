@@ -1,0 +1,11 @@
+configMapGenerator:
+  - name: mongo-config
+    envs:
+      - config.env
+secretGenerator:
+  - name: mongo-secrets
+    envs:
+      - secrets.env
+resources:
+  - db.yaml
+  - cronjob.yaml

@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb
+spec:
+  serviceName: mongodb
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: mongod
+          image: localhost:5000/mongo
+          ports:
+            - name: mongo
+              containerPort: 27017
+          envFrom:
+            - configMapRef:
+                name: mongo-config
+            - secretRef:
+                name: mongo-secrets
+          args:
+            - "--dbpath=/data/db"
+            - "--bind_ip_all"
+            - "--replSet=rs0"
+            - "--keyFile=/tmp/keyfile"
+          volumeMounts:
+            - name: data
+              mountPath: /data/db
+          readinessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -lc
+                - |
+                  mongosh --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --quiet --eval "db.adminCommand('ping').ok" >/dev/null
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/bash
+                  - -lc
+                  - |
+                    set -euo pipefail
+                    echo "postStart: waiting for mongod..."
+                    until mongosh --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --quiet --eval "db.adminCommand('ping')" >/dev/null 2>&1; do
+                      sleep 2
+                    done
+
+                    # If already initialized, do nothing
+                    if mongosh --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --quiet --eval "rs.status().ok" >/dev/null 2>&1; then
+                      echo "postStart: replica set already initialized."
+                      exit 0
+                    fi
+
+                    echo "postStart: initiating replica set..."
+                    mongosh --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --quiet --eval '
+                      rs.initiate({
+                        _id: "rs0",
+                        members: [
+                          { _id: 0, host: "mongodb-0.mongodb.default.svc.cluster.local:27017" }
+                        ]
+                      })
+                    '
+                    echo "postStart: done."
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi

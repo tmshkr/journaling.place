@@ -1,0 +1,15 @@
+apiVersion: skaffold/v4beta13
+kind: Config
+metadata:
+  name: jp-mongo
+build:
+  artifacts:
+    - image: localhost:5000/mongo
+      context: .
+      docker:
+        dockerfile: Dockerfile
+        
+manifests:
+   kustomize:
+      paths:
+        - .

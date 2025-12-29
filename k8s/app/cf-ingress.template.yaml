@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ${TARGET_DOMAIN}
+  namespace: default
+spec:
+  ingressClassName: cloudflare-tunnel
+  rules:
+    - host: ${TARGET_DOMAIN}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ${TARGET_SERVICE}
+                port:
+                  number: 8080

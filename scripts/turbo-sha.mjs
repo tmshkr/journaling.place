@@ -8,7 +8,7 @@ const { GITHUB_OUTPUT, GITHUB_REF_NAME, GITHUB_REPOSITORY, GITHUB_SHA } =
 
 main();
 async function main() {
-  const versionLabel = `${GITHUB_REF_NAME.replaceAll("/", "_")}.${GITHUB_SHA}`;
+  const versionLabel = `${GITHUB_REF_NAME.replaceAll("/", "-")}-${GITHUB_SHA}`;
   const turboTag = `turbo.${getTurboHash()}`;
   appendFileSync(GITHUB_OUTPUT, `TURBO_TAG=${turboTag}\n`);
   appendFileSync(GITHUB_OUTPUT, `VERSION_LABEL=${versionLabel}\n`);

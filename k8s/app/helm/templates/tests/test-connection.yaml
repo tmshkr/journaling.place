@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "helm.fullname" . }}-test-connection"
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: curl
+      image: alpine/curl:8.17.0
+      command: ['curl']
+      args: ['-v','--retry', '10', '--retry-connrefused', '{{ include "helm.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
