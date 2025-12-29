@@ -97,10 +97,10 @@ jobs:
           EMAIL_SECRET: ${{ secrets.EMAIL_SECRET }}
           EMAIL_SERVER: ${{ secrets.EMAIL_SERVER }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          NEXTAUTH_URL: ${{ vars.NEXTAUTH_URL }}
+          NEXTAUTH_URL: https://${{ vars.TARGET_DOMAIN }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
           PRISMA_QUERY_ENGINE_LIBRARY: "/app/node_modules/@prisma/engines/libquery_engine-linux-arm64-openssl-3.0.x.so.node"
-          TARGET_DOMAIN: staging.journaling.place
+          TARGET_DOMAIN: ${{ vars.TARGET_DOMAIN }}
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
           VERSION_LABEL: ${{ needs.build.outputs.version_label }}
       - uses: actions/setup-node@v4
@@ -112,7 +112,7 @@ jobs:
       - name: Run e2e tests
         run: npm run test --workspace=e2e
         env:
-          BASE_URL: ${{ vars.NEXTAUTH_URL }}
+          BASE_URL: https://${{ vars.TARGET_DOMAIN }}
           CF_SKIP_TOKEN: ${{ secrets.CF_SKIP_TOKEN }}
           MONGO_URI: ${{ secrets.TEST_MONGO_URI }}
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
