@@ -83,6 +83,7 @@ jobs:
         run: |
           mkdir -p $HOME/.kube  
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+          kubectl version
       - id: deploy
         name: Deploy to Kubernetes
         run: cd ./k8s/app && ./deploy.sh
@@ -94,7 +95,7 @@ jobs:
           NEXTAUTH_URL: ${{ vars.NEXTAUTH_URL }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
           PRISMA_QUERY_ENGINE_LIBRARY: "/app/node_modules/@prisma/engines/libquery_engine-linux-arm64-openssl-3.0.x.so.node"
-          TARGET_DOMAIN: ${{ vars.TARGET_DOMAIN }}
+          TARGET_DOMAIN: staging.journaling.place
           TEST_USER_EMAIL: ${{ vars.TEST_USER_EMAIL }}
           VERSION_LABEL: ${{ needs.build.outputs.version_label }}
       - uses: actions/setup-node@v4
