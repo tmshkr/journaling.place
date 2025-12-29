@@ -5,7 +5,7 @@ metadata:
 build:
   tagPolicy:
     envTemplate:
-      template: "{{.IMAGE_TAG}}"
+      template: "{{.VERSION_LABEL}}"
   artifacts:
     - image: tmshkr/journaling.place
       context: ../../
@@ -15,17 +15,18 @@ build:
 manifests:
   helm:
     releases:
-      - name: "jp-{{.IMAGE_TAG}}" # name of the Helm release. It accepts environment variables via the go template syntax.
+      - name: "jp-{{.VERSION_LABEL}}" # name of the Helm release. It accepts environment variables via the go template syntax.
         chartPath: "helm" # local path to a packaged Helm chart or an unpacked Helm chart directory.
         setValueTemplates:
-          fullnameOverride: "jp-{{.IMAGE_TAG}}"
-          image.tag: "{{.IMAGE_TAG}}"
+          fullnameOverride: "jp-{{.VERSION_LABEL}}"
+          image.tag: "{{.VERSION_LABEL}}"
           image.repository: "{{.IMAGE_REPO_tmshkr_journaling_place}}"
           command: ["npm", "run", "start"]
           config.EMAIL_FROM: "{{.EMAIL_FROM}}"
           config.TEST_USER_EMAIL: "{{.TEST_USER_EMAIL}}"
           config.NEXTAUTH_URL: "{{.NEXTAUTH_URL}}"
           config.PRISMA_QUERY_ENGINE_LIBRARY: "{{.PRISMA_QUERY_ENGINE_LIBRARY}}"
+          config.VERSION_LABEL: "{{.VERSION_LABEL}}"
           secrets.EMAIL_SECRET: "{{.EMAIL_SECRET}}"
           secrets.EMAIL_SERVER: "{{.EMAIL_SERVER}}"
           secrets.MONGO_URI: "{{.MONGO_URI}}"

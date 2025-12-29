@@ -8,13 +8,13 @@ required_vars=(
 	EMAIL_FROM
 	EMAIL_SECRET
 	EMAIL_SERVER
-	IMAGE_TAG
 	NEXTAUTH_SECRET
 	NEXTAUTH_URL
 	MONGO_URI
 	PRISMA_QUERY_ENGINE_LIBRARY
 	TARGET_DOMAIN
 	TEST_USER_EMAIL
+	VERSION_LABEL
 )
 
 for var in "${required_vars[@]}"; do
@@ -28,9 +28,9 @@ if [ "$has_missing_var" = true ]; then
 	exit 1
 fi
 
-skaffold deploy --images tmshkr/journaling.place:${IMAGE_TAG}
+skaffold deploy --images tmshkr/journaling.place:${VERSION_LABEL}
 export TARGET_DOMAIN
-export TARGET_SERVICE="jp-${IMAGE_TAG}"
+export TARGET_SERVICE="jp-${VERSION_LABEL}"
 envsubst <cf-ingress.template.yaml | kubectl apply -n default -f -
 
 echo "${TARGET_DOMAIN} --> ${TARGET_SERVICE}"
