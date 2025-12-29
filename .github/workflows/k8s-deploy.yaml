@@ -84,6 +84,11 @@ jobs:
           mkdir -p $HOME/.kube  
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
           kubectl version
+      - name: Set up Skaffold
+        run: |
+          curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v2.17.0/skaffold-linux-amd64 && \
+          sudo install skaffold /usr/local/bin/
+          skaffold version
       - id: deploy
         name: Deploy to Kubernetes
         run: cd ./k8s/app && ./deploy.sh
