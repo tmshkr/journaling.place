@@ -1,8 +1,7 @@
 #!/bin/bash -e
 
-if [ "$1" != "--dry-run=false" ]; then
-	dry_run=true
-else
+dry_run=true
+if [ "$1" == "--dry-run=false" ]; then
 	dry_run=false
 fi
 
@@ -30,10 +29,10 @@ done
 
 for deployment in ${deployments_to_delete[@]}; do
 	export RELEASE_NAME=$deployment
-	if [ "$dry_run" = false ]; then
+	if [ "$dry_run" == true ]; then
+		skaffold delete --dry-run
+	else
 		echo "Deleting ${RELEASE_NAME} ..."
 		skaffold delete
-	else
-		skaffold delete --dry-run
 	fi
 done
