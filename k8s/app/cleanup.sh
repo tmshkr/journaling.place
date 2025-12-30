@@ -18,9 +18,14 @@ deployments_to_delete=$(
 		--field-selector metadata.name!=${prod_deployment} -o jsonpath="{.items[*].metadata.name}"
 )
 
+if [ -z "$deployments_to_delete" ]; then
+	echo "No deployments to delete."
+	exit 0
+fi
+
 echo deployments_to_delete:
-for deployment in "${deployments_to_delete[@]}"; do
-	echo -e "$deployment\n"
+for deployment in ${deployments_to_delete[@]}; do
+	echo "$deployment"
 done
 
 for deployment in ${deployments_to_delete[@]}; do
