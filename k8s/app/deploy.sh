@@ -28,6 +28,7 @@ if [ "$has_missing_var" = true ]; then
 	exit 1
 fi
 
+export RELEASE_NAME="jp-${VERSION_LABEL}"
 skaffold deploy --images tmshkr/journaling.place:${VERSION_LABEL}
 export TARGET_DOMAIN
 export TARGET_SERVICE="jp-${VERSION_LABEL}"
