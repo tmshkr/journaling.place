@@ -23,10 +23,17 @@ import { setKey } from "src/services/crypto";
 
 import { Modal } from "src/components/modals/ModalWrapper";
 
+function syncWithSSRGuard() {
+  if (typeof window === "undefined") {
+    return Promise.resolve({ journalsById: {}, journalsByPromptId: {}, ts: 0 });
+  }
+  return sync();
+}
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      queryFn: (args) => (typeof window !== "undefined" ? sync() : Promise.resolve({ journalsById: {}, journalsByPromptId: {}, ts: 0 })),
+      queryFn: syncWithSSRGuard,
     },
   },
 });
