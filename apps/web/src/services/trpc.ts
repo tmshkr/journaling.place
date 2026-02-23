@@ -1,5 +1,5 @@
 import {
-  createTRPCProxyClient,
+  createTRPCClient,
   httpBatchLink,
   createWSClient,
   wsLink,
@@ -8,7 +8,7 @@ import {
 import type { AppRouter } from "trpc-server/src/router";
 
 let wsClient: ReturnType<typeof createWSClient>;
-export let trpc = createTRPCProxyClient<AppRouter>({
+export let trpc = createTRPCClient<AppRouter>({
   links: [getLink()],
 });
 
@@ -38,7 +38,7 @@ function getLink(resolve?: (value?: any) => void) {
 export async function resetTRPC() {
   wsClient.close();
   await new Promise((resolve) => {
-    trpc = createTRPCProxyClient<AppRouter>({
+    trpc = createTRPCClient<AppRouter>({
       links: [getLink(resolve)],
     });
   });

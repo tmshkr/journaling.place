@@ -1,4 +1,4 @@
-import { Dialog } from "@headlessui/react";
+import { DialogTitle } from "@headlessui/react";
 import { cryptoStore, journalStore } from "src/services/localForage";
 
 const buttonClasses =
@@ -15,12 +15,11 @@ export function DecryptionError() {
     <>
       <div>
         <div className="text-center">
-          <Dialog.Title
-            as="h3"
+          <DialogTitle
             className="text-base font-semibold text-gray-900"
           >
             Decryption Error
-          </Dialog.Title>
+          </DialogTitle>
         </div>
       </div>
       <div className="my-5 text-center text-sm text-gray-500">

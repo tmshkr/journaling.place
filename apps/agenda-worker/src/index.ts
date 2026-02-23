@@ -1,9 +1,10 @@
 import { Agenda } from "agenda";
+import { MongoBackend } from "@agendajs/mongo-backend";
 import { registerJobs, scheduleJobs } from "./jobs";
 
 async function run() {
   const agenda = new Agenda({
-    db: { address: process.env.MONGO_URI as string },
+    backend: new MongoBackend({ address: process.env.MONGO_URI as string }),
   });
   registerJobs(agenda);
   await agenda.start();

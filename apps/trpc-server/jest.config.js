@@ -1,9 +1,8 @@
-import type { Config } from "jest";
-
-const config: Config = {
+/** @type {import('jest').Config} */
+const config = {
   preset: "ts-jest",
   testPathIgnorePatterns: ["/node_modules/", "/dist/"],
   setupFilesAfterEnv: ["common/prisma/mock.ts"],
 };
 
-export default config;
+module.exports = config;

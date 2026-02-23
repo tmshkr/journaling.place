@@ -1,3 +1,4 @@
+// @ts-nocheck - Next.js 16 + React 19 type compatibility issue with Head/NextScript
 import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {

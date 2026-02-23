@@ -24,33 +24,33 @@
     "update-dockerfiles": "./scripts/update-dockerfiles.mjs Dockerfile Dockerfile.dev",
     "tf:compute:destroy": "./scripts/terraform/select-staging-workspace.sh && cd terraform/compute && terraform destroy"
   },
-  "packageManager": "npm@10.8.2",
+  "packageManager": "npm@11.10.1",
   "dependencies": {
-    "@prisma/client": "^5.5.2",
-    "@types/jest": "^29.5.7",
-    "@types/node": "20.8.10",
-    "@vercel/ncc": "^0.38.1",
-    "axios": "^1.6.0",
-    "cookie": "^0.5.0",
-    "dayjs": "^1.11.10",
-    "email-templates": "^11.1.1",
-    "eslint": "8.52.0",
+    "@prisma/client": "^6.19.2",
+    "@types/jest": "^30.0.0",
+    "@types/node": "25.3.0",
+    "@vercel/ncc": "^0.38.4",
+    "axios": "^1.13.5",
+    "cookie": "^1.1.1",
+    "dayjs": "^1.11.19",
+    "email-templates": "^13.0.1",
+    "eslint": "^9.7.0",
     "eslint-config-custom": "*",
-    "eslint-config-next": "14.0.1",
-    "express": "^4.18.2",
-    "http-errors": "^2.0.0",
-    "jest-mock-extended": "^3.0.5",
-    "mongodb": "^6.2.0",
-    "next-auth": "^4.24.7",
-    "nodemailer": "^6.9.7",
-    "nodemon": "^3.0.1",
+    "eslint-config-next": "16.1.6",
+    "express": "^5.2.1",
+    "http-errors": "^2.0.1",
+    "jest-mock-extended": "^4.0.0",
+    "mongodb": "^7.1.0",
+    "next-auth": "^4.24.13",
+    "nodemailer": "^7.0.7",
+    "nodemon": "^3.1.14",
     "prettier": "latest",
-    "prisma": "^5.5.2",
-    "pug": "^3.0.2",
-    "ts-jest": "^29.1.1",
-    "turbo": "^2.0.12",
-    "typescript": "5.2.2",
-    "zod": "^3.22.4"
+    "prisma": "^6.19.2",
+    "pug": "^3.0.3",
+    "ts-jest": "^29.4.6",
+    "turbo": "^2.8.10",
+    "typescript": "5.9.3",
+    "zod": "^4.3.6"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -59,6 +59,12 @@
     "seed": "node scripts/seed.mjs"
   },
   "devDependencies": {
-    "dotenv": "^16.4.7"
+    "dotenv": "^17.3.1"
+  },
+  "overrides": {
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3"
   }
 }

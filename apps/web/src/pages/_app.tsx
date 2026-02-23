@@ -11,7 +11,7 @@ import { DefaultSeo } from "next-seo";
 
 import SEO from "../../next-seo.config";
 
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import store from "src/store";
 import { useAppDispatch } from "src/store";
@@ -23,10 +23,17 @@ import { setKey } from "src/services/crypto";
 
 import { Modal } from "src/components/modals/ModalWrapper";
 
+function syncWithSSRGuard() {
+  if (typeof window === "undefined") {
+    return Promise.resolve({ journalsById: {}, journalsByPromptId: {}, ts: 0 });
+  }
+  return sync();
+}
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      queryFn: (args) => sync(),
+      queryFn: syncWithSSRGuard,
     },
   },
 });

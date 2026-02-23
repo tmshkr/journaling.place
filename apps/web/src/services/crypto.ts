@@ -7,7 +7,7 @@ import { toArrayBuffer } from "src/utils/buffer";
 import { authSession, queryClient } from "src/pages/_app";
 
 let key: CryptoKey | null;
-let salt: Uint8Array | null;
+let salt: Uint8Array<ArrayBuffer> | null;
 
 function getKey() {
   return key;
@@ -50,7 +50,7 @@ export async function setKey() {
   }
 
   if (key) {
-    queryClient.fetchQuery({ queryKey: "journal" });
+    queryClient.fetchQuery({ queryKey: ["journal"] });
   } else {
     store.dispatch(
       setModal({ name: "PasswordInput", isVisible: true, keepOpen: true })
@@ -81,8 +81,8 @@ export async function createKey(password: string) {
       }
       try {
         await decrypt(
-          toArrayBuffer(testJournal.ciphertext.data),
-          new Uint8Array(testJournal.iv.data),
+          toArrayBuffer(testJournal.ciphertext as unknown as Buffer),
+          new Uint8Array(testJournal.iv as unknown as Buffer) as Uint8Array<ArrayBuffer>,
           key
         );
       } catch (err) {
@@ -136,7 +136,7 @@ async function getKeyMaterial(password: string) {
   Given some key material and some random salt
   derive an AES-GCM key using PBKDF2.
 */
-function deriveKey(keyMaterial: CryptoKey, salt: Uint8Array) {
+function deriveKey(keyMaterial: CryptoKey, salt: Uint8Array<ArrayBuffer>) {
   if (!keyMaterial) throw new Error("No key material provided");
   if (!salt) throw new Error("No salt provided");
   return window.crypto.subtle.deriveKey(
@@ -171,7 +171,7 @@ export async function encrypt(plaintext: string, key = getKey()) {
 
 export async function decrypt(
   ciphertext: ArrayBuffer,
-  iv: Uint8Array,
+  iv: Uint8Array<ArrayBuffer>,
   key = getKey()
 ) {
   if (!key) throw new Error("No key provided");
@@ -228,7 +228,7 @@ export async function changePassword(oldPassword: string, newPassword: string) {
     if (journal.status === "DELETED") continue;
     const decrypted = await decrypt(
       journal.ciphertext as ArrayBuffer,
-      journal.iv as Uint8Array
+      journal.iv as unknown as Uint8Array<ArrayBuffer>
     );
     const { ciphertext, iv } = await encrypt(decrypted, newKey);
     (journal as any).ciphertext = ciphertext;

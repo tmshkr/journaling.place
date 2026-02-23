@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { JournalCache, CachedJournal } from "src/services/journal";
 
 import dayjs from "src/lib/dayjs";
 
 export function OtherEntries({ prompt, journal }) {
   const queryClient = useQueryClient();
-  const cache = queryClient.getQueryData<JournalCache>("journal");
+  const cache = queryClient.getQueryData<JournalCache>(["journal"]);
   if (!journal && !prompt) return null;
   if (!cache) return null;
 

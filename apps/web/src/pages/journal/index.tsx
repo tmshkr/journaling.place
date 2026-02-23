@@ -1,10 +1,10 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { JournalList } from "src/components/JournalList";
 import { JournalCache } from "src/services/journal";
 
 export default function JournalIndex() {
   const { data } = useQuery<JournalCache>({
-    queryKey: "journal",
+    queryKey: ["journal"],
   });
   if (!data) return null;
 

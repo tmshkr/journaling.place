@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { currentPrompt } from "src/store/prompt";
 import { JournalView } from "src/components/JournalView";
@@ -9,7 +9,7 @@ import { JournalCache } from "src/services/journal";
 export default function JournalPage() {
   const router = useRouter();
   const { data } = useQuery<JournalCache>({
-    queryKey: "journal",
+    queryKey: ["journal"],
   });
   const journal = data?.journalsById[router.query.id as string];
 

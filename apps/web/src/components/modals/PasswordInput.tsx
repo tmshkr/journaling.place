@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Dialog } from "@headlessui/react";
+import { DialogDescription } from "@headlessui/react";
 import { useSession } from "next-auth/react";
 import { createKey } from "src/services/crypto";
 import { useForm } from "react-hook-form";
@@ -76,8 +76,7 @@ export function PasswordInput() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="text-center">
-      <Dialog.Title
-        as="label"
+      <label
         htmlFor={
           passwordInputState === PasswordInputState.ConfirmPassword
             ? "confirm_password"
@@ -88,7 +87,7 @@ export function PasswordInput() {
         {passwordInputState === PasswordInputState.EnterPassword
           ? "Journal Password"
           : "Create Password"}
-      </Dialog.Title>
+      </label>
       <div className="mt-2">
         {passwordInputState === PasswordInputState.ConfirmPassword ? (
           <input
@@ -130,34 +129,34 @@ export function PasswordInput() {
 function InputDescription({ passwordInputState, errors, hasErrors }) {
   if (hasErrors) {
     return Object.keys(errors).map((key) => (
-      <Dialog.Description key={key} className="text-sm text-red-500 my-2">
+      <DialogDescription key={key} className="text-sm text-red-500 my-2">
         {errors[key].message}
-      </Dialog.Description>
+      </DialogDescription>
     ));
   }
 
   switch (passwordInputState) {
     case PasswordInputState.CreatePassword:
       return (
-        <Dialog.Description className="text-sm text-gray-500 my-2">
+        <DialogDescription className="text-sm text-gray-500 my-2">
           Please enter a password to encrypt your journal.
           <br />
           Use a strong password and store it in a safe place.
           <br />
           If you lose your password, your data cannot be recovered.
-        </Dialog.Description>
+        </DialogDescription>
       );
     case PasswordInputState.ConfirmPassword:
       return (
-        <Dialog.Description className="text-sm text-gray-500 my-2">
+        <DialogDescription className="text-sm text-gray-500 my-2">
           Please confirm your password.
-        </Dialog.Description>
+        </DialogDescription>
       );
     case PasswordInputState.EnterPassword:
       return (
-        <Dialog.Description className="text-sm text-gray-500 my-2">
+        <DialogDescription className="text-sm text-gray-500 my-2">
           Please enter your password to access your journal.
-        </Dialog.Description>
+        </DialogDescription>
       );
     default:
       throw new Error("Invalid password input state.");
