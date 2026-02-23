@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function SearchResults({
   search,
@@ -11,7 +11,7 @@ export function SearchResults({
   if (searchResults.length === 0) {
     return null;
   }
-  const cache: any = queryClient.getQueryData("journal");
+  const cache: any = queryClient.getQueryData(["journal"]);
 
   if (!cache) {
     return null;

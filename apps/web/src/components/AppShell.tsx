@@ -1,5 +1,10 @@
 import { Fragment, useState, useEffect, useRef } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import {
+  Dialog,
+  DialogPanel,
+  Transition,
+  TransitionChild,
+} from "@headlessui/react";
 import {
   Bars3BottomLeftIcon,
   CloudIcon,
@@ -118,13 +123,12 @@ export function AppShell({ children }) {
 
   return (
     <div data-test="app-shell">
-      <Transition.Root show={sidebarOpen} as={Fragment}>
+      <Transition show={sidebarOpen} as={Fragment}>
         <Dialog
-          as="div"
           className="relative z-40 md:hidden"
           onClose={setSidebarOpen}
         >
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="transition-opacity ease-linear duration-300"
             enterFrom="opacity-0"
@@ -134,10 +138,10 @@ export function AppShell({ children }) {
             leaveTo="opacity-0"
           >
             <div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
-          </Transition.Child>
+          </TransitionChild>
 
           <div className="fixed inset-0 z-40 flex">
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter="transition ease-in-out duration-300 transform"
               enterFrom="-translate-x-full"
@@ -146,8 +150,8 @@ export function AppShell({ children }) {
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full"
             >
-              <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-white pt-5 pb-4">
-                <Transition.Child
+              <DialogPanel className="relative flex w-full max-w-xs flex-1 flex-col bg-white pt-5 pb-4">
+                <TransitionChild
                   as={Fragment}
                   enter="ease-in-out duration-300"
                   enterFrom="opacity-0"
@@ -169,7 +173,7 @@ export function AppShell({ children }) {
                       />
                     </button>
                   </div>
-                </Transition.Child>
+                </TransitionChild>
                 <div className="flex flex-shrink-0 items-center px-4">
                   {/* <img
                       className="h-8 w-auto"
@@ -210,14 +214,14 @@ export function AppShell({ children }) {
                     ))}
                   </nav>
                 </div>
-              </Dialog.Panel>
-            </Transition.Child>
+              </DialogPanel>
+            </TransitionChild>
             <div className="w-14 flex-shrink-0" aria-hidden="true">
               {/* Dummy element to force sidebar to shrink to fit close icon */}
             </div>
           </div>
         </Dialog>
-      </Transition.Root>
+      </Transition>
 
       {/* Static sidebar for desktop */}
       <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">

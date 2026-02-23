@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { Dialog, Transition } from "@headlessui/react";
+import { DialogTitle } from "@headlessui/react";
 import { useAppDispatch, useAppSelector } from "src/store";
 import { setModal, selectModal } from "src/store/modal";
 import { currentPrompt } from "src/store/prompt";
@@ -23,12 +23,11 @@ export function CreateNewEntryModal() {
     <>
       <div>
         <div className="text-center">
-          <Dialog.Title
-            as="h3"
+          <DialogTitle
             className="text-base font-semibold text-gray-900"
           >
             Create New Entry
-          </Dialog.Title>
+          </DialogTitle>
         </div>
       </div>
       <div className="mt-5 text-center">

@@ -9,7 +9,8 @@
     "dev": "nodemon src/index.ts"
   },
   "dependencies": {
-    "agenda": "^5.0.0",
+    "@agendajs/mongo-backend": "^3.2.0",
+    "agenda": "^6.2.3",
     "eslint-config-custom": "*",
     "mailer": "*",
     "tsconfig": "*"

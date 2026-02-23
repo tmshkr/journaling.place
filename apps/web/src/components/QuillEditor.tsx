@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Quill from "quill";
 import QuillMarkdown from "quilljs-markdown";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { CalendarIcon } from "@heroicons/react/20/solid";
 import {
   TrashIcon,
@@ -69,7 +69,7 @@ export default function QuillEditor(props) {
   }, [router]);
 
   useEffect(() => {
-    queryClient.prefetchQuery({ queryKey: "journal", staleTime: 1000 });
+    queryClient.prefetchQuery({ queryKey: ["journal"], staleTime: 1000 });
   }, [journal]);
 
   return (

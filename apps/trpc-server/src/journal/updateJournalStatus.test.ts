@@ -2,18 +2,21 @@ import { JournalStatus } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { User } from "@prisma/client";
 import { appRouter } from "../router";
+import { createCallerFactory } from "../index";
 import { prismaMock, db as mockDB } from "common/prisma/mock";
 import { mongoMock } from "common/mongo/mock";
 
 let testUser: User;
 let caller;
 
+const createCaller = createCallerFactory(appRouter);
+
 beforeAll(async () => {
   testUser = await prismaMock.user.create({
     data: { email: "test@journaling.place" },
   });
 
-  caller = appRouter.createCaller({
+  caller = createCaller({
     token: {
       sub: testUser.id,
       user: { salt: { data: testUser.salt || null } },

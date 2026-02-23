@@ -66,7 +66,7 @@ async function processJournal(j: CachedJournal) {
   if (j.ciphertext && j.iv) {
     const decrypted = await decrypt(
       j.ciphertext as ArrayBuffer,
-      j.iv as Uint8Array
+      j.iv as unknown as Uint8Array<ArrayBuffer>
     ).catch((err) => {
       store.dispatch(
         setModal({ name: "DecryptionError", isVisible: true, keepOpen: true })
@@ -115,7 +115,7 @@ export async function sync(params?: SyncParams) {
   console.log("Syncing journals");
   if (!isKeySet()) {
     console.log("No key set, returning empty cache");
-    await queryClient.cancelQueries({ queryKey: "journal" });
+    await queryClient.cancelQueries({ queryKey: ["journal"] });
     return { journalsById: {}, journalsByPromptId: {}, ts: 0 };
   }
 
@@ -140,8 +140,8 @@ async function getJournals(cursor?: string) {
 
   for (const j of journals) {
     if (j.ciphertext && j.iv) {
-      (j as CachedJournal).ciphertext = toArrayBuffer(j.ciphertext.data);
-      (j as CachedJournal).iv = new Uint8Array(j.iv.data);
+      (j as CachedJournal).ciphertext = toArrayBuffer(j.ciphertext as unknown as Buffer);
+      (j as CachedJournal).iv = new Uint8Array(j.iv as unknown as Buffer) as Uint8Array<ArrayBuffer>;
     }
     journalStore.setItem(j.id, j);
     await processJournal(j as CachedJournal);

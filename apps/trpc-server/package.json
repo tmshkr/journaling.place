@@ -11,13 +11,13 @@
     "jest:watch": "jest --watch"
   },
   "dependencies": {
-    "@trpc/client": "^10.43.1",
-    "@trpc/server": "^10.43.1",
+    "@trpc/client": "^11.10.0",
+    "@trpc/server": "^11.10.0",
     "common": "*",
     "eslint-config-custom": "*",
     "mailer": "*",
     "tsconfig": "*",
-    "ws": "^8.14.2"
+    "ws": "^8.19.0"
   },
   "prisma": {
     "schema": "../../prisma/schema.prisma"

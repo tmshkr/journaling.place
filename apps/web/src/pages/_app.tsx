@@ -11,7 +11,7 @@ import { DefaultSeo } from "next-seo";
 
 import SEO from "../../next-seo.config";
 
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import store from "src/store";
 import { useAppDispatch } from "src/store";
@@ -26,7 +26,7 @@ import { Modal } from "src/components/modals/ModalWrapper";
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      queryFn: (args) => sync(),
+      queryFn: (args) => (typeof window !== "undefined" ? sync() : Promise.resolve({ journalsById: {}, journalsByPromptId: {}, ts: 0 })),
     },
   },
 });
