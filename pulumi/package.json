@@ -1,0 +1,21 @@
+{
+  "name": "journaling-place-pulumi",
+  "private": true,
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "config": "node set-config.mjs",
+    "typecheck": "tsc",
+    "up": "pulumi up",
+    "destroy": "pulumi destroy"
+  },
+  "dependencies": {
+    "@pulumi/kubernetes": "^4.23.0",
+    "@pulumi/pulumi": "^3.220.0",
+    "tsx": "^4.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "typescript": "^5.9.3"
+  }
+}

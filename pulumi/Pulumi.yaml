@@ -1,0 +1,8 @@
+name: journaling-place
+description: The journaling.place app (Next.js + tRPC behind Caddy) and its Cloudflare Tunnel ingress.
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
+    typescript: false
+    nodeargs: "--import tsx"
