@@ -1,0 +1,3 @@
+Pulumi.*.yaml
+.env
+node_modules
